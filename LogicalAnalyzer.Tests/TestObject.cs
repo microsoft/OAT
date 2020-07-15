@@ -13,5 +13,6 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
         public List<string>? StringListField { get; set; }
         public TestObject? NestedObject { get; set; }
         public Dictionary<string, List<string>>? StringListDictField { get; set; }
+        public DateTime DateTimeField { get; set; }
     }
 }

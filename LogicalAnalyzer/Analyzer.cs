@@ -142,11 +142,6 @@ namespace Microsoft.CST.LogicalAnalyzer
         {
             var results = new ConcurrentStack<Rule>();
 
-            if (before is null && after is null)
-            {
-                return results;
-            }
-
             Parallel.ForEach(rules, rule =>
             {
                 if (Applies(rule, before, after))
@@ -160,13 +155,13 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         public bool Applies(Rule rule, object? before = null, object? after = null)
         {
-            if ((before != null || after != null) && rule != null)
+            if (rule != null)
             {
                 var sample = before is null ? after : before;
 
                 // Does the name of this class match the Target in the rule?
                 // Or has no target been specified (match all)
-                if (rule.Target is null || (sample?.GetType().Name.Equals(rule.Target, StringComparison.InvariantCultureIgnoreCase) ?? false))
+                if (rule.Target is null || (sample?.GetType().Name.Equals(rule.Target, StringComparison.InvariantCultureIgnoreCase) ?? true))
                 {
                     // If the expression is null the default is that all clauses must be true
                     // If we have no clauses .All will still match
@@ -508,7 +503,7 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         protected bool AnalyzeClause(Clause clause, object? before = null, object? after = null)
         {
-            if (clause == null || (before == null && after == null))
+            if (clause == null)
             {
                 return false;
             }
@@ -520,7 +515,6 @@ namespace Microsoft.CST.LogicalAnalyzer
                     after = GetValueByPropertyString(after, clause.Field);
                     before = GetValueByPropertyString(before, clause.Field);
                 }
-
 
                 var typeHolder = before is null ? after : before;
 
