@@ -1,4 +1,4 @@
-# Introduction
+# Logical Analyzer
 
 Logical Analyzer is a rules processing engine to apply arbitrary provided rules against arbitrary objects
 
@@ -19,7 +19,7 @@ The basic usage of Logical Analyzer is applying rules to targets using the Analy
 
 ```csharp
 Object target;
-List<Rule> rules;
+IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var rulesWhichApply = analyzer.Analyze(rules,target);
 ```
@@ -38,19 +38,30 @@ class Vehicle
 var truck = new Vehicle()
 {
     Weight = 20000,
-    Axles = 5
+    Axles = 5,
+    Occupants = 1
 }
 
 var car = new Vehicle()
 {
     Weight = 3000,
-    Axles = 2
+    Axles = 2,
+    Occupants = 1
+}
+
+
+var carpool = new Vehicle()
+{
+    Weight = 3000,
+    Axles = 2,
+    Occupants = 3
 }
 
 var motorcycle = new Vehicle()
 {
     Weight = 1000,
     Axles = 2
+    Occupants = 1
 }
 
 class VehicleRule : Rule
@@ -61,8 +72,8 @@ class VehicleRule : Rule
 var rules = new VehicleRule[] {
     new VehicleRule(){
         Name = "Overweight or long",
-        Cost = 3.50
-        Severity = 2
+        Cost = 10.5
+        Severity = 3
         Expression = "Weight OR Axles",
         Target = "Vehicle",
         Clauses = new List<Clause>()
@@ -87,52 +98,66 @@ var rules = new VehicleRule[] {
     },
     new VehicleRule(){
         Name = "Normal Car",
-        Cost = 2
+        Cost = 3
         Severity = 1
-        Expression = "Weight AND Axles",
         Target = "Vehicle",
         Clauses = new List<Clause>()
         {
+            new Clause("Weight", OPERATION.GT)
+            {
+                Data = new List<string>()
+                {
+                    "1000"
+                }
+            }
+        }
+    },
+    new VehicleRule(){
+        Name = "Carpool Car",
+        Cost = 2.5
+        Severity = 2
+        Target = "Vehicle",
+        Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
+        Clauses = new List<Clause>()
+        {
+            new Clause("Weight", OPERATION.GT)
+            {
+                Label = "WeightGT1000",
+                Data = new List<string>()
+                {
+                    "1000"
+                }
+            },
             new Clause("Weight", OPERATION.LT)
             {
-                Label = "Weight",
+                Label = "WeightLT4000",
                 Data = new List<string>()
                 {
                     "4000"
                 }
             },
-            new Clause("Axles", OPERATION.EQ)
+            new Clause("Occupants", OPERATION.GT)
             {
-                Label = "Axles",
+                Label = "OccupantsGT2",
                 Data = new List<string>()
                 {
                     "2"
                 }
-            }
+            },
         }
     },
     new VehicleRule(){
         Name = "Motorcycle",
         Cost = 1
         Severity = 0
-        Expression = "Weight AND Axles",
         Target = "Vehicle",
         Clauses = new List<Clause>()
         {
             new Clause("Weight", OPERATION.LT)
             {
-                Label = "Weight",
                 Data = new List<string>()
                 {
                     "1000"
-                }
-            },
-            new Clause("Axles", OPERATION.EQ)
-            {
-                Label = "Axles",
-                Data = new List<string>()
-                {
-                    "2"
                 }
             }
         }
@@ -145,8 +170,8 @@ decimal GetCost(Vehicle vehicle){
     return ((VehicleRule)analyzer.Analyze(rules,vehicle).MaxBy(x => x.Severity)).Cost;
 }
 
-GetCost(truck);// 3.50
-GetCost(car); // 2.00
+GetCost(truck);// 10.50
+GetCost(car); // 
 GetCost(motorcycle) // 1.00
 ```
 
