@@ -11,7 +11,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
     {
         class Vehicle
         {
-            public int Weight { get; set; }
+            public int Weight;
             public int Axles { get; set; }
             public int Occupants { get; set; }
         }
