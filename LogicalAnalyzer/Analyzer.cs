@@ -26,11 +26,11 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ObjectToValuesDelegate(object? obj);
 
-        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? before, object? after);
+        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
 
         public delegate IEnumerable<Violation> ValidationDelegate(Rule r, Clause c);
 
-        public PropertyExtractionDelegate? CustomPropertyDelegate { get; set; }
+        public PropertyExtractionDelegate? CustomPropertyExtractionDelegate { get; set; }
 
         public ObjectToValuesDelegate? CustomObjectToValuesDelegate { get; set; }
 
@@ -88,7 +88,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                             break;
 
                         default:
-                            var res = CustomPropertyDelegate?.Invoke(value, pathPortions[pathPortionIndex]);
+                            var res = CustomPropertyExtractionDelegate?.Invoke(value, pathPortions[pathPortionIndex]);
 
                             // If we couldn't do any custom parsing fall back to the default
                             if (!res.HasValue || res.Value.Processed == false)
@@ -111,6 +111,10 @@ namespace Microsoft.CST.LogicalAnalyzer
             return null;
         }
 
+        /// <summary>
+        ///     Prints out the Enumerable of violations to Warning
+        /// </summary>
+        /// <param name="violations">An Enumerable of Violations to print</param>
         public static void PrintViolations(IEnumerable<Violation> violations)
         {
             if (violations == null) return;
@@ -120,13 +124,20 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
         }
 
-        public string[] GetTags(IEnumerable<Rule> rules, object? before = null, object? after = null)
+        /// <summary>
+        ///     Get the Tags which apply to the object given the Rules
+        /// </summary>
+        /// <param name="rules">The Rules to apply</param>
+        /// <param name="state1">The first state of the object</param>
+        /// <param name="state2">The second state of the object</param>
+        /// <returns></returns>
+        public string[] GetTags(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var tags = new ConcurrentDictionary<string, byte>();
 
             Parallel.ForEach(rules, rule =>
             {
-                if (!rule.Tags.All(x => tags.Keys.Any(y => y == x)) && Applies(rule, before, after))
+                if (!rule.Tags.All(x => tags.Keys.Any(y => y == x)) && Applies(rule, state1, state2))
                 {
                     foreach(var tag in rule.Tags)
                     {
@@ -138,30 +149,40 @@ namespace Microsoft.CST.LogicalAnalyzer
             return tags.Keys.ToArray();
         }
 
-        public ConcurrentStack<Rule> Analyze(IEnumerable<Rule> rules, object? before = null, object? after = null)
+        /// <summary>
+        ///     Which rules apply to this object given up to two states?
+        /// </summary>
+        /// <param name="rules">The rules to apply</param>
+        /// <param name="state1">The first state</param>
+        /// <param name="state2">The second state</param>
+        /// <returns>A Stack of Rules which apply</returns>
+        public ConcurrentStack<Rule> Analyze(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var results = new ConcurrentStack<Rule>();
 
-            //Parallel.ForEach(rules, rule =>
-            //{
-            foreach(var rule in rules)
+            Parallel.ForEach(rules, rule =>
             {
-                if (Applies(rule, before, after))
+                if (Applies(rule, state1, state2))
                 {
                     results.Push(rule);
                 }
-            }
-                
-            //});
+            });
 
             return results;
         }
 
-        public bool Applies(Rule rule, object? before = null, object? after = null)
+        /// <summary>
+        ///     Does the rule apply to the object?
+        /// </summary>
+        /// <param name="rule">The Rule to apply</param>
+        /// <param name="state1">The first state of the object</param>
+        /// <param name="state2">The second state of the object</param>
+        /// <returns>True if the rule applies</returns>
+        public bool Applies(Rule rule, object? state1 = null, object? state2 = null)
         {
             if (rule != null)
             {
-                var sample = before is null ? after : before;
+                var sample = state1 is null ? state2 : state1;
 
                 // Does the name of this class match the Target in the rule?
                 // Or has no target been specified (match all)
@@ -171,7 +192,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     // If we have no clauses .All will still match
                     if (rule.Expression is null)
                     {
-                        if (rule.Clauses.All(x => AnalyzeClause(x, before, after)))
+                        if (rule.Clauses.All(x => AnalyzeClause(x, state1, state2)))
                         {
                             return true;
                         }
@@ -179,7 +200,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     // Otherwise we evaluate the expression
                     else
                     {
-                        if (Evaluate(rule.Expression.Split(' '), rule.Clauses, before, after))
+                        if (Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2))
                         {
                             return true;
                         }
@@ -204,8 +225,8 @@ namespace Microsoft.CST.LogicalAnalyzer
         /// <summary>
         /// Verifies the provided rules and provides a list of issues with the rules.
         /// </summary>
-        /// <param name="rules"></param>
-        /// <returns>List of issues with the rules.</returns>
+        /// <param name="rules">Enumerable of Rules.</param>
+        /// <returns>Enumerable of issues with the rules.</returns>
         public IEnumerable<Violation> EnumerateRuleIssues(IEnumerable<Rule> rules)
         {
             foreach (Rule rule in rules ?? Array.Empty<Rule>())
@@ -501,7 +522,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
         }
 
-        protected bool AnalyzeClause(Clause clause, object? before = null, object? after = null)
+        protected bool AnalyzeClause(Clause clause, object? state1 = null, object? state2 = null)
         {
             if (clause == null)
             {
@@ -511,17 +532,17 @@ namespace Microsoft.CST.LogicalAnalyzer
             {
                 if (clause.Field is string)
                 {
-                    after = GetValueByPropertyString(after, clause.Field);
-                    before = GetValueByPropertyString(before, clause.Field);
+                    state2 = GetValueByPropertyString(state2, clause.Field);
+                    state1 = GetValueByPropertyString(state1, clause.Field);
                 }
 
-                var typeHolder = before is null ? after : before;
+                var typeHolder = state1 is null ? state2 : state1;
 
-                (var beforeList, var beforeDict) = ObjectToValues(before);
-                (var afterList, var afterDict) = ObjectToValues(after);
+                (var stateOneList, var stateOneDict) = ObjectToValues(state1);
+                (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
 
-                var valsToCheck = beforeList.Union(afterList);
-                var dictToCheck = beforeDict.Union(afterDict);
+                var valsToCheck = stateOneList.Union(stateTwoList);
+                var dictToCheck = stateOneDict.Union(stateTwoDict);
 
                 switch (clause.Operation)
                 {
@@ -688,7 +709,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     case OPERATION.WAS_MODIFIED:
                         CompareLogic compareLogic = new CompareLogic();
 
-                        ComparisonResult comparisonResult = compareLogic.Compare(before, after);
+                        ComparisonResult comparisonResult = compareLogic.Compare(state1, state2);
 
                         return !comparisonResult.AreEqual;
 
@@ -800,7 +821,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                         }
                         else
                         {
-                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, before, after);
+                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
                         }
 
                     default:
@@ -810,7 +831,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
             catch (Exception e)
             {
-                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(before)},{JsonConvert.SerializeObject(after)})");
+                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
             }
 
             return false;
@@ -922,7 +943,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
         }
 
-        private bool Evaluate(string[] splits, List<Clause> Clauses, object? before, object? after)
+        private bool Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)
         {
             bool current = false;
 
@@ -961,7 +982,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                         else
                         {
                             // Recursively evaluate the contents of the parentheses
-                            var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, before, after);
+                            var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
 
                             next = invertNextStatement ? !next : next;
 
@@ -1000,7 +1021,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                             {
                                 bool next;
 
-                                next = AnalyzeClause(res.First(), before, after);
+                                next = AnalyzeClause(res.First(), state1, state2);
 
                                 next = invertNextStatement ? !next : next;
 

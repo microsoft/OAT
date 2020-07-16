@@ -7,8 +7,17 @@ namespace Microsoft.CST.LogicalAnalyzer
 {
     public class Violation
     {
+        /// <summary>
+        ///     The Rule associated with this violation
+        /// </summary>
         public Rule rule { get; set; }
+        /// <summary>
+        ///     The clauses associated with this violation
+        /// </summary>
         public Clause[] clauses { get; set; }
+        /// <summary>
+        ///     The text description of the violation
+        /// </summary>
         public string description { get; set; }
 
         public Violation(string description, Rule rule) : this(description, rule, Array.Empty<Clause>()) { }
