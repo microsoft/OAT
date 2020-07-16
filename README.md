@@ -1,17 +1,16 @@
 # Logical Analyzer
 
-Logical Analyzer is a rules processing engine to apply arbitrary provided rules against arbitrary objects
+Logical Analyzer is a rules processing engine to apply provided rules against arbitrary objects
 
-* Rules contain an arbitrary boolean expression of the results of Clauses.
-* [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) perform a specified [Operation](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty specified with dot notation to separate levels. 
-* When Field is null the root object is used. 
-* The Analyzer now can parse any kind of Object, the specific Object Type a rule applies to is determined by the Target field in the Rule.   For example, AttackSurfaceAnalyzer we extend Rule with some Fields in [AsaRule](https://github.com/microsoft/AttackSurfaceAnalyzer/pull/516/files#diff-0b512edc1f875025bdc9925a7ad29713) and set the Target based on the ResultType set in the Rule.
-* Target can also be null as a wildcard.
+* [Rules](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Rule.cs) contain a Target, a Severity, a boolean Expression and a List of [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) which are applied to the targeted object.
+* [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) perform a specified [Operation](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels. 
 * The Analyzer has 4 delegate extensibility points, with code examples below.
 1. Property Parsing
 2. Value Extraction
 3. Custom Operation
 4. Rule Validation
+
+Check the [Wiki](https://github.com/microsoft/LogicalAnalyzer/wiki) for additional detail.
 
 ## Basic Usage
 
@@ -26,7 +25,7 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 
 ## Detailed Usage
 
-This detailed example shows using Logical Analyzer to make a car tolling system.
+This detailed example shows using Logical Analyzer to make a car tolling system.  The example is available as a runnable demo in the [Tests](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer.Tests/VehicleDemo.cs).
 
 ```csharp
 class Vehicle
@@ -40,6 +39,7 @@ int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
 {
     return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
 }
+
 public class VehicleRule : Rule
 {
     public int Cost;
@@ -183,7 +183,7 @@ public void TestVehicleDemo()
 Logical Analyzer has 4 delegate extensibility points, examples of using each are below.
 
 ### Property Parsing
-In Attack Surface Analyzer (ASA) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries.
+In [Attack Surface Analyzer](https://github.com/microsoft/AttackSurfaceAnalyzer/) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries. [link](https://github.com/microsoft/AttackSurfaceAnalyzer/blob/ed94a33f6b3c9884bda995e1e03c5ac533e3f559/Lib/Utils/AsaAnalyzer.cs#L23)
 ```csharp
 public static (bool, object?) ParseCustomAsaProperties(object? obj, string index)
 {
@@ -207,7 +207,7 @@ public static (bool, object?) ParseCustomAsaProperties(object? obj, string index
 ```
 
 ### Value Extraction
-In Asa we also extend Value extraction for the same reason.
+In [Attack Surface Analyzer](https://github.com/microsoft/AttackSurfaceAnalyzer/) we also extend Value extraction for the same reason. [link](https://github.com/microsoft/AttackSurfaceAnalyzer/blob/ed94a33f6b3c9884bda995e1e03c5ac533e3f559/Lib/Utils/AsaAnalyzer.cs#L43)
 ```csharp
 public static (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ParseCustomAsaObjectValues(object? obj)
 {
@@ -220,7 +220,7 @@ public static (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<Ke
 ```
 
 ### Custom Operation
-In the tests we test extending with a custom Operation:
+In the tests we test extending with a custom Operation [link](https://github.com/microsoft/LogicalAnalyzer/blob/df5407784ff2c39bc79bb0d1dc03b760c97598a1/LogicalAnalyzer.Tests/ExpressionsTests.cs#L581)
 ```csharp
 var analyzer = new Analyzer();
 
@@ -240,7 +240,7 @@ bool fooOperation(clause, listValues, dictionaryValues) =>
 ```
 
 ### Rule Validation
-We also test extending the validation logic with a delegate:
+We also test extending the validation logic with a delegate [link](https://github.com/microsoft/LogicalAnalyzer/blob/df5407784ff2c39bc79bb0d1dc03b760c97598a1/LogicalAnalyzer.Tests/ExpressionsTests.cs#L903)
 ```csharp
 analyzer.CustomOperationValidationDelegate = parseFooOperations;
 
