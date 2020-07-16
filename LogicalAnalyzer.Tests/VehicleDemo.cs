@@ -18,7 +18,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
         int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
         {
-            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
+            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
         public class VehicleRule : Rule
         {
