@@ -2,7 +2,6 @@
 
 Logical Analyzer is a rules processing engine to apply arbitrary provided rules against arbitrary objects
 
-* LogicalAnalyzer is a powerful rules processing engine.
 * Rules contain an arbitrary boolean expression of the results of Clauses.
 * [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) perform a specified [Operation](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty specified with dot notation to separate levels. 
 * When Field is null the root object is used. 
