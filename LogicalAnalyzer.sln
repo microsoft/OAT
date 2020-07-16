@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30309.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicalAnalyzer", "LogicalAnalyzer\LogicalAnalyzer.csproj", "{5A300924-CAA0-4E30-B0A8-180C94A4D37F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicalAnalyzer.Tests", "LogicalAnalyzer.Tests\LogicalAnalyzer.Tests.csproj", "{D663C409-C8A6-44A4-820F-FBFAB79600EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A300924-CAA0-4E30-B0A8-180C94A4D37F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A300924-CAA0-4E30-B0A8-180C94A4D37F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A300924-CAA0-4E30-B0A8-180C94A4D37F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A300924-CAA0-4E30-B0A8-180C94A4D37F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D663C409-C8A6-44A4-820F-FBFAB79600EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D663C409-C8A6-44A4-820F-FBFAB79600EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D663C409-C8A6-44A4-820F-FBFAB79600EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D663C409-C8A6-44A4-820F-FBFAB79600EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5FC6031-9A1C-4DB1-8D4A-6C4064AC47D6}
+	EndGlobalSection
+EndGlobal
