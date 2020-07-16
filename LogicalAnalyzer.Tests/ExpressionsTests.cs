@@ -42,6 +42,36 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
         };
 
         [TestMethod]
+        public void TestNotNot()
+        {
+            var RuleName = "Not Not True";
+            var notNotRule = new Rule(RuleName)
+            {
+                Expression = "NOT NOT 0",
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause("StringField", OPERATION.EQ)
+                    {
+                        Label = "0",
+                        Data = new List<string>()
+                        {
+                            "MagicWord"
+                        }
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { notNotRule };
+
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+        }
+
+        [TestMethod]
         public void TestXorFromNand()
         {
             var RuleName = "XOR from NAND";
