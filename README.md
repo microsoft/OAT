@@ -27,7 +27,7 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 
 ## Example
 
-This is an example with objects and rules created for those objects.
+Here's a little example of using Logical Analyzer to make a car toll processing system.
 
 ```csharp
 class Vehicle
