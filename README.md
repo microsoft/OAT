@@ -231,13 +231,14 @@ public static (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<Ke
 ```
 
 ### Custom Operation
-In the tests we test extending with a custom Operation [link](https://github.com/microsoft/LogicalAnalyzer/blob/df5407784ff2c39bc79bb0d1dc03b760c97598a1/LogicalAnalyzer.Tests/ExpressionsTests.cs#L581)
+In the tests we test extending with a custom Operation [link](https://github.com/microsoft/LogicalAnalyzer/blob/df5407784ff2c39bc79bb0d1dc03b760c97598a1/LogicalAnalyzer.Tests/ExpressionsTests.cs#L581).
 ```csharp
 var analyzer = new Analyzer();
 
 analyzer.CustomOperationDelegate = fooOperation;
 
-bool fooOperation(Clause clause, List<string> listValues, Dictionary<string,string> dictionaryValues, object? before, object? after) =>
+// When you call the analyze function its definition takes two object states: Analyze(Rules,state1,state2)
+bool fooOperation(Clause clause, List<string> listValues, Dictionary<string,string> dictionaryValues, object? state1, object? state2) =>
 {
     if (clause.Operation == OPERATION.CUSTOM)
     {
