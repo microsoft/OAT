@@ -1,0 +1,49 @@
+# Azure Pipelines
+# https://aka.ms/yaml
+
+name: LogicalAnalyzer_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - LogicalAnalyzer
+    
+pr:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - Pipelines
+    - LogicalAnalyzer
+    - LogicalAnalyzer.Tests
+    - LogicalAnalyzer.sln
+
+stages:
+- stage: Test
+  jobs:
+  - template: templates/dotnet-test-job.yml
+    parameters:
+      dotnetVersion: '3.1.x'
+      projectPath: 'LogicalAnalyzer.Tests/LogicalAnalyzer.Tests.csproj'
+
+# - stage: SDL
+#  dependsOn: Test
+#  jobs:
+#  - template: templates/sdl-job.yml
+#    parameters:
+#      serviceTreeID: ''
+
+- stage: Build
+  dependsOn: Test
+  jobs:
+  - template: templates/nuget-build-job.yml
+    parameters:
+      dotnetVersion: '3.1.x'
+      projectPath: 'LogicalAnalyzer/LogicalAnalyzer.csproj'
+      projectName: 'LogicalAnalyzer'
+
+#- stage: Release
