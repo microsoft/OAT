@@ -260,10 +260,10 @@ IEnumerable<Violation> parseFooOperations(Rule r, Clause c)
 {
     switch (c.CustomOperation)
     {
-        case "FOO":
+        case "MY_CUSTOM_OPERATION":
             if (!c.Data.Any())
             {
-                yield return new Violation("FOO Operation expects data", r, c);
+                yield return new Violation("MY_CUSTOM_OPERATION expects data", r, c);
             }
             break;
         default:
