@@ -37,6 +37,7 @@ class Vehicle
 
 int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
 {
+    // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules 0 cost
     return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
 }
 
