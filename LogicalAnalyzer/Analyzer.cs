@@ -26,7 +26,7 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ObjectToValuesDelegate(object? obj);
 
-        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? before, object? after);
+        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
 
         public delegate IEnumerable<Violation> ValidationDelegate(Rule r, Clause c);
 
@@ -175,14 +175,14 @@ namespace Microsoft.CST.LogicalAnalyzer
         ///     Does the rule apply to the object?
         /// </summary>
         /// <param name="rule">The Rule to apply</param>
-        /// <param name="before">The first state of the object</param>
-        /// <param name="after">The second state of the object</param>
+        /// <param name="state1">The first state of the object</param>
+        /// <param name="state2">The second state of the object</param>
         /// <returns>True if the rule applies</returns>
-        public bool Applies(Rule rule, object? before = null, object? after = null)
+        public bool Applies(Rule rule, object? state1 = null, object? state2 = null)
         {
             if (rule != null)
             {
-                var sample = before is null ? after : before;
+                var sample = state1 is null ? state2 : state1;
 
                 // Does the name of this class match the Target in the rule?
                 // Or has no target been specified (match all)
@@ -192,7 +192,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     // If we have no clauses .All will still match
                     if (rule.Expression is null)
                     {
-                        if (rule.Clauses.All(x => AnalyzeClause(x, before, after)))
+                        if (rule.Clauses.All(x => AnalyzeClause(x, state1, state2)))
                         {
                             return true;
                         }
@@ -200,7 +200,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     // Otherwise we evaluate the expression
                     else
                     {
-                        if (Evaluate(rule.Expression.Split(' '), rule.Clauses, before, after))
+                        if (Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2))
                         {
                             return true;
                         }
@@ -522,7 +522,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
         }
 
-        protected bool AnalyzeClause(Clause clause, object? before = null, object? after = null)
+        protected bool AnalyzeClause(Clause clause, object? state1 = null, object? state2 = null)
         {
             if (clause == null)
             {
@@ -532,17 +532,17 @@ namespace Microsoft.CST.LogicalAnalyzer
             {
                 if (clause.Field is string)
                 {
-                    after = GetValueByPropertyString(after, clause.Field);
-                    before = GetValueByPropertyString(before, clause.Field);
+                    state2 = GetValueByPropertyString(state2, clause.Field);
+                    state1 = GetValueByPropertyString(state1, clause.Field);
                 }
 
-                var typeHolder = before is null ? after : before;
+                var typeHolder = state1 is null ? state2 : state1;
 
-                (var beforeList, var beforeDict) = ObjectToValues(before);
-                (var afterList, var afterDict) = ObjectToValues(after);
+                (var stateOneList, var stateOneDict) = ObjectToValues(state1);
+                (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
 
-                var valsToCheck = beforeList.Union(afterList);
-                var dictToCheck = beforeDict.Union(afterDict);
+                var valsToCheck = stateOneList.Union(stateTwoList);
+                var dictToCheck = stateOneDict.Union(stateTwoDict);
 
                 switch (clause.Operation)
                 {
@@ -709,7 +709,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     case OPERATION.WAS_MODIFIED:
                         CompareLogic compareLogic = new CompareLogic();
 
-                        ComparisonResult comparisonResult = compareLogic.Compare(before, after);
+                        ComparisonResult comparisonResult = compareLogic.Compare(state1, state2);
 
                         return !comparisonResult.AreEqual;
 
@@ -821,7 +821,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                         }
                         else
                         {
-                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, before, after);
+                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
                         }
 
                     default:
@@ -831,7 +831,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
             catch (Exception e)
             {
-                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(before)},{JsonConvert.SerializeObject(after)})");
+                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
             }
 
             return false;
@@ -943,7 +943,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
         }
 
-        private bool Evaluate(string[] splits, List<Clause> Clauses, object? before, object? after)
+        private bool Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)
         {
             bool current = false;
 
@@ -982,7 +982,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                         else
                         {
                             // Recursively evaluate the contents of the parentheses
-                            var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, before, after);
+                            var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
 
                             next = invertNextStatement ? !next : next;
 
@@ -1021,7 +1021,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                             {
                                 bool next;
 
-                                next = AnalyzeClause(res.First(), before, after);
+                                next = AnalyzeClause(res.First(), state1, state2);
 
                                 next = invertNextStatement ? !next : next;
 
