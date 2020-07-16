@@ -4,7 +4,7 @@ Logical Analyzer is a rules processing engine to apply provided rules against ar
 
 * [Rules](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Rule.cs) contain a Target, a Severity, a boolean Expression and a List of [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) which are applied to the targeted object.
 * [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) perform a specified [Operation](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels. 
-* The Analyzer has 4 delegate extensibility points, with code examples below.
+* The Analyzer has 4 delegate extensibility points.
 1. Property Parsing
 2. Value Extraction
 3. Custom Operation
@@ -181,7 +181,7 @@ public void TestVehicleDemo()
 
 ## Delegates
 
-Logical Analyzer has 4 delegate extensibility points, examples of using each are below.
+Logical Analyzer has 4 delegate extensibility points, examples of using each are below and additional walkthrough is available in the [wiki](https://github.com/microsoft/LogicalAnalyzer/wiki/Delegates)
 
 ### Property Parsing
 When Logical Analyzer is attempting to walk the Field path provided in the Clause you may want to crawl into a Dictionary or List that is not string based.  In such cases you can provide a custom property parser.
