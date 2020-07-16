@@ -13,18 +13,18 @@ Logical Analyzer is a rules processing engine to apply arbitrary provided rules 
 3. Custom Operation
 4. Rule Validation
 
-## Usage
+## Basic Usage
 
 The basic usage of Logical Analyzer is applying rules to targets using the Analyze function.
 
 ```csharp
-Object target;
+object target;
 IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var rulesWhichApply = analyzer.Analyze(rules,target);
 ```
 
-## Example
+## Detailed Usage
 
 Here's a little example of using Logical Analyzer to make a car toll processing system.
 
@@ -175,7 +175,7 @@ GetCost(car); //
 GetCost(motorcycle) // 1.00
 ```
 
-## Delegate Extensibility
+## Delegates
 
 ### Property Parsing
 In Attack Surface Analyzer (ASA) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries.
