@@ -24,14 +24,14 @@
         NEQ,
 
         /// <summary>
-        ///     Checks whether the specified fields value when parsed as an int is less than first value in
-        ///     the Data list as Parsed as an Int
+        ///     Checks whether any of the specified fields values when parsed as an int is less than first value in
+        ///     the Data list as Parsed as an int
         /// </summary>
         LT,
 
         /// <summary>
-        ///     Checks whether the specified fields value when parsed as an int is greater than first value in
-        ///     the Data list as Parsed as an Int
+        ///     Checks whether any of the specified fields values when parsed as an int is greater than first value in
+        ///     the Data list as Parsed as an int
         /// </summary>
         GT,
 
@@ -75,12 +75,12 @@
         DOES_NOT_CONTAIN_ALL,
 
         /// <summary>
-        ///     Checks if the specified field is null in both runs.
+        ///     Checks if the specified field is null in both states.
         /// </summary>
         IS_NULL,
 
         /// <summary>
-        ///     Checks if the specified field is true in either run.
+        ///     Checks if the specified field is true in either state.
         /// </summary>
         IS_TRUE,
 
