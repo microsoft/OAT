@@ -285,25 +285,6 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
 
-            invalidRule = new Rule("MultipleConsecutiveNots")
-            {
-                Expression = "0 AND NOT NOT 1",
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause("Path", OPERATION.IS_NULL)
-                    {
-                        Label = "1"
-                    },
-                    new Clause("Path", OPERATION.IS_NULL)
-                    {
-                        Label = "0"
-                    }
-                }
-            };
-
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
-
             invalidRule = new Rule("CloseParenthesesWithNot")
             {
                 Expression = "(0 AND NOT) 1",
@@ -809,6 +790,25 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                     new Clause("IsExecutable", OPERATION.IS_NULL)
                     {
                         Label = "BA$_*"
+                    }
+                }
+            };
+
+            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+
+            validRule = new Rule("MultipleConsecutiveNots")
+            {
+                Expression = "0 AND NOT NOT 1",
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause("Path", OPERATION.IS_NULL)
+                    {
+                        Label = "1"
+                    },
+                    new Clause("Path", OPERATION.IS_NULL)
+                    {
+                        Label = "0"
                     }
                 }
             };
