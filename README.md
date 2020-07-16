@@ -30,56 +30,125 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 This is an example with objects and rules created for those objects.
 
 ```csharp
-class Person
+class Vehicle
 {
-    string FirstName;
-    string SecondName;
-    DateTime BirthDate;
+    int Weight;
+    int Axles;
 }
 
-var professorx = new Person()
+var truck = new Vehicle()
 {
-    FirstName = "Charles",
-    SecondName = "Xavier",
-    BirthDate = Convert.ToDateTime("1/1/1932")
+    Weight = 20000,
+    Axles = 5
 }
 
-var magneto = new Person()
+var car = new Vehicle()
 {
-    FirstName = "Max",
-    SecondName = "Eisenhardt",
-    BirthDate = Convert.ToDateTime("1/1/1930")
+    Weight = 3000,
+    Axles = 2
 }
 
-var rules = new Rule[] {
-    new Rule(){
-        Expression = "(Name AND Age)",
-        Target = "Person",
+var motorcycle = new Vehicle()
+{
+    Weight = 1000,
+    Axles = 2
+}
+
+class VehicleRule : Rule
+{
+    decimal Cost;
+}
+
+var rules = new VehicleRule[] {
+    new VehicleRule(){
+        Name = "Overweight or long",
+        Cost = 3.50
+        Severity = 2
+        Expression = "Weight OR Axles",
+        Target = "Vehicle",
         Clauses = new List<Clause>()
         {
-            new Clause("FirstName", OPERATION.EQ)
+            new Clause("Weight", OPERATION.GT)
             {
-                Label = "Name",
+                Label = "Weight",
                 Data = new List<string>()
                 {
-                    "Charles"
+                    "4000"
                 }
             },
-            new Clause("Age", OPERATION.IS_BEFORE)
+            new Clause("Axles", OPERATION.GT)
             {
-                Label = "Age",
+                Label = "Axles",
                 Data = new List<string>()
                 {
-                    DateTime.Now.AddYears(-18).ToString();
+                    "2"
+                }
+            }
+        }
+    },
+    new VehicleRule(){
+        Name = "Normal Car",
+        Cost = 2
+        Severity = 1
+        Expression = "Weight AND Axles",
+        Target = "Vehicle",
+        Clauses = new List<Clause>()
+        {
+            new Clause("Weight", OPERATION.LT)
+            {
+                Label = "Weight",
+                Data = new List<string>()
+                {
+                    "4000"
+                }
+            },
+            new Clause("Axles", OPERATION.EQ)
+            {
+                Label = "Axles",
+                Data = new List<string>()
+                {
+                    "2"
+                }
+            }
+        }
+    },
+    new VehicleRule(){
+        Name = "Motorcycle",
+        Cost = 1
+        Severity = 0
+        Expression = "Weight AND Axles",
+        Target = "Vehicle",
+        Clauses = new List<Clause>()
+        {
+            new Clause("Weight", OPERATION.LT)
+            {
+                Label = "Weight",
+                Data = new List<string>()
+                {
+                    "1000"
+                }
+            },
+            new Clause("Axles", OPERATION.EQ)
+            {
+                Label = "Axles",
+                Data = new List<string>()
+                {
+                    "2"
                 }
             }
         }
     }
 }
-
 var analyzer = new Analyzer();
-var results = analyzer.Analyze(rules,professorx); // And Rule
-results = analyzer.Analyze(rules,magneto); // Empty set
+
+
+decimal GetCost(Vehicle vehicle){
+    return ((VehicleRule)analyzer.Analyze(rules,vehicle).MaxBy(x => x.Severity)).Cost;
+}
+
+GetCost(truck);// 3.50
+GetCost(car); // 2.00
+GetCost(motorcycle) // 1.00
 ```
 
 ## Delegate Extensibility
