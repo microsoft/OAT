@@ -31,7 +31,7 @@ This detailed example shows using Logical Analyzer to make a car tolling system.
 ```csharp
 class Vehicle
 {
-    public int Weight { get; set; }
+    public int Weight;
     public int Axles { get; set; }
     public int Occupants { get; set; }
 }
