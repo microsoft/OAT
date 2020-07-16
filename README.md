@@ -85,23 +85,83 @@ results = analyzer.Analyze(rules,magneto); // Empty set
 ## Delegate Extensibility
 
 ### Property Parsing
-In Attack Surface Analyzer (ASA) we extend property parsing to support our usage of TpmAlgId in dictionaries.
-https://github.com/microsoft/AttackSurfaceAnalyzer/blob/e68ab71c6d36403f354e23b969669ad7169b48d7/Lib/Utils/AsaAnalyzer.cs#L23-L41
+In Attack Surface Analyzer (ASA) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries.
+```csharp
+public static (bool, object?) ParseCustomAsaProperties(object? obj, string index)
+{
+    switch (obj)
+    {
+        case Dictionary<(TpmAlgId, uint), byte[]> algDict:
+            var elements = Convert.ToString(index, CultureInfo.InvariantCulture)?.Trim('(').Trim(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (Enum.TryParse(typeof(TpmAlgId), elements.First(), out object? result) &&
+                result is TpmAlgId Algorithm && uint.TryParse(elements.Last(), out uint Index) &&
+                algDict.TryGetValue((Algorithm, Index), out byte[]? byteArray))
+            {
+                return (true, byteArray);
+            }
+            else
+            {
+                return (true, null);
+            }
+    }
+    return (false, null);
+}
+```
 
 ### Value Extraction
 In Asa we also extend Value extraction for the same reason.
-https://github.com/microsoft/AttackSurfaceAnalyzer/blob/e68ab71c6d36403f354e23b969669ad7169b48d7/Lib/Utils/AsaAnalyzer.cs#L43-L50
-
-And then we specify the delegates for the Analyzer.
-https://github.com/microsoft/AttackSurfaceAnalyzer/blob/e68ab71c6d36403f354e23b969669ad7169b48d7/Lib/Utils/AsaAnalyzer.cs#L51-L55
+```csharp
+public static (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ParseCustomAsaObjectValues(object? obj)
+{
+    if (obj is Dictionary<(TpmAlgId, uint), byte[]> algDict)
+    {
+        return (true,Array.Empty<string>(), algDict.ToList().Select(x => new KeyValuePair<string, string>(x.Key.ToString(), Convert.ToBase64String(x.Value))).ToList());
+    }
+    return (false, Array.Empty<string>(), Array.Empty<KeyValuePair<string,string>>());
+}
+```
 
 ### Custom Operation
 In the tests we test extending with a custom Operation:
-https://github.com/microsoft/LogicalAnalyzer/blob/05ddbb9c21a37b1c9c0889bbd5f230ca61673489/LogicalAnalyzer.Tests/ExpressionsTests.cs#L581-L591
+```csharp
+var analyzer = new Analyzer();
+
+analyzer.CustomOperationDelegate = fooOperation;
+
+bool fooOperation(clause, listValues, dictionaryValues) =>
+{
+    if (clause.Operation == OPERATION.CUSTOM)
+    {
+        if (clause.CustomOperation == "FOO")
+        {
+            return true;
+        }
+    }
+    return false;
+};
+```
 
 ### Rule Validation
 We also test extending the validation logic with a delegate:
-https://github.com/microsoft/LogicalAnalyzer/blob/05ddbb9c21a37b1c9c0889bbd5f230ca61673489/LogicalAnalyzer.Tests/ExpressionsTests.cs#L901-L917
+```csharp
+analyzer.CustomOperationValidationDelegate = parseFooOperations;
+
+IEnumerable<Violation> parseFooOperations(Rule r, Clause c)
+{
+    switch (c.CustomOperation)
+    {
+        case "FOO":
+            if (!c.Data.Any())
+            {
+                yield return new Violation("FOO Operation expects data", r, c);
+            }
+            break;
+        default:
+            yield return new Violation($"{c.CustomOperation} is unexpected", r, c);
+            break;
+    }
+};
+```
 
 # Contributing
 
