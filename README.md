@@ -184,6 +184,8 @@ public void TestVehicleDemo()
 Logical Analyzer has 4 delegate extensibility points, examples of using each are below.
 
 ### Property Parsing
+When Logical Analyzer is attempting to walk the Field path provided in the Clause you may want to crawl into a Dictionary or List that is not string based.  In such cases you can provide a custom property parser.
+
 In [Attack Surface Analyzer](https://github.com/microsoft/AttackSurfaceAnalyzer/) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries. [link](https://github.com/microsoft/AttackSurfaceAnalyzer/blob/ed94a33f6b3c9884bda995e1e03c5ac533e3f559/Lib/Utils/AsaAnalyzer.cs#L23)
 ```csharp
 public static (bool, object?) ParseCustomAsaProperties(object? obj, string index)
@@ -207,6 +209,14 @@ public static (bool, object?) ParseCustomAsaProperties(object? obj, string index
 }
 ```
 
+Then we need to instantiate an Analyzer and assign the delegate to the appropriate delegate.
+
+```csharp
+var analyzer = new Analyzer();
+analyzer.CustomPropertyDelegate = ParseCustomAsaProperties;
+analyzer.Analyze(Rules, Object);
+```
+
 ### Value Extraction
 In [Attack Surface Analyzer](https://github.com/microsoft/AttackSurfaceAnalyzer/) we also extend Value extraction for the same reason. [link](https://github.com/microsoft/AttackSurfaceAnalyzer/blob/ed94a33f6b3c9884bda995e1e03c5ac533e3f559/Lib/Utils/AsaAnalyzer.cs#L43)
 ```csharp
@@ -227,11 +237,11 @@ var analyzer = new Analyzer();
 
 analyzer.CustomOperationDelegate = fooOperation;
 
-bool fooOperation(clause, listValues, dictionaryValues) =>
+bool fooOperation(Clause clause, List<string> listValues, Dictionary<string,string> dictionaryValues, object? before, object? after) =>
 {
     if (clause.Operation == OPERATION.CUSTOM)
     {
-        if (clause.CustomOperation == "FOO")
+        if (clause.CustomOperation == "MY_CUSTOM_OPERATION")
         {
             return true;
         }
