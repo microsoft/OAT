@@ -27,6 +27,8 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 
 This detailed example shows using Logical Analyzer for a car tolling system.  The example with the rules used is available as a runnable demo in the [Tests](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer.Tests/VehicleDemo.cs).
 
+A full walkthrough is available in the [wiki](https://github.com/microsoft/LogicalAnalyzer/wiki).
+
 ```csharp
 class Vehicle
 {
