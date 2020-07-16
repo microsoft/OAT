@@ -26,153 +26,155 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 
 ## Detailed Usage
 
-Here's a little example of using Logical Analyzer to make a car toll processing system.
+This detailed example shows using Logical Analyzer to make a car tolling system.
 
 ```csharp
 class Vehicle
 {
-    int Weight;
-    int Axles;
+    public int Weight { get; set; }
+    public int Axles { get; set; }
+    public int Occupants { get; set; }
 }
 
-var truck = new Vehicle()
+int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
 {
-    Weight = 20000,
-    Axles = 5,
-    Occupants = 1
+    return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
 }
-
-var car = new Vehicle()
+public class VehicleRule : Rule
 {
-    Weight = 3000,
-    Axles = 2,
-    Occupants = 1
+    public int Cost;
+    public VehicleRule(string name) : base(name) { }
 }
 
-
-var carpool = new Vehicle()
+[TestMethod]
+public void TestVehicleDemo()
 {
-    Weight = 3000,
-    Axles = 2,
-    Occupants = 3
-}
+    var truck = new Vehicle()
+    {
+        Weight = 20000,
+        Axles = 5,
+        Occupants = 1
+    };
 
-var motorcycle = new Vehicle()
-{
-    Weight = 1000,
-    Axles = 2
-    Occupants = 1
-}
+    var car = new Vehicle()
+    {
+        Weight = 3000,
+        Axles = 2,
+        Occupants = 1
+    };
 
-class VehicleRule : Rule
-{
-    decimal Cost;
-}
+    var carpool = new Vehicle()
+    {
+        Weight = 3000,
+        Axles = 2,
+        Occupants = 3
+    };
 
-var rules = new VehicleRule[] {
-    new VehicleRule(){
-        Name = "Overweight or long",
-        Cost = 10.5
-        Severity = 3
-        Expression = "Weight OR Axles",
-        Target = "Vehicle",
-        Clauses = new List<Clause>()
+    var motorcycle = new Vehicle()
+    {
+        Weight = 1000,
+        Axles = 2,
+        Occupants = 1
+    };
+
+    var rules = new VehicleRule[] {
+        new VehicleRule("Overweight or long")
         {
-            new Clause("Weight", OPERATION.GT)
+            Cost = 10,
+            Severity = 3,
+            Expression = "Weight OR Axles",
+            Target = "Vehicle",
+            Clauses = new List<Clause>()
             {
-                Label = "Weight",
-                Data = new List<string>()
+                new Clause("Weight", OPERATION.GT)
                 {
-                    "4000"
+                    Label = "Weight",
+                    Data = new List<string>()
+                    {
+                        "4000"
+                    }
+                },
+                new Clause("Axles", OPERATION.GT)
+                {
+                    Label = "Axles",
+                    Data = new List<string>()
+                    {
+                        "2"
+                    }
                 }
-            },
-            new Clause("Axles", OPERATION.GT)
+            }
+        },
+        new VehicleRule("Normal Car"){
+            Cost = 3,
+            Severity = 1,
+            Target = "Vehicle",
+            Clauses = new List<Clause>()
             {
-                Label = "Axles",
-                Data = new List<string>()
+                new Clause("Weight", OPERATION.GT)
                 {
-                    "2"
+                    Data = new List<string>()
+                    {
+                        "1000"
+                    }
+                }
+            }
+        },
+        new VehicleRule("Carpool Car"){
+            Cost = 2,
+            Severity = 2,
+            Target = "Vehicle",
+            Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
+            Clauses = new List<Clause>()
+            {
+                new Clause("Weight", OPERATION.GT)
+                {
+                    Label = "WeightGT1000",
+                    Data = new List<string>()
+                    {
+                        "1000"
+                    }
+                },
+                new Clause("Weight", OPERATION.LT)
+                {
+                    Label = "WeightLT4000",
+                    Data = new List<string>()
+                    {
+                        "4000"
+                    }
+                },
+                new Clause("Occupants", OPERATION.GT)
+                {
+                    Label = "OccupantsGT2",
+                    Data = new List<string>()
+                    {
+                        "2"
+                    }
+                },
+            }
+        },
+        new VehicleRule("Motorcycle"){
+            Cost = 1,
+            Severity = 0,
+            Target = "Vehicle",
+            Clauses = new List<Clause>()
+            {
+                new Clause("Weight", OPERATION.LT)
+                {
+                    Data = new List<string>()
+                    {
+                        "1001"
+                    }
                 }
             }
         }
-    },
-    new VehicleRule(){
-        Name = "Normal Car",
-        Cost = 3
-        Severity = 1
-        Target = "Vehicle",
-        Clauses = new List<Clause>()
-        {
-            new Clause("Weight", OPERATION.GT)
-            {
-                Data = new List<string>()
-                {
-                    "1000"
-                }
-            }
-        }
-    },
-    new VehicleRule(){
-        Name = "Carpool Car",
-        Cost = 2.5
-        Severity = 2
-        Target = "Vehicle",
-        Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
-        Clauses = new List<Clause>()
-        {
-            new Clause("Weight", OPERATION.GT)
-            {
-                Label = "WeightGT1000",
-                Data = new List<string>()
-                {
-                    "1000"
-                }
-            },
-            new Clause("Weight", OPERATION.LT)
-            {
-                Label = "WeightLT4000",
-                Data = new List<string>()
-                {
-                    "4000"
-                }
-            },
-            new Clause("Occupants", OPERATION.GT)
-            {
-                Label = "OccupantsGT2",
-                Data = new List<string>()
-                {
-                    "2"
-                }
-            },
-        }
-    },
-    new VehicleRule(){
-        Name = "Motorcycle",
-        Cost = 1
-        Severity = 0
-        Target = "Vehicle",
-        Clauses = new List<Clause>()
-        {
-            new Clause("Weight", OPERATION.LT)
-            {
-                Data = new List<string>()
-                {
-                    "1000"
-                }
-            }
-        }
-    }
+    };
+    var analyzer = new Analyzer();
+
+    Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
+    Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
+    Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2 
+    Assert.IsTrue(GetCost(motorcycle, analyzer, rules) == 1); // 1
 }
-var analyzer = new Analyzer();
-
-
-decimal GetCost(Vehicle vehicle){
-    return ((VehicleRule)analyzer.Analyze(rules,vehicle).MaxBy(x => x.Severity)).Cost;
-}
-
-GetCost(truck);// 10.50
-GetCost(car); // 
-GetCost(motorcycle) // 1.00
 ```
 
 ## Delegates

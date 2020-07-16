@@ -142,13 +142,17 @@ namespace Microsoft.CST.LogicalAnalyzer
         {
             var results = new ConcurrentStack<Rule>();
 
-            Parallel.ForEach(rules, rule =>
+            //Parallel.ForEach(rules, rule =>
+            //{
+            foreach(var rule in rules)
             {
                 if (Applies(rule, before, after))
                 {
                     results.Push(rule);
                 }
-            });
+            }
+                
+            //});
 
             return results;
         }
@@ -509,7 +513,6 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
             try
             {
-                // Support bare objects
                 if (clause.Field is string)
                 {
                     after = GetValueByPropertyString(after, clause.Field);

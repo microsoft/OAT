@@ -6,16 +6,20 @@ using MoreLinq;
 
 namespace Microsoft.CST.LogicalAnalyzer.Tests
 {
+    [TestClass]
     public class VehicleDemo
     {
         class Vehicle
         {
-            public int Weight;
-            public int Axles;
-            public int Occupants;
+            public int Weight { get; set; }
+            public int Axles { get; set; }
+            public int Occupants { get; set; }
         }
 
-
+        int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
+        {
+            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
+        }
         public class VehicleRule : Rule
         {
             public int Cost;
@@ -38,7 +42,6 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 Axles = 2,
                 Occupants = 1
             };
-
 
             var carpool = new Vehicle()
             {
@@ -139,7 +142,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                         {
                             Data = new List<string>()
                             {
-                                "1000"
+                                "1001"
                             }
                         }
                     }
@@ -147,16 +150,10 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             };
             var analyzer = new Analyzer();
 
-
-            decimal GetCost(Vehicle vehicle)
-            {
-                return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity)).Cost;
-            }
-
-            GetCost(truck);// 10
-            GetCost(car); // 3
-            GetCost(carpool); // 2 
-            GetCost(motorcycle); // 1
+            Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
+            Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
+            Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2 
+            Assert.IsTrue(GetCost(motorcycle, analyzer, rules) == 1); // 1
         }
     }
 }
