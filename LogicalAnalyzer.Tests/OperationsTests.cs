@@ -1,5 +1,4 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-using Microsoft.CST.LogicalAnalyzer;
 using Microsoft.CST.LogicalAnalyzer.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -361,7 +360,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
         {
             var trueAlgDict = new TestObject()
             {
-                StringDictField = new Dictionary<string,string>()
+                StringDictField = new Dictionary<string, string>()
                 {
                     { "Magic", "Anything" }
                 }
@@ -459,8 +458,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 StringField = "Magic",
                 BoolField = true,
                 IntField = 700
-            }; 
-            
+            };
+
             var assertFalseObject = new TestObject()
             {
                 StringField = "NotMagic",

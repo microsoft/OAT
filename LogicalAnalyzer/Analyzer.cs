@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.LogicalAnalyzer
@@ -139,7 +138,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             {
                 if (!rule.Tags.All(x => tags.Keys.Any(y => y == x)) && Applies(rule, state1, state2))
                 {
-                    foreach(var tag in rule.Tags)
+                    foreach (var tag in rule.Tags)
                     {
                         tags.TryAdd(tag, 0);
                     }
