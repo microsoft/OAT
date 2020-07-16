@@ -430,11 +430,7 @@ namespace Microsoft.CST.LogicalAnalyzer
 
                             if (variable == "NOT")
                             {
-                                if (previouslyNot)
-                                {
-                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseMultipleConsecutiveNots"), expression, rule.Name), rule);
-                                }
-                                else if (splits[i].Contains(")"))
+                                if (splits[i].Contains(")"))
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseCloseParenthesesInNot"), expression, rule.Name, splits[i]), rule);
                                 }
@@ -980,7 +976,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                     {
                         if (splits[i].Equals(BOOL_OPERATOR.NOT.ToString()))
                         {
-                            invertNextStatement = true;
+                            invertNextStatement = !invertNextStatement;
                             operatorExpected = false;
                         }
                         else
