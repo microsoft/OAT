@@ -608,7 +608,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegate = (clause, listValues, dictionaryValues) =>
+            analyzer.CustomOperationDelegate = (clause, listValues, dictionaryValues, before, after) =>
             {
                 if (clause.Operation == OPERATION.CUSTOM)
                 {

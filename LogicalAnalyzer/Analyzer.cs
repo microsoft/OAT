@@ -22,21 +22,21 @@ namespace Microsoft.CST.LogicalAnalyzer
         {
         }
 
-        public delegate (bool Processed, object? Result) ParseCustomProperty(object? obj, string index);
+        public delegate (bool Processed, object? Result) PropertyExtractionDelegate(object? obj, string index);
 
-        public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ParseObjectToValues(object? obj);
+        public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ObjectToValuesDelegate(object? obj);
 
-        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck);
+        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? before, object? after);
 
-        public delegate IEnumerable<Violation> ParseClauseForRules(Rule r, Clause c);
+        public delegate IEnumerable<Violation> ValidationDelegate(Rule r, Clause c);
 
-        public ParseCustomProperty? CustomPropertyDelegate { get; set; }
+        public PropertyExtractionDelegate? CustomPropertyDelegate { get; set; }
 
-        public ParseObjectToValues? CustomObjectToValuesDelegate { get; set; }
+        public ObjectToValuesDelegate? CustomObjectToValuesDelegate { get; set; }
 
         public OperationDelegate? CustomOperationDelegate { get; set; }
 
-        public ParseClauseForRules? CustomOperationValidationDelegate { get; set; }
+        public ValidationDelegate? CustomOperationValidationDelegate { get; set; }
 
         /// <summary>
         /// Extracts a value stored at the specified path inside an object. Can crawl into List and
@@ -800,7 +800,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                         }
                         else
                         {
-                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck);
+                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, before, after);
                         }
 
                     default:
