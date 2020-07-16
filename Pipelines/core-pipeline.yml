@@ -40,20 +40,6 @@ stages:
 - stage: Build
   dependsOn: Test
   jobs:
-  - template: templates/dotnet-publish-linux-mac-job.yml
-    parameters:
-      dotnetVersion: '3.1.x'
-      projectPath: 'LogicalAnalyzer/LogicalAnalyzer.csproj'
-      projectName: 'LogicalAnalyzer'
-      preBuild:
-      - template: templates/nbgv-set-version-steps.yml
-  - template: templates/dotnet-publish-win-netcore-job.yml
-    parameters:
-      dotnetVersion: '3.1.x'
-      projectPath: 'LogicalAnalyzer/LogicalAnalyzer.csproj'
-      projectName: 'LogicalAnalyzer'
-      preBuild:
-      - template: templates/nbgv-set-version-steps.yml
   - template: templates/nuget-build-job.yml
     parameters:
       dotnetVersion: '3.1.x'
