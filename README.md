@@ -13,67 +13,44 @@ Logical Analyzer is a rules processing engine to apply arbitrary provided rules 
 3. Custom Operation
 4. Rule Validation
 
-## Usage
+## Basic Usage
 
 The basic usage of Logical Analyzer is applying rules to targets using the Analyze function.
 
 ```csharp
-Object target;
+object target;
 IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var rulesWhichApply = analyzer.Analyze(rules,target);
 ```
 
-## Example
+## Detailed Usage
 
-Here's a little example of using Logical Analyzer to make a car toll processing system.
+This detailed example shows using Logical Analyzer to make a car tolling system.
 
 ```csharp
 class Vehicle
 {
-    int Weight;
-    int Axles;
+    public int Weight;
+    public int Axles { get; set; }
+    public int Occupants { get; set; }
 }
 
-var truck = new Vehicle()
+int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
 {
-    Weight = 20000,
-    Axles = 5,
-    Occupants = 1
+    return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).First()).Cost;
 }
-
-var car = new Vehicle()
+public class VehicleRule : Rule
 {
-    Weight = 3000,
-    Axles = 2,
-    Occupants = 1
-}
-
-
-var carpool = new Vehicle()
-{
-    Weight = 3000,
-    Axles = 2,
-    Occupants = 3
-}
-
-var motorcycle = new Vehicle()
-{
-    Weight = 1000,
-    Axles = 2
-    Occupants = 1
-}
-
-class VehicleRule : Rule
-{
-    decimal Cost;
+    public int Cost;
+    public VehicleRule(string name) : base(name) { }
 }
 
 var rules = new VehicleRule[] {
-    new VehicleRule(){
-        Name = "Overweight or long",
-        Cost = 10.5
-        Severity = 3
+    new VehicleRule("Overweight or long")
+    {
+        Cost = 10,
+        Severity = 3,
         Expression = "Weight OR Axles",
         Target = "Vehicle",
         Clauses = new List<Clause>()
@@ -96,10 +73,9 @@ var rules = new VehicleRule[] {
             }
         }
     },
-    new VehicleRule(){
-        Name = "Normal Car",
-        Cost = 3
-        Severity = 1
+    new VehicleRule("Normal Car"){
+        Cost = 3,
+        Severity = 1,
         Target = "Vehicle",
         Clauses = new List<Clause>()
         {
@@ -112,10 +88,9 @@ var rules = new VehicleRule[] {
             }
         }
     },
-    new VehicleRule(){
-        Name = "Carpool Car",
-        Cost = 2.5
-        Severity = 2
+    new VehicleRule("Carpool Car"){
+        Cost = 2,
+        Severity = 2,
         Target = "Vehicle",
         Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
         Clauses = new List<Clause>()
@@ -146,10 +121,9 @@ var rules = new VehicleRule[] {
             },
         }
     },
-    new VehicleRule(){
-        Name = "Motorcycle",
-        Cost = 1
-        Severity = 0
+    new VehicleRule("Motorcycle"){
+        Cost = 1,
+        Severity = 0,
         Target = "Vehicle",
         Clauses = new List<Clause>()
         {
@@ -157,25 +131,56 @@ var rules = new VehicleRule[] {
             {
                 Data = new List<string>()
                 {
-                    "1000"
+                    "1001"
                 }
             }
         }
     }
+};
+
+[TestMethod]
+public void TestVehicleDemo()
+{
+    var truck = new Vehicle()
+    {
+        Weight = 20000,
+        Axles = 5,
+        Occupants = 1
+    };
+
+    var car = new Vehicle()
+    {
+        Weight = 3000,
+        Axles = 2,
+        Occupants = 1
+    };
+
+    var carpool = new Vehicle()
+    {
+        Weight = 3000,
+        Axles = 2,
+        Occupants = 3
+    };
+
+    var motorcycle = new Vehicle()
+    {
+        Weight = 1000,
+        Axles = 2,
+        Occupants = 1
+    };
+
+    var analyzer = new Analyzer();
+
+    Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
+    Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
+    Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2 
+    Assert.IsTrue(GetCost(motorcycle, analyzer, rules) == 1); // 1
 }
-var analyzer = new Analyzer();
-
-
-decimal GetCost(Vehicle vehicle){
-    return ((VehicleRule)analyzer.Analyze(rules,vehicle).MaxBy(x => x.Severity)).Cost;
-}
-
-GetCost(truck);// 10.50
-GetCost(car); // 
-GetCost(motorcycle) // 1.00
 ```
 
-## Delegate Extensibility
+## Delegates
+
+Logical Analyzer has 4 delegate extensibility points, examples of using each are below.
 
 ### Property Parsing
 In Attack Surface Analyzer (ASA) we extend Logical Analyzer property parsing to support our usage of TpmAlgId in dictionaries.

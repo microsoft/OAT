@@ -56,7 +56,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                 var pathPortions = pathToProperty.Split('.');
 
                 // We first try to get the first value to get it started
-                var value = GetValueByPropertyName(targetObject, pathPortions[0]);
+                var value = GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
 
                 // For the rest of the path we walk each portion to get the next object
                 for (int pathPortionIndex = 1; pathPortionIndex < pathPortions.Length; pathPortionIndex++)
@@ -93,7 +93,7 @@ namespace Microsoft.CST.LogicalAnalyzer
                             // If we couldn't do any custom parsing fall back to the default
                             if (!res.HasValue || res.Value.Processed == false)
                             {
-                                value = GetValueByPropertyName(value, pathPortions[pathPortionIndex]);
+                                value = GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
                             }
                             else
                             {
@@ -142,13 +142,17 @@ namespace Microsoft.CST.LogicalAnalyzer
         {
             var results = new ConcurrentStack<Rule>();
 
-            Parallel.ForEach(rules, rule =>
+            //Parallel.ForEach(rules, rule =>
+            //{
+            foreach(var rule in rules)
             {
                 if (Applies(rule, before, after))
                 {
                     results.Push(rule);
                 }
-            });
+            }
+                
+            //});
 
             return results;
         }
@@ -509,7 +513,6 @@ namespace Microsoft.CST.LogicalAnalyzer
             }
             try
             {
-                // Support bare objects
                 if (clause.Field is string)
                 {
                     after = GetValueByPropertyString(after, clause.Field);
@@ -835,7 +838,7 @@ namespace Microsoft.CST.LogicalAnalyzer
             return splits.Length - 1;
         }
 
-        private static object? GetValueByPropertyName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj);
+        private static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
 
         private (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
