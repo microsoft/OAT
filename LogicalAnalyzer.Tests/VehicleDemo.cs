@@ -108,17 +108,18 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 {
                     Cost = 50,
                     Severity = 9,
-                    Expression = "Weight AND Axles",
+                    Expression = "Overweight AND gt2Axles",
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Weight", OPERATION.CUSTOM)
+                        new Clause(OPERATION.CUSTOM)
                         {
+                            Label = "Overweight",
                             CustomOperation = "OVERWEIGHT"
                         },
                         new Clause("Axles", OPERATION.GT)
                         {
-                            Label = "Axles",
+                            Label = "gt2Axles",
                             Data = new List<string>()
                             {
                                 "2"
@@ -220,7 +221,9 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             analyzer.CustomOperationDelegate = OperationDelegate;
             analyzer.CustomOperationValidationDelegate = OperationValidationDelegate;
 
-            Assert.IsFalse(analyzer.EnumerateRuleIssues(rules).Any());
+            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
+
+            Assert.IsFalse(issues.Any());
 
             Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50);
             Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
