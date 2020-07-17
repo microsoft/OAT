@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Resources;
 
 namespace Microsoft.CST.LogicalAnalyzer.Utils
@@ -39,6 +40,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Utils
                 }
             }
         }
+
+        public static bool IsLoaded { get { return stringList.Any(); } }
 
         /// <summary>
         ///     Internal member structure holding string resources

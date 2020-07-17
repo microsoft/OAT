@@ -228,6 +228,10 @@ namespace Microsoft.CST.LogicalAnalyzer
         /// <returns>Enumerable of issues with the rules.</returns>
         public IEnumerable<Violation> EnumerateRuleIssues(IEnumerable<Rule> rules)
         {
+            if (!Strings.IsLoaded)
+            {
+                Strings.Setup();
+            }
             foreach (Rule rule in rules ?? Array.Empty<Rule>())
             {
                 var clauseLabels = rule.Clauses.GroupBy(x => x.Label);

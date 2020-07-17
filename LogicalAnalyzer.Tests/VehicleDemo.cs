@@ -222,8 +222,6 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             analyzer.CustomOperationDelegate = OperationDelegate;
             analyzer.CustomOperationValidationDelegate = OperationValidationDelegate;
 
-            Strings.Setup();
-
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
             Assert.IsFalse(issues.Any());
