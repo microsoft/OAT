@@ -13,6 +13,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             public int Weight;
             public int Axles { get; set; }
             public int Occupants { get; set; }
+            public int Capacity { get; set; }
         }
 
         int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
@@ -20,6 +21,42 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules 0 cost
             return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
+
+        public bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2)
+        {
+            if (clause.CustomOperation == "OVERWEIGHT")
+            {
+                if (state1 is Vehicle vehicle)
+                {
+                    if (vehicle.Weight > vehicle.Capacity)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public IEnumerable<Violation> OperationValidationDelegate(Rule r, Clause c)
+        {
+            if (c.CustomOperation == "OVERWEIGHT")
+            {
+                if (r.Target != "Vehicle")
+                {
+                    yield return new Violation("Overweight operation requires a Vehicle object", r, c);
+                }
+
+                if (c.Data != null || c.DictData != null)
+                {
+                    yield return new Violation("Overweight operation takes no data.", r, c);
+                }
+            }
+            else
+            {
+                yield return new Violation($"{c.CustomOperation} is unsupported", r, c);
+            }
+        }
+
         public class VehicleRule : Rule
         {
             public int Cost;
@@ -32,6 +69,15 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             var truck = new Vehicle()
             {
                 Weight = 20000,
+                Capacity = 20000,
+                Axles = 5,
+                Occupants = 1
+            };
+
+            var overweightTruck = new Vehicle()
+            {
+                Weight = 30000,
+                Capacity = 20000,
                 Axles = 5,
                 Occupants = 1
             };
@@ -58,7 +104,29 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             };
 
             var rules = new VehicleRule[] {
-                new VehicleRule("Overweight or long")
+                new VehicleRule("Overweight")
+                {
+                    Cost = 50,
+                    Severity = 9,
+                    Expression = "Weight AND Axles",
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause("Weight", OPERATION.CUSTOM)
+                        {
+                            CustomOperation = "OVERWEIGHT"
+                        },
+                        new Clause("Axles", OPERATION.GT)
+                        {
+                            Label = "Axles",
+                            Data = new List<string>()
+                            {
+                                "2"
+                            }
+                        }
+                    }
+                },
+                new VehicleRule("Heavy or long")
                 {
                     Cost = 10,
                     Severity = 3,
@@ -149,7 +217,12 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 }
             };
             var analyzer = new Analyzer();
+            analyzer.CustomOperationDelegate = OperationDelegate;
+            analyzer.CustomOperationValidationDelegate = OperationValidationDelegate;
 
+            Assert.IsFalse(analyzer.EnumerateRuleIssues(rules).Any());
+
+            Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50);
             Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
             Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
             Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2 
