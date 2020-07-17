@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.CST.LogicalAnalyzer.Utils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
@@ -220,6 +221,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             var analyzer = new Analyzer();
             analyzer.CustomOperationDelegate = OperationDelegate;
             analyzer.CustomOperationValidationDelegate = OperationValidationDelegate;
+
+            Strings.Setup();
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
