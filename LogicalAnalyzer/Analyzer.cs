@@ -27,7 +27,7 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         public delegate (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
 
-        public delegate IEnumerable<Violation> ValidationDelegate(Rule r, Clause c);
+        public delegate (bool Applies, IEnumerable<Violation> FoundViolations) ValidationDelegate(Rule r, Clause c);
 
         public List<PropertyExtractionDelegate> CustomPropertyExtractionDelegates { get; set; } = new List<PropertyExtractionDelegate>();
 
@@ -373,11 +373,24 @@ namespace Microsoft.CST.LogicalAnalyzer
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingCustomOperation"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                             }
-                            foreach(var del in CustomOperationValidationDelegates)
+                            else
                             {
-                                foreach (var violation in del?.Invoke(rule, clause) ?? Array.Empty<Violation>())
+                                bool covered = false;
+                                foreach (var del in CustomOperationValidationDelegates)
                                 {
-                                    yield return violation;
+                                    var res = del?.Invoke(rule, clause) ?? (false, new List<Violation>());
+                                    if (res.Applies)
+                                    {
+                                        covered = true;
+                                        foreach (var violation in res.FoundViolations)
+                                        {
+                                            yield return violation;
+                                        }
+                                    }
+                                }
+                                if (covered == false)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingValidationForOperation"), clause.CustomOperation, rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                                 }
                             }
                             break;
@@ -400,7 +413,6 @@ namespace Microsoft.CST.LogicalAnalyzer
                     int foundStarts = 0;
                     int foundEnds = 0;
                     bool expectingOperator = false;
-                    bool previouslyNot = false;
                     for (int i = 0; i < splits.Length; i++)
                     {
                         foundStarts += splits[i].Count(x => x.Equals('('));
@@ -465,12 +477,10 @@ namespace Microsoft.CST.LogicalAnalyzer
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseCloseParenthesesInNot"), expression, rule.Name, splits[i]), rule);
                                 }
-                                previouslyNot = true;
                             }
                             else
                             {
                                 foundLabels.Add(variable);
-                                previouslyNot = false;
                                 if (string.IsNullOrWhiteSpace(variable) || !rule.Clauses.Any(x => x.Label == variable))
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);

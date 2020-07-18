@@ -174,6 +174,9 @@
   <data name="Err_ClauseMissingListData" xml:space="preserve">
     <value>Rule {0} Clause {1} is missing Data List.</value>
   </data>
+  <data name="Err_ClauseMissingValidationForOperation" xml:space="preserve">
+    <value>Operation {0} in Clause {2} of Rule {1} was not validated by any of the available custom validation delegates.</value>
+  </data>
   <data name="Err_ClauseMultipleConsecutiveNots" xml:space="preserve">
     <value>Expression {0} in rule {1} contains multiple NOTs in a row.</value>
   </data>

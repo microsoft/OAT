@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using Microsoft.CST.LogicalAnalyzer.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -495,6 +496,21 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             };
 
             Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+
+            invalidRule = new Rule("OPERATION.Custom without validation Delegate")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause("Path", OPERATION.CUSTOM)
+                    {
+                        Label = "VARIABLE",
+                        CustomOperation = "NO_DELEGATE"
+                    }
+                }
+            };
+
+            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
         }
 
         [TestMethod]
@@ -926,21 +942,26 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             var analyzer = new Analyzer();
 
+            // Rules aren't valid without a validation delegate
+            Assert.IsFalse(analyzer.IsRuleValid(supportedCustomOperation));
+
             analyzer.CustomOperationValidationDelegates.Add(parseFooOperations);
 
-            IEnumerable<Violation> parseFooOperations(Rule r, Clause c)
+            (bool Applies, IEnumerable<Violation> FoundViolations) parseFooOperations(Rule r, Clause c)
             {
                 switch (c.CustomOperation)
                 {
                     case "FOO":
+                        var violations = new List<Violation>();
+
                         if (!c.Data.Any())
                         {
-                            yield return new Violation("FOO Operation expects data", r, c);
+                            violations.Add(new Violation("FOO Operation expects data", r, c));
                         }
-                        break;
+
+                        return (true, violations);
                     default:
-                        yield return new Violation($"{c.CustomOperation} is unexpected", r, c);
-                        break;
+                        return (false, Array.Empty<Violation>());
                 }
             };
 
