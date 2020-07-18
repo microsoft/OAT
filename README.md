@@ -22,6 +22,9 @@ IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var rulesWhichApply = analyzer.Analyze(rules,target);
 ```
+## Authoring Rules
+
+Detailed information on how to author rules is available on on the [wiki](https://github.com/microsoft/LogicalAnalyzer/wiki/Authoring-Rules).
 
 ## Detailed Usage
 
