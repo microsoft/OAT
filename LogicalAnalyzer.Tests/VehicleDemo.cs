@@ -1,7 +1,9 @@
 ﻿using Microsoft.CST.LogicalAnalyzer.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Microsoft.CST.LogicalAnalyzer.Tests
@@ -15,6 +17,26 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             public int Axles { get; set; }
             public int Occupants { get; set; }
             public int Capacity { get; set; }
+            public Driver? Driver { get; set; }
+        }
+
+        class Driver
+        {
+            public DriverLicense? License { get; set; }
+        }
+
+        class DriverLicense
+        {
+            public Endorsements Endorsements { get; set; }
+            public DateTime Expiration { get; set; }
+        }
+
+        [Flags]
+        enum Endorsements
+        {
+            Motorcycle,
+            Auto,
+            CDL
         }
 
         int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
@@ -66,7 +88,98 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
         }
 
         [TestMethod]
-        public void TestVehicleDemo()
+        public void WeighStationDemo()
+        {
+            var truck = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+            };
+
+            var overweightTruck = new Vehicle()
+            {
+                Weight = 30000,
+                Capacity = 20000,
+                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+            };
+
+            var expiredLicense = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(-1) } }
+            };
+
+            var noCdl = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+            };
+
+            var rules = new VehicleRule[] {
+                new VehicleRule("Overweight")
+                {
+                    Cost = 50,
+                    Severity = 9,
+                    Expression = "Overweight",
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause(OPERATION.CUSTOM)
+                        {
+                            Label = "Overweight",
+                            CustomOperation = "OVERWEIGHT"
+                        }
+                    }
+                },
+                new VehicleRule("No CDL")
+                {
+                    Cost = 100,
+                    Severity = 3,
+                    Target = "Vehicle",
+                    Expression = "NOT Has_Cdl",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause("Driver.License.Endorsements", OPERATION.CONTAINS)
+                        {
+                            Label = "Has_Cdl",
+                            Data = new List<string>()
+                            {
+                                "CDL"
+                            }
+                        }
+                    }
+                },
+                new VehicleRule("Expired License"){
+                    Cost = 75,
+                    Severity = 1,
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause("Driver.License.Expiration", OPERATION.IS_EXPIRED)
+                        {
+                        }
+                    }
+                }
+            };
+            var analyzer = new Analyzer();
+            analyzer.CustomOperationDelegates.Add(OperationDelegate);
+            analyzer.CustomOperationValidationDelegates.Add(OperationValidationDelegate);
+
+            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
+
+            Assert.IsFalse(issues.Any());
+
+            Assert.IsTrue(GetCost(truck, analyzer, rules) == 0);// Compliant
+            Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50); // Overweight
+            Assert.IsTrue(GetCost(noCdl, analyzer, rules) == 100); // No CDL
+            Assert.IsTrue(GetCost(expiredLicense, analyzer, rules) == 75); // Expired License
+        }
+
+        [TestMethod]
+        public void TollBoothDemo()
         {
             var truck = new Vehicle()
             {
