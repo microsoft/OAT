@@ -608,6 +608,26 @@ namespace Microsoft.CST.LogicalAnalyzer
                                         return true;
                                     }
                                 }
+
+                                else if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                                {
+                                    var enums = new List<Enum>();
+                                    foreach (var datum in clause.Data ?? new List<string>())
+                                    {
+                                        if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                        {
+                                            if (!(state1 is Enum enum1 && enum1.HasFlag((Enum)result)))
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                }
                             }
                         }
                         return false;
@@ -644,6 +664,21 @@ namespace Microsoft.CST.LogicalAnalyzer
                                     if (clause.Data.Any(x => valsToCheck.First()?.Contains(x) ?? false))
                                     {
                                         return true;
+                                    }
+                                }
+
+                                else if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                                {
+                                    var enums = new List<Enum>();
+                                    foreach (var datum in clause.Data ?? new List<string>())
+                                    {
+                                        if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                        {
+                                            if (state1 is Enum enum1 && enum1.HasFlag((Enum)result))
+                                            {
+                                                return true;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -808,14 +843,18 @@ namespace Microsoft.CST.LogicalAnalyzer
                         return false;
 
                     case OPERATION.IS_EXPIRED:
-                        foreach (var valToCheck in valsToCheck)
+                        if (state1 is DateTime dateTime1)
                         {
-                            if (DateTime.TryParse(valToCheck, out DateTime result))
+                            if (dateTime1.CompareTo(DateTime.Now) < 0)
                             {
-                                if (result.CompareTo(DateTime.Now) < 0)
-                                {
-                                    return true;
-                                }
+                                return true;
+                            }
+                        }
+                        if (state2 is DateTime dateTime2)
+                        {
+                            if (dateTime2.CompareTo(DateTime.Now) < 0)
+                            {
+                                return true;
                             }
                         }
                         return false;
