@@ -232,6 +232,15 @@ namespace Microsoft.CST.LogicalAnalyzer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation {0} in Clause {2} of Rule {1} was not validated by any of the available custom validation delegates..
+        /// </summary>
+        internal static string Err_ClauseMissingValidationForOperation {
+            get {
+                return ResourceManager.GetString("Err_ClauseMissingValidationForOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression {0} in rule {1} contains multiple NOTs in a row..
         /// </summary>
         internal static string Err_ClauseMultipleConsecutiveNots {

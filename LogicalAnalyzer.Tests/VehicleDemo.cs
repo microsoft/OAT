@@ -61,23 +61,25 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             return (false,false);
         }
 
-        public IEnumerable<Violation> OperationValidationDelegate(Rule r, Clause c)
+        public (bool Applies, IEnumerable<Violation> Violations) OperationValidationDelegate(Rule r, Clause c)
         {
             if (c.CustomOperation == "OVERWEIGHT")
             {
+                var violations = new List<Violation>();
                 if (r.Target != "Vehicle")
                 {
-                    yield return new Violation("Overweight operation requires a Vehicle object", r, c);
+                    violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
                 }
 
                 if (c.Data != null || c.DictData != null)
                 {
-                    yield return new Violation("Overweight operation takes no data.", r, c);
+                    violations.Add(new Violation("Overweight operation takes no data.", r, c));
                 }
+                return (true, violations);
             }
             else
             {
-                yield return new Violation($"{c.CustomOperation} is unsupported", r, c);
+                return (false, Array.Empty<Violation>());
             }
         }
 
