@@ -32,8 +32,6 @@ A full walkthrough is available in the [wiki](https://github.com/microsoft/Logic
 
 ## Delegates
 
-Logical Analyzer has 4 delegate extensibility points, examples of using each are below and additional walkthrough is available in the [wiki](https://github.com/microsoft/LogicalAnalyzer/wiki/Delegates)
-
 Documentation for implementing each delegate is available in the [wiki](https://github.com/microsoft/LogicalAnalyzer/wiki/Delegates).
 
 # Contributing
