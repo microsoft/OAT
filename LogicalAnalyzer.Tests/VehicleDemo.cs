@@ -94,28 +94,55 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+                Driver = new Driver() { 
+                    License = new DriverLicense() 
+                    { 
+                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
+                        Expiration = DateTime.Now.AddYears(1) 
+                    } 
+                }
             };
 
             var overweightTruck = new Vehicle()
             {
                 Weight = 30000,
                 Capacity = 20000,
-                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+                Driver = new Driver() 
+                { 
+                    License = new DriverLicense() 
+                    { 
+                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
+                        Expiration = DateTime.Now.AddYears(1) 
+                    } 
+                }
             };
 
             var expiredLicense = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.CDL | Endorsements.Auto, Expiration = DateTime.Now.AddYears(-1) } }
+                Driver = new Driver() 
+                { 
+                    License = new DriverLicense() 
+                    { 
+                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
+                        Expiration = DateTime.Now.AddYears(-1) 
+                    } 
+                }
             };
 
             var noCdl = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() { License = new DriverLicense() { Endorsements = Endorsements.Auto, Expiration = DateTime.Now.AddYears(1) } }
+                Driver = new Driver() 
+                { 
+                    License = new DriverLicense() 
+                    { 
+                        Endorsements = Endorsements.Auto, 
+                        Expiration = DateTime.Now.AddYears(1) 
+                    } 
+                }
             };
 
             var rules = new VehicleRule[] {
@@ -172,10 +199,10 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             Assert.IsFalse(issues.Any());
 
-            Assert.IsTrue(GetCost(truck, analyzer, rules) == 0);// Compliant
-            Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50); // Overweight
-            Assert.IsTrue(GetCost(noCdl, analyzer, rules) == 100); // No CDL
-            Assert.IsTrue(GetCost(expiredLicense, analyzer, rules) == 75); // Expired License
+            Assert.IsTrue(!analyzer.Analyze(rules, truck).Any()); // Compliant
+            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight")); // Overweight
+            Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
+            Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
         }
 
         [TestMethod]
