@@ -45,7 +45,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
 
-        public (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2)
+        public (bool Applies, bool Result) OverweightOperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2)
         {
             if (clause.CustomOperation == "OVERWEIGHT")
             {
@@ -61,7 +61,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             return (false,false);
         }
 
-        public (bool Applies, IEnumerable<Violation> Violations) OperationValidationDelegate(Rule r, Clause c)
+        public (bool Applies, IEnumerable<Violation> Violations) OverweightOperationValidationDelegate(Rule r, Clause c)
         {
             if (c.CustomOperation == "OVERWEIGHT")
             {
@@ -194,8 +194,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 }
             };
             var analyzer = new Analyzer();
-            analyzer.CustomOperationDelegates.Add(OperationDelegate);
-            analyzer.CustomOperationValidationDelegates.Add(OperationValidationDelegate);
+            analyzer.CustomOperationDelegates.Add(OverweightOperationDelegate);
+            analyzer.CustomOperationValidationDelegates.Add(OverweightOperationValidationDelegate);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
@@ -362,8 +362,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 }
             };
             var analyzer = new Analyzer();
-            analyzer.CustomOperationDelegates.Add(OperationDelegate);
-            analyzer.CustomOperationValidationDelegates.Add(OperationValidationDelegate);
+            analyzer.CustomOperationDelegates.Add(OverweightOperationDelegate);
+            analyzer.CustomOperationValidationDelegates.Add(OverweightOperationValidationDelegate);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
