@@ -25,17 +25,17 @@ namespace Microsoft.CST.LogicalAnalyzer
 
         public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ObjectToValuesDelegate(object? obj);
 
-        public delegate bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
+        public delegate (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
 
         public delegate IEnumerable<Violation> ValidationDelegate(Rule r, Clause c);
 
-        public PropertyExtractionDelegate? CustomPropertyExtractionDelegate { get; set; }
+        public List<PropertyExtractionDelegate> CustomPropertyExtractionDelegates { get; set; } = new List<PropertyExtractionDelegate>();
 
-        public ObjectToValuesDelegate? CustomObjectToValuesDelegate { get; set; }
+        public List<ObjectToValuesDelegate> CustomObjectToValuesDelegates { get; set; } = new List<ObjectToValuesDelegate>();
 
-        public OperationDelegate? CustomOperationDelegate { get; set; }
+        public List<OperationDelegate> CustomOperationDelegates { get; set; } = new List<OperationDelegate>();
 
-        public ValidationDelegate? CustomOperationValidationDelegate { get; set; }
+        public List<ValidationDelegate> CustomOperationValidationDelegates { get; set; } = new List<ValidationDelegate>();
 
         /// <summary>
         /// Extracts a value stored at the specified path inside an object. Can crawl into List and
@@ -87,16 +87,23 @@ namespace Microsoft.CST.LogicalAnalyzer
                             break;
 
                         default:
-                            var res = CustomPropertyExtractionDelegate?.Invoke(value, pathPortions[pathPortionIndex]);
+                            (bool Processed, object? Result)? res = null;
+                            var found = false;
+                            foreach(var del in CustomPropertyExtractionDelegates)
+                            {
+                                res = del?.Invoke(value, pathPortions[pathPortionIndex]);
+                                if (res.HasValue && res.Value.Processed)
+                                {
+                                    found = true;
+                                    value = res.Value.Result;
+                                    break;
+                                }
+                            }
 
                             // If we couldn't do any custom parsing fall back to the default
-                            if (!res.HasValue || res.Value.Processed == false)
+                            if (!found)
                             {
                                 value = GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
-                            }
-                            else
-                            {
-                                value = res.Value.Result;
                             }
                             break;
                     }
@@ -366,9 +373,9 @@ namespace Microsoft.CST.LogicalAnalyzer
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingCustomOperation"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                             }
-                            if (CustomOperationValidationDelegate != null)
+                            foreach(var del in CustomOperationValidationDelegates)
                             {
-                                foreach (var violation in CustomOperationValidationDelegate(rule, clause))
+                                foreach (var violation in del?.Invoke(rule, clause) ?? Array.Empty<Violation>())
                                 {
                                     yield return violation;
                                 }
@@ -817,15 +824,16 @@ namespace Microsoft.CST.LogicalAnalyzer
                         return dictToCheck.Any(x => clause.Data.Any(y => x.Key == y));
 
                     case OPERATION.CUSTOM:
-                        if (CustomOperationDelegate is null)
+                        foreach(var del in CustomOperationDelegates)
                         {
-                            Log.Debug("Custom operation hit but {0} isn't set.", nameof(CustomOperationDelegate));
-                            return false;
+                            var res = del?.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
+                            if (res.HasValue && res.Value.Applies)
+                            {
+                                return res.Value.Result;
+                            }
                         }
-                        else
-                        {
-                            return CustomOperationDelegate.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
-                        }
+                        Log.Debug("Custom operation hit but delegate for {0} isn't set.", clause.CustomOperation);
+                        return false;
 
                     default:
                         Log.Debug("Unimplemented operation {0}", clause.Operation);
@@ -893,12 +901,18 @@ namespace Microsoft.CST.LogicalAnalyzer
                     }
                     else
                     {
-                        var res = CustomObjectToValuesDelegate?.Invoke(obj);
-                        if (res.HasValue && res.Value.Processed == true)
+                        var found = false;
+                        foreach(var del in CustomObjectToValuesDelegates)
                         {
-                            (valsToCheck, dictToCheck) = (res.Value.valsExtracted.ToList(), res.Value.dictExtracted.ToList());
+                            var res = del?.Invoke(obj);
+                            if (res.HasValue && res.Value.Processed == true)
+                            {
+                                found = true;
+                                (valsToCheck, dictToCheck) = (res.Value.valsExtracted.ToList(), res.Value.dictExtracted.ToList());
+                                break;
+                            }
                         }
-                        else
+                        if (found == false)
                         {
                             var val = obj?.ToString();
                             if (!string.IsNullOrEmpty(val))

@@ -23,7 +23,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
             return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
 
-        public bool OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2)
+        public (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2)
         {
             if (clause.CustomOperation == "OVERWEIGHT")
             {
@@ -31,11 +31,12 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 {
                     if (vehicle.Weight > vehicle.Capacity)
                     {
-                        return true;
+                        return (true, true);
                     }
                 }
+                return (true, false);
             }
-            return false;
+            return (false,false);
         }
 
         public IEnumerable<Violation> OperationValidationDelegate(Rule r, Clause c)
@@ -219,8 +220,8 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
                 }
             };
             var analyzer = new Analyzer();
-            analyzer.CustomOperationDelegate = OperationDelegate;
-            analyzer.CustomOperationValidationDelegate = OperationValidationDelegate;
+            analyzer.CustomOperationDelegates.Add(OperationDelegate);
+            analyzer.CustomOperationValidationDelegates.Add(OperationValidationDelegate);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 

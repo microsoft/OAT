@@ -587,17 +587,17 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegate = (clause, listValues, dictionaryValues, before, after) =>
+            analyzer.CustomOperationDelegates.Add((clause, listValues, dictionaryValues, before, after) =>
             {
                 if (clause.Operation == OPERATION.CUSTOM)
                 {
                     if (clause.CustomOperation == "RETURN_TRUE")
                     {
-                        return true;
+                        return (true,true);
                     }
                 }
-                return false;
-            };
+                return (false,false);
+            });
 
             var ruleList = new List<Rule>() { customRule };
 
@@ -926,7 +926,7 @@ namespace Microsoft.CST.LogicalAnalyzer.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationValidationDelegate = parseFooOperations;
+            analyzer.CustomOperationValidationDelegates.Add(parseFooOperations);
 
             IEnumerable<Violation> parseFooOperations(Rule r, Clause c)
             {
