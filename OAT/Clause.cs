@@ -16,6 +16,7 @@ namespace Microsoft.CST.OAT
         public Clause(OPERATION Operation, string? field = null)
         {
             this.Operation = Operation;
+            this.Field = field;
         }
 
         /// <summary>
