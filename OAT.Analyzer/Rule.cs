@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.CST.LogicalAnalyzer
+namespace Microsoft.CST.OAT
 {
     /// <summary>
     ///     A Rule holds Clauses and relevant information

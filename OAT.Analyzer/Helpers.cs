@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.LogicalAnalyzer.Utils
+namespace Microsoft.CST.OAT.Utils
 {
     static class Helpers
     {

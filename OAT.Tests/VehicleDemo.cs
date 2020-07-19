@@ -1,4 +1,4 @@
-﻿using Microsoft.CST.LogicalAnalyzer.Utils;
+﻿using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Microsoft.CST.LogicalAnalyzer.Tests
+namespace Microsoft.CST.OAT.Tests
 {
     [TestClass]
     public class VehicleDemo

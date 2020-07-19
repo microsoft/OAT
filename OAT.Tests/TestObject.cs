@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Microsoft.CST.LogicalAnalyzer.Tests
+namespace Microsoft.CST.OAT.Tests
 {
     class TestObject
     {

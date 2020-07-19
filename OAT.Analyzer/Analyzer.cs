@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using KellermanSoftware.CompareNetObjects;
-using Microsoft.CST.LogicalAnalyzer.Utils;
+using Microsoft.CST.OAT.Utils;
 using Newtonsoft.Json;
 using Serilog;
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Microsoft.CST.LogicalAnalyzer
+namespace Microsoft.CST.OAT
 {
     public class Analyzer
     {

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using System;
 
-namespace Microsoft.CST.LogicalAnalyzer
+namespace Microsoft.CST.OAT
 {
     public class Violation
     {

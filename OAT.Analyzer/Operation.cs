@@ -1,4 +1,4 @@
-﻿namespace Microsoft.CST.LogicalAnalyzer
+﻿namespace Microsoft.CST.OAT
 {
     /// <summary>
     ///     Operations available for Analysis rules.
