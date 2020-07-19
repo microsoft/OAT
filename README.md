@@ -1,6 +1,6 @@
-# Logical Analyzer
+# Object Analysis Toolkit
 
-Logical Analyzer is a rules processing engine to apply provided rules against arbitrary objects
+Object Analysis Toolkit (OAT) is a rules processing engine to apply provided rules against arbitrary objects.
 
 * [Rules](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Rule.cs) contain a Target, a Severity, a boolean Expression and a List of [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) which are applied to the targeted object.
 * [Clauses](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Clause.cs) perform a specified [Operation](https://github.com/microsoft/LogicalAnalyzer/blob/main/LogicalAnalyzer/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels. 
