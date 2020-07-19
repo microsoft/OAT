@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 
-namespace Microsoft.CST.LogicalAnalyzer.Utils
+namespace Microsoft.CST.OAT.Utils
 {
     public static class Strings
     {

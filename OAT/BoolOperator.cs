@@ -1,4 +1,4 @@
-﻿namespace Microsoft.CST.LogicalAnalyzer
+﻿namespace Microsoft.CST.OAT
 {
     public enum BOOL_OPERATOR
     {

@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Microsoft.CST.LogicalAnalyzer.Tests</RootNamespace>
+    <RootNamespace>Microsoft.CST.OAT.Tests</RootNamespace>
     <LangVersion>8.0</LangVersion>
 	  <Nullable>Enable</Nullable>
   </PropertyGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogicalAnalyzer\LogicalAnalyzer.csproj" />
+    <ProjectReference Include="..\OAT\OAT.csproj" />
   </ItemGroup>
 
 </Project>
