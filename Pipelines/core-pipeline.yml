@@ -9,7 +9,7 @@ trigger:
     - main
   paths:
     include:
-    - LogicalAnalyzer
+    - OAT
     
 pr:
   branches:
@@ -18,9 +18,9 @@ pr:
   paths:
     include:
     - Pipelines
-    - LogicalAnalyzer
-    - LogicalAnalyzer.Tests
-    - LogicalAnalyzer.sln
+    - OAT
+    - OAT.Tests
+    - OAT.sln
 
 stages:
 - stage: Test
