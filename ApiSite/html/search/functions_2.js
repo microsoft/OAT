@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['delegate_107',['delegate',['../class_microsoft_1_1_c_s_t_1_1_o_a_t_1_1_analyzer.html#a1949ce296b32489195ebd944e30b8c2b',1,'Microsoft.CST.OAT.Analyzer.delegate(bool Processed, object? Result) PropertyExtractionDelegate(object? obj'],['../class_microsoft_1_1_c_s_t_1_1_o_a_t_1_1_analyzer.html#a6dccace358a703f941a7b7802a7b7454',1,'Microsoft.CST.OAT.Analyzer.delegate(bool Processed, IEnumerable&lt; string &gt; valsExtracted, IEnumerable&lt; KeyValuePair&lt; string, string &gt;&gt; dictExtracted) ObjectToValuesDelegate(object? obj)'],['../class_microsoft_1_1_c_s_t_1_1_o_a_t_1_1_analyzer.html#ab9177f9bc5f6a0de2341ba3c62f51ee8',1,'Microsoft.CST.OAT.Analyzer.delegate(bool Applies, bool Result) OperationDelegate(Clause clause'],['../class_microsoft_1_1_c_s_t_1_1_o_a_t_1_1_analyzer.html#a4e9254bb6fcd1ed26634d22084e0724d',1,'Microsoft.CST.OAT.Analyzer.delegate(bool Applies, IEnumerable&lt; Violation &gt; FoundViolations) ValidationDelegate(Rule r']]]
+];
