@@ -26,7 +26,7 @@ namespace Microsoft.CST.OAT.Utils
                 if (stream is Stream)
                 {
                     stringList.Clear();
-                    using ResourceReader reader = new ResourceReader(stream);
+                    using var reader = new ResourceReader(stream);
                     foreach (DictionaryEntry? entry in reader)
                     {
                         if (entry is DictionaryEntry dictionaryEntry)
@@ -41,7 +41,7 @@ namespace Microsoft.CST.OAT.Utils
             }
         }
 
-        public static bool IsLoaded { get { return stringList.Any(); } }
+        public static bool IsLoaded => stringList.Any();
 
         /// <summary>
         ///     Internal member structure holding string resources

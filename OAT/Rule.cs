@@ -9,10 +9,7 @@ namespace Microsoft.CST.OAT
     /// </summary>
     public class Rule
     {
-        public Rule(string Name)
-        {
-            this.Name = Name;
-        }
+        public Rule(string Name) => this.Name = Name;
 
         /// <summary>
         ///     The list of Clauses to apply

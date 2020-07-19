@@ -14,10 +14,7 @@ namespace Microsoft.CST.OAT
             this.Operation = Operation;
         }
 
-        public Clause(OPERATION Operation)
-        {
-            this.Operation = Operation;
-        }
+        public Clause(OPERATION Operation) => this.Operation = Operation;
 
         /// <summary>
         ///     A list of strings passed to the operation

@@ -762,9 +762,9 @@ namespace Microsoft.CST.OAT
 
                     // Ignores provided data. Checks if the named property has changed.
                     case OPERATION.WAS_MODIFIED:
-                        CompareLogic compareLogic = new CompareLogic();
+                        var compareLogic = new CompareLogic();
 
-                        ComparisonResult comparisonResult = compareLogic.Compare(state1, state2);
+                        var comparisonResult = compareLogic.Compare(state1, state2);
 
                         return !comparisonResult.AreEqual;
 
@@ -919,8 +919,8 @@ namespace Microsoft.CST.OAT
 
         private (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
-            List<string> valsToCheck = new List<string>();
-            List<KeyValuePair<string, string>> dictToCheck = new List<KeyValuePair<string, string>>();
+            var valsToCheck = new List<string>();
+            var dictToCheck = new List<KeyValuePair<string, string>>();
             if (obj != null)
             {
                 try
@@ -984,29 +984,16 @@ namespace Microsoft.CST.OAT
 
         private static bool Operate(BOOL_OPERATOR Operator, bool first, bool second)
         {
-            switch (Operator)
+            return Operator switch
             {
-                case BOOL_OPERATOR.AND:
-                    return first && second;
-
-                case BOOL_OPERATOR.OR:
-                    return first || second;
-
-                case BOOL_OPERATOR.XOR:
-                    return first ^ second;
-
-                case BOOL_OPERATOR.NAND:
-                    return !(first && second);
-
-                case BOOL_OPERATOR.NOR:
-                    return !(first || second);
-
-                case BOOL_OPERATOR.NOT:
-                    return !first;
-
-                default:
-                    return false;
-            }
+                BOOL_OPERATOR.AND => first && second,
+                BOOL_OPERATOR.OR => first || second,
+                BOOL_OPERATOR.XOR => first ^ second,
+                BOOL_OPERATOR.NAND => !(first && second),
+                BOOL_OPERATOR.NOR => !(first || second),
+                BOOL_OPERATOR.NOT => !first,
+                _ => throw new NotImplementedException()
+            };
         }
 
         private bool Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)
