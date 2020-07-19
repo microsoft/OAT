@@ -1,7 +1,7 @@
 # Azure Pipelines
 # https://aka.ms/yaml
 
-name: LogicalAnalyzer_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+name: OAT_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
   batch: true
   branches:
@@ -28,7 +28,7 @@ stages:
   - template: templates/dotnet-test-job.yml
     parameters:
       dotnetVersion: '3.1.x'
-      projectPath: 'LogicalAnalyzer.Tests/LogicalAnalyzer.Tests.csproj'
+      projectPath: 'OAT.Tests/OAT.Tests.csproj'
 
 # - stage: SDL
 #  dependsOn: Test
@@ -43,7 +43,7 @@ stages:
   - template: templates/nuget-build-job.yml
     parameters:
       dotnetVersion: '3.1.x'
-      projectPath: 'LogicalAnalyzer/LogicalAnalyzer.csproj'
-      projectName: 'LogicalAnalyzer'
+      projectPath: 'OAT/OAT.csproj'
+      projectName: 'OAT'
 
 #- stage: Release
