@@ -13,37 +13,81 @@ using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
 {
+    /// <summary>
+    /// This is the core engine of OAT
+    /// </summary>
     public class Analyzer
     {
         private readonly ConcurrentDictionary<string, Regex> RegexCache = new ConcurrentDictionary<string, Regex>();
 
+        /// <summary>
+        /// The constructor for Analyzer takes no arguments.
+        /// </summary>
         public Analyzer()
         {
         }
 
+        /// <summary>
+        /// This delegate is for iterating into complex objects like dictionaries that the Analyzer doesn't natively understand
+        /// </summary>
+        /// <param name="obj">Target object</param>
+        /// <param name="index">String based index into the object</param>
+        /// <returns>(If we successfully extracted, The extraction result)</returns>
         public delegate (bool Processed, object? Result) PropertyExtractionDelegate(object? obj, string index);
 
+        /// <summary>
+        /// This delegate is for turning complex objects like dictionaries that the Analyzer doesn't natively support into a dictionary or list of strings that OAT can use for default operations
+        /// </summary>
+        /// <param name="obj">Target object</param>
+        /// <returns>(If the object was parsed, A list of Strings that were extracted, A List of KVP that were extracted)</returns>
         public delegate (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted) ObjectToValuesDelegate(object? obj);
 
+        /// <summary>
+        /// This delegate allows extending the Analyzer with a custom operation.
+        /// </summary>
+        /// <param name="clause">The clause being applied</param>
+        /// <param name="valsToCheck">The list of strings that have been extracted</param>
+        /// <param name="dictToCheck">The list of KVP of strings that have been extracted</param>
+        /// <param name="state1">The first object state</param>
+        /// <param name="state2">The second object state</param>
+        /// <returns>(If the Operation delegate applies to the clause, If the operation was successful)</returns>
         public delegate (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
 
+        /// <summary>
+        /// This delegate allows extending the Analyzer with extra rule validation for custom rules.
+        /// </summary>
+        /// <param name="r">The Target Rule</param>
+        /// <param name="c">The Target Clause</param>
+        /// <returns>(If the validation applied, The Enumerable of Violations found)</returns>
         public delegate (bool Applies, IEnumerable<Violation> FoundViolations) ValidationDelegate(Rule r, Clause c);
 
+        /// <summary>
+        /// The PropertyExtractionDelegates that will be used in order of attempt.  Once successful the others won't be run.
+        /// </summary>
         public List<PropertyExtractionDelegate> CustomPropertyExtractionDelegates { get; set; } = new List<PropertyExtractionDelegate>();
 
+        /// <summary>
+        /// The ObjectToValuesDelegates that will be used in order of attempt. Once successful the others won't be run.
+        /// </summary>
         public List<ObjectToValuesDelegate> CustomObjectToValuesDelegates { get; set; } = new List<ObjectToValuesDelegate>();
 
+        /// <summary>
+        /// The OperationDelegates that will be used in order of attempt.  Once successful the others won't be run.
+        /// </summary>
         public List<OperationDelegate> CustomOperationDelegates { get; set; } = new List<OperationDelegate>();
 
+        /// <summary>
+        /// The ValidationDelegates that will be used in order of attempt.  All will be run. Order not guaranteed.
+        /// </summary>
         public List<ValidationDelegate> CustomOperationValidationDelegates { get; set; } = new List<ValidationDelegate>();
 
         /// <summary>
-        /// Extracts a value stored at the specified path inside an object. Can crawl into List and
+        /// Extracts a value stored at the specified path inside an object. Can crawl into Lists and
         /// Dictionaries of strings and return any top-level object.
         /// </summary>
         /// <param name="targetObject">The object to parse</param>
         /// <param name="pathToProperty">The path of the property to fetch</param>
-        /// <returns></returns>
+        /// <returns>The object found</returns>
         public object? GetValueByPropertyString(object? targetObject, string pathToProperty)
         {
             if (pathToProperty is null || targetObject is null)
@@ -542,7 +586,14 @@ namespace Microsoft.CST.OAT
             }
         }
 
-        protected bool AnalyzeClause(Clause clause, object? state1 = null, object? state2 = null)
+        /// <summary>
+        /// Determine if a Clause is true or false
+        /// </summary>
+        /// <param name="clause">The Clause to Analyze</param>
+        /// <param name="state1">The first object state</param>
+        /// <param name="state2">The second object state</param>
+        /// <returns>If the Clause is true</returns>
+        public bool AnalyzeClause(Clause clause, object? state1 = null, object? state2 = null)
         {
             if (clause == null)
             {
@@ -915,7 +966,13 @@ namespace Microsoft.CST.OAT
             return splits.Length - 1;
         }
 
-        private static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+        /// <summary>
+        /// Gets the object value stored at the field or property named by the string. Property tried first.  Returns null if none found.
+        /// </summary>
+        /// <param name="obj">The target object</param>
+        /// <param name="propertyName">The Property or Field name</param>
+        /// <returns>The object at that Name or null</returns>
+        public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
 
         private (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
@@ -971,7 +1028,7 @@ namespace Microsoft.CST.OAT
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Dictionary<string, string> ExceptionEvent = new Dictionary<string, string>();
                     //ExceptionEvent.Add("Exception Type", e.GetType().ToString());
@@ -1104,6 +1161,12 @@ namespace Microsoft.CST.OAT
             return current;
         }
 
+        /// <summary>
+        /// Try to shortcut a boolean operation
+        /// </summary>
+        /// <param name="current">The current boolean state</param>
+        /// <param name="operation">The Operation</param>
+        /// <returns>(If you can use a shortcut, the result of the shortcut)</returns>
         public static (bool CanShortcut, bool Value) TryShortcut(bool current, BOOL_OPERATOR operation)
         {
             // If either argument of an AND statement is false, or either argument of a

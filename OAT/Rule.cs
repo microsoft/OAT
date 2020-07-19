@@ -5,10 +5,14 @@ using System.Collections.Generic;
 namespace Microsoft.CST.OAT
 {
     /// <summary>
-    ///     A Rule holds Clauses and relevant information
+    ///     A Rule holds Clauses and optionally has an Expression.
     /// </summary>
     public class Rule
     {
+        /// <summary>
+        /// The constructor for a Rule
+        /// </summary>
+        /// <param name="Name">The Name of the rule</param>
         public Rule(string Name)
         {
             this.Name = Name;
@@ -24,6 +28,8 @@ namespace Microsoft.CST.OAT
         public string? Description { get; set; }
         /// <summary>
         ///     The boolean expression to apply over the Clauses.
+        ///
+        ///     If Expression is null the Clauses will be ANDed together.
         /// </summary>
         public string? Expression { get; set; }
         /// <summary>
