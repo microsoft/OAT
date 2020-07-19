@@ -7,6 +7,9 @@
 	  <RootNamespace>Microsoft.CST.OAT</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DocumentationFile>bin\Debug\netstandard2.1\OAT.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CompareNETObjects" Version="4.66.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

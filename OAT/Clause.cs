@@ -8,13 +8,12 @@ namespace Microsoft.CST.OAT
     /// </summary>
     public class Clause
     {
-        public Clause(string Field, OPERATION Operation)
-        {
-            this.Field = Field;
-            this.Operation = Operation;
-        }
-
-        public Clause(OPERATION Operation)
+        /// <summary>
+        /// Create a Clause
+        /// </summary>
+        /// <param name="Operation">The Operation to Perform</param>
+        /// <param name="field">Optionally, the path to the field to operate on</param>
+        public Clause(OPERATION Operation, string? field = null)
         {
             this.Operation = Operation;
         }

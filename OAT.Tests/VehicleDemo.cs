@@ -171,7 +171,7 @@ namespace Microsoft.CST.OAT.Tests
                     Expression = "NOT Has_Cdl",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Driver.License.Endorsements", OPERATION.CONTAINS)
+                        new Clause(OPERATION.CONTAINS, "Driver.License.Endorsements")
                         {
                             Label = "Has_Cdl",
                             Data = new List<string>()
@@ -187,7 +187,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Driver.License.Expiration", OPERATION.IS_EXPIRED)
+                        new Clause(OPERATION.IS_EXPIRED, "Driver.License.Expiration")
                         {
                         }
                     }
@@ -261,7 +261,7 @@ namespace Microsoft.CST.OAT.Tests
                             Label = "Overweight",
                             CustomOperation = "OVERWEIGHT"
                         },
-                        new Clause("Axles", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Axles")
                         {
                             Label = "gt2Axles",
                             Data = new List<string>()
@@ -279,7 +279,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Weight", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Weight")
                         {
                             Label = "Weight",
                             Data = new List<string>()
@@ -287,7 +287,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "4000"
                             }
                         },
-                        new Clause("Axles", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Axles")
                         {
                             Label = "Axles",
                             Data = new List<string>()
@@ -303,7 +303,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Weight", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Weight")
                         {
                             Data = new List<string>()
                             {
@@ -319,7 +319,7 @@ namespace Microsoft.CST.OAT.Tests
                     Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Weight", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Weight")
                         {
                             Label = "WeightGT1000",
                             Data = new List<string>()
@@ -327,7 +327,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "1000"
                             }
                         },
-                        new Clause("Weight", OPERATION.LT)
+                        new Clause(OPERATION.LT, "Weight")
                         {
                             Label = "WeightLT4000",
                             Data = new List<string>()
@@ -335,7 +335,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "4000"
                             }
                         },
-                        new Clause("Occupants", OPERATION.GT)
+                        new Clause(OPERATION.GT, "Occupants")
                         {
                             Label = "OccupantsGT2",
                             Data = new List<string>()
@@ -351,7 +351,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause("Weight", OPERATION.LT)
+                        new Clause(OPERATION.LT, "Weight")
                         {
                             Data = new List<string>()
                             {
