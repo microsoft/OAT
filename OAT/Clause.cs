@@ -28,11 +28,14 @@ namespace Microsoft.CST.OAT
         public List<KeyValuePair<string, string>>? DictData { get; set; }
         /// <summary>
         ///     Which field or property of the Target should this Clause apply to?
-        ///         null is wildcard
+        ///
+        ///     null is wildcard
         /// </summary>
         public string? Field { get; set; }
         /// <summary>
-        ///     The Label used for the Boolean Expression in the Rule containing this Clause
+        ///     The Label used for the boolean Expression in the Rule containing this Clause
+        ///
+        ///     May be null iff Expression is null
         /// </summary>
         public string? Label { get; set; }
         /// <summary>
@@ -40,7 +43,7 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public OPERATION Operation { get; set; }
         /// <summary>
-        ///     A string indicating what custom operation should be performed, if Operation = Custom
+        ///     A string indicating what custom operation should be performed, if Operation is CUSTOM
         /// </summary>
         public string? CustomOperation { get; set; }
     }
