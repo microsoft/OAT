@@ -11,12 +11,12 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// Create a Clause
         /// </summary>
-        /// <param name="Operation">The Operation to Perform</param>
+        /// <param name="operation">The Operation to Perform</param>
         /// <param name="field">Optionally, the path to the field to operate on</param>
-        public Clause(OPERATION Operation, string? field = null)
+        public Clause(OPERATION operation, string? field = null)
         {
-            this.Operation = Operation;
-            this.Field = field;
+            Operation = operation;
+            Field = field;
         }
 
         /// <summary>
