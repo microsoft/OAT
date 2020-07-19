@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Microsoft.CST.OAT
 {
     /// <summary>
-    ///     A Rule holds Clauses and relevant information
+    ///     A Rule holds Clauses and optionally has an Expression.
     /// </summary>
     public class Rule
     {
@@ -28,6 +28,8 @@ namespace Microsoft.CST.OAT
         public string? Description { get; set; }
         /// <summary>
         ///     The boolean expression to apply over the Clauses.
+        ///
+        ///     If Expression is null the Clauses will be ANDed together.
         /// </summary>
         public string? Expression { get; set; }
         /// <summary>
