@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT", "OAT.Analyzer\OAT.csproj", "{5511BD5E-C2E8-47DF-9F40-311CA183E6F8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Tests", "OAT.Tests\OAT.Tests.csproj", "{DD7A6465-DAEB-407B-8178-E8196E2AFB6A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT", "OAT\OAT.csproj", "{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5511BD5E-C2E8-47DF-9F40-311CA183E6F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5511BD5E-C2E8-47DF-9F40-311CA183E6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5511BD5E-C2E8-47DF-9F40-311CA183E6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5511BD5E-C2E8-47DF-9F40-311CA183E6F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD7A6465-DAEB-407B-8178-E8196E2AFB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD7A6465-DAEB-407B-8178-E8196E2AFB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD7A6465-DAEB-407B-8178-E8196E2AFB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD7A6465-DAEB-407B-8178-E8196E2AFB6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OAT.Analyzer\OAT.csproj" />
+    <ProjectReference Include="..\OAT\OAT.csproj" />
   </ItemGroup>
 
 </Project>
