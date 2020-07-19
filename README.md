@@ -24,15 +24,15 @@ var rulesWhichApply = analyzer.Analyze(rules,target);
 ```
 ## Authoring Rules
 
-Detailed information on how to author rules is available on on the [wiki](https://github.com/microsoft/OAT/wiki/Authoring-Rules).
+Detailed information on how to [author rules](https://github.com/microsoft/OAT/wiki/Authoring-Rules) is available on on the wiki.
 
 ## Detailed Usage
 
-A full walkthrough is available in the [wiki](https://github.com/microsoft/OAT/wiki/Walkthrough).
+A full [walkthrough](https://github.com/microsoft/OAT/wiki/Walkthrough) includng creating a custom operation and validating your custom operation rules is available on the wiki.
 
 ## Delegates
 
-Documentation for implementing each delegate is available in the [wiki](https://github.com/microsoft/OAT/wiki/Delegates).
+Documentation for implementing each [delegate](https://github.com/microsoft/OAT/wiki/Delegates) is available in the wiki.
 
 # Contributing
 
