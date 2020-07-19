@@ -9,6 +9,10 @@ namespace Microsoft.CST.OAT
     /// </summary>
     public class Rule
     {
+        /// <summary>
+        /// The constructor for a Rule
+        /// </summary>
+        /// <param name="Name">The Name of the rule</param>
         public Rule(string Name)
         {
             this.Name = Name;

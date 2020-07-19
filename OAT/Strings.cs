@@ -7,8 +7,16 @@ using System.Resources;
 
 namespace Microsoft.CST.OAT.Utils
 {
+    /// <summary>
+    /// Localized string fetcher
+    /// </summary>
     public static class Strings
     {
+        /// <summary>
+        /// Get the string at the key specified in the current locale
+        /// </summary>
+        /// <param name="key">The key to get</param>
+        /// <returns>A string looked up from the table or the key itself if not present</returns>
         public static string Get(string key)
         {
             if (stringList.ContainsKey(key))
@@ -18,6 +26,10 @@ namespace Microsoft.CST.OAT.Utils
             return key;
         }
 
+        /// <summary>
+        /// Load the specified locale's resources.  Currently only "" is supported for English.
+        /// </summary>
+        /// <param name="locale">The name of the locale</param>
         public static void Setup(string locale = "")
         {
             if (string.IsNullOrEmpty(locale))
@@ -41,7 +53,11 @@ namespace Microsoft.CST.OAT.Utils
             }
         }
 
-        public static bool IsLoaded { get { return stringList.Any(); } }
+
+        /// <summary>
+        /// If there is any data available in the internal dictionary
+        /// </summary>
+        public static bool IsLoaded => stringList.Any();
 
         /// <summary>
         ///     Internal member structure holding string resources
