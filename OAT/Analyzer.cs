@@ -133,7 +133,7 @@ namespace Microsoft.CST.OAT
                         default:
                             (bool Processed, object? Result)? res = null;
                             var found = false;
-                            foreach(var del in CustomPropertyExtractionDelegates)
+                            foreach (var del in CustomPropertyExtractionDelegates)
                             {
                                 res = del?.Invoke(value, pathPortions[pathPortionIndex]);
                                 if (res.HasValue && res.Value.Processed)
@@ -599,7 +599,20 @@ namespace Microsoft.CST.OAT
             {
                 return false;
             }
+
             try
+            {
+                var res = InnerAnalyzer(clause, state1, state2);
+                return clause.Invert ? !res : res;
+            }
+            catch (Exception e)
+            {
+                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
+            }
+            return false;
+
+
+            bool InnerAnalyzer(Clause clause, object? state1 = null, object? state2 = null)
             {
                 if (clause.Field is string)
                 {
@@ -607,7 +620,7 @@ namespace Microsoft.CST.OAT
                     state1 = GetValueByPropertyString(state1, clause.Field);
                 }
 
-                var typeHolder = state1 is null ? state2 : state1;
+                var typeHolder = state1 ?? state2;
 
                 (var stateOneList, var stateOneDict) = ObjectToValues(state1);
                 (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
@@ -618,35 +631,19 @@ namespace Microsoft.CST.OAT
                 switch (clause.Operation)
                 {
                     case OPERATION.EQ:
-                        if (clause.Data is List<string> EqualsData)
-                        {
-                            if (EqualsData.Intersect(valsToCheck).Any())
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
+                        return clause.Data is List<string> EqualsData && EqualsData.Intersect(valsToCheck).Any();
 
                     case OPERATION.NEQ:
-                        if (clause.Data is List<string> NotEqualsData)
-                        {
-                            if (!NotEqualsData.Intersect(valsToCheck).Any())
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
+                        return clause.Data is List<string> NotEqualsData && !NotEqualsData.Intersect(valsToCheck).Any();
 
                     // If *every* entry of the clause data is matched
                     case OPERATION.CONTAINS:
                         if (dictToCheck.Any())
                         {
-                            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
+                            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData
+                                    && ContainsData.All(y => dictToCheck.Any((x) => x.Key == y.Key && x.Value == y.Value)))
                             {
-                                if (ContainsData.All(y => dictToCheck.Any((x) => x.Key == y.Key && x.Value == y.Value)))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                         else if (valsToCheck.Any())
@@ -669,7 +666,7 @@ namespace Microsoft.CST.OAT
                                         return true;
                                     }
                                 }
-
+                                // If we are dealing with a flags Enum we can select the appropriate flag
                                 else if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
                                 {
                                     var enums = new List<Enum>();
@@ -751,15 +748,11 @@ namespace Microsoft.CST.OAT
                     case OPERATION.GT:
                         foreach (var val in valsToCheck)
                         {
-                            if (int.TryParse(val, out int valToCheck))
+                            if (int.TryParse(val, out int valToCheck)
+                                    && int.TryParse(clause.Data?[0], out int dataValue)
+                                    && valToCheck > dataValue)
                             {
-                                if (int.TryParse(clause.Data?[0], out int dataValue))
-                                {
-                                    if (valToCheck > dataValue)
-                                    {
-                                        return true;
-                                    }
-                                }
+                                return true;
                             }
                         }
                         return false;
@@ -769,75 +762,66 @@ namespace Microsoft.CST.OAT
                     case OPERATION.LT:
                         foreach (var val in valsToCheck)
                         {
-                            if (int.TryParse(val, out int valToCheck))
+                            if (int.TryParse(val, out int valToCheck)
+                                    && int.TryParse(clause.Data?[0], out int dataValue)
+                                    && valToCheck < dataValue)
                             {
-                                if (int.TryParse(clause.Data?[0], out int dataValue))
-                                {
-                                    if (valToCheck < dataValue)
-                                    {
-                                        return true;
-                                    }
-                                }
+                                return true;
                             }
                         }
                         return false;
 
                     // If any of the regexes match any of the values
                     case OPERATION.REGEX:
-                        if (clause.Data is List<string> RegexList)
+                        if (clause.Data is List<string> RegexList && RegexList.Count > 0)
                         {
-                            if (RegexList.Count > 0)
+                            var built = string.Join('|', RegexList);
+
+                            if (!RegexCache.ContainsKey(built))
                             {
-                                var built = string.Join('|', RegexList);
-
-                                if (!RegexCache.ContainsKey(built))
+                                try
                                 {
-                                    try
-                                    {
-                                        RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
-                                    }
-                                    catch (ArgumentException)
-                                    {
-                                        Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
-                                        RegexCache.TryAdd(built, new Regex("", RegexOptions.Compiled));
-                                    }
+                                    RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
                                 }
-
-                                if (valsToCheck.Any(x => RegexCache[built].IsMatch(x)))
+                                catch (ArgumentException)
                                 {
-                                    return true;
+                                    Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
+                                    RegexCache.TryAdd(built, new Regex("", RegexOptions.Compiled));
                                 }
+                            }
+
+                            if (valsToCheck.Any(x => RegexCache[built].IsMatch(x)))
+                            {
+                                return true;
                             }
                         }
                         return false;
 
                     // Ignores provided data. Checks if the named property has changed.
                     case OPERATION.WAS_MODIFIED:
-                        CompareLogic compareLogic = new CompareLogic();
+                        var compareLogic = new CompareLogic();
 
-                        ComparisonResult comparisonResult = compareLogic.Compare(state1, state2);
+                        var comparisonResult = compareLogic.Compare(state1, state2);
 
                         return !comparisonResult.AreEqual;
 
                     // Ends with any of the provided data
                     case OPERATION.ENDS_WITH:
-                        if (clause.Data is List<string> EndsWithData)
+                        if (clause.Data is List<string> EndsWithData
+                                && valsToCheck.Any(x => EndsWithData.Any(y => x is string
+                                    && x.EndsWith(y, StringComparison.CurrentCulture))))
                         {
-                            if (valsToCheck.Any(x => EndsWithData.Any(y => x is string && x.EndsWith(y, StringComparison.CurrentCulture))))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         return false;
 
                     // Starts with any of the provided data
                     case OPERATION.STARTS_WITH:
-                        if (clause.Data is List<string> StartsWithData)
+                        if (clause.Data is List<string> StartsWithData
+                                && valsToCheck.Any(x => StartsWithData.Any(y => x is string
+                                && x.StartsWith(y, StringComparison.CurrentCulture))))
                         {
-                            if (valsToCheck.Any(x => StartsWithData.Any(y => x is string && x.StartsWith(y, StringComparison.CurrentCulture))))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         return false;
 
@@ -851,12 +835,9 @@ namespace Microsoft.CST.OAT
                     case OPERATION.IS_TRUE:
                         foreach (var valToCheck in valsToCheck)
                         {
-                            if (bool.TryParse(valToCheck, out bool result))
+                            if (bool.TryParse(valToCheck, out bool result) && result)
                             {
-                                if (result)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                         return false;
@@ -872,12 +853,9 @@ namespace Microsoft.CST.OAT
                         }
                         foreach (var data in clause.Data ?? new List<string>())
                         {
-                            if (DateTime.TryParse(data, out DateTime result))
+                            if (DateTime.TryParse(data, out DateTime result) && valDateTimes.Any(x => x.CompareTo(result) < 0))
                             {
-                                if (valDateTimes.Any(x => x.CompareTo(result) < 0))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                         return false;
@@ -893,30 +871,21 @@ namespace Microsoft.CST.OAT
                         }
                         foreach (var data in clause.Data ?? new List<string>())
                         {
-                            if (DateTime.TryParse(data, out DateTime result))
+                            if (DateTime.TryParse(data, out DateTime result) && valDateTimes.Any(x => x.CompareTo(result) > 0))
                             {
-                                if (valDateTimes.Any(x => x.CompareTo(result) > 0))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                         return false;
 
                     case OPERATION.IS_EXPIRED:
-                        if (state1 is DateTime dateTime1)
+                        if (state1 is DateTime dateTime1 && dateTime1.CompareTo(DateTime.Now) < 0)
                         {
-                            if (dateTime1.CompareTo(DateTime.Now) < 0)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-                        if (state2 is DateTime dateTime2)
+                        if (state2 is DateTime dateTime2 && dateTime2.CompareTo(DateTime.Now) < 0)
                         {
-                            if (dateTime2.CompareTo(DateTime.Now) < 0)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         return false;
 
@@ -924,7 +893,7 @@ namespace Microsoft.CST.OAT
                         return dictToCheck.Any(x => clause.Data.Any(y => x.Key == y));
 
                     case OPERATION.CUSTOM:
-                        foreach(var del in CustomOperationDelegates)
+                        foreach (var del in CustomOperationDelegates)
                         {
                             var res = del?.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
                             if (res.HasValue && res.Value.Applies)
@@ -937,15 +906,10 @@ namespace Microsoft.CST.OAT
 
                     default:
                         Log.Debug("Unimplemented operation {0}", clause.Operation);
-                        return false;
+                        throw new NotImplementedException($"Unimplemented operation {clause.Operation}");
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
-            }
 
-            return false;
+            }
         }
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
@@ -976,8 +940,8 @@ namespace Microsoft.CST.OAT
 
         private (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
-            List<string> valsToCheck = new List<string>();
-            List<KeyValuePair<string, string>> dictToCheck = new List<KeyValuePair<string, string>>();
+            var valsToCheck = new List<string>();
+            var dictToCheck = new List<KeyValuePair<string, string>>();
             if (obj != null)
             {
                 try
@@ -1008,17 +972,17 @@ namespace Microsoft.CST.OAT
                     else
                     {
                         var found = false;
-                        foreach(var del in CustomObjectToValuesDelegates)
+                        foreach (var del in CustomObjectToValuesDelegates)
                         {
                             var res = del?.Invoke(obj);
-                            if (res.HasValue && res.Value.Processed == true)
+                            if (res.HasValue && res.Value.Processed)
                             {
                                 found = true;
                                 (valsToCheck, dictToCheck) = (res.Value.valsExtracted.ToList(), res.Value.dictExtracted.ToList());
                                 break;
                             }
                         }
-                        if (found == false)
+                        if (!found)
                         {
                             var val = obj?.ToString();
                             if (!string.IsNullOrEmpty(val))
@@ -1030,9 +994,7 @@ namespace Microsoft.CST.OAT
                 }
                 catch (Exception)
                 {
-                    //Dictionary<string, string> ExceptionEvent = new Dictionary<string, string>();
-                    //ExceptionEvent.Add("Exception Type", e.GetType().ToString());
-                    //AsaTelemetry.TrackEvent("ApplyDeletedModifiedException", ExceptionEvent);
+                    Log.Debug("Failed to Turn Obect into Values");
                 }
             }
 
@@ -1041,29 +1003,16 @@ namespace Microsoft.CST.OAT
 
         private static bool Operate(BOOL_OPERATOR Operator, bool first, bool second)
         {
-            switch (Operator)
+            return Operator switch
             {
-                case BOOL_OPERATOR.AND:
-                    return first && second;
-
-                case BOOL_OPERATOR.OR:
-                    return first || second;
-
-                case BOOL_OPERATOR.XOR:
-                    return first ^ second;
-
-                case BOOL_OPERATOR.NAND:
-                    return !(first && second);
-
-                case BOOL_OPERATOR.NOR:
-                    return !(first || second);
-
-                case BOOL_OPERATOR.NOT:
-                    return !first;
-
-                default:
-                    return false;
-            }
+                BOOL_OPERATOR.AND => first && second,
+                BOOL_OPERATOR.OR => first || second,
+                BOOL_OPERATOR.XOR => first ^ second,
+                BOOL_OPERATOR.NAND => !(first && second),
+                BOOL_OPERATOR.NOR => !(first || second),
+                BOOL_OPERATOR.NOT => !first,
+                _ => false
+            };
         }
 
         private bool Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)

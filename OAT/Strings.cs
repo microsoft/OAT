@@ -38,7 +38,7 @@ namespace Microsoft.CST.OAT.Utils
                 if (stream is Stream)
                 {
                     stringList.Clear();
-                    using ResourceReader reader = new ResourceReader(stream);
+                    using var reader = new ResourceReader(stream);
                     foreach (DictionaryEntry? entry in reader)
                     {
                         if (entry is DictionaryEntry dictionaryEntry)

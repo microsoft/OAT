@@ -138,6 +138,67 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
+        public void VerifyImplicitAndWithInvert()
+        {
+            var RuleName = "ImplicitAndWithInvert";
+
+            var implicitAndWithInvert = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.EQ, "StringField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "MagicWord"
+                        },
+                        Invert = true
+                    },
+                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitAndWithInvert };
+
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName)); // The first clause is inverted
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+        }
+
+        [TestMethod]
+        public void VerifyImplicitAnd()
+        {
+            var RuleName = "ImplicitAnd";
+
+            var implicitAnd = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.EQ, "StringField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "MagicWord"
+                        }
+                    },
+                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitAnd };
+
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+        }
+
+        [TestMethod]
         public void VerifyAnd()
         {
             var RuleName = "AndRule";
@@ -609,10 +670,10 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     if (clause.CustomOperation == "RETURN_TRUE")
                     {
-                        return (true,true);
+                        return (true, true);
                     }
                 }
-                return (false,false);
+                return (false, false);
             });
 
             var ruleList = new List<Rule>() { customRule };
