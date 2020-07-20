@@ -18,7 +18,7 @@ namespace Microsoft.CST.OAT
     /// </summary>
     public class Analyzer
     {
-        private readonly ConcurrentDictionary<string, Regex> RegexCache = new ConcurrentDictionary<string, Regex>();
+        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
 
         /// <summary>
         /// The constructor for Analyzer takes no arguments.
@@ -778,6 +778,16 @@ namespace Microsoft.CST.OAT
                         {
                             var built = string.Join('|', RegexList);
 
+                            var regex = StringToRegex(built);
+                            
+                            if (regex != null && valsToCheck.Any(x => regex.IsMatch(x)))
+                            {
+                                return true;
+                            }
+                        }
+
+                        Regex? StringToRegex(string built)
+                        {
                             if (!RegexCache.ContainsKey(built))
                             {
                                 try
@@ -787,15 +797,12 @@ namespace Microsoft.CST.OAT
                                 catch (ArgumentException)
                                 {
                                     Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
-                                    RegexCache.TryAdd(built, new Regex("", RegexOptions.Compiled));
+                                    RegexCache.TryAdd(built, null);
                                 }
                             }
-
-                            if (valsToCheck.Any(x => RegexCache[built].IsMatch(x)))
-                            {
-                                return true;
-                            }
+                            return RegexCache[built];
                         }
+
                         return false;
 
                     // Ignores provided data. Checks if the named property has changed.
@@ -1113,16 +1120,16 @@ namespace Microsoft.CST.OAT
             // If either argument of an AND statement is false, or either argument of a
             // NOR statement is true, the result is always false and we can optimize
             // away evaluation of next
-            if ((operation == BOOL_OPERATOR.AND && current == false) ||
-                (operation == BOOL_OPERATOR.NOR && current == true))
+            if ((operation == BOOL_OPERATOR.AND && !current) ||
+                (operation == BOOL_OPERATOR.NOR && current))
             {
                 return (true, false);
             }
             // If either argument of an NAND statement is false, or either argument of
             // an OR statement is true, the result is always true and we can optimize
             // away evaluation of next
-            if ((operation == BOOL_OPERATOR.OR && current == true) ||
-                (operation == BOOL_OPERATOR.NAND && current == false))
+            if ((operation == BOOL_OPERATOR.OR && current) ||
+                (operation == BOOL_OPERATOR.NAND && !current))
             {
                 return (true, true);
             }
