@@ -47,5 +47,10 @@ namespace Microsoft.CST.OAT
         ///     A string indicating what custom operation should be performed, if Operation is CUSTOM
         /// </summary>
         public string? CustomOperation { get; set; }
+
+        /// <summary>
+        /// If the result of the Operation should be inverted
+        /// </summary>
+        public bool Invert { get; set; }
     }
 }

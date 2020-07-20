@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Microsoft.CST.OAT.Tests
@@ -18,6 +17,13 @@ namespace Microsoft.CST.OAT.Tests
             public int Occupants { get; set; }
             public int Capacity { get; set; }
             public Driver? Driver { get; set; }
+        }
+
+        [ClassInitialize]
+        public static void ClassSetup(TestContext _)
+        {
+            Logger.SetupVerbose();
+            Strings.Setup();
         }
 
         class Driver
@@ -58,7 +64,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
                 return (true, false);
             }
-            return (false,false);
+            return (false, false);
         }
 
         public (bool Applies, IEnumerable<Violation> Violations) OverweightOperationValidationDelegate(Rule r, Clause c)
@@ -96,12 +102,13 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() { 
-                    License = new DriverLicense() 
-                    { 
-                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
-                        Expiration = DateTime.Now.AddYears(1) 
-                    } 
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
                 }
             };
 
@@ -109,13 +116,13 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 30000,
                 Capacity = 20000,
-                Driver = new Driver() 
-                { 
-                    License = new DriverLicense() 
-                    { 
-                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
-                        Expiration = DateTime.Now.AddYears(1) 
-                    } 
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
                 }
             };
 
@@ -123,13 +130,13 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() 
-                { 
-                    License = new DriverLicense() 
-                    { 
-                        Endorsements = Endorsements.CDL | Endorsements.Auto, 
-                        Expiration = DateTime.Now.AddYears(-1) 
-                    } 
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(-1)
+                    }
                 }
             };
 
@@ -137,13 +144,13 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
-                Driver = new Driver() 
-                { 
-                    License = new DriverLicense() 
-                    { 
-                        Endorsements = Endorsements.Auto, 
-                        Expiration = DateTime.Now.AddYears(1) 
-                    } 
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
                 }
             };
 
