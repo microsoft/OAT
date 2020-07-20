@@ -183,6 +183,25 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsTrue(listDictAnalyzer.Analyze(ruleList, trueListDictObject).Any());
             Assert.IsFalse(listDictAnalyzer.Analyze(ruleList, falseListDictObject).Any());
+
+            var enumFlagsContains = new Rule("Enum Flags Contains Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.CONTAINS_ANY)
+                    {
+                        Data = new List<string>(){"Magic", "Normal"}
+                    }
+                }
+            };
+
+            var enumAnalyzer = new Analyzer();
+            ruleList = new List<Rule>() { enumFlagsContains };
+
+            Assert.IsTrue(enumAnalyzer.Analyze(ruleList, Words.Magic).Any());
+            Assert.IsTrue(enumAnalyzer.Analyze(ruleList, Words.Normal).Any());
+            Assert.IsTrue(enumAnalyzer.Analyze(ruleList, Words.Magic | Words.Normal).Any());
+            Assert.IsFalse(enumAnalyzer.Analyze(ruleList, Words.Shazam).Any());
         }
 
         [TestMethod]
@@ -198,7 +217,7 @@ namespace Microsoft.CST.OAT.Tests
                 StringField = "ThisStringDoesNot"
             };
 
-            var stringContains = new Rule("String Contains Any Rule")
+            var stringContains = new Rule("String Contains Rule")
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -240,7 +259,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var listContains = new Rule("List Contains Any Rule")
+            var listContains = new Rule("List Contains Rule")
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -282,7 +301,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var stringDictContains = new Rule("String Dict Contains Any Rule")
+            var stringDictContains = new Rule("String Dict Contains Rule")
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -333,7 +352,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var listDictContains = new Rule("List Dict Contains Any Rule")
+            var listDictContains = new Rule("List Dict Contains Rule")
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -354,9 +373,35 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsTrue(listDictAnalyzer.Analyze(ruleList, trueListDictObject).Any());
             Assert.IsFalse(listDictAnalyzer.Analyze(ruleList, falseListDictObject).Any());
+
+            var enumFlagsContains = new Rule("Enum Flags Contains Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.CONTAINS)
+                    {
+                        Data = new List<string>(){"Magic", "Normal"}
+                    }
+                }
+            };
+
+            var enumAnalyzer = new Analyzer();
+            ruleList = new List<Rule>() { enumFlagsContains };
+
+            Assert.IsTrue(enumAnalyzer.Analyze(ruleList, Words.Magic | Words.Normal).Any());
+            Assert.IsFalse(enumAnalyzer.Analyze(ruleList, Words.Shazam).Any());
+            Assert.IsFalse(enumAnalyzer.Analyze(ruleList, Words.Normal).Any());
         }
 
-        [TestMethod]
+    [Flags]
+    enum Words
+    {
+        Normal = 1,
+        Magic = 2,
+        Shazam = 4
+    }
+
+    [TestMethod]
         public void VerifyContainsKeyOperator()
         {
             var trueAlgDict = new TestObject()
