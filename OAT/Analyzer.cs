@@ -187,7 +187,8 @@ namespace Microsoft.CST.OAT
 
             Parallel.ForEach(rules, rule =>
             {
-                if (!rule.Tags.All(x => tags.Keys.Any(y => y == x)) && Applies(rule, state1, state2))
+                // If there are no tags, or all of the tags are already in the tags we've found skip otherwise apply.
+                if ((!rule.Tags.Any() || !rule.Tags.All(x => tags.Keys.Any(y => y == x))) && Applies(rule, state1, state2))
                 {
                     foreach (var tag in rule.Tags)
                     {
