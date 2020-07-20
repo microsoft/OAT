@@ -13,6 +13,7 @@ namespace Microsoft.CST.OAT.Tests
         [ClassInitialize]
         public static void ClassSetup(TestContext _)
         {
+            Logger.SetupVerbose();
             Strings.Setup();
         }
 

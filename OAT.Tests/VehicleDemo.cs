@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.CST.OAT.Utils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,13 @@ namespace Microsoft.CST.OAT.Tests
             public int Occupants { get; set; }
             public int Capacity { get; set; }
             public Driver? Driver { get; set; }
+        }
+
+        [ClassInitialize]
+        public static void ClassSetup(TestContext _)
+        {
+            Logger.SetupVerbose();
+            Strings.Setup();
         }
 
         class Driver
