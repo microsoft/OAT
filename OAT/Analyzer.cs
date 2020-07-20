@@ -807,13 +807,9 @@ namespace Microsoft.CST.OAT
 
                     // Ends with any of the provided data
                     case OPERATION.ENDS_WITH:
-                        if (clause.Data is List<string> EndsWithData
+                        return clause.Data is List<string> EndsWithData
                                 && valsToCheck.Any(x => EndsWithData.Any(y => x is string
-                                    && x.EndsWith(y, StringComparison.CurrentCulture))))
-                        {
-                            return true;
-                        }
-                        return false;
+                                    && x.EndsWith(y, StringComparison.CurrentCulture)));
 
                     // Starts with any of the provided data
                     case OPERATION.STARTS_WITH:
@@ -1034,16 +1030,52 @@ namespace Microsoft.CST.OAT
                     operatorExpected = false;
                     updated_i = i + 1;
                 }
+                else if (splits[i].StartsWith("("))
+                {
+                    //Get the substring closing this paren
+                    var matchingParen = FindMatchingParen(splits, i);
+
+                    // First remove the parenthesis from the beginning and end
+                    splits[i] = splits[i][1..];
+                    splits[matchingParen] = splits[matchingParen][0..^1];
+
+                    var (CanShortcut, Value) = TryShortcut(current, Operator);
+
+                    if (CanShortcut)
+                    {
+                        current = Value;
+                    }
+                    else
+                    {
+                        // Recursively evaluate the contents of the parentheses
+                        var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
+
+                        next = invertNextStatement ? !next : next;
+
+                        current = Operate(Operator, current, next);
+                    }
+
+                    updated_i = matchingParen + 1;
+                    invertNextStatement = false;
+                    operatorExpected = true;
+                }
                 else
                 {
-                    if (splits[i].StartsWith("("))
+                    if (splits[i].Equals(BOOL_OPERATOR.NOT.ToString()))
                     {
-                        //Get the substring closing this paren
-                        var matchingParen = FindMatchingParen(splits, i);
+                        invertNextStatement = !invertNextStatement;
+                        operatorExpected = false;
+                    }
+                    else
+                    {
+                        // Ensure we have exactly 1 matching clause defined
+                        var res = Clauses.Where(x => x.Label == splits[i].Replace("(", "").Replace(")", ""));
+                        if (!(res.Count() == 1))
+                        {
+                            return false;
+                        }
 
-                        // First remove the parenthesis from the beginning and end
-                        splits[i] = splits[i][1..];
-                        splits[matchingParen] = splits[matchingParen][0..^1];
+                        var clause = res.First();
 
                         var shortcut = TryShortcut(current, Operator);
 
@@ -1053,58 +1085,17 @@ namespace Microsoft.CST.OAT
                         }
                         else
                         {
-                            // Recursively evaluate the contents of the parentheses
-                            var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
+                            bool next = AnalyzeClause(res.First(), state1, state2);
 
                             next = invertNextStatement ? !next : next;
 
                             current = Operate(Operator, current, next);
                         }
 
-                        updated_i = matchingParen + 1;
                         invertNextStatement = false;
                         operatorExpected = true;
                     }
-                    else
-                    {
-                        if (splits[i].Equals(BOOL_OPERATOR.NOT.ToString()))
-                        {
-                            invertNextStatement = !invertNextStatement;
-                            operatorExpected = false;
-                        }
-                        else
-                        {
-                            // Ensure we have exactly 1 matching clause defined
-                            var res = Clauses.Where(x => x.Label == splits[i].Replace("(", "").Replace(")", ""));
-                            if (!(res.Count() == 1))
-                            {
-                                return false;
-                            }
-
-                            var clause = res.First();
-
-                            var shortcut = TryShortcut(current, Operator);
-
-                            if (shortcut.CanShortcut)
-                            {
-                                current = shortcut.Value;
-                            }
-                            else
-                            {
-                                bool next;
-
-                                next = AnalyzeClause(res.First(), state1, state2);
-
-                                next = invertNextStatement ? !next : next;
-
-                                current = Operate(Operator, current, next);
-                            }
-
-                            invertNextStatement = false;
-                            operatorExpected = true;
-                        }
-                        updated_i = i + 1;
-                    }
+                    updated_i = i + 1;
                 }
             }
             return current;
