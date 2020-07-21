@@ -7,6 +7,7 @@ using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -1076,34 +1077,65 @@ namespace Microsoft.CST.OAT
             {
                 if (stateOneList.Any())
                 {
-                    bool ClauseAppliesToList(List<string> stateList)
+                    (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                     {
                         // If we are dealing with an array on the object side
                         if (typeHolder is List<string>)
                         {
                             if (ClauseData.All(x => stateList.Contains(x)))
                             {
-                                return true;
+                                return (true, clause.Capture ? ClauseData : null);
                             }
                         }
                         // If we are dealing with a single string we do a .Contains instead
                         else if (typeHolder is string)
                         {
-                            if (clause.Data.All(x => stateList.First()?.Contains(x) ?? false))
+                            var results = new List<string>();
+                            foreach(var datum in stateList)
                             {
-                                return true;
+                                if (clause.Data.All(x => datum.Contains(x)))
+                                {
+                                    results.Add(datum);
+                                }
                             }
+                            return (results.Any(), clause.Capture ? results : null);
                         }
-                        return false;
+                        return (false, new List<string>());
                     }
 
-                    if (ClauseAppliesToList(stateOneList))
+                    var result = ClauseAppliesToList(stateOneList);
+                    if (result.Applies)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, state1, null));
+                        if (result.Matches != null)
+                        {
+                            return (result.Matches.Count) switch
+                            {
+                                0 => (true, null),
+                                1 => (true, new StringCapture(clause, result.Matches.First(), state1, state2)),
+                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, state2))
+                            };
+                        }
+                        else
+                        {
+                            return (true, null);
+                        }
                     }
-                    if (ClauseAppliesToList(stateTwoList))
+                    result = ClauseAppliesToList(stateTwoList);
+                    if (result.Applies)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, null, state2));
+                        if (result.Matches != null)
+                        {
+                            return (result.Matches.Count) switch
+                            {
+                                0 => (true, null),
+                                1 => (true, new StringCapture(clause, result.Matches.First(), state1, state2)),
+                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, state2))
+                            };
+                        }
+                        else
+                        {
+                            return (true, null);
+                        }
                     }
                 }
             }
