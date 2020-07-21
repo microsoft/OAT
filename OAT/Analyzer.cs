@@ -1295,7 +1295,7 @@ namespace Microsoft.CST.OAT
             {
                 var res1 = (bool?)state1 ?? false;
                 var res2 = (bool?)state2 ?? false;
-                return (res1 || res2, null);
+                return (res1 || res2, !clause.Capture ? null : new BoolCapture(clause, res1 || res2,state1, state2));
             }
             return (false, null);
         }
@@ -1341,17 +1341,37 @@ namespace Microsoft.CST.OAT
         {
             (var _, var stateOneDict) = ObjectToValues(state1);
             (var _, var stateTwoDict) = ObjectToValues(state2);
+
+            var results = new List<string>();
+
             foreach (var datum in clause.Data ?? new List<string>())
             {
                 if (stateOneDict.Any(x => x.Key == datum))
                 {
-                    return (true, !clause.Capture ? null : new StringCapture(clause, datum, state1, null));
-                }
-                if (stateTwoDict.Any(x => x.Key == datum))
-                {
-                    return (true, !clause.Capture ? null : new StringCapture(clause, datum, null, state2));
+                    results.Add(datum);
                 }
             }
+
+            if (results.Any())
+            {
+                return (true, !clause.Capture ? null : (
+                    results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) :
+                    new StringCapture(clause, results.First(), state1, null));
+            }
+
+            foreach (var datum in clause.Data ?? new List<string>())
+            {
+                if (stateTwoDict.Any(x => x.Key == datum))
+                {
+                    results.Add(datum);
+                }
+            }
+
+            if (results.Any())
+            {
+                return (true, !clause.Capture ? null : (
+                    results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, null, state2) :
+                    new StringCapture(clause, results.First(), null, state2))            }
 
             return (false, null);
         }
@@ -1386,23 +1406,36 @@ namespace Microsoft.CST.OAT
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
             if (clause.Data is List<string> EndsWithData)
             {
+                var results = new List<string>();
                 foreach (var entry in stateOneList)
                 {
                     if (EndsWithData.Any(x => entry.StartsWith(x)))
                     {
-                        return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, null));
+                        results.Add(entry);
                     }
                 }
+
+                if (results.Any())
+                {
+                    return (true, !clause.Capture ? null : results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) : new StringCapture(clause, results.First(), state1, null));
+                }
+
                 foreach (var entry in stateTwoList)
                 {
                     if (EndsWithData.Any(x => entry.StartsWith(x)))
                     {
-                        return (true, !clause.Capture ? null : new StringCapture(clause, entry, null, state2));
+                        results.Add(entry);
                     }
+                }
+
+                if (results.Any())
+                {
+                    return (true, !clause.Capture ? null : results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) : new StringCapture(clause, results.First(), state1, null));
                 }
             }
             return (false, null);
         }
+
 
         internal (bool Result, ClauseCapture? Capture) EndsWithOperation(Clause clause, object? state1, object? state2)
         {
@@ -1410,19 +1443,31 @@ namespace Microsoft.CST.OAT
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
             if (clause.Data is List<string> EndsWithData)
             {
+                var results = new List<string>();
                 foreach (var entry in stateOneList)
                 {
                     if (EndsWithData.Any(x => entry.EndsWith(x)))
                     {
-                        return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, null));
+                        results.Add(entry);
                     }
                 }
+
+                if (results.Any())
+                {
+                    return (true, !clause.Capture ? null : results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) : new StringCapture(clause, results.First(), state1, null));
+                }
+
                 foreach (var entry in stateTwoList)
                 {
                     if (EndsWithData.Any(x => entry.EndsWith(x)))
                     {
-                        return (true, !clause.Capture ? null : new StringCapture(clause, entry, null, state2));
+                        results.Add(entry);
                     }
+                }
+
+                if (results.Any())
+                {
+                    return (true, !clause.Capture ? null : results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) : new StringCapture(clause, results.First(), state1, null));
                 }
             }
             return (false, null);
