@@ -36,7 +36,8 @@ namespace Microsoft.CST.OAT.Utils
         /// <summary>
         /// Set up Verbose Logging
         /// </summary>
-        public static void SetupVerbose() {
+        public static void SetupVerbose()
+        {
             Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Verbose()
                     .WriteTo.Console()
@@ -46,7 +47,8 @@ namespace Microsoft.CST.OAT.Utils
         /// <summary>
         /// Set up Debug Logging
         /// </summary>
-        public static void SetupDebug() {
+        public static void SetupDebug()
+        {
             Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo.Console()
@@ -56,7 +58,8 @@ namespace Microsoft.CST.OAT.Utils
         /// <summary>
         /// Set up Information Logging
         /// </summary>
-        public static void SetupInformation() {
+        public static void SetupInformation()
+        {
             Log.Logger = new LoggerConfiguration()
                .MinimumLevel.Information()
                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Microsoft.CST.OAT
+﻿namespace Microsoft.CST.OAT
 {
     public class StringCapture : ClauseCapture
     {

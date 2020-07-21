@@ -665,7 +665,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, listValues, dictionaryValues, listValues2, dictionaryValues2, before, after) =>
+            analyzer.CustomOperationDelegates.Add((clause, before, after) =>
             {
                 if (clause.Operation == OPERATION.CUSTOM)
                 {
