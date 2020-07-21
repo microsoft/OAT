@@ -434,15 +434,13 @@ namespace Microsoft.CST.OAT
                                         }
                                     }
                                 }
-                                if (covered == false)
+                                if (!covered)
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingValidationForOperation"), clause.CustomOperation, rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                                 }
                             }
                             break;
 
-                        case OPERATION.DOES_NOT_CONTAIN:
-                        case OPERATION.DOES_NOT_CONTAIN_ALL:
                         default:
                             yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
                             break;
@@ -642,22 +640,44 @@ namespace Microsoft.CST.OAT
                     case OPERATION.CONTAINS:
                         if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
                         {
-                            var enums = new List<Enum>();
-                            foreach (var datum in clause.Data ?? new List<string>())
+                            bool ParseContainsEnum(Enum state)
                             {
-                                if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                foreach (var datum in clause.Data ?? new List<string>())
                                 {
-                                    if (!(state1 is Enum enum1 && enum1.HasFlag((Enum)result)))
+                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                    {
+                                        if (result is Enum eresult)
+                                        {
+                                            if (!state.HasFlag(eresult))
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    else
                                     {
                                         return false;
                                     }
                                 }
-                                else
+                                return true;
+                            }
+
+                            if (state1 is Enum enum1)
+                            {
+                                if (ParseContainsEnum(enum1))
                                 {
-                                    return false;
+                                    return true;
                                 }
                             }
-                            return true;
+                            if (state2 is Enum enum2)
+                            {
+                                if (ParseContainsEnum(enum2))
+                                {
+                                    return true;
+                                }
+                            }
+                            
+                            return false;
                         }
                         if (dictToCheck.Any())
                         {
@@ -696,17 +716,43 @@ namespace Microsoft.CST.OAT
                     case OPERATION.CONTAINS_ANY:
                         if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
                         {
-                            var enums = new List<Enum>();
-                            foreach (var datum in clause.Data ?? new List<string>())
+                            bool ParseContainsAnyEnum(Enum state)
                             {
-                                if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                foreach (var datum in clause.Data ?? new List<string>())
                                 {
-                                    if (state1 is Enum enum1 && enum1.HasFlag((Enum)result))
+                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
                                     {
-                                        return true;
+                                        if (result is Enum eresult)
+                                        {
+                                            if (state.HasFlag(eresult))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return false;
                                     }
                                 }
+                                return false;
                             }
+
+                            if (state1 is Enum enum1)
+                            {
+                                if (ParseContainsAnyEnum(enum1))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (state2 is Enum enum2)
+                            {
+                                if (ParseContainsAnyEnum(enum2))
+                                {
+                                    return true;
+                                }
+                            }
+
                             return false;
                         }
                         if (dictToCheck.Any())
