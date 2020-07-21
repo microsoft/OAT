@@ -19,7 +19,7 @@ jobs:
       - name: Generate Documentation
         uses: FuLagann/csharp-docs-generator@v1.0
         with:
-          build-tasks: dotnet build
+          build-tasks: nbgv set-version 1.0,dotnet build
           cleanup-tasks: dotnet clean
           binaries: OAT/bin/Debug/netstandard2.1/OAT.dll
           output-path: docs/api
