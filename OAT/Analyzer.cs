@@ -951,17 +951,45 @@ namespace Microsoft.CST.OAT
             {
                 if (stateOneDict.Any())
                 {
-                    if (ContainsData.Any(x => stateOneDict.Contains(x)))
+                    var captured = new List<KeyValuePair<string, string>>();
+                    foreach(var entry in ContainsData)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, state1, null));
+                        if (stateOneDict.Contains(entry))
+                        {
+                            captured.Add(entry);
+                        }
                     }
+                    
+                    if (!captured.Any())
+                    {
+                        return (false, null);
+                    }
+                    var returnVal = clause.Capture ?
+                        new ListKvpCapture<string, string>(clause, captured, state1, null) :
+                        new ClauseCapture(clause, state1, null);
+
+                    return (true, returnVal);
                 }
                 if (stateTwoDict.Any())
                 {
-                    if (ContainsData.Any(x => stateTwoDict.Contains(x)))
+                    var captured = new List<KeyValuePair<string, string>>();
+                    foreach (var entry in ContainsData)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, null, state2));
+                        if (stateTwoDict.Contains(entry))
+                        {
+                            captured.Add(entry);
+                        }
                     }
+
+                    if (!captured.Any())
+                    {
+                        return (false, null);
+                    }
+                    var returnVal = clause.Capture ?
+                        new ListKvpCapture<string, string>(clause, captured, state1, null) :
+                        new ClauseCapture(clause, state1, null);
+
+                    return (true, returnVal);
                 }
                 return (false, null);
             }
@@ -970,40 +998,82 @@ namespace Microsoft.CST.OAT
             {
                 if (stateOneList.Any())
                 {
-                    bool ClauseAppliesToListAny(List<string> stateList)
+                    (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                     {
                         // If we are dealing with an array on the object side
                         if (typeHolder is List<string>)
                         {
-                            if (ClauseData.Any(x => stateList.Contains(x)))
+                            var foundStates = new List<string>();
+                            foreach (var entry in ClauseData)
                             {
-                                return true;
+                                if (stateList.Contains(entry))
+                                {
+                                    foundStates.Add(entry);
+                                }
                             }
-                        }
+                            if (foundStates.Count == 0)
+                            {
+                                return (false, null);
+                            }
+
+                            return (true, foundStates);
+        }
                         // If we are dealing with a single string we do a .Contains instead
                         else if (typeHolder is string)
                         {
-                            if (clause.Data.Any(x => stateList.First()?.Contains(x) ?? false))
+                            var results = new List<string>();
+                            foreach (var datum in stateList)
                             {
-                                return true;
+                                if (clause.Data.Any(x => datum.Contains(x)))
+                                {
+                                    results.Add(datum);
+                                }
                             }
+                            return (results.Any(), clause.Capture ? results : null);
                         }
-                        return false;
+                        return (false, new List<string>());
                     }
 
-                    if (ClauseAppliesToListAny(stateOneList))
+                    var result = ClauseAppliesToList(stateOneList);
+                    if (result.Applies)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, state1, null));
+                        if (result.Matches != null)
+                        {
+                            return (result.Matches.Count) switch
+                            {
+                                0 => (true, null),
+                                1 => (true, new StringCapture(clause, result.Matches.First(), state1, state2)),
+                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, state2))
+                            };
+                        }
+                        else
+                        {
+                            return (true, null);
+                        }
                     }
-                    if (ClauseAppliesToListAny(stateTwoList))
+                    result = ClauseAppliesToList(stateTwoList);
+                    if (result.Applies)
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, null, state2));
+                        if (result.Matches != null)
+                        {
+                            return (result.Matches.Count) switch
+                            {
+                                0 => (true, null),
+                                1 => (true, new StringCapture(clause, result.Matches.First(), state1, state2)),
+                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, state2))
+                            };
+                        }
+                        else
+                        {
+                            return (true, null);
+                        }
                     }
                 }
             }
 
             return (false, null);
         }
+
 
         internal (bool Result, ClauseCapture? Capture) ContainsOperation(Clause clause, object? state1, object? state2)
         {
@@ -1060,14 +1130,20 @@ namespace Microsoft.CST.OAT
                 {
                     if (ContainsData.All(x => stateOneDict.Contains(x)))
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, state1, null));
+                        var captured = clause.Capture ?
+                            new ListKvpCapture<string, string>(clause, ContainsData, state1, null) :
+                            new ClauseCapture(clause, state1, null);
+                        return (true, captured);
                     }
                 }
                 if (stateTwoDict.Any())
                 {
                     if (ContainsData.All(x => stateTwoDict.Contains(x)))
                     {
-                        return (true, !clause.Capture ? null : new ClauseCapture(clause, null, state2));
+                        var captured = clause.Capture ?
+                            new ListKvpCapture<string, string>(clause, ContainsData, null, state2) :
+                            new ClauseCapture(clause, null, state2);
+                        return (true, captured);
                     }
                 }
                 return (false, null);
@@ -1427,6 +1503,7 @@ namespace Microsoft.CST.OAT
         public (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
             var valsToCheck = new List<string>();
+            // This supports both Dictionaries and Lists of KVP
             var dictToCheck = new List<KeyValuePair<string, string>>();
             if (obj != null)
             {
