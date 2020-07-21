@@ -1,0 +1,7 @@
+{
+    "name":"Object Analysis Toolkit",
+    "description":"Object Analysis Toolkit is a C# library for analyzing objects using Rules.",
+    "team":"CST-E",
+    "author":"Microsoft",
+    "license":"MIT"
+}
