@@ -101,23 +101,68 @@ namespace Microsoft.CST.OAT
         public List<OperationDelegate> CustomOperationDelegates { get; set; } = new List<OperationDelegate>();
 
         /// <summary>
-        /// The OperationDelegates that will be used in order of attempt.  Once successful the others won't be run.
+        /// The EQ Operation Delegate. Set to override EQ behavior.
         /// </summary>
         public BuiltinOperationDelegate EqOperationDelegate { get; set; }
+        /// <summary>
+        /// The NEQ Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate NeqOperationDelegate { get; set; }
+        /// <summary>
+        /// The LT Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate LtOperationDelegate { get; set; }
+        /// <summary>
+        /// The GT Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate GtOperationDelegate { get; set; }
+        /// <summary>
+        /// The REGEX Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate RegexOperationDelegate { get; set; }
+        /// <summary>
+        /// The CONTAINS Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate ContainsOperationDelegate { get; set; }
+        /// <summary>
+        /// The CONTAINS_ANY Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate ContainsAnyOperationDelegate { get; set; }
+        /// <summary>
+        /// The WAS_MODIFIED Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate WasModifiedOperationDelegate { get; set; }
+        /// <summary>
+        /// The ENDS_WITH Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate EndsWithOperationDelegate { get; set; }
+        /// <summary>
+        /// The STARTS_WITH Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate StartsWithOperationDelegate { get; set; }
+        /// <summary>
+        /// The IS_NULL Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate IsNullOperationDelegate { get; set; }
+        /// <summary>
+        /// The IS_TRUE Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate IsTrueOperationDelegate { get; set; }
+        /// <summary>
+        /// The IS_AFTER Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate IsAfterOperationDelegate { get; set; }
+        /// <summary>
+        /// The IS_BEFORE Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate IsBeforeOperationDelegate { get; set; }
+        /// <summary>
+        /// The IS_EXPIRED Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate IsExpiredOperationDelegate { get; set; }
+        /// <summary>
+        /// The CONTAINS_KEY Operation Delegate. Set to override EQ behavior.
+        /// </summary>
         public BuiltinOperationDelegate ContainsKeyOperationDelegate { get; set; }
 
         /// <summary>
@@ -1092,7 +1137,7 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        public (bool Result, ClauseCapture? Capture) LtOperation(Clause clause, object? state1, object? state2)
+        internal (bool Result, ClauseCapture? Capture) LtOperation(Clause clause, object? state1, object? state2)
         {
             (var stateOneList, var stateOneDict) = ObjectToValues(state1);
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
@@ -1106,7 +1151,7 @@ namespace Microsoft.CST.OAT
                     return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
                 }
             }
-            foreach(var val in stateTwoList)
+            foreach (var val in stateTwoList)
             {
                 if (int.TryParse(val, out int valToCheck)
                     && int.TryParse(clause.Data?[0], out int dataValue)
@@ -1315,7 +1360,7 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        public (bool Result, ClauseCapture? Capture) EqOperation(Clause clause, object? state1, object? state2)
+        internal (bool Result, ClauseCapture? Capture) EqOperation(Clause clause, object? state1, object? state2)
         {
             (var stateOneList, var stateOneDict) = ObjectToValues(state1);
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
