@@ -1356,7 +1356,7 @@ namespace Microsoft.CST.OAT
             {
                 return (true, !clause.Capture ? null : (
                     results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, state1, null) :
-                    new StringCapture(clause, results.First(), state1, null));
+                    new StringCapture(clause, results.First(), state1, null)));
             }
 
             foreach (var datum in clause.Data ?? new List<string>())
@@ -1371,7 +1371,8 @@ namespace Microsoft.CST.OAT
             {
                 return (true, !clause.Capture ? null : (
                     results.Count > 1 ? (ClauseCapture)new ListCapture<string>(clause, results, null, state2) :
-                    new StringCapture(clause, results.First(), null, state2))            }
+                    new StringCapture(clause, results.First(), null, state2)));
+            }
 
             return (false, null);
         }
