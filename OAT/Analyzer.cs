@@ -237,7 +237,7 @@ namespace Microsoft.CST.OAT
                         foreach (var clause in rule.Clauses)
                         {
                             var (ClauseMatches, ClauseCapture) = GetClauseCapture(clause, state1, state2);
-                            if (ClauseMatches)
+                            if (ClauseMatches && ClauseCapture != null)
                             {
                                 ruleCapture.Captures.Add(ClauseCapture);
                             }
@@ -251,7 +251,7 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        var (ExpressionMatches, Captures) = EvaluateAndGetCaptures(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        var (ExpressionMatches, Captures) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
                         if (ExpressionMatches)
                         {
                             ruleCapture.Captures.AddRange(Captures);
@@ -261,17 +261,6 @@ namespace Microsoft.CST.OAT
                 }
             }
             return (false,null);
-        }
-        
-
-        private (bool ExpressionMatches, IEnumerable<ClauseCapture> Captures) EvaluateAndGetCaptures(string[] vs, List<Clause> clauses, object? state1, object? state2)
-        {
-            throw new NotImplementedException();
-        }
-
-        private (bool ClauseMatches, ClauseCapture? Capture) GetClauseCapture(Clause clause, object? state1, object? state2)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -325,7 +314,8 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        if (Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2))
+                        var result = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        if (result.Success)
                         {
                             return true;
                         }
@@ -676,7 +666,7 @@ namespace Microsoft.CST.OAT
 
             try
             {
-                var res = InnerAnalyzer(clause, state1, state2);
+                var res = GetClauseCapture(clause, state1, state2);
                 return clause.Invert ? !res.Applies : res.Applies;
             }
             catch (Exception e)
@@ -686,7 +676,7 @@ namespace Microsoft.CST.OAT
             return false;
         }
 
-        private (bool Applies, ClauseCapture? capture) InnerAnalyzer(Clause clause, object? state1 = null, object? state2 = null)
+        private (bool Applies, ClauseCapture? Capture) GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null)
         {
             if (clause.Field is string)
             {
@@ -1279,9 +1269,11 @@ namespace Microsoft.CST.OAT
             };
         }
 
-        private bool Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)
+        private (bool Success, List<ClauseCapture>? Capture) Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2)
         {
             bool current = false;
+
+            var captureOut = new List<ClauseCapture>();
 
             var invertNextStatement = false;
             var operatorExpected = false;
@@ -1309,16 +1301,21 @@ namespace Microsoft.CST.OAT
 
                     var (CanShortcut, Value) = TryShortcut(current, Operator);
 
-                    if (CanShortcut)
+                    if (CanShortcut && !Clauses.Any(x => x.Capture))
                     {
                         current = Value;
                     }
                     else
                     {
                         // Recursively evaluate the contents of the parentheses
-                        var next = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
+                        var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
+                        
+                        if (evaluation.Success)
+                        {
+                            captureOut.AddRange(evaluation.Capture ?? new List<ClauseCapture>());
+                        }
 
-                        next = invertNextStatement ? !next : next;
+                        var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
 
                         current = Operate(Operator, current, next);
                     }
@@ -1340,22 +1337,28 @@ namespace Microsoft.CST.OAT
                         var res = Clauses.Where(x => x.Label == splits[i].Replace("(", "").Replace(")", ""));
                         if (!(res.Count() == 1))
                         {
-                            return false;
+                            Log.Debug($"Multiple Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
+                            return (false, null);
                         }
 
                         var clause = res.First();
 
                         var shortcut = TryShortcut(current, Operator);
 
-                        if (shortcut.CanShortcut)
+                        if (shortcut.CanShortcut && !Clauses.Any(x => x.Capture))
                         {
                             current = shortcut.Value;
                         }
                         else
                         {
-                            bool next = AnalyzeClause(res.First(), state1, state2);
+                            var res2 = GetClauseCapture(res.First(), state1, state2);
 
-                            next = invertNextStatement ? !next : next;
+                            if (res2.Applies && res2.Capture != null)
+                            {
+                                captureOut.Add(res2.Capture);
+                            }
+
+                            var next = invertNextStatement ? !res2.Applies : res2.Applies;
 
                             current = Operate(Operator, current, next);
                         }
@@ -1366,7 +1369,7 @@ namespace Microsoft.CST.OAT
                     updated_i = i + 1;
                 }
             }
-            return current;
+            return (current,captureOut);
         }
 
         /// <summary>
