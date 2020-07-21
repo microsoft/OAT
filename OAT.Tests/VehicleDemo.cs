@@ -40,9 +40,9 @@ namespace Microsoft.CST.OAT.Tests
         [Flags]
         enum Endorsements
         {
-            Motorcycle,
-            Auto,
-            CDL
+            Motorcycle = 1,
+            Auto = 2,
+            CDL = 4
         }
 
         int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)

@@ -317,6 +317,7 @@ namespace Microsoft.CST.OAT
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseDictDataUnexpected"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
                             }
+
                             break;
 
                         case OPERATION.CONTAINS:
@@ -433,15 +434,13 @@ namespace Microsoft.CST.OAT
                                         }
                                     }
                                 }
-                                if (covered == false)
+                                if (!covered)
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingValidationForOperation"), clause.CustomOperation, rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                                 }
                             }
                             break;
 
-                        case OPERATION.DOES_NOT_CONTAIN:
-                        case OPERATION.DOES_NOT_CONTAIN_ALL:
                         default:
                             yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
                             break;
@@ -639,6 +638,47 @@ namespace Microsoft.CST.OAT
 
                     // If *every* entry of the clause data is matched
                     case OPERATION.CONTAINS:
+                        if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                        {
+                            bool ParseContainsEnum(Enum state)
+                            {
+                                foreach (var datum in clause.Data ?? new List<string>())
+                                {
+                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                    {
+                                        if (result is Enum eresult)
+                                        {
+                                            if (!state.HasFlag(eresult))
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+
+                            if (state1 is Enum enum1)
+                            {
+                                if (ParseContainsEnum(enum1))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (state2 is Enum enum2)
+                            {
+                                if (ParseContainsEnum(enum2))
+                                {
+                                    return true;
+                                }
+                            }
+                            
+                            return false;
+                        }
                         if (dictToCheck.Any())
                         {
                             if (clause.DictData is List<KeyValuePair<string, string>> ContainsData
@@ -668,31 +708,53 @@ namespace Microsoft.CST.OAT
                                     }
                                 }
                                 // If we are dealing with a flags Enum we can select the appropriate flag
-                                else if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
-                                {
-                                    var enums = new List<Enum>();
-                                    foreach (var datum in clause.Data ?? new List<string>())
-                                    {
-                                        if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
-                                        {
-                                            if (!(state1 is Enum enum1 && enum1.HasFlag((Enum)result)))
-                                            {
-                                                return false;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            return false;
-                                        }
-                                    }
-                                    return true;
-                                }
                             }
                         }
                         return false;
 
                     // If *any* entry of the clause data is matched
                     case OPERATION.CONTAINS_ANY:
+                        if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                        {
+                            bool ParseContainsAnyEnum(Enum state)
+                            {
+                                foreach (var datum in clause.Data ?? new List<string>())
+                                {
+                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                    {
+                                        if (result is Enum eresult)
+                                        {
+                                            if (state.HasFlag(eresult))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                }
+                                return false;
+                            }
+
+                            if (state1 is Enum enum1)
+                            {
+                                if (ParseContainsAnyEnum(enum1))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (state2 is Enum enum2)
+                            {
+                                if (ParseContainsAnyEnum(enum2))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
                         if (dictToCheck.Any())
                         {
                             if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
@@ -723,21 +785,6 @@ namespace Microsoft.CST.OAT
                                     if (clause.Data.Any(x => valsToCheck.First()?.Contains(x) ?? false))
                                     {
                                         return true;
-                                    }
-                                }
-
-                                else if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
-                                {
-                                    var enums = new List<Enum>();
-                                    foreach (var datum in clause.Data ?? new List<string>())
-                                    {
-                                        if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
-                                        {
-                                            if (state1 is Enum enum1 && enum1.HasFlag((Enum)result))
-                                            {
-                                                return true;
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -774,7 +821,7 @@ namespace Microsoft.CST.OAT
 
                     // If any of the regexes match any of the values
                     case OPERATION.REGEX:
-                        if (clause.Data is List<string> RegexList && RegexList.Count > 0)
+                        if (clause.Data is List<string> RegexList && RegexList.Any())
                         {
                             var built = string.Join('|', RegexList);
 
@@ -830,56 +877,55 @@ namespace Microsoft.CST.OAT
                         return false;
 
                     case OPERATION.IS_NULL:
-                        if (valsToCheck.Count(x => x is null) == valsToCheck.Count())
-                        {
-                            return true;
-                        }
-                        return false;
+                        return state1 == null && state2 == null;
 
                     case OPERATION.IS_TRUE:
-                        foreach (var valToCheck in valsToCheck)
+                        if (typeHolder is bool)
                         {
-                            if (bool.TryParse(valToCheck, out bool result) && result)
-                            {
-                                return true;
-                            }
+                            var res1 = (bool?)state1 ?? false;
+                            var res2 = (bool?)state2 ?? false;
+                            return res1 || res2;
                         }
                         return false;
 
                     case OPERATION.IS_BEFORE:
-                        var valDateTimes = new List<DateTime>();
-                        foreach (var valToCheck in valsToCheck)
+                        if (typeHolder is DateTime)
                         {
-                            if (DateTime.TryParse(valToCheck, out DateTime result))
+                            foreach (var data in clause.Data ?? new List<string>())
                             {
-                                valDateTimes.Add(result);
+                                var compareTime = DateTime.TryParse(data, out DateTime result);
+                                
+                                if (state1 is DateTime date1 && date1.CompareTo(result) < 0)
+                                {
+                                    return true;
+                                }
+                                if (state2 is DateTime date2 && date2.CompareTo(result) < 0)
+                                {
+                                    return true;
+                                }
                             }
                         }
-                        foreach (var data in clause.Data ?? new List<string>())
-                        {
-                            if (DateTime.TryParse(data, out DateTime result) && valDateTimes.Any(x => x.CompareTo(result) < 0))
-                            {
-                                return true;
-                            }
-                        }
+
                         return false;
 
                     case OPERATION.IS_AFTER:
-                        valDateTimes = new List<DateTime>();
-                        foreach (var valToCheck in valsToCheck)
+                        if (typeHolder is DateTime)
                         {
-                            if (DateTime.TryParse(valToCheck, out DateTime result))
+                            foreach (var data in clause.Data ?? new List<string>())
                             {
-                                valDateTimes.Add(result);
+                                var compareTime = DateTime.TryParse(data, out DateTime result);
+
+                                if (state1 is DateTime date1 && date1.CompareTo(result) > 0)
+                                {
+                                    return true;
+                                }
+                                if (state2 is DateTime date2 && date2.CompareTo(result) > 0)
+                                {
+                                    return true;
+                                }
                             }
                         }
-                        foreach (var data in clause.Data ?? new List<string>())
-                        {
-                            if (DateTime.TryParse(data, out DateTime result) && valDateTimes.Any(x => x.CompareTo(result) > 0))
-                            {
-                                return true;
-                            }
-                        }
+
                         return false;
 
                     case OPERATION.IS_EXPIRED:

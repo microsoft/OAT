@@ -42,12 +42,6 @@
         CONTAINS,
 
         /// <summary>
-        ///     Checks if the specified fields values does not contain any of the data in the Data list or
-        ///     DictData dictionary as appropriate for the field.
-        /// </summary>
-        DOES_NOT_CONTAIN,
-
-        /// <summary>
         ///     Checks if the specified field was modified between the two runs.
         /// </summary>
         WAS_MODIFIED,
@@ -67,12 +61,6 @@
         ///     dictionary as appropriate for the field.
         /// </summary>
         CONTAINS_ANY,
-
-        /// <summary>
-        ///     Checks if the specified fields values does not contain all of the data in the Data list or
-        ///     DictData dictionary as appropriate for the field.
-        /// </summary>
-        DOES_NOT_CONTAIN_ALL,
 
         /// <summary>
         ///     Checks if the specified field is null in both states.
