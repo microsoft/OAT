@@ -52,5 +52,10 @@ namespace Microsoft.CST.OAT
         /// If the result of the Operation should be inverted
         /// </summary>
         public bool Invert { get; set; }
+
+        /// <summary>
+        /// When calling Capture functionality if the result of this clause should be Captured
+        /// </summary>
+        public bool Capture { get; set; }
     }
 }

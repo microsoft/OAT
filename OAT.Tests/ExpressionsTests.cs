@@ -665,16 +665,16 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, listValues, dictionaryValues, before, after) =>
+            analyzer.CustomOperationDelegates.Add((clause, listValues, dictionaryValues, listValues2, dictionaryValues2, before, after) =>
             {
                 if (clause.Operation == OPERATION.CUSTOM)
                 {
                     if (clause.CustomOperation == "RETURN_TRUE")
                     {
-                        return (true, true);
+                        return (true, true, null);
                     }
                 }
-                return (false, false);
+                return (false, false, null);
             });
 
             var ruleList = new List<Rule>() { customRule };

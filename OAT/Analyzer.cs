@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using KellermanSoftware.CompareNetObjects;
+using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Utils;
 using Newtonsoft.Json;
 using Serilog;
@@ -46,12 +47,14 @@ namespace Microsoft.CST.OAT
         /// This delegate allows extending the Analyzer with a custom operation.
         /// </summary>
         /// <param name="clause">The clause being applied</param>
-        /// <param name="valsToCheck">The list of strings that have been extracted</param>
-        /// <param name="dictToCheck">The list of KVP of strings that have been extracted</param>
+        /// <param name="stateOneValsToCheck">Strings extracted from the first object's field</param>
+        /// <param name="stateOneDictToCheck">Dictionary values extracted from the first object's field</param>
+        /// <param name="stateTwoValsToCheck">Strings extracted from the second object's field</param>
+        /// <param name="stateTwoDictToCheck">Dictionary values extracted from the second object's field</param>
         /// <param name="state1">The first object state</param>
         /// <param name="state2">The second object state</param>
         /// <returns>(If the Operation delegate applies to the clause, If the operation was successful)</returns>
-        public delegate (bool Applies, bool Result) OperationDelegate(Clause clause, IEnumerable<string>? valsToCheck, IEnumerable<KeyValuePair<string, string>> dictToCheck, object? state1, object? state2);
+        public delegate (bool Applies, bool Result, ClauseCapture Capture) OperationDelegate(Clause clause, IEnumerable<string>? stateOneValsToCheck, IEnumerable<KeyValuePair<string, string>> stateOneDictToCheck, IEnumerable<string>? stateTwoValsToCheck, IEnumerable<KeyValuePair<string, string>> stateTwoDictToCheck, object? state1, object? state2);
 
         /// <summary>
         /// This delegate allows extending the Analyzer with extra rule validation for custom rules.
@@ -198,6 +201,77 @@ namespace Microsoft.CST.OAT
             });
 
             return tags.Keys.ToArray();
+        }
+
+        public ConcurrentStack<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1, object? state2)
+        {
+            var results = new ConcurrentStack<RuleCapture>();
+
+            Parallel.ForEach(rules, rule =>
+            {
+                var captured = GetCapture(rule, state1, state2);
+                if (captured.RuleMatches && captured.Result != null)
+                {
+                    results.Push(captured.Result);
+                }
+            });
+
+            return results;
+        }
+
+        public (bool RuleMatches, RuleCapture? Result) GetCapture(Rule rule, object? state1, object? state2)
+        {
+            if (rule != null)
+            {
+                var ruleCapture = new RuleCapture(rule, new List<ClauseCapture>());
+                var sample = state1 is null ? state2 : state1;
+
+                // Does the name of this class match the Target in the rule?
+                // Or has no target been specified (match all)
+                if (rule.Target is null || (sample?.GetType().Name.Equals(rule.Target, StringComparison.InvariantCultureIgnoreCase) ?? true))
+                {
+                    // If the expression is null the default is that all clauses must be true
+                    // If we have no clauses .All will still match
+                    if (rule.Expression is null)
+                    {
+                        foreach (var clause in rule.Clauses)
+                        {
+                            var (ClauseMatches, ClauseCapture) = GetClauseCapture(clause, state1, state2);
+                            if (ClauseMatches)
+                            {
+                                ruleCapture.Captures.Add(ClauseCapture);
+                            }
+                            else
+                            {
+                                return (false, null);
+                            }
+                        }
+                        return (true, ruleCapture);
+                    }
+                    // Otherwise we evaluate the expression
+                    else
+                    {
+                        var (ExpressionMatches, Captures) = EvaluateAndGetCaptures(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        if (ExpressionMatches)
+                        {
+                            ruleCapture.Captures.AddRange(Captures);
+                            return (true, ruleCapture);
+                        }
+                    }
+                }
+            }
+            return (false,null);
+        }
+        
+
+        private (bool ExpressionMatches, IEnumerable<ClauseCapture> Captures) EvaluateAndGetCaptures(string[] vs, List<Clause> clauses, object? state1, object? state2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private (bool ClauseMatches, ClauseCapture? Capture) GetClauseCapture(Clause clause, object? state1, object? state2)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -603,98 +677,150 @@ namespace Microsoft.CST.OAT
             try
             {
                 var res = InnerAnalyzer(clause, state1, state2);
-                return clause.Invert ? !res : res;
+                return clause.Invert ? !res.Applies : res.Applies;
             }
             catch (Exception e)
             {
                 Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
             }
             return false;
+        }
 
-
-            bool InnerAnalyzer(Clause clause, object? state1 = null, object? state2 = null)
+        private (bool Applies, ClauseCapture? capture) InnerAnalyzer(Clause clause, object? state1 = null, object? state2 = null)
+        {
+            if (clause.Field is string)
             {
-                if (clause.Field is string)
-                {
-                    state2 = GetValueByPropertyString(state2, clause.Field);
-                    state1 = GetValueByPropertyString(state1, clause.Field);
-                }
+                state2 = GetValueByPropertyString(state2, clause.Field);
+                state1 = GetValueByPropertyString(state1, clause.Field);
+            }
 
-                var typeHolder = state1 ?? state2;
+            var typeHolder = state1 ?? state2;
 
-                (var stateOneList, var stateOneDict) = ObjectToValues(state1);
-                (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
+            (var stateOneList, var stateOneDict) = ObjectToValues(state1);
+            (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
 
-                var valsToCheck = stateOneList.Union(stateTwoList);
-                var dictToCheck = stateOneDict.Union(stateTwoDict);
-
-                switch (clause.Operation)
-                {
-                    case OPERATION.EQ:
-                        return clause.Data is List<string> EqualsData && EqualsData.Intersect(valsToCheck).Any();
-
-                    case OPERATION.NEQ:
-                        return clause.Data is List<string> NotEqualsData && !NotEqualsData.Intersect(valsToCheck).Any();
-
-                    // If *every* entry of the clause data is matched
-                    case OPERATION.CONTAINS:
-                        if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+            switch (clause.Operation)
+            {
+                case OPERATION.EQ:
+                    if (clause.Data is List<string> EqualsData)
+                    {
+                        foreach (var datum in EqualsData)
                         {
-                            bool ParseContainsEnum(Enum state)
+                            foreach(var stateOneDatum in stateOneList)
                             {
-                                foreach (var datum in clause.Data ?? new List<string>())
+                                if (stateOneDatum == datum)
                                 {
-                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                    return (true, !clause.Capture ? null : new StringCapture(clause, stateOneDatum, state1, state2));
+                                }
+                            }
+                            foreach (var stateTwoDatum in stateTwoList)
+                            {
+                                if (stateTwoDatum == datum)
+                                {
+                                    return (true, !clause.Capture ? null : new StringCapture(clause, stateTwoDatum, state1, state2));
+                                }
+                            }
+                        }
+                    }
+                    return (false, null);
+
+                case OPERATION.NEQ:
+                    if (clause.Data is List<string> NotEqualsData)
+                    {
+                        foreach (var datum in NotEqualsData)
+                        {
+                            foreach (var stateOneDatum in stateOneList)
+                            {
+                                if (stateOneDatum != datum)
+                                {
+                                    return (true, !clause.Capture ? null : new StringCapture(clause, stateOneDatum, state1, state2));
+                                }
+                            }
+                            foreach (var stateTwoDatum in stateTwoList)
+                            {
+                                if (stateTwoDatum != datum)
+                                {
+                                    return (true, !clause.Capture ? null : new StringCapture(clause, stateTwoDatum, state1, state2));
+                                }
+                            }
+                        }
+                    }
+                    return (false, null);
+
+                // If *every* entry of the clause data is matched
+                case OPERATION.CONTAINS:
+                    if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                    {
+                        bool ParseContainsAllEnum(Enum state)
+                        {
+                            foreach (var datum in clause.Data ?? new List<string>())
+                            {
+                                if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                {
+                                    if (result is Enum eresult)
                                     {
-                                        if (result is Enum eresult)
+                                        if (!state.HasFlag(eresult))
                                         {
-                                            if (!state.HasFlag(eresult))
-                                            {
-                                                return false;
-                                            }
+                                            return false;
                                         }
                                     }
-                                    else
-                                    {
-                                        return false;
-                                    }
                                 }
-                                return true;
+                                else
+                                {
+                                    return false;
+                                }
                             }
+                            return true;
+                        }
 
-                            if (state1 is Enum enum1)
-                            {
-                                if (ParseContainsEnum(enum1))
-                                {
-                                    return true;
-                                }
-                            }
-                            if (state2 is Enum enum2)
-                            {
-                                if (ParseContainsEnum(enum2))
-                                {
-                                    return true;
-                                }
-                            }
-                            
-                            return false;
-                        }
-                        if (dictToCheck.Any())
+                        if (state1 is Enum enum1)
                         {
-                            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData
-                                    && ContainsData.All(y => dictToCheck.Any((x) => x.Key == y.Key && x.Value == y.Value)))
+                            if (ParseContainsAllEnum(enum1))
                             {
-                                return true;
+                                return (true, !clause.Capture ? null : new EnumCapture(clause,enum1,state1,state2));
                             }
                         }
-                        else if (valsToCheck.Any())
+                        if (state2 is Enum enum2)
                         {
-                            if (clause.Data is List<string> ContainsDataList)
+                            if (ParseContainsAllEnum(enum2))
+                            {
+                                return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, state1, state2));
+                            }
+                        }
+
+                        return (false, null);
+                    }
+
+
+                    if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
+                    {
+                        if (stateOneDict.Any())
+                        {
+                            if (ContainsData.All(x => stateOneDict.Contains(x)))
+                            {
+                                return (true, null);
+                            }
+                        }
+                        if (stateTwoDict.Any())
+                        {
+                            if (ContainsData.All(x => stateTwoDict.Contains(x)))
+                            {
+                                return (true, null);
+                            }
+                        }
+                        return (false, null);
+                    }
+
+                    if (clause.Data is List<string> ClauseData)
+                    {
+                        if (stateOneList.Any())
+                        {
+                            bool ClauseAppliesToList(List<string> stateList)
                             {
                                 // If we are dealing with an array on the object side
                                 if (typeHolder is List<string>)
                                 {
-                                    if (ContainsDataList.All(x => valsToCheck.Contains(x)))
+                                    if (ClauseData.All(x => stateList.Contains(x)))
                                     {
                                         return true;
                                     }
@@ -702,265 +828,353 @@ namespace Microsoft.CST.OAT
                                 // If we are dealing with a single string we do a .Contains instead
                                 else if (typeHolder is string)
                                 {
-                                    if (clause.Data.All(x => valsToCheck.First()?.Contains(x) ?? false))
+                                    if (clause.Data.All(x => stateList.First()?.Contains(x) ?? false))
                                     {
                                         return true;
                                     }
                                 }
-                                // If we are dealing with a flags Enum we can select the appropriate flag
+                                return false;
+                            }
+                            
+                            if (ClauseAppliesToList(stateOneList))
+                            {
+                                return (true, null);
+                            }
+                            if (ClauseAppliesToList(stateTwoList))
+                            {
+                                return (true, null);
                             }
                         }
-                        return false;
+                    }
+                    
+                    return (false,null);
 
-                    // If *any* entry of the clause data is matched
-                    case OPERATION.CONTAINS_ANY:
-                        if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                // If *any* entry of the clause data is matched
+                case OPERATION.CONTAINS_ANY:
+                    if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                    {
+                        bool ParseContainsAnyEnum(Enum state)
                         {
-                            bool ParseContainsAnyEnum(Enum state)
+                            foreach (var datum in clause.Data ?? new List<string>())
                             {
-                                foreach (var datum in clause.Data ?? new List<string>())
+                                if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
                                 {
-                                    if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
+                                    if (result is Enum eresult)
                                     {
-                                        if (result is Enum eresult)
+                                        if (state.HasFlag(eresult))
                                         {
-                                            if (state.HasFlag(eresult))
-                                            {
-                                                return true;
-                                            }
+                                            return true;
                                         }
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            return false;
+                        }
+
+                        if (state1 is Enum enum1)
+                        {
+                            if (ParseContainsAnyEnum(enum1))
+                            {
+                                return (true, !clause.Capture ? null : new EnumCapture(clause, enum1, state1, state2));
+                            }
+                        }
+                        if (state2 is Enum enum2)
+                        {
+                            if (ParseContainsAnyEnum(enum2))
+                            {
+                                return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, state1, state2));
+                            }
+                        }
+
+                        return (false, null);
+                    }
+
+
+                    if (clause.DictData is List<KeyValuePair<string, string>> ContainsAnyData)
+                    {
+                        if (stateOneDict.Any())
+                        {
+                            if (ContainsAnyData.Any(x => stateOneDict.Contains(x)))
+                            {
+                                return (true, null);
+                            }
+                        }
+                        if (stateTwoDict.Any())
+                        {
+                            if (ContainsAnyData.Any(x => stateTwoDict.Contains(x)))
+                            {
+                                return (true, null);
+                            }
+                        }
+                        return (false, null);
+                    }
+
+                    if (clause.Data is List<string> ClauseAnyData)
+                    {
+                        if (stateOneList.Any())
+                        {
+                            bool ClauseAppliesToList(List<string> stateList)
+                            {
+                                // If we are dealing with an array on the object side
+                                if (typeHolder is List<string>)
+                                {
+                                    if (ClauseAnyData.Any(x => stateList.Contains(x)))
                                     {
-                                        return false;
+                                        return true;
+                                    }
+                                }
+                                // If we are dealing with a single string we do a .Contains instead
+                                else if (typeHolder is string)
+                                {
+                                    if (ClauseAnyData.Any(x => stateList.First()?.Contains(x) ?? false))
+                                    {
+                                        return true;
                                     }
                                 }
                                 return false;
                             }
 
-                            if (state1 is Enum enum1)
+                            if (ClauseAppliesToList(stateOneList))
                             {
-                                if (ParseContainsAnyEnum(enum1))
-                                {
-                                    return true;
-                                }
+                                return (true, null);
                             }
-                            if (state2 is Enum enum2)
+                            if (ClauseAppliesToList(stateTwoList))
                             {
-                                if (ParseContainsAnyEnum(enum2))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-                        if (dictToCheck.Any())
-                        {
-                            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
-                            {
-                                foreach (KeyValuePair<string, string> value in ContainsData)
-                                {
-                                    if (dictToCheck.Any(x => x.Key == value.Key && x.Value == value.Value))
-                                    {
-                                        return true;
-                                    }
-                                }
+                                return (true, null);
                             }
                         }
-                        else if (valsToCheck.Any())
+                    }
+                    return (false, null);
+
+                // If any of the data values are less than the first provided clause value We
+                // ignore all other clause values
+                case OPERATION.LT:
+                    foreach (var val in stateOneList)
+                    {
+                        if (int.TryParse(val, out int valToCheck)
+                                && int.TryParse(clause.Data?[0], out int dataValue)
+                                && valToCheck < dataValue)
                         {
-                            if (clause.Data is List<string> ContainsDataList)
-                            {
-                                if (typeHolder is List<string>)
-                                {
-                                    if (ContainsDataList.Any(x => valsToCheck.Contains(x)))
-                                    {
-                                        return true;
-                                    }
-                                }
-                                // If we are dealing with a single string we do a .Contains instead
-                                else if (typeHolder is string)
-                                {
-                                    if (clause.Data.Any(x => valsToCheck.First()?.Contains(x) ?? false))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
+                            return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, state2));
                         }
-                        return false;
+                    }
+                    return (false,null);
 
-                    // If any of the data values are greater than the first provided clause value We
-                    // ignore all other clause values
-                    case OPERATION.GT:
-                        foreach (var val in valsToCheck)
+                // If any of the data values are greater than the first provided clause value We
+                // ignore all other clause values
+                case OPERATION.GT:
+                    foreach (var val in stateOneList)
+                    {
+                        if (int.TryParse(val, out int valToCheck)
+                                && int.TryParse(clause.Data?[0], out int dataValue)
+                                && valToCheck > dataValue)
                         {
-                            if (int.TryParse(val, out int valToCheck)
-                                    && int.TryParse(clause.Data?[0], out int dataValue)
-                                    && valToCheck > dataValue)
-                            {
-                                return true;
-                            }
+                            return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, state2));
                         }
-                        return false;
+                    }
+                    return (false, null);
 
-                    // If any of the data values are less than the first provided clause value We
-                    // ignore all other clause values
-                    case OPERATION.LT:
-                        foreach (var val in valsToCheck)
+                // If any of the regexes match any of the values
+                case OPERATION.REGEX:
+                    if (clause.Data is List<string> RegexList && RegexList.Any())
+                    {
+                        var built = string.Join('|', RegexList);
+
+                        var regex = StringToRegex(built);
+
+                        if (regex != null)
                         {
-                            if (int.TryParse(val, out int valToCheck)
-                                    && int.TryParse(clause.Data?[0], out int dataValue)
-                                    && valToCheck < dataValue)
+                            foreach (var state in stateOneList)
                             {
-                                return true;
-                            }
-                        }
-                        return false;
-
-                    // If any of the regexes match any of the values
-                    case OPERATION.REGEX:
-                        if (clause.Data is List<string> RegexList && RegexList.Any())
-                        {
-                            var built = string.Join('|', RegexList);
-
-                            var regex = StringToRegex(built);
-                            
-                            if (regex != null && valsToCheck.Any(x => regex.IsMatch(x)))
-                            {
-                                return true;
-                            }
-                        }
-
-                        Regex? StringToRegex(string built)
-                        {
-                            if (!RegexCache.ContainsKey(built))
-                            {
-                                try
+                                var match = regex.Match(state);
+                                if (match.Success)
                                 {
-                                    RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
-                                }
-                                catch (ArgumentException)
-                                {
-                                    Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
-                                    RegexCache.TryAdd(built, null);
+                                    return (true, !clause.Capture ? null : new RegexCapture(clause, match));
                                 }
                             }
-                            return RegexCache[built];
-                        }
-
-                        return false;
-
-                    // Ignores provided data. Checks if the named property has changed.
-                    case OPERATION.WAS_MODIFIED:
-                        var compareLogic = new CompareLogic();
-
-                        var comparisonResult = compareLogic.Compare(state1, state2);
-
-                        return !comparisonResult.AreEqual;
-
-                    // Ends with any of the provided data
-                    case OPERATION.ENDS_WITH:
-                        return clause.Data is List<string> EndsWithData
-                                && valsToCheck.Any(x => EndsWithData.Any(y => x is string
-                                    && x.EndsWith(y, StringComparison.CurrentCulture)));
-
-                    // Starts with any of the provided data
-                    case OPERATION.STARTS_WITH:
-                        if (clause.Data is List<string> StartsWithData
-                                && valsToCheck.Any(x => StartsWithData.Any(y => x is string
-                                && x.StartsWith(y, StringComparison.CurrentCulture))))
-                        {
-                            return true;
-                        }
-                        return false;
-
-                    case OPERATION.IS_NULL:
-                        return state1 == null && state2 == null;
-
-                    case OPERATION.IS_TRUE:
-                        if (typeHolder is bool)
-                        {
-                            var res1 = (bool?)state1 ?? false;
-                            var res2 = (bool?)state2 ?? false;
-                            return res1 || res2;
-                        }
-                        return false;
-
-                    case OPERATION.IS_BEFORE:
-                        if (typeHolder is DateTime)
-                        {
-                            foreach (var data in clause.Data ?? new List<string>())
+                            foreach (var state in stateTwoList)
                             {
-                                var compareTime = DateTime.TryParse(data, out DateTime result);
-                                
-                                if (state1 is DateTime date1 && date1.CompareTo(result) < 0)
+                                var match = regex.Match(state);
+                                if (match.Success)
                                 {
-                                    return true;
-                                }
-                                if (state2 is DateTime date2 && date2.CompareTo(result) < 0)
-                                {
-                                    return true;
+                                    return (true, !clause.Capture ? null : new RegexCapture(clause, match));
                                 }
                             }
                         }
+                    }
+                    return (false, null);
 
-                        return false;
-
-                    case OPERATION.IS_AFTER:
-                        if (typeHolder is DateTime)
+                    Regex? StringToRegex(string built)
+                    {
+                        if (!RegexCache.ContainsKey(built))
                         {
-                            foreach (var data in clause.Data ?? new List<string>())
+                            try
                             {
-                                var compareTime = DateTime.TryParse(data, out DateTime result);
-
-                                if (state1 is DateTime date1 && date1.CompareTo(result) > 0)
-                                {
-                                    return true;
-                                }
-                                if (state2 is DateTime date2 && date2.CompareTo(result) > 0)
-                                {
-                                    return true;
-                                }
+                                RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
+                            }
+                            catch (ArgumentException)
+                            {
+                                Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
+                                RegexCache.TryAdd(built, null);
                             }
                         }
+                        return RegexCache[built];
+                    }
 
-                        return false;
+                // Ignores provided data. Checks if the named property has changed.
+                case OPERATION.WAS_MODIFIED:
+                    var compareLogic = new CompareLogic();
 
-                    case OPERATION.IS_EXPIRED:
-                        if (state1 is DateTime dateTime1 && dateTime1.CompareTo(DateTime.Now) < 0)
+                    var comparisonResult = compareLogic.Compare(state1, state2);
+                    if (!comparisonResult.AreEqual)
+                    {
+                        return (true, !clause.Capture ? null : new ComparisonResultCapture(clause, comparisonResult, state1, state2));
+                    }
+                    return (false, null);
+
+                // Ends with any of the provided data
+                case OPERATION.ENDS_WITH:
+                    if (clause.Data is List<string> EndsWithData)
+                    {
+                        foreach (var entry in stateOneList)
                         {
-                            return true;
-                        }
-                        if (state2 is DateTime dateTime2 && dateTime2.CompareTo(DateTime.Now) < 0)
-                        {
-                            return true;
-                        }
-                        return false;
-
-                    case OPERATION.CONTAINS_KEY:
-                        return dictToCheck.Any(x => clause.Data.Any(y => x.Key == y));
-
-                    case OPERATION.CUSTOM:
-                        foreach (var del in CustomOperationDelegates)
-                        {
-                            var res = del?.Invoke(clause, valsToCheck, dictToCheck, state1, state2);
-                            if (res.HasValue && res.Value.Applies)
+                            if (EndsWithData.Any(x => entry.EndsWith(x)))
                             {
-                                return res.Value.Result;
+                                return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, state2));
                             }
                         }
-                        Log.Debug("Custom operation hit but delegate for {0} isn't set.", clause.CustomOperation);
-                        return false;
+                        foreach (var entry in stateTwoList)
+                        {
+                            if (EndsWithData.Any(x => entry.EndsWith(x)))
+                            {
+                                return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, state2));
+                            }
+                        }
+                    }
+                    return (false, null);
 
-                    default:
-                        Log.Debug("Unimplemented operation {0}", clause.Operation);
-                        throw new NotImplementedException($"Unimplemented operation {clause.Operation}");
-                }
+                // Starts with any of the provided data
+                case OPERATION.STARTS_WITH:
+                    if (clause.Data is List<string> StartsWithData)
+                    {
+                        foreach (var entry in stateOneList)
+                        {
+                            if (StartsWithData.Any(x => entry.StartsWith(x)))
+                            {
+                                return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, state2));
+                            }
+                        }
+                        foreach (var entry in stateTwoList)
+                        {
+                            if (StartsWithData.Any(x => entry.StartsWith(x)))
+                            {
+                                return (true, !clause.Capture ? null : new StringCapture(clause, entry, state1, state2));
+                            }
+                        }
+                    }
+                    return (false, null);
 
+                case OPERATION.IS_NULL:
+                    return (state1 == null && state2 == null, null);
+
+                case OPERATION.IS_TRUE:
+                    if (typeHolder is bool)
+                    {
+                        var res1 = (bool?)state1 ?? false;
+                        var res2 = (bool?)state2 ?? false;
+                        return (res1 || res2, null);
+                    }
+                    return (false, null);
+
+                case OPERATION.IS_BEFORE:
+                    if (typeHolder is DateTime)
+                    {
+                        foreach (var data in clause.Data ?? new List<string>())
+                        {
+                            var compareTime = DateTime.TryParse(data, out DateTime result);
+
+                            if (state1 is DateTime date1 && date1.CompareTo(result) < 0)
+                            {
+                                return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, state2));
+                            }
+                            if (state2 is DateTime date2 && date2.CompareTo(result) < 0)
+                            {
+                                return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, state1, state2));
+                            }
+                        }
+                    }
+
+                    return (false, null);
+
+                case OPERATION.IS_AFTER:
+                    if (typeHolder is DateTime)
+                    {
+                        foreach (var data in clause.Data ?? new List<string>())
+                        {
+                            var compareTime = DateTime.TryParse(data, out DateTime result);
+
+                            if (state1 is DateTime date1 && date1.CompareTo(result) > 0)
+                            {
+                                return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, state2));
+                            }
+                            if (state2 is DateTime date2 && date2.CompareTo(result) > 0)
+                            {
+                                return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, state1, state2));
+                            }
+                        }
+                    }
+
+                    return (false, null);
+
+                case OPERATION.IS_EXPIRED:
+                    if (state1 is DateTime dateTime1 && dateTime1.CompareTo(DateTime.Now) < 0)
+                    {
+                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, dateTime1, state1, state2));
+                    }
+                    if (state2 is DateTime dateTime2 && dateTime2.CompareTo(DateTime.Now) < 0)
+                    {
+                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, dateTime2, state1, state2));
+                    }
+                    return (false, null);
+
+                case OPERATION.CONTAINS_KEY:
+                    foreach(var datum in clause.Data ?? new List<string>())
+                    {
+                        if (stateOneDict.Any(x => x.Key == datum))
+                        {
+                            return (true, !clause.Capture ? null : new StringCapture(clause, datum, state1, state2));
+                        }
+                        if (stateTwoDict.Any(x => x.Key == datum))
+                        {
+                            return (true, !clause.Capture ? null : new StringCapture(clause, datum, state1, state2));
+                        }
+                    }
+                    
+                    return (false, null);
+
+                case OPERATION.CUSTOM:
+                    foreach (var del in CustomOperationDelegates)
+                    {
+                        var res = del?.Invoke(clause, stateOneList, stateOneDict, stateTwoList, stateTwoDict, state1, state2);
+                        if (res.HasValue && res.Value.Applies)
+                        {
+                            return (res.Value.Result, !clause.Capture ? null : res.Value.Capture);
+                        }
+                    }
+                    Log.Debug("Custom operation hit but delegate for {0} isn't set.", clause.CustomOperation);
+                    return (false, null);
+
+                default:
+                    Log.Debug("Unimplemented operation {0}", clause.Operation);
+                    throw new NotImplementedException($"Unimplemented operation {clause.Operation}");
             }
+
         }
+
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
