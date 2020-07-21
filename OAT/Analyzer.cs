@@ -203,7 +203,14 @@ namespace Microsoft.CST.OAT
             return tags.Keys.ToArray();
         }
 
-        public ConcurrentStack<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1, object? state2)
+        /// <summary>
+        /// Get the RuleCaptures for the List of rules as applied to the objects
+        /// </summary>
+        /// <param name="rules">List of Rules to run</param>
+        /// <param name="state1">First state of object</param>
+        /// <param name="state2">Second state of object</param>
+        /// <returns></returns>
+        public ConcurrentStack<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var results = new ConcurrentStack<RuleCapture>();
 
@@ -219,7 +226,7 @@ namespace Microsoft.CST.OAT
             return results;
         }
 
-        public (bool RuleMatches, RuleCapture? Result) GetCapture(Rule rule, object? state1, object? state2)
+        public (bool RuleMatches, RuleCapture? Result) GetCapture(Rule rule, object? state1 = null, object? state2 = null)
         {
             if (rule != null)
             {
