@@ -15,7 +15,7 @@ jobs:
         with:
           dotnet-version: "3.1.300"
       - name: Generate Documentation
-        uses: FuLagann/csharp-docs-generator@v1
+        uses: FuLagann/csharp-docs-generator@v1.0
         with:
           build-tasks: dotnet build
           cleanup-tasks: dotnet clean
