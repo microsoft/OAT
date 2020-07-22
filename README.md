@@ -34,17 +34,18 @@ IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var res = analyzer.GetCaptures(rules, target);
 ```
+
+## Detailed Usage
+
+A full [walkthrough](https://github.com/microsoft/OAT/wiki/Walkthrough) includng creating a custom operation and validating your custom operation rules and capturing Clause values is available on the wiki.
+
 ## Authoring Rules
 
 Detailed information on how to [author rules](https://github.com/microsoft/OAT/wiki/Authoring-Rules) is available on on the wiki.
 
-## Detailed Usage
-
-A full [walkthrough](https://github.com/microsoft/OAT/wiki/Walkthrough) includng creating a custom operation and validating your custom operation rules is available on the wiki.
-
 ## Delegates
 
-Documentation for implementing each [delegate](https://github.com/microsoft/OAT/wiki/Delegates) is available in the wiki.
+Documentation for implementing each [delegate](https://github.com/microsoft/OAT/wiki/Delegates) is available on the wiki.
 
 # Contributing
 
