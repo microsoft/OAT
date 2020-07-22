@@ -1295,7 +1295,8 @@ namespace Microsoft.CST.OAT
         {
             var res = state1 == null && state2 == null;
             res = clause.Invert ? !res : res;
-            return (res, res && clause.Capture ? new TypedClauseCapture<object?>(clause, state1, state2) : null);
+
+            return (res, res && clause.Capture ? new ClauseCapture(clause, state1, state2) : null);
         }
 
         internal (bool Result, ClauseCapture? Capture) IsTrueOperation(Clause clause, object? state1, object? state2)

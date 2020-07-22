@@ -228,8 +228,9 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            res = analyzer.GetCapture(nullCapture, null, null);
-            Assert.IsTrue(res.Result?.Captures is null && !res.RuleMatches);
+            var testString = "String";
+            res = analyzer.GetCapture(nullCapture, testString, null);
+            Assert.IsTrue(res.Result?.Captures.First() is ClauseCapture cc && cc.State1 is string str && str == testString);
         }
 
         [TestMethod]
