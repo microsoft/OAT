@@ -60,7 +60,7 @@ namespace Microsoft.CST.OAT.Tests
                     var res = vehicle.Weight > vehicle.Capacity;
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, true, new IntCapture(clause, vehicle.Weight, state1, state2));
+                        return (true, true, new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2));
                     }
                 }
                 return (true, false, null);
@@ -216,7 +216,7 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
 
             var res = analyzer.GetCaptures(rules, overweightTruck);
-            var weight = ((IntCapture)res.First().Captures[0]).Result;
+            var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
 
             Assert.IsTrue(weight == 30000);
         }

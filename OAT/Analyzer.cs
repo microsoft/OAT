@@ -868,7 +868,7 @@ namespace Microsoft.CST.OAT
                         var match = regex.Match(state);
                         if (match.Success || !match.Success && clause.Invert)
                         {
-                            return (true, !clause.Capture ? null : new RegexCapture(clause, match, state1));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<Match>(clause, match, state1));
                         }
                     }
                     foreach (var state in stateTwoList)
@@ -876,7 +876,7 @@ namespace Microsoft.CST.OAT
                         var match = regex.Match(state);
                         if (match.Success || !match.Success && clause.Invert)
                         {
-                            return (true, !clause.Capture ? null : new RegexCapture(clause, match, state2: state2));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<Match>(clause, match, state2: state2));
                         }
                     }
                 }
@@ -933,7 +933,7 @@ namespace Microsoft.CST.OAT
                     var res = ParseContainsAnyEnum(enum1);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, !clause.Capture ? null : new EnumCapture(clause, enum1, state1, null));
+                        return (true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum1, state1, null));
                     }
                 }
                 if (state2 is Enum enum2)
@@ -941,7 +941,7 @@ namespace Microsoft.CST.OAT
                     var res = ParseContainsAnyEnum(enum2);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, null, state2));
+                        return (true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum2, null, state2));
                     }
                 }
 
@@ -970,7 +970,7 @@ namespace Microsoft.CST.OAT
                         return (false, null);
                     }
                     var returnVal = clause.Capture ?
-                        new ListKvpCapture<string, string>(clause, captured, state1, null) :
+                        new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, captured, state1, null) :
                         new ClauseCapture(clause, state1, null);
 
                     return (true, returnVal);
@@ -992,7 +992,7 @@ namespace Microsoft.CST.OAT
                         return (false, null);
                     }
                     var returnVal = clause.Capture ?
-                        new ListKvpCapture<string, string>(clause, captured, state1, null) :
+                        new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, captured, state1, null) :
                         new ClauseCapture(clause, state1, null);
 
                     return (true, returnVal);
@@ -1047,8 +1047,8 @@ namespace Microsoft.CST.OAT
                         {
                             return typeHolder switch
                             {
-                                string _ => (true, new StringCapture(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, null)),
+                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
+                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
                             };
                         }
                         else
@@ -1063,8 +1063,8 @@ namespace Microsoft.CST.OAT
                         {
                             return typeHolder switch
                             {
-                                string _ => (true, new StringCapture(clause, result.Matches.First(), null, state2)),
-                                _ => (true, new ListCapture<string>(clause, result.Matches, null, state2)),
+                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), null, state2)),
+                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, null, state2)),
                             };
                         }
                         else
@@ -1112,7 +1112,7 @@ namespace Microsoft.CST.OAT
                     var res = ParseContainsAllEnum(enum1);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, !clause.Capture ? null : new EnumCapture(clause, enum1, state1, null));
+                        return (true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum1, state1, null));
                     }
                 }
                 if (state2 is Enum enum2)
@@ -1120,7 +1120,7 @@ namespace Microsoft.CST.OAT
                     var res = ParseContainsAllEnum(enum2);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, null, state2));
+                        return (true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum2, null, state2));
                     }
                 }
 
@@ -1138,7 +1138,7 @@ namespace Microsoft.CST.OAT
                     if (res.Any())
                     {
                         var captured = clause.Capture ?
-                            new ListKvpCapture<string, string>(clause, res.ToList(), state1, null) :
+                            new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, res.ToList(), state1, null) :
                             new ClauseCapture(clause, state1, null);
                         return (true, captured);
                     }
@@ -1149,7 +1149,7 @@ namespace Microsoft.CST.OAT
                     if (res.Any())
                     {
                         var captured = clause.Capture ?
-                            new ListKvpCapture<string, string>(clause, res.ToList(), null, state2) :
+                            new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, res.ToList(), null, state2) :
                             new ClauseCapture(clause, null, state2);
                         return (true, captured);
                     }
@@ -1196,8 +1196,8 @@ namespace Microsoft.CST.OAT
                         {
                             return typeHolder switch
                             {
-                                string _ => (true, new StringCapture(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, null)),
+                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
+                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
                             };
                         }
                         else
@@ -1212,8 +1212,8 @@ namespace Microsoft.CST.OAT
                         {
                             return typeHolder switch
                             {
-                                string _ => (true, new StringCapture(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new ListCapture<string>(clause, result.Matches, state1, null)),
+                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
+                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
                             };
                         }
                         else
@@ -1238,7 +1238,7 @@ namespace Microsoft.CST.OAT
                         && int.TryParse(clause.Data?[0], out int dataValue)
                         && ((valToCheck > dataValue) || (clause.Invert && valToCheck <= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
             foreach (var val in stateTwoList)
@@ -1247,7 +1247,7 @@ namespace Microsoft.CST.OAT
                     && int.TryParse(clause.Data?[0], out int dataValue)
                     && ((valToCheck > dataValue) || (clause.Invert && valToCheck <= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
             return (false, null);
@@ -1264,7 +1264,7 @@ namespace Microsoft.CST.OAT
                         && int.TryParse(clause.Data?[0], out int dataValue)
                         && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
             foreach (var val in stateTwoList)
@@ -1273,7 +1273,7 @@ namespace Microsoft.CST.OAT
                     && int.TryParse(clause.Data?[0], out int dataValue)
                     && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
             return (false, null);
@@ -1285,7 +1285,7 @@ namespace Microsoft.CST.OAT
             var comparisonResult = compareLogic.Compare(state1, state2);
             if ((!comparisonResult.AreEqual && !clause.Invert) || (comparisonResult.AreEqual && clause.Invert))
             {
-                return (true, !clause.Capture ? null : new ComparisonResultCapture(clause, comparisonResult, state1, state2));
+                return (true, !clause.Capture ? null : new TypedClauseCapture<ComparisonResult>(clause, comparisonResult, state1, state2));
             }
             return (false, null);
         }
@@ -1294,7 +1294,7 @@ namespace Microsoft.CST.OAT
         {
             var res = state1 == null && state2 == null;
             res = clause.Invert ? !res : res;
-            return (res, res && clause.Capture ? new NullCapture(clause, state1, state2) : null);
+            return (res, res && clause.Capture ? new TypedClauseCapture<object?>(clause, state1, state2) : null);
         }
 
         internal (bool Result, ClauseCapture? Capture) IsTrueOperation(Clause clause, object? state1, object? state2)
@@ -1306,7 +1306,7 @@ namespace Microsoft.CST.OAT
                 var res1 = (bool?)state1 ?? false;
                 var res2 = (bool?)state2 ?? false;
                 var res = clause.Invert ? !(res1 || res2) : res1 || res2;
-                return (res, (!clause.Capture || !res) ? null : new BoolCapture(clause, res1 || res2,state1, state2));
+                return (res, (!clause.Capture || !res) ? null : new TypedClauseCapture<bool>(clause, res1 || res2,state1, state2));
             }
             return (false, null);
         }
@@ -1326,7 +1326,7 @@ namespace Microsoft.CST.OAT
                         var res = date1.CompareTo(result) < 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
                         {
-                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date1, state1, null));
                         }
                     }
                     if (state2 is DateTime date2 && date2.CompareTo(result) < 0)
@@ -1334,7 +1334,7 @@ namespace Microsoft.CST.OAT
                         var res = date2.CompareTo(result) < 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
                         {
-                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date2, null, state2));
                         }
                     }
                 }
@@ -1349,13 +1349,13 @@ namespace Microsoft.CST.OAT
             {
                 var res = date1.CompareTo(DateTime.Now) < 0;
                 if ((res && !clause.Invert) || (clause.Invert && !res))
-                    return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date1, state1, null));
             }
             if (state2 is DateTime date2)
             {
                 var res = date2.CompareTo(DateTime.Now) < 0;
                 if ((res && !clause.Invert) || (clause.Invert && !res))
-                    return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date2, null, state2));
             }
             return (false, null);
         }
@@ -1378,7 +1378,7 @@ namespace Microsoft.CST.OAT
 
             if (results.Any())
             {
-                return (true, !clause.Capture ? null : new ListCapture<string>(clause, results, state1, null));
+                return (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, state1, null));
             }
 
             foreach (var datum in clause.Data ?? new List<string>())
@@ -1392,7 +1392,7 @@ namespace Microsoft.CST.OAT
 
             if (results.Any())
             {
-                return (true, !clause.Capture ? null : new ListCapture<string>(clause, results, null, state2));
+                return (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, null, state2));
 
             }
 
@@ -1413,13 +1413,13 @@ namespace Microsoft.CST.OAT
                     {
                         var res = date1.CompareTo(result) > 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
-                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date1, state1, null));
                     }
                     if (state2 is DateTime date2)
                     {
                         var res = date2.CompareTo(result) > 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
-                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date2, null, state2));
                     }
                 }
             }
@@ -1449,8 +1449,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, results.First(), state1, null)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, results, state1, null)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, results.First(), state1, null)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, state1, null)),
                     };
                 }
 
@@ -1469,8 +1469,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, results.First(), null, state2)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, results, null, state2)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, results.First(), null, state2)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, null, state2)),
                     };
                 }
             }
@@ -1500,8 +1500,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, results.First(), state1, null)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, results, state1, null)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, results.First(), state1, null)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, state1, null)),
                     };
                 }
 
@@ -1520,8 +1520,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, results.First(), null, state2)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, results, null, state2)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, results.First(), null, state2)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, null, state2)),
                     };
                 }
             }
@@ -1561,8 +1561,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, res.First(), state1, null)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, res, state1, null)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), state1, null)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, state1, null)),
                     };
                 }
                 res = StateListToNeqList(stateTwoList);
@@ -1572,8 +1572,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, res.First(), null, state2)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, res, null, state2)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), null, state2)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, null, state2)),
                     };
                 }
             }
@@ -1625,8 +1625,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, res.First(), state1, null)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, res, state1, null)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), state1, null)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, state1, null)),
                     };
                 }
                 res = StateListToEqList(stateTwoList);
@@ -1636,8 +1636,8 @@ namespace Microsoft.CST.OAT
 
                     return typeHolder switch
                     {
-                        string _ => (true, !clause.Capture ? null : new StringCapture(clause, res.First(), null, state2)),
-                        _ => (true, !clause.Capture ? null : new ListCapture<string>(clause, res, null, state2)),
+                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), null, state2)),
+                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, null, state2)),
                     };
                 }
             }

@@ -1,8 +1,10 @@
-﻿using Microsoft.CST.OAT.Utils;
+﻿using KellermanSoftware.CompareNetObjects;
+using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -45,7 +47,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(eqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is StringCapture y && y.Result == CorrectString) is true);
+            Assert.IsTrue(analyzer.GetCapture(eqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
 
             eqCaptureRule = new Rule(RuleName)
             {
@@ -63,7 +65,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(eqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is StringCapture y && y.Result == CorrectString) is true);
+            Assert.IsTrue(analyzer.GetCapture(eqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
         }
 
         [TestMethod]
@@ -87,7 +89,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is StringCapture y && y.Result == CorrectString) is true);
+            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
             
             neqCaptureRule = new Rule(RuleName)
             {
@@ -105,7 +107,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is StringCapture y && y.Result == CorrectString) is true);
+            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
         }
 
         [TestMethod]
@@ -130,7 +132,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var res = analyzer.GetCapture(endsWithCapture, new List<string>() { "35", "47", "65" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Count == 2) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Count == 2) is true);
 
             endsWithCapture = new Rule(RuleName)
             {
@@ -149,7 +151,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(endsWithCapture, new List<string>() { "35", "47", "65" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("47")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("47")) is true);
         }
 
         [TestMethod]
@@ -174,7 +176,7 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { startsWithCapture };
             var res = analyzer.GetCapture(startsWithCapture, new List<string>() { "53", "47", "56" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Count == 2) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Count == 2) is true);
 
             startsWithCapture = new Rule(RuleName)
             {
@@ -193,7 +195,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(startsWithCapture, new List<string>() { "53", "47", "56" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("47")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("47")) is true);
         }
 
         [TestMethod]
@@ -247,7 +249,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var res = analyzer.GetCapture(boolCapture, true, null);
-            Assert.IsTrue(res.Result?.Captures.First() is BoolCapture x && x.Result);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<bool> x && x.Result);
 
             boolCapture = new Rule(RuleName)
             {
@@ -261,7 +263,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
             res = analyzer.GetCapture(boolCapture, false, null);
-            Assert.IsTrue(res.Result?.Captures.First() is BoolCapture y && !y.Result);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<bool> y && !y.Result);
         }
 
         [TestMethod]
@@ -290,7 +292,7 @@ namespace Microsoft.CST.OAT.Tests
             
             var res = analyzer.GetCapture(containsKeyRule, testdata, null);
 
-            Assert.IsTrue(res.Result?.Captures.First() is ListCapture<string> x && x.Result.Count == 2);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<List<string>> x && x.Result.Count == 2);
             containsKeyRule = new Rule(RuleName)
             {
                 Clauses = new List<Clause>()
@@ -309,7 +311,7 @@ namespace Microsoft.CST.OAT.Tests
             };
             res = analyzer.GetCapture(containsKeyRule, testdata, null);
 
-            Assert.IsTrue(res.Result?.Captures.First() is ListCapture<string> y && y.Result.Count == 2 && y.Result.Contains("Version"));
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<List<string>> y && y.Result.Count == 2 && y.Result.Contains("Version"));
         }
 
         [TestMethod]
@@ -331,7 +333,7 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
 
             var res = analyzer.GetCapture(isExpiredRule, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture x && x.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> x && x.Result == timestamp);
 
             isExpiredRule = new Rule(RuleName)
             {
@@ -348,7 +350,7 @@ namespace Microsoft.CST.OAT.Tests
             timestamp = DateTime.Now.AddDays(1);
 
             res = analyzer.GetCapture(isExpiredRule, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture y && y.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> y && y.Result == timestamp);
         }
 
         [TestMethod]
@@ -376,7 +378,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var timestamp = DateTime.Now.AddDays(1);
             var res = analyzer.GetCapture(isAfterCapture, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture x && x.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> x && x.Result == timestamp);
 
             isAfterCapture = new Rule(RuleName)
             {
@@ -397,7 +399,7 @@ namespace Microsoft.CST.OAT.Tests
 
             timestamp = DateTime.Now.AddDays(-1);
             res = analyzer.GetCapture(isAfterCapture, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture y && y.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> y && y.Result == timestamp);
         }
 
         [TestMethod]
@@ -422,7 +424,7 @@ namespace Microsoft.CST.OAT.Tests
             var timestamp = DateTime.Now.AddDays(-1);
             var analyzer = new Analyzer();
             var res = analyzer.GetCapture(isBeforeCapture, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture x && x.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> x && x.Result == timestamp);
 
             isBeforeCapture = new Rule(RuleName)
             {
@@ -443,7 +445,7 @@ namespace Microsoft.CST.OAT.Tests
 
             timestamp = DateTime.Now.AddDays(1);
             res = analyzer.GetCapture(isBeforeCapture, timestamp, null);
-            Assert.IsTrue(res.Result?.Captures.First() is DateTimeCapture y && y.Result == timestamp);
+            Assert.IsTrue(res.Result?.Captures.First() is TypedClauseCapture<DateTime> y && y.Result == timestamp);
         }
 
         [TestMethod]
@@ -466,7 +468,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(ltCaptureRule, 3, null).Result?.Captures.Any(x => x is IntCapture y && y.Result == 3) is true);
+            Assert.IsTrue(analyzer.GetCapture(ltCaptureRule, 3, null).Result?.Captures.Any(x => x is TypedClauseCapture<int> y && y.Result == 3) is true);
 
             ltCaptureRule = new Rule(RuleName)
             {
@@ -484,7 +486,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(ltCaptureRule, 7, null).Result?.Captures.Any(x => x is IntCapture y && y.Result == 7) is true);
+            Assert.IsTrue(analyzer.GetCapture(ltCaptureRule, 7, null).Result?.Captures.Any(x => x is TypedClauseCapture<int> y && y.Result == 7) is true);
         }
 
         [TestMethod]
@@ -507,7 +509,7 @@ namespace Microsoft.CST.OAT.Tests
             var testString = "The Secret is Magic";
             var testString2 = "The Secret is Science";
             var res = analyzer.GetCapture(wasModifiedRule, testString, testString2);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ComparisonResultCapture y && !y.Result.AreEqual) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<ComparisonResult> y && !y.Result.AreEqual) is true);
 
             wasModifiedRule = new Rule(RuleName)
             {
@@ -521,7 +523,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
             res = analyzer.GetCapture(wasModifiedRule, testString, testString);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ComparisonResultCapture y && y.Result.AreEqual) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<ComparisonResult> y && y.Result.AreEqual) is true);
         }
 
         [TestMethod]
@@ -529,7 +531,7 @@ namespace Microsoft.CST.OAT.Tests
         {
             var RuleName = "Regex Capture";
             var analyzer = new Analyzer();
-            var regexCaptureRule = new Rule(RuleName)
+            var regexCapture = new Rule(RuleName)
             {
                 Clauses = new List<Clause>()
                 {
@@ -545,10 +547,10 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var testString = "The Secret is Magic";
-            var res = analyzer.GetCapture(regexCaptureRule, testString, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is RegexCapture y && y.Result.Groups[1].Value == "Magic") is true);
+            var res = analyzer.GetCapture(regexCapture, testString, null);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Match> y && y.Result.Groups[1].Value == "Magic") is true);
 
-            regexCaptureRule = new Rule(RuleName)
+            regexCapture = new Rule(RuleName)
             {
                 Clauses = new List<Clause>()
                 {
@@ -565,8 +567,8 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             testString = "The Secret is Tacos";
-            res = analyzer.GetCapture(regexCaptureRule, testString, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is RegexCapture y) is true);
+            res = analyzer.GetCapture(regexCapture, testString, null);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Match> y) is true);
         }
 
         [TestMethod]
@@ -589,7 +591,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(gtCaptureRule, 7, null).Result?.Captures.Any(x => x is IntCapture y && y.Result == 7) is true);
+            Assert.IsTrue(analyzer.GetCapture(gtCaptureRule, 7, null).Result?.Captures.Any(x => x is TypedClauseCapture<int> y && y.Result == 7) is true);
 
             gtCaptureRule = new Rule(RuleName)
             {
@@ -607,7 +609,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.GetCapture(gtCaptureRule, 3, null).Result?.Captures.Any(x => x is IntCapture y && y.Result == 3) is true);
+            Assert.IsTrue(analyzer.GetCapture(gtCaptureRule, 3, null).Result?.Captures.Any(x => x is TypedClauseCapture<int> y && y.Result == 3) is true);
         }
 
         [Flags]
@@ -642,13 +644,13 @@ namespace Microsoft.CST.OAT.Tests
             var ruleList = new List<Rule>() { containsCaptureRule };
 
             var res = analyzer.GetCapture(containsCaptureRule, "ThisStringContainsSomeMagicWords", null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "ThisStringContainsSomeMagicWords") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == "ThisStringContainsSomeMagicWords") is true);
 
             res = analyzer.GetCapture(containsCaptureRule, new List<string>() { "Magic", "Words" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("Magic")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("Magic")) is true);
 
             res = analyzer.GetCapture(containsCaptureRule, Words.Magic | Words.Words, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is EnumCapture y && y.Result.HasFlag(Words.Magic)) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Enum> y && y.Result.HasFlag(Words.Magic)) is true);
 
             containsCaptureRule = new Rule(RuleName)
             {
@@ -668,13 +670,13 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(containsCaptureRule, "ThisStringHasNothing", null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "ThisStringHasNothing") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == "ThisStringHasNothing") is true);
 
             res = analyzer.GetCapture(containsCaptureRule, new List<string>() { "None", "Null" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("Null")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("Null")) is true);
 
             res = analyzer.GetCapture(containsCaptureRule, Words.None, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is EnumCapture y && y.Result.HasFlag(Words.None)) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Enum> y && y.Result.HasFlag(Words.None)) is true);
 
             var testdata = new Dictionary<string, string>() { { "Version", "1.0" }, { "State", "Beta" } };
 
@@ -691,12 +693,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(containsCaptureRule, testdata, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string,string> y && y.Result.Any(x => x.Key == "Version")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Version")) is true);
 
             var testlist = testdata.ToList();
 
             res = analyzer.GetCapture(containsCaptureRule, testlist, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Version")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Version")) is true);
 
             containsCaptureRule = new Rule(RuleName)
             {
@@ -713,12 +715,12 @@ namespace Microsoft.CST.OAT.Tests
             testdata = new Dictionary<string, string>() { { "Something", "Else" }, { "Other", "Keys" } };
 
             res = analyzer.GetCapture(containsCaptureRule, testdata, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Something")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Something")) is true);
 
             testlist = testdata.ToList();
 
             res = analyzer.GetCapture(containsCaptureRule, testlist, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Other")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Other")) is true);
         }
 
         [TestMethod]
@@ -745,13 +747,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
 
             var res = analyzer.GetCapture(containsAnyCaptureRule, "ThisStringContainsSomeMagic", null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "ThisStringContainsSomeMagic") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == "ThisStringContainsSomeMagic") is true);
 
             res = analyzer.GetCapture(containsAnyCaptureRule, new List<string>() { "Magic", "Words" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("Magic")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("Magic")) is true);
 
             res = analyzer.GetCapture(containsAnyCaptureRule, Words.Magic | Words.Words, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is EnumCapture y && y.Result.HasFlag(Words.Magic)) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Enum> y && y.Result.HasFlag(Words.Magic)) is true);
 
             var testdata = new Dictionary<string, string>() { { "Version", "1.0" }, { "State", "Beta" } };
 
@@ -770,12 +772,12 @@ namespace Microsoft.CST.OAT.Tests
             testdata.Remove("State");
 
             res = analyzer.GetCapture(containsAnyCaptureRule, testdata, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Version")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Version")) is true);
 
             var testlist = testdata.ToList();
 
             res = analyzer.GetCapture(containsAnyCaptureRule, testlist, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Version")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Version")) is true);
 
             containsAnyCaptureRule = new Rule(RuleName)
             {
@@ -796,13 +798,13 @@ namespace Microsoft.CST.OAT.Tests
             };
             
             res = analyzer.GetCapture(containsAnyCaptureRule, "ThisStringIsn'tSpecial", null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "ThisStringIsn'tSpecial") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == "ThisStringIsn'tSpecial") is true);
 
             res = analyzer.GetCapture(containsAnyCaptureRule, new List<string>() { "Pizza", "Taco" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("Taco")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<string>> y && y.Result.Contains("Taco")) is true);
 
             res = analyzer.GetCapture(containsAnyCaptureRule, Words.None, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is EnumCapture y && y.Result.HasFlag(Words.None)) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Enum> y && y.Result.HasFlag(Words.None)) is true);
 
             testdata = new Dictionary<string, string>() { { "Version", "1.0" }, { "State", "Beta" } };
 
@@ -822,12 +824,12 @@ namespace Microsoft.CST.OAT.Tests
             testdata = new Dictionary<string, string>() { { "Not matching", "1.0" }, { "Status", "Beta" } };
 
             res = analyzer.GetCapture(containsAnyCaptureRule, testdata, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Status")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Status")) is true);
 
             testlist = testdata.ToList();
 
             res = analyzer.GetCapture(containsAnyCaptureRule, testlist, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListKvpCapture<string, string> y && y.Result.Any(x => x.Key == "Status")) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<KeyValuePair<string,string>>> y && y.Result.Any(x => x.Key == "Status")) is true);
         }
     }
 }
