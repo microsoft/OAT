@@ -12,7 +12,7 @@
         /// <param name="result">The object to hold</param>
         /// <param name="state1"></param>
         /// <param name="state2"></param>
-        public TypedClauseCapture(Clause clause, T result, object? state1 = null, object? state2 = null) : base(clause,state1,state2)
+        public TypedClauseCapture(Clause clause, T result, object? state1 = null, object? state2 = null) : base(clause, state1, state2)
         {
             Result = result;
         }

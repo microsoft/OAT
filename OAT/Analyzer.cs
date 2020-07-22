@@ -956,7 +956,7 @@ namespace Microsoft.CST.OAT
                 if (stateOneDict.Any())
                 {
                     var captured = new List<KeyValuePair<string, string>>();
-                    foreach(var entry in stateOneDict)
+                    foreach (var entry in stateOneDict)
                     {
                         var res = ContainsData.Contains(entry);
                         if ((res && !clause.Invert) || (clause.Invert && !res))
@@ -964,13 +964,13 @@ namespace Microsoft.CST.OAT
                             captured.Add(entry);
                         }
                     }
-                    
+
                     if (!captured.Any())
                     {
                         return (false, null);
                     }
                     var returnVal = clause.Capture ?
-                        new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, captured, state1, null) :
+                        new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, state1, null) :
                         null;
 
                     return (true, returnVal);
@@ -1010,7 +1010,7 @@ namespace Microsoft.CST.OAT
                         if (typeHolder is List<string>)
                         {
                             var foundStates = new List<string>();
-                            foreach(var entry in stateList)
+                            foreach (var entry in stateList)
                             {
                                 if ((!clause.Invert && ClauseData.Contains(entry)) || (clause.Invert && !ClauseData.Contains(entry)))
                                 {
@@ -1176,7 +1176,7 @@ namespace Microsoft.CST.OAT
                         else if (typeHolder is string)
                         {
                             var results = new List<string>();
-                            foreach(var datum in stateList)
+                            foreach (var datum in stateList)
                             {
                                 var res = clause.Data.Where(x => (clause.Invert && !datum.Contains(x) || (!clause.Invert && datum.Contains(x))));
                                 if (res.Any())
@@ -1306,7 +1306,7 @@ namespace Microsoft.CST.OAT
                 var res1 = (bool?)state1 ?? false;
                 var res2 = (bool?)state2 ?? false;
                 var res = clause.Invert ? !(res1 || res2) : res1 || res2;
-                return (res, (!clause.Capture || !res) ? null : new TypedClauseCapture<bool>(clause, res1 || res2,state1, state2));
+                return (res, (!clause.Capture || !res) ? null : new TypedClauseCapture<bool>(clause, res1 || res2, state1, state2));
             }
             return (false, null);
         }
@@ -1367,7 +1367,7 @@ namespace Microsoft.CST.OAT
 
             var results = new List<string>();
 
-            foreach (var datum in stateOneDict.ToList() ?? new List<KeyValuePair<string,string>>())
+            foreach (var datum in stateOneDict.ToList() ?? new List<KeyValuePair<string, string>>())
             {
                 var res = clause.Data.Any(x => x == datum.Key);
                 if ((res && !clause.Invert) || (clause.Invert && !res))
