@@ -26,4 +26,5 @@ jobs:
           user-email: john.doe@gmail.com
           user-name: John Doe
           project-details-json: project-details.json
+          branch-name: docs
 
