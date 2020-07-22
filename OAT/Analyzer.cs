@@ -864,7 +864,7 @@ namespace Microsoft.CST.OAT
                     foreach (var state in stateOneList)
                     {
                         var match = regex.Match(state);
-                        if (match.Success)
+                        if (match.Success || !match.Success && clause.Invert)
                         {
                             return (true, !clause.Capture ? null : new RegexCapture(clause, match, state1));
                         }
@@ -872,7 +872,7 @@ namespace Microsoft.CST.OAT
                     foreach (var state in stateTwoList)
                     {
                         var match = regex.Match(state);
-                        if (match.Success)
+                        if (match.Success || !match.Success && clause.Invert)
                         {
                             return (true, !clause.Capture ? null : new RegexCapture(clause, match, state2: state2));
                         }
@@ -928,14 +928,16 @@ namespace Microsoft.CST.OAT
 
                 if (state1 is Enum enum1)
                 {
-                    if (ParseContainsAnyEnum(enum1))
+                    var res = ParseContainsAnyEnum(enum1);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return (true, !clause.Capture ? null : new EnumCapture(clause, enum1, state1, null));
                     }
                 }
                 if (state2 is Enum enum2)
                 {
-                    if (ParseContainsAnyEnum(enum2))
+                    var res = ParseContainsAnyEnum(enum2);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, null, state2));
                     }
@@ -954,7 +956,8 @@ namespace Microsoft.CST.OAT
                     var captured = new List<KeyValuePair<string, string>>();
                     foreach(var entry in ContainsData)
                     {
-                        if (stateOneDict.Contains(entry))
+                        var res = stateOneDict.Contains(entry);
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
                         {
                             captured.Add(entry);
                         }
@@ -975,7 +978,8 @@ namespace Microsoft.CST.OAT
                     var captured = new List<KeyValuePair<string, string>>();
                     foreach (var entry in ContainsData)
                     {
-                        if (stateTwoDict.Contains(entry))
+                        var res = stateTwoDict.Contains(entry);
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
                         {
                             captured.Add(entry);
                         }
@@ -1105,14 +1109,16 @@ namespace Microsoft.CST.OAT
 
                 if (state1 is Enum enum1)
                 {
-                    if (ParseContainsAllEnum(enum1))
+                    var res = ParseContainsAllEnum(enum1);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return (true, !clause.Capture ? null : new EnumCapture(clause, enum1, state1, null));
                     }
                 }
                 if (state2 is Enum enum2)
                 {
-                    if (ParseContainsAllEnum(enum2))
+                    var res = ParseContainsAllEnum(enum2);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return (true, !clause.Capture ? null : new EnumCapture(clause, enum2, null, state2));
                     }
@@ -1128,7 +1134,8 @@ namespace Microsoft.CST.OAT
             {
                 if (stateOneDict.Any())
                 {
-                    if (ContainsData.All(x => stateOneDict.Contains(x)))
+                    var res = ContainsData.All(x => stateOneDict.Contains(x);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         var captured = clause.Capture ?
                             new ListKvpCapture<string, string>(clause, ContainsData, state1, null) :
@@ -1138,7 +1145,8 @@ namespace Microsoft.CST.OAT
                 }
                 if (stateTwoDict.Any())
                 {
-                    if (ContainsData.All(x => stateTwoDict.Contains(x)))
+                    var res = ContainsData.All(x => stateTwoDict.Contains(x);
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         var captured = clause.Capture ?
                             new ListKvpCapture<string, string>(clause, ContainsData, null, state2) :
@@ -1158,7 +1166,8 @@ namespace Microsoft.CST.OAT
                         // If we are dealing with an array on the object side
                         if (typeHolder is List<string>)
                         {
-                            if (ClauseData.All(x => stateList.Contains(x)))
+                            var res = ClauseData.All(x => stateList.Contains(x));
+                            if (res && !clause.Invert || !res && clause.Invert)
                             {
                                 return (true, clause.Capture ? ClauseData : null);
                             }
@@ -1169,7 +1178,8 @@ namespace Microsoft.CST.OAT
                             var results = new List<string>();
                             foreach(var datum in stateList)
                             {
-                                if (clause.Data.All(x => datum.Contains(x)))
+                                var res = clause.Data.All(x => datum.Contains(x));
+                                if (res && !clause.Invert || !res && clause.Invert)
                                 {
                                     results.Add(datum);
                                 }
@@ -1228,7 +1238,7 @@ namespace Microsoft.CST.OAT
             {
                 if (int.TryParse(val, out int valToCheck)
                         && int.TryParse(clause.Data?[0], out int dataValue)
-                        && valToCheck > dataValue)
+                        && ((valToCheck > dataValue) || (clause.Invert && valToCheck <= dataValue)))
                 {
                     return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
                 }
@@ -1237,7 +1247,7 @@ namespace Microsoft.CST.OAT
             {
                 if (int.TryParse(val, out int valToCheck)
                     && int.TryParse(clause.Data?[0], out int dataValue)
-                    && valToCheck > dataValue)
+                    && ((valToCheck > dataValue) || (clause.Invert && valToCheck <= dataValue)))
                 {
                     return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
                 }
@@ -1254,7 +1264,7 @@ namespace Microsoft.CST.OAT
             {
                 if (int.TryParse(val, out int valToCheck)
                         && int.TryParse(clause.Data?[0], out int dataValue)
-                        && valToCheck < dataValue)
+                        && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
                     return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
                 }
@@ -1263,7 +1273,7 @@ namespace Microsoft.CST.OAT
             {
                 if (int.TryParse(val, out int valToCheck)
                     && int.TryParse(clause.Data?[0], out int dataValue)
-                    && valToCheck < dataValue)
+                    && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
                     return (true, !clause.Capture ? null : new IntCapture(clause, valToCheck, state1, null));
                 }
@@ -1275,7 +1285,7 @@ namespace Microsoft.CST.OAT
             var compareLogic = new CompareLogic();
 
             var comparisonResult = compareLogic.Compare(state1, state2);
-            if (!comparisonResult.AreEqual)
+            if ((!comparisonResult.AreEqual && !clause.Invert) || (comparisonResult.AreEqual && clause.Invert))
             {
                 return (true, !clause.Capture ? null : new ComparisonResultCapture(clause, comparisonResult, state1, state2));
             }
@@ -1284,7 +1294,8 @@ namespace Microsoft.CST.OAT
 
         internal (bool Result, ClauseCapture? Capture) IsNullOperation(Clause clause, object? state1, object? state2)
         {
-            return (state1 == null && state2 == null, null);
+            var res = state1 == null && state2 == null;
+            return (clause.Invert ? !res : res, null);
         }
 
         internal (bool Result, ClauseCapture? Capture) IsTrueOperation(Clause clause, object? state1, object? state2)
@@ -1311,13 +1322,21 @@ namespace Microsoft.CST.OAT
                 {
                     var compareTime = DateTime.TryParse(data, out DateTime result);
 
-                    if (state1 is DateTime date1 && date1.CompareTo(result) < 0)
+                    if (state1 is DateTime date1)
                     {
-                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                        var res = date1.CompareTo(result) < 0;
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
+                        {
+                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                        }
                     }
                     if (state2 is DateTime date2 && date2.CompareTo(result) < 0)
                     {
-                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                        var res = date2.CompareTo(result) < 0;
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
+                        {
+                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                        }
                     }
                 }
             }
@@ -1327,13 +1346,17 @@ namespace Microsoft.CST.OAT
 
         internal (bool Result, ClauseCapture? Capture) IsExpiredOperation(Clause clause, object? state1, object? state2)
         {
-            if (state1 is DateTime dateTime1 && dateTime1.CompareTo(DateTime.Now) < 0)
+            if (state1 is DateTime date1)
             {
-                return (true, !clause.Capture ? null : new DateTimeCapture(clause, dateTime1, state1, null));
+                var res = date1.CompareTo(DateTime.Now) < 0;
+                if ((res && !clause.Invert) || (clause.Invert && !res))
+                    return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
             }
-            if (state2 is DateTime dateTime2 && dateTime2.CompareTo(DateTime.Now) < 0)
+            if (state2 is DateTime date2)
             {
-                return (true, !clause.Capture ? null : new DateTimeCapture(clause, dateTime2, null, state2));
+                var res = date2.CompareTo(DateTime.Now) < 0;
+                if ((res && !clause.Invert) || (clause.Invert && !res))
+                    return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
             }
             return (false, null);
         }
@@ -1347,7 +1370,8 @@ namespace Microsoft.CST.OAT
 
             foreach (var datum in clause.Data ?? new List<string>())
             {
-                if (stateOneDict.Any(x => x.Key == datum))
+                var res = stateOneDict.Any(x => x.Key == datum);
+                if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum);
                 }
@@ -1362,7 +1386,8 @@ namespace Microsoft.CST.OAT
 
             foreach (var datum in clause.Data ?? new List<string>())
             {
-                if (stateTwoDict.Any(x => x.Key == datum))
+                var res = stateTwoDict.Any(x => x.Key == datum);
+                if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum);
                 }
@@ -1388,13 +1413,17 @@ namespace Microsoft.CST.OAT
                 {
                     var compareTime = DateTime.TryParse(data, out DateTime result);
 
-                    if (state1 is DateTime date1 && date1.CompareTo(result) > 0)
+                    if (state1 is DateTime date1)
                     {
-                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
+                        var res = date1.CompareTo(result) > 0;
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
+                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date1, state1, null));
                     }
-                    if (state2 is DateTime date2 && date2.CompareTo(result) > 0)
+                    if (state2 is DateTime date2)
                     {
-                        return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
+                        var res = date2.CompareTo(result) > 0;
+                        if ((res && !clause.Invert) || (clause.Invert && !res))
+                            return (true, !clause.Capture ? null : new DateTimeCapture(clause, date2, null, state2));
                     }
                 }
             }
@@ -1406,12 +1435,13 @@ namespace Microsoft.CST.OAT
         {
             (var stateOneList, var stateOneDict) = ObjectToValues(state1);
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
-            if (clause.Data is List<string> EndsWithData)
+            if (clause.Data is List<string> StartsWithData)
             {
                 var results = new List<string>();
                 foreach (var entry in stateOneList)
                 {
-                    if (EndsWithData.Any(x => entry.StartsWith(x)))
+                    var res = StartsWithData.Any(x => entry.StartsWith(x));
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
                     }
@@ -1424,7 +1454,8 @@ namespace Microsoft.CST.OAT
 
                 foreach (var entry in stateTwoList)
                 {
-                    if (EndsWithData.Any(x => entry.StartsWith(x)))
+                    var res = StartsWithData.Any(x => entry.StartsWith(x));
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
                     }
@@ -1448,7 +1479,8 @@ namespace Microsoft.CST.OAT
                 var results = new List<string>();
                 foreach (var entry in stateOneList)
                 {
-                    if (EndsWithData.Any(x => entry.EndsWith(x)))
+                    var res = EndsWithData.Any(x => entry.EndsWith(x));
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
                     }
@@ -1461,7 +1493,8 @@ namespace Microsoft.CST.OAT
 
                 foreach (var entry in stateTwoList)
                 {
-                    if (EndsWithData.Any(x => entry.EndsWith(x)))
+                    var res = EndsWithData.Any(x => entry.EndsWith(x));
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
                     }
