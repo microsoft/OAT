@@ -3,7 +3,8 @@
 Object Analysis Toolkit (OAT) is a rules processing engine to apply provided rules against arbitrary objects.
 
 * [Rules](https://github.com/microsoft/OAT/blob/main/OAT/Rule.cs) contain a Target, a Severity, a boolean Expression and a List of [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) which are applied to the targeted object.
-* [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels. 
+* [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels.
+* Clauses can also Capture the result of their operation.
 * The Analyzer has 4 delegate extensibility points.
 1. Property Parsing
 2. Value Extraction
@@ -14,13 +15,24 @@ Check the [Wiki](https://github.com/microsoft/OAT/wiki) for additional detail.
 
 ## Basic Usage
 
-The basic usage of Logical Analyzer is applying rules to targets using the Analyze function.
+The basic usage of OAT is applying rules to targets using the Analyze function.
 
 ```csharp
 object target;
 IEnumerable<Rule> rules;
 var analyzer = new Analyzer();
 var rulesWhichApply = analyzer.Analyze(rules,target);
+```
+
+## Capturing
+
+OAT also supports capturing and returning results of clauses.
+
+```csharp
+object target;
+IEnumerable<Rule> rules;
+var analyzer = new Analyzer();
+var res = analyzer.GetCaptures(rules, target);
 ```
 ## Authoring Rules
 

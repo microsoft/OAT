@@ -7,7 +7,6 @@ using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -297,7 +296,7 @@ namespace Microsoft.CST.OAT
         /// <param name="state1">First state of object</param>
         /// <param name="state2">Second state of object</param>
         /// <returns></returns>
-        public ConcurrentStack<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
+        public IEnumerable<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var results = new ConcurrentStack<RuleCapture>();
 
@@ -374,7 +373,7 @@ namespace Microsoft.CST.OAT
         /// <param name="state1">The first state</param>
         /// <param name="state2">The second state</param>
         /// <returns>A Stack of Rules which apply</returns>
-        public ConcurrentStack<Rule> Analyze(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
+        public IEnumerable<Rule> Analyze(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var results = new ConcurrentStack<Rule>();
 
@@ -854,8 +853,8 @@ namespace Microsoft.CST.OAT
 
         internal (bool Result, ClauseCapture? Capture) RegexOperation(Clause clause, object? state1, object? state2)
         {
-            (var stateOneList, var stateOneDict) = ObjectToValues(state1);
-            (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
+            (var stateOneList, _) = ObjectToValues(state1);
+            (var stateTwoList, _) = ObjectToValues(state2);
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
                 var built = string.Join('|', RegexList);
