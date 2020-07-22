@@ -768,7 +768,7 @@ namespace Microsoft.CST.OAT
             try
             {
                 var res = GetClauseCapture(clause, state1, state2);
-                return clause.Invert ? !res.Applies : res.Applies;
+                return res.Applies;
             }
             catch (Exception e)
             {
@@ -1295,7 +1295,8 @@ namespace Microsoft.CST.OAT
             {
                 var res1 = (bool?)state1 ?? false;
                 var res2 = (bool?)state2 ?? false;
-                return (res1 || res2, !clause.Capture ? null : new BoolCapture(clause, res1 || res2,state1, state2));
+                return (clause.Invert ? !(res1 || res2) : res1 || res2, 
+                    !clause.Capture ? null : new BoolCapture(clause, res1 || res2,state1, state2));
             }
             return (false, null);
         }
@@ -1476,27 +1477,43 @@ namespace Microsoft.CST.OAT
 
         internal (bool Result, ClauseCapture? Capture) NeqOperation(Clause clause, object? state1, object? state2)
         {
-
-            (var stateOneList, var stateOneDict) = ObjectToValues(state1);
-            (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
+            (var stateOneList, _) = ObjectToValues(state1);
+            (var stateTwoList, _) = ObjectToValues(state2);
             if (clause.Data is List<string> NotEqualsData)
             {
-                foreach (var datum in NotEqualsData)
+                List<string> StateListToNeqList(List<string> stateList)
                 {
-                    foreach (var stateOneDatum in stateOneList)
+                    var results = new List<string>();
+                    foreach (var datum in NotEqualsData)
                     {
-                        if (stateOneDatum != datum)
+                        foreach (var stateOneDatum in stateList)
                         {
-                            return (true, !clause.Capture ? null : new StringCapture(clause, stateOneDatum, state1, null));
+                            if (clause.Invert && stateOneDatum == datum)
+                            {
+                                results.Add(stateOneDatum);
+                            }
+                            else if (!clause.Invert && stateOneDatum != datum)
+                            {
+                                results.Add(stateOneDatum);
+                            }
                         }
                     }
-                    foreach (var stateTwoDatum in stateTwoList)
-                    {
-                        if (stateTwoDatum != datum)
-                        {
-                            return (true, !clause.Capture ? null : new StringCapture(clause, stateTwoDatum, null, state2));
-                        }
-                    }
+                    return results;
+                }
+
+                var res = StateListToNeqList(stateOneList);
+                if (res.Any())
+                {
+                    return (true, !clause.Capture ? null :
+                        res.Count > 0 ? (ClauseCapture)new StringCapture(clause, res.First(), state1, null) :
+                            new ListCapture<string>(clause, res, state1, null));
+                }
+                res = StateListToNeqList(stateTwoList);
+                if (res.Any())
+                {
+                    return (true, !clause.Capture ? null :
+                        res.Count > 0 ? (ClauseCapture)new StringCapture(clause, res.First(), null, state2) :
+                            new ListCapture<string>(clause, res, null, state2));
                 }
             }
             return (false, null);
@@ -1516,26 +1533,43 @@ namespace Microsoft.CST.OAT
 
         internal (bool Result, ClauseCapture? Capture) EqOperation(Clause clause, object? state1, object? state2)
         {
-            (var stateOneList, var stateOneDict) = ObjectToValues(state1);
-            (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
+            (var stateOneList, _) = ObjectToValues(state1);
+            (var stateTwoList, _) = ObjectToValues(state2);
             if (clause.Data is List<string> EqualsData)
             {
-                foreach (var datum in EqualsData)
+                List<string> StateListToEqList(List<string> stateList)
                 {
-                    foreach (var stateOneDatum in stateOneList)
+                    var results = new List<string>();
+                    foreach (var datum in EqualsData)
                     {
-                        if (stateOneDatum == datum)
+                        foreach (var stateOneDatum in stateList)
                         {
-                            return (true, !clause.Capture ? null : new StringCapture(clause, stateOneDatum, state1, null));
+                            if (clause.Invert && stateOneDatum != datum)
+                            {
+                                results.Add(stateOneDatum);
+                            }
+                            else if (!clause.Invert && stateOneDatum == datum)
+                            {
+                                results.Add(stateOneDatum);
+                            }
                         }
                     }
-                    foreach (var stateTwoDatum in stateTwoList)
-                    {
-                        if (stateTwoDatum == datum)
-                        {
-                            return (true, !clause.Capture ? null : new StringCapture(clause, stateTwoDatum, null, state2));
-                        }
-                    }
+                    return results;
+                }
+
+                var res = StateListToEqList(stateOneList);
+                if (res.Any())
+                {
+                    return (true, !clause.Capture ? null :
+                        res.Count > 0 ? (ClauseCapture)new StringCapture(clause, res.First(), state1, null) :
+                            new ListCapture<string>(clause, res, state1, null));
+                }
+                res = StateListToEqList(stateTwoList);
+                if (res.Any())
+                {
+                    return (true, !clause.Capture ? null :
+                        res.Count > 0 ? (ClauseCapture)new StringCapture(clause, res.First(), null, state2) :
+                            new ListCapture<string>(clause, res, null, state2));
                 }
             }
             return (false, null);
