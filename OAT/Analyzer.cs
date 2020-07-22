@@ -971,7 +971,7 @@ namespace Microsoft.CST.OAT
                     }
                     var returnVal = clause.Capture ?
                         new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, captured, state1, null) :
-                        new ClauseCapture(clause, state1, null);
+                        null;
 
                     return (true, returnVal);
                 }
@@ -992,8 +992,8 @@ namespace Microsoft.CST.OAT
                         return (false, null);
                     }
                     var returnVal = clause.Capture ?
-                        new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, captured, state1, null) :
-                        new ClauseCapture(clause, state1, null);
+                        new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, state1, null) :
+                        null;
 
                     return (true, returnVal);
                 }
@@ -1023,7 +1023,7 @@ namespace Microsoft.CST.OAT
                             }
 
                             return (true, foundStates);
-        }
+                        }
                         // If we are dealing with a single string we do a .Contains instead
                         else if (typeHolder is string)
                         {
@@ -1138,8 +1138,8 @@ namespace Microsoft.CST.OAT
                     if (res.Any())
                     {
                         var captured = clause.Capture ?
-                            new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, res.ToList(), state1, null) :
-                            new ClauseCapture(clause, state1, null);
+                            new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, res.ToList(), state1, null) :
+                            null;
                         return (true, captured);
                     }
                 }
@@ -1149,8 +1149,8 @@ namespace Microsoft.CST.OAT
                     if (res.Any())
                     {
                         var captured = clause.Capture ?
-                            new TypedClauseCapture<List<KeyValuePair<string,string>>>(clause, res.ToList(), null, state2) :
-                            new ClauseCapture(clause, null, state2);
+                            new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, res.ToList(), null, state2) :
+                            null;
                         return (true, captured);
                     }
                 }
