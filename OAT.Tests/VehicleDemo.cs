@@ -57,7 +57,8 @@ namespace Microsoft.CST.OAT.Tests
             {
                 if (state1 is Vehicle vehicle)
                 {
-                    if (vehicle.Weight > vehicle.Capacity)
+                    var res = vehicle.Weight > vehicle.Capacity;
+                    if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return (true, true, null);
                     }
