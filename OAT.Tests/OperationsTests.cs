@@ -214,7 +214,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var falseStringObject = new TestObject()
             {
-                StringField = "ThisStringDoesNot"
+                StringField = "ThisOneDoesNot"
             };
 
             var stringContains = new Rule("String Contains Rule")
@@ -234,7 +234,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var stringAnalyzer = new Analyzer();
-            var ruleList = new List<Rule>() { stringContains }; ;
+            var ruleList = new List<Rule>() { stringContains };
 
             Assert.IsTrue(stringAnalyzer.Analyze(ruleList, trueStringObject).Any());
             Assert.IsFalse(stringAnalyzer.Analyze(ruleList, falseStringObject).Any());
@@ -296,7 +296,7 @@ namespace Microsoft.CST.OAT.Tests
                 StringDictField = new Dictionary<string, string>()
                 {
                     { "One", "Magic" },
-                    { "Two", "Show" },
+                    { "Two", "Something" },
                     { "Three", "Please" }
                 }
             };
