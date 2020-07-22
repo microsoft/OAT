@@ -149,7 +149,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(endsWithCapture, new List<string>() { "35", "47", "65" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "47") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("47")) is true);
         }
 
         [TestMethod]
@@ -193,7 +193,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             res = analyzer.GetCapture(startsWithCapture, new List<string>() { "53", "47", "56" }, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is StringCapture y && y.Result == "47") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is ListCapture<string> y && y.Result.Contains("47")) is true);
         }
 
         [TestMethod]
