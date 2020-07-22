@@ -1134,7 +1134,7 @@ namespace Microsoft.CST.OAT
             {
                 if (stateOneDict.Any())
                 {
-                    var res = ContainsData.All(x => stateOneDict.Contains(x);
+                    var res = ContainsData.All(x => stateOneDict.Contains(x));
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         var captured = clause.Capture ?
@@ -1145,7 +1145,7 @@ namespace Microsoft.CST.OAT
                 }
                 if (stateTwoDict.Any())
                 {
-                    var res = ContainsData.All(x => stateTwoDict.Contains(x);
+                    var res = ContainsData.All(x => stateTwoDict.Contains(x));
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         var captured = clause.Capture ?
