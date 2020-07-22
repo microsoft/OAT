@@ -60,11 +60,14 @@ namespace Microsoft.CST.OAT.Tests
                     var res = vehicle.Weight > vehicle.Capacity;
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
-                        return (true, true, new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2));
+                        // The rule applies and is true and the capture is available if capture is enabled
+                        return (true, true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
                     }
                 }
+                // The rule applies but is false
                 return (true, false, null);
             }
+            // The rule doesn't apply
             return (false, false, null);
         }
 
