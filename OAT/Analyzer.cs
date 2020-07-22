@@ -105,68 +105,69 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public BuiltinOperationDelegate EqOperationDelegate { get; set; }
         /// <summary>
-        /// The NEQ Operation Delegate. Set to override EQ behavior.
+        /// The NEQ Operation Delegate. Set to override NEQ behavior.
         /// </summary>
         public BuiltinOperationDelegate NeqOperationDelegate { get; set; }
         /// <summary>
-        /// The LT Operation Delegate. Set to override EQ behavior.
+        /// The LT Operation Delegate. Set to override LT behavior.
         /// </summary>
         public BuiltinOperationDelegate LtOperationDelegate { get; set; }
         /// <summary>
-        /// The GT Operation Delegate. Set to override EQ behavior.
+        /// The GT Operation Delegate. Set to override GT behavior.
         /// </summary>
         public BuiltinOperationDelegate GtOperationDelegate { get; set; }
         /// <summary>
-        /// The REGEX Operation Delegate. Set to override EQ behavior.
+        /// The REGEX Operation Delegate. Set to override REGEX behavior.
         /// </summary>
         public BuiltinOperationDelegate RegexOperationDelegate { get; set; }
         /// <summary>
-        /// The CONTAINS Operation Delegate. Set to override EQ behavior.
+        /// The CONTAINS Operation Delegate. Set to override CONTAINS behavior.
         /// </summary>
         public BuiltinOperationDelegate ContainsOperationDelegate { get; set; }
         /// <summary>
-        /// The CONTAINS_ANY Operation Delegate. Set to override EQ behavior.
+        /// The CONTAINS_ANY Operation Delegate. Set to override CONTAINS_ANY behavior.
         /// </summary>
         public BuiltinOperationDelegate ContainsAnyOperationDelegate { get; set; }
         /// <summary>
-        /// The WAS_MODIFIED Operation Delegate. Set to override EQ behavior.
+        /// The WAS_MODIFIED Operation Delegate. Set to override WAS_MODIFIED behavior.
         /// </summary>
         public BuiltinOperationDelegate WasModifiedOperationDelegate { get; set; }
         /// <summary>
-        /// The ENDS_WITH Operation Delegate. Set to override EQ behavior.
+        /// The ENDS_WITH Operation Delegate. Set to override ENDS_WITH behavior.
         /// </summary>
         public BuiltinOperationDelegate EndsWithOperationDelegate { get; set; }
         /// <summary>
-        /// The STARTS_WITH Operation Delegate. Set to override EQ behavior.
+        /// The STARTS_WITH Operation Delegate. Set to override STARTS_WITH behavior.
         /// </summary>
         public BuiltinOperationDelegate StartsWithOperationDelegate { get; set; }
         /// <summary>
-        /// The IS_NULL Operation Delegate. Set to override EQ behavior.
+        /// The IS_NULL Operation Delegate. Set to override IS_NULL behavior.
         /// </summary>
         public BuiltinOperationDelegate IsNullOperationDelegate { get; set; }
         /// <summary>
-        /// The IS_TRUE Operation Delegate. Set to override EQ behavior.
+        /// The IS_TRUE Operation Delegate. Set to override IS_TRUE behavior.
         /// </summary>
         public BuiltinOperationDelegate IsTrueOperationDelegate { get; set; }
         /// <summary>
-        /// The IS_AFTER Operation Delegate. Set to override EQ behavior.
+        /// The IS_AFTER Operation Delegate. Set to override IS_AFTER behavior.
         /// </summary>
         public BuiltinOperationDelegate IsAfterOperationDelegate { get; set; }
         /// <summary>
-        /// The IS_BEFORE Operation Delegate. Set to override EQ behavior.
+        /// The IS_BEFORE Operation Delegate. Set to override IS_BEFORE behavior.
         /// </summary>
         public BuiltinOperationDelegate IsBeforeOperationDelegate { get; set; }
         /// <summary>
-        /// The IS_EXPIRED Operation Delegate. Set to override EQ behavior.
+        /// The IS_EXPIRED Operation Delegate. Set to override IS_EXPIRED behavior.
         /// </summary>
         public BuiltinOperationDelegate IsExpiredOperationDelegate { get; set; }
         /// <summary>
-        /// The CONTAINS_KEY Operation Delegate. Set to override EQ behavior.
+        /// The CONTAINS_KEY Operation Delegate. Set to override CONTAINS_KEY behavior.
         /// </summary>
         public BuiltinOperationDelegate ContainsKeyOperationDelegate { get; set; }
 
         /// <summary>
-        /// The ValidationDelegates that will be used in order of attempt.  All will be run. Order not guaranteed.
+        /// The ValidationDelegates that will be used in order of attempt when encountering a CustomOperation in EnumerateRuleIssues.
+        /// All will be run. Order not guaranteed.
         /// </summary>
         public List<ValidationDelegate> CustomOperationValidationDelegates { get; set; } = new List<ValidationDelegate>();
 
