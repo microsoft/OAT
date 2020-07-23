@@ -42,6 +42,95 @@ namespace Microsoft.CST.OAT.Tests
         };
 
         [TestMethod]
+        public void TestShortcutWithCapture()
+        {
+            var rule = new Rule("TestShortcutWithCapture")
+            {
+                Expression = "1 AND 2 OR 3",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                        Label = "1",
+                        Invert = true
+                    },
+                    new Clause(OPERATION.EQ,"StringField"){
+                        Label = "2",
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        },
+                        Capture = true
+                    },
+                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                        Label = "3"
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var target = new TestObject()
+            {
+                StringField = "Magic",
+                BoolField = true
+            };
+            var cap = analyzer.GetCapture(rule, target);
+            Assert.IsTrue(cap.Result?.Captures.First() is TypedClauseCapture<string> t && t.Result == "Magic");
+        }
+
+        [TestMethod]
+        public void TestShortcut()
+        {
+            var rule = new Rule("TestShortcut")
+            {
+                Expression = "1 AND 2 OR 3",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                        Label = "1",
+                        Invert = true
+                    },
+                    new Clause(OPERATION.CUSTOM,"StringField"){
+                        Label = "2"
+                    },
+                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                        Label = "3"
+                    }
+                }
+            };
+
+            var rule2 = new Rule("TestShortcut")
+            {
+                Expression = "1 OR 2",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                        Label = "1",
+                    },
+                    new Clause(OPERATION.CUSTOM,"StringField"){
+                        Label = "2",
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+
+            analyzer.CustomOperationDelegates.Add((Clause _, object? __, object? ___) =>
+            {
+                // We should shortcut calling the custom operation entirely, because it is not being captured
+                // Given the test data this line should never be hit
+                Assert.Fail();
+                return (false, false, null);
+            });
+            var target = new TestObject()
+            {
+                StringField = "Magic",
+                BoolField = true
+            };
+            var cap = analyzer.GetCapture(rule, target);
+            cap = analyzer.GetCapture(rule2, target);
+        }
+
+        [TestMethod]
         public void TestNotNot()
         {
             var RuleName = "Not Not True";
