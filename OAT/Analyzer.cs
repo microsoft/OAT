@@ -1532,6 +1532,7 @@ namespace Microsoft.CST.OAT
         /// <returns></returns>
         public (bool Result, ClauseCapture? Capture) NopOperation(Clause clause, object? state1, object? state2)
         {
+            Log.Debug($"{clause.Operation} is not supported.");
             return (false, null);
         }
 
