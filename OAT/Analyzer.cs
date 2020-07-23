@@ -260,7 +260,7 @@ namespace Microsoft.CST.OAT
             if (violations == null) return;
             foreach (var violation in violations)
             {
-                Log.Warning(violation.description);
+                Log.Warning(violation.Description);
             }
         }
 
@@ -475,8 +475,8 @@ namespace Microsoft.CST.OAT
                     }
                     switch (clause.Operation)
                     {
-                        case OPERATION.EQ:
-                        case OPERATION.NEQ:
+                        case Operation.Eq:
+                        case Operation.Neq:
                             if ((clause.Data?.Count == null || clause.Data?.Count == 0))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseNoData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -488,8 +488,8 @@ namespace Microsoft.CST.OAT
 
                             break;
 
-                        case OPERATION.CONTAINS:
-                        case OPERATION.CONTAINS_ANY:
+                        case Operation.Contains:
+                        case Operation.ContainsAny:
                             if ((clause.Data?.Count == null || clause.Data?.Count == 0) && (clause.DictData?.Count == null || clause.DictData?.Count == 0))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseNoDataOrDictData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -500,8 +500,8 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.ENDS_WITH:
-                        case OPERATION.STARTS_WITH:
+                        case Operation.EndsWith:
+                        case Operation.StartsWith:
                             if (clause.Data?.Count == null || clause.Data?.Count == 0)
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseNoData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -512,8 +512,8 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.GT:
-                        case OPERATION.LT:
+                        case Operation.Gt:
+                        case Operation.Lt:
                             if (clause.Data?.Count == null || clause.Data is List<string> clauseList && (clauseList.Count != 1 || !int.TryParse(clause.Data.First(), out int _)))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedInt"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -524,7 +524,7 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.REGEX:
+                        case Operation.Regex:
                             if (clause.Data?.Count == null || clause.Data?.Count == 0)
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseNoData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -545,10 +545,10 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.IS_NULL:
-                        case OPERATION.IS_TRUE:
-                        case OPERATION.IS_EXPIRED:
-                        case OPERATION.WAS_MODIFIED:
+                        case Operation.IsNull:
+                        case Operation.IsTrue:
+                        case Operation.IsExpired:
+                        case Operation.WasModified:
                             if (!(clause.Data?.Count == null || clause.Data?.Count == 0))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseRedundantData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -559,8 +559,8 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.IS_BEFORE:
-                        case OPERATION.IS_AFTER:
+                        case Operation.IsBefore:
+                        case Operation.IsAfter:
                             if (clause.Data?.Count == null || clause.Data is List<string> clauseList2 && (clauseList2.Count != 1 || !DateTime.TryParse(clause.Data.First(), out DateTime _)))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedDateTime"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -571,7 +571,7 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.CONTAINS_KEY:
+                        case Operation.ContainsKey:
                             if (clause.DictData != null)
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseUnexpectedDictData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -582,7 +582,7 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case OPERATION.CUSTOM:
+                        case Operation.Custom:
                             if (clause.CustomOperation == null)
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingCustomOperation"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -788,7 +788,7 @@ namespace Microsoft.CST.OAT
                 state1 = GetValueByPropertyString(state1, clause.Field);
             }
 
-            if (clause.Operation is OPERATION.CUSTOM)
+            if (clause.Operation is Operation.Custom)
             {
                 foreach (var del in CustomOperationDelegates)
                 {
@@ -804,22 +804,22 @@ namespace Microsoft.CST.OAT
 
             BuiltinOperationDelegate func = clause.Operation switch
             {
-                OPERATION.EQ => EqOperationDelegate,
-                OPERATION.NEQ => NeqOperationDelegate,
-                OPERATION.CONTAINS => ContainsOperationDelegate,
-                OPERATION.CONTAINS_ANY => ContainsAnyOperationDelegate,
-                OPERATION.LT => LtOperationDelegate,
-                OPERATION.GT => GtOperationDelegate,
-                OPERATION.REGEX => RegexOperationDelegate,
-                OPERATION.WAS_MODIFIED => WasModifiedOperationDelegate,
-                OPERATION.ENDS_WITH => EndsWithOperationDelegate,
-                OPERATION.STARTS_WITH => StartsWithOperationDelegate,
-                OPERATION.IS_NULL => IsNullOperationDelegate,
-                OPERATION.IS_TRUE => IsTrueOperationDelegate,
-                OPERATION.IS_BEFORE => IsBeforeOperationDelegate,
-                OPERATION.IS_AFTER => IsAfterOperationDelegate,
-                OPERATION.IS_EXPIRED => IsExpiredOperationDelegate,
-                OPERATION.CONTAINS_KEY => ContainsKeyOperationDelegate,
+                Operation.Eq => EqOperationDelegate,
+                Operation.Neq => NeqOperationDelegate,
+                Operation.Contains => ContainsOperationDelegate,
+                Operation.ContainsAny => ContainsAnyOperationDelegate,
+                Operation.Lt => LtOperationDelegate,
+                Operation.Gt => GtOperationDelegate,
+                Operation.Regex => RegexOperationDelegate,
+                Operation.WasModified => WasModifiedOperationDelegate,
+                Operation.EndsWith => EndsWithOperationDelegate,
+                Operation.StartsWith => StartsWithOperationDelegate,
+                Operation.IsNull => IsNullOperationDelegate,
+                Operation.IsTrue => IsTrueOperationDelegate,
+                Operation.IsBefore => IsBeforeOperationDelegate,
+                Operation.IsAfter => IsAfterOperationDelegate,
+                Operation.IsExpired => IsExpiredOperationDelegate,
+                Operation.ContainsKey => ContainsKeyOperationDelegate,
                 _ => NopOperation
             };
 

@@ -36,7 +36,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -78,7 +78,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.NEQ, "StringField")
+                    new Clause(Operation.Neq, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -95,7 +95,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.NEQ, "StringField")
+                    new Clause(Operation.Neq, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -120,7 +120,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.ENDS_WITH)
+                    new Clause(Operation.EndsWith)
                     {
                         Data = new List<string>()
                         {
@@ -138,7 +138,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.ENDS_WITH)
+                    new Clause(Operation.EndsWith)
                     {
                         Data = new List<string>()
                         {
@@ -162,7 +162,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.STARTS_WITH)
+                    new Clause(Operation.StartsWith)
                     {
                         Data = new List<string>()
                         {
@@ -182,7 +182,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.STARTS_WITH)
+                    new Clause(Operation.StartsWith)
                     {
                         Data = new List<string>()
                         {
@@ -206,7 +206,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL)
+                    new Clause(Operation.IsNull)
                     {
                         Capture = true
                     }
@@ -221,7 +221,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL)
+                    new Clause(Operation.IsNull)
                     {
                         Capture = true,
                         Invert = true
@@ -242,7 +242,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE)
+                    new Clause(Operation.IsTrue)
                     {
                         Capture = true
                     }
@@ -256,7 +256,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE)
+                    new Clause(Operation.IsTrue)
                     {
                         Capture = true,
                         Invert = true
@@ -275,7 +275,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_KEY)
+                    new Clause(Operation.ContainsKey)
                     {
                         Data = new List<string>()
                         {
@@ -298,7 +298,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_KEY)
+                    new Clause(Operation.ContainsKey)
                     {
                         Data = new List<string>()
                         {
@@ -323,7 +323,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_EXPIRED)
+                    new Clause(Operation.IsExpired)
                     {
                         Capture = true
                     }
@@ -340,7 +340,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_EXPIRED)
+                    new Clause(Operation.IsExpired)
                     {
                         Capture = true,
                         Invert = true
@@ -365,7 +365,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_AFTER)
+                    new Clause(Operation.IsAfter)
                     {
                         Data = new List<string>()
                         {
@@ -385,7 +385,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_AFTER)
+                    new Clause(Operation.IsAfter)
                     {
                         Data = new List<string>()
                         {
@@ -411,7 +411,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_BEFORE)
+                    new Clause(Operation.IsBefore)
                     {
                         Data = new List<string>()
                         {
@@ -431,7 +431,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_BEFORE)
+                    new Clause(Operation.IsBefore)
                     {
                         Data = new List<string>()
                         {
@@ -458,7 +458,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.LT)
+                    new Clause(Operation.Lt)
                     {
                         Data = new List<string>()
                         {
@@ -475,7 +475,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.LT)
+                    new Clause(Operation.Lt)
                     {
                         Data = new List<string>()
                         {
@@ -500,7 +500,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.WAS_MODIFIED)
+                    new Clause(Operation.WasModified)
                     {
                         Capture = true
                     }
@@ -516,7 +516,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.WAS_MODIFIED)
+                    new Clause(Operation.WasModified)
                     {
                         Capture = true,
                         Invert = true
@@ -536,7 +536,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.REGEX)
+                    new Clause(Operation.Regex)
                     {
                         Data = new List<string>()
                         {
@@ -555,7 +555,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.REGEX)
+                    new Clause(Operation.Regex)
                     {
                         Data = new List<string>()
                         {
@@ -581,7 +581,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.GT)
+                    new Clause(Operation.Gt)
                     {
                         Data = new List<string>()
                         {
@@ -598,7 +598,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.GT)
+                    new Clause(Operation.Gt)
                     {
                         Data = new List<string>()
                         {
@@ -629,7 +629,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS)
+                    new Clause(Operation.Contains)
                     {
                         Data = new List<string>()
                         {
@@ -657,7 +657,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS)
+                    new Clause(Operation.Contains)
                     {
                         Data = new List<string>()
                         {
@@ -685,7 +685,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS)
+                    new Clause(Operation.Contains)
                     {
                         DictData = testdata.ToList(),
                         Capture = true
@@ -705,7 +705,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS)
+                    new Clause(Operation.Contains)
                     {
                         DictData = testlist,
                         Capture = true,
@@ -732,7 +732,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY)
+                    new Clause(Operation.ContainsAny)
                     {
                         Data = new List<string>()
                         {
@@ -762,7 +762,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY)
+                    new Clause(Operation.ContainsAny)
                     {
                         DictData = testdata.ToList(),
                         Capture = true
@@ -784,7 +784,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY)
+                    new Clause(Operation.ContainsAny)
                     {
                         Data = new List<string>()
                         {
@@ -813,7 +813,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY)
+                    new Clause(Operation.ContainsAny)
                     {
                         DictData = testdata.ToList(),
                         Capture = true,

@@ -167,7 +167,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.CUSTOM)
+                        new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
                             CustomOperation = "OVERWEIGHT",
@@ -183,7 +183,7 @@ namespace Microsoft.CST.OAT.Tests
                     Expression = "NOT Has_Cdl",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.CONTAINS, "Driver.License.Endorsements")
+                        new Clause(Operation.Contains, "Driver.License.Endorsements")
                         {
                             Label = "Has_Cdl",
                             Data = new List<string>()
@@ -199,7 +199,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.IS_EXPIRED, "Driver.License.Expiration")
+                        new Clause(Operation.IsExpired, "Driver.License.Expiration")
                         {
                         }
                     }
@@ -273,12 +273,12 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.CUSTOM)
+                        new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
                             CustomOperation = "OVERWEIGHT"
                         },
-                        new Clause(OPERATION.GT, "Axles")
+                        new Clause(Operation.Gt, "Axles")
                         {
                             Label = "gt2Axles",
                             Data = new List<string>()
@@ -296,7 +296,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.GT, "Weight")
+                        new Clause(Operation.Gt, "Weight")
                         {
                             Label = "Weight",
                             Data = new List<string>()
@@ -304,7 +304,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "4000"
                             }
                         },
-                        new Clause(OPERATION.GT, "Axles")
+                        new Clause(Operation.Gt, "Axles")
                         {
                             Label = "Axles",
                             Data = new List<string>()
@@ -320,7 +320,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.GT, "Weight")
+                        new Clause(Operation.Gt, "Weight")
                         {
                             Data = new List<string>()
                             {
@@ -336,7 +336,7 @@ namespace Microsoft.CST.OAT.Tests
                     Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.GT, "Weight")
+                        new Clause(Operation.Gt, "Weight")
                         {
                             Label = "WeightGT1000",
                             Data = new List<string>()
@@ -344,7 +344,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "1000"
                             }
                         },
-                        new Clause(OPERATION.LT, "Weight")
+                        new Clause(Operation.Lt, "Weight")
                         {
                             Label = "WeightLT4000",
                             Data = new List<string>()
@@ -352,7 +352,7 @@ namespace Microsoft.CST.OAT.Tests
                                 "4000"
                             }
                         },
-                        new Clause(OPERATION.GT, "Occupants")
+                        new Clause(Operation.Gt, "Occupants")
                         {
                             Label = "OccupantsGT2",
                             Data = new List<string>()
@@ -368,7 +368,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(OPERATION.LT, "Weight")
+                        new Clause(Operation.Lt, "Weight")
                         {
                             Data = new List<string>()
                             {

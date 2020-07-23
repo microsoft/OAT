@@ -11,15 +11,15 @@ namespace Microsoft.CST.OAT
         /// <summary>
         ///     The Rule associated with this violation
         /// </summary>
-        public Rule rule { get; set; }
+        public Rule Rule { get; set; }
         /// <summary>
         ///     The clauses associated with this violation
         /// </summary>
-        public Clause[] clauses { get; set; }
+        public Clause[] Clauses { get; set; }
         /// <summary>
         ///     The text description of the violation
         /// </summary>
-        public string description { get; set; }
+        public string Description { get; set; }
 
         /// <summary>
         /// Simplest constructor.
@@ -53,9 +53,9 @@ namespace Microsoft.CST.OAT
         /// <exception cref="System.ArgumentNullException">Thrown when any parameter is null.</exception>
         public Violation(string description, Rule rule, Clause[] clauses)
         {
-            this.description = description ?? throw new ArgumentNullException(nameof(description), $"{nameof(description)} may not be null");
-            this.rule = rule ?? throw new ArgumentNullException(nameof(rule), $"{nameof(rule)} may not be null");
-            this.clauses = clauses ?? throw new ArgumentNullException(nameof(clauses), $"{nameof(clauses)} may not be null");
+            this.Description = description ?? throw new ArgumentNullException(nameof(description), $"{nameof(description)} may not be null");
+            this.Rule = rule ?? throw new ArgumentNullException(nameof(rule), $"{nameof(rule)} may not be null");
+            this.Clauses = clauses ?? throw new ArgumentNullException(nameof(clauses), $"{nameof(clauses)} may not be null");
         }
     }
 }

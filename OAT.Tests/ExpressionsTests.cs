@@ -49,11 +49,11 @@ namespace Microsoft.CST.OAT.Tests
                 Expression = "1 AND 2 OR 3",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                    new Clause(Operation.IsTrue,"BoolField"){
                         Label = "1",
                         Invert = true
                     },
-                    new Clause(OPERATION.EQ,"StringField"){
+                    new Clause(Operation.Eq,"StringField"){
                         Label = "2",
                         Data = new List<string>()
                         {
@@ -61,7 +61,7 @@ namespace Microsoft.CST.OAT.Tests
                         },
                         Capture = true
                     },
-                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                    new Clause(Operation.IsTrue,"BoolField"){
                         Label = "3"
                     }
                 }
@@ -85,14 +85,14 @@ namespace Microsoft.CST.OAT.Tests
                 Expression = "1 AND 2 OR 3",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                    new Clause(Operation.IsTrue,"BoolField"){
                         Label = "1",
                         Invert = true
                     },
-                    new Clause(OPERATION.CUSTOM,"StringField"){
+                    new Clause(Operation.Custom,"StringField"){
                         Label = "2"
                     },
-                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                    new Clause(Operation.IsTrue,"BoolField"){
                         Label = "3"
                     }
                 }
@@ -103,10 +103,10 @@ namespace Microsoft.CST.OAT.Tests
                 Expression = "1 OR 2",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE,"BoolField"){
+                    new Clause(Operation.IsTrue,"BoolField"){
                         Label = "1",
                     },
-                    new Clause(OPERATION.CUSTOM,"StringField"){
+                    new Clause(Operation.Custom,"StringField"){
                         Label = "2",
                     }
                 }
@@ -140,7 +140,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -170,7 +170,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -178,7 +178,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -211,7 +211,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringDictField.One")
+                    new Clause(Operation.Eq, "StringDictField.One")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -237,7 +237,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -245,7 +245,7 @@ namespace Microsoft.CST.OAT.Tests
                         },
                         Invert = true
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                 }
             };
 
@@ -268,14 +268,14 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Data = new List<string>()
                         {
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                 }
             };
 
@@ -298,7 +298,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -306,7 +306,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -331,7 +331,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -339,7 +339,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.EQ, "IsExecutable")
+                    new Clause(Operation.Eq, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -358,7 +358,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "WITH(PARENTHESIS)"
                     }
@@ -373,7 +373,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "W(I"
                     }
@@ -388,7 +388,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "W(I"
                     }
@@ -403,11 +403,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "W)I"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -422,11 +422,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "W)I"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -441,11 +441,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "1"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -460,7 +460,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -475,11 +475,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "1"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -494,11 +494,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "1"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -513,7 +513,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -528,11 +528,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "1"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -546,11 +546,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                 }
             };
 
@@ -562,8 +562,8 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path"),
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path"),
+                    new Clause(Operation.IsNull, "Path")
                 }
             };
 
@@ -575,7 +575,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -583,7 +583,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "IsExecutable")
+                    new Clause(Operation.IsTrue, "IsExecutable")
                     {
                         Label = "1"
                     }
@@ -598,7 +598,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -606,7 +606,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.EQ, "IsExecutable")
+                    new Clause(Operation.Eq, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -625,7 +625,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "VARIABLE"
                     }
@@ -639,7 +639,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CUSTOM, "Path")
+                    new Clause(Operation.Custom, "Path")
                     {
                         Label = "VARIABLE"
                     }
@@ -653,7 +653,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CUSTOM, "Path")
+                    new Clause(Operation.Custom, "Path")
                     {
                         Label = "VARIABLE",
                         CustomOperation = "NO_DELEGATE"
@@ -674,7 +674,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -682,7 +682,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -708,7 +708,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -716,7 +716,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -741,7 +741,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CUSTOM, "StringField")
+                    new Clause(Operation.Custom, "StringField")
                     {
                         CustomOperation = "RETURN_TRUE",
                         Data = new List<string>()
@@ -756,7 +756,7 @@ namespace Microsoft.CST.OAT.Tests
 
             analyzer.CustomOperationDelegates.Add((clause, before, after) =>
             {
-                if (clause.Operation == OPERATION.CUSTOM)
+                if (clause.Operation == Operation.Custom)
                 {
                     if (clause.CustomOperation == "RETURN_TRUE")
                     {
@@ -781,7 +781,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -809,7 +809,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -817,7 +817,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -842,7 +842,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -850,7 +850,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.EQ, "IsExecutable")
+                    new Clause(Operation.Eq, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -870,7 +870,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -878,7 +878,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.EQ, "IsExecutable")
+                    new Clause(Operation.Eq, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -897,7 +897,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "Path")
+                    new Clause(Operation.Eq, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -905,7 +905,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(OPERATION.EQ, "IsExecutable")
+                    new Clause(Operation.Eq, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -913,23 +913,23 @@ namespace Microsoft.CST.OAT.Tests
                             "True"
                         }
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "2"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "3"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "4"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "5"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "6"
                     }
@@ -944,15 +944,15 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "FOO"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "BAR"
                     },
-                    new Clause(OPERATION.IS_NULL, "IsExecutable")
+                    new Clause(Operation.IsNull, "IsExecutable")
                     {
                         Label = "BA$_*"
                     }
@@ -967,11 +967,11 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "1"
                     },
-                    new Clause(OPERATION.IS_NULL, "Path")
+                    new Clause(Operation.IsNull, "Path")
                     {
                         Label = "0"
                     }
@@ -990,7 +990,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "string",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ)
+                    new Clause(Operation.Eq)
                     {
                         Data = new List<string>()
                         {
@@ -1004,7 +1004,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ)
+                    new Clause(Operation.Eq)
                     {
                         Data = new List<string>()
                         {
@@ -1030,7 +1030,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Eq, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -1038,7 +1038,7 @@ namespace Microsoft.CST.OAT.Tests
                             "MagicWord"
                         }
                     },
-                    new Clause(OPERATION.IS_TRUE, "BoolField")
+                    new Clause(Operation.IsTrue, "BoolField")
                     {
                         Label = "1"
                     }
@@ -1063,7 +1063,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CUSTOM, "Path")
+                    new Clause(Operation.Custom, "Path")
                     {
                         CustomOperation = "FOO",
                         Data = new List<string>()
@@ -1079,7 +1079,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CUSTOM, "Path")
+                    new Clause(Operation.Custom, "Path")
                     {
                         CustomOperation = "BAR",
                         Data = new List<string>()

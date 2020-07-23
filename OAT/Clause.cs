@@ -13,7 +13,7 @@ namespace Microsoft.CST.OAT
         /// </summary>
         /// <param name="operation">The Operation to Perform</param>
         /// <param name="field">Optionally, the path to the field to operate on</param>
-        public Clause(OPERATION operation, string? field = null)
+        public Clause(Operation operation, string? field = null)
         {
             Operation = operation;
             Field = field;
@@ -42,7 +42,7 @@ namespace Microsoft.CST.OAT
         /// <summary>
         ///     The Operation to perform
         /// </summary>
-        public OPERATION Operation { get; set; }
+        public Operation Operation { get; set; }
         /// <summary>
         ///     A string indicating what custom operation should be performed, if Operation is CUSTOM
         /// </summary>
