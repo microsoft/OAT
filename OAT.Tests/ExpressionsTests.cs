@@ -289,6 +289,64 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
+        public void VerifyImplicitClauseLabels()
+        {
+            var RuleName = "ImplicitClauseLabels";
+
+            var implicitClauseLabels = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Expression = "0 OR 1",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Equals, "StringField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "MagicWord"
+                        }
+                    },
+                    new Clause(Operation.IsTrue, "BoolField")
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitClauseLabels };
+
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+
+            var mixedClauseLabels = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Expression = "0 OR Label",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Equals, "StringField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "MagicWord"
+                        }
+                    },
+                    new Clause(Operation.IsTrue, "BoolField")
+                    {
+                        Label = "Label"
+                    }
+                }
+            };
+
+            ruleList = new List<Rule>() { mixedClauseLabels };
+
+            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+        }
+
+        [TestMethod]
         public void VerifyAnd()
         {
             var RuleName = "AndRule";
@@ -658,6 +716,18 @@ namespace Microsoft.CST.OAT.Tests
                         Label = "VARIABLE",
                         CustomOperation = "NO_DELEGATE"
                     }
+                }
+            };
+
+            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+
+            invalidRule = new Rule("Missing Clause Labels")
+            {
+                Target = "TestObject",
+                Expression = "1",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Equals, "Path")
                 }
             };
 

@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -452,8 +453,7 @@ namespace Microsoft.CST.OAT
                 var clauseLabels = rule.Clauses.GroupBy(x => x.Label);
 
                 // If clauses have duplicate names
-                var duplicateClauses = clauseLabels.Where(x => x.Key != null && x.Count() > 1);
-                foreach (var duplicateClause in duplicateClauses)
+                foreach (var duplicateClause in clauseLabels.Where(x => x.Key != null && x.Count() > 1))
                 {
                     yield return new Violation(string.Format(Strings.Get("Err_ClauseDuplicateName"), rule.Name, duplicateClause.Key ?? string.Empty), rule, duplicateClause.AsEnumerable().ToArray());
                 }
@@ -687,7 +687,7 @@ namespace Microsoft.CST.OAT
                             else
                             {
                                 foundLabels.Add(variable);
-                                if (string.IsNullOrWhiteSpace(variable) || !rule.Clauses.Any(x => x.Label == variable))
+                                if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out int result) && result < rule.Clauses.Count)))
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);
                                 }
@@ -1746,11 +1746,18 @@ namespace Microsoft.CST.OAT
                     else
                     {
                         // Ensure we have exactly 1 matching clause defined
-                        var res = Clauses.Where(x => x.Label == splits[i].Replace("(", "").Replace(")", ""));
-                        if (!(res.Count() == 1))
+                        var targetLabel = splits[i].Replace("(", "").Replace(")", "");
+                        var res = Clauses.Where(x => x.Label == targetLabel);
+                        if (res.Count() > 1)
                         {
                             Log.Debug($"Multiple Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
                             return (false, null);
+                        }
+                        
+                        // If we couldn't find a label match fall back to trying to parse this as an index into clauses
+                        if (res.Count() == 0 && int.TryParse(targetLabel, out int result) && Clauses.Count > result)
+                        {
+                            res = new Clause[] { Clauses[result] };
                         }
 
                         var clause = res.First();
