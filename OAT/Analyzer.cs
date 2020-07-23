@@ -1275,6 +1275,8 @@ namespace Microsoft.CST.OAT
         internal (bool Result, ClauseCapture? Capture) WasModifiedOperation(Clause clause, object? state1, object? state2)
         {
             var compareLogic = new CompareLogic();
+            // Gather all differences if we are capturing
+            compareLogic.Config.MaxDifferences = clause.Capture ? int.MaxValue : 1;
 
             var comparisonResult = compareLogic.Compare(state1, state2);
             if ((!comparisonResult.AreEqual && !clause.Invert) || (comparisonResult.AreEqual && clause.Invert))
