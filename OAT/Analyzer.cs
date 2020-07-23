@@ -1241,7 +1241,7 @@ namespace Microsoft.CST.OAT
                     && int.TryParse(clause.Data?[0], out int dataValue)
                     && ((valToCheck > dataValue) || (clause.Invert && valToCheck <= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, null, state2));
                 }
             }
             return (false, null);
@@ -1267,7 +1267,7 @@ namespace Microsoft.CST.OAT
                     && int.TryParse(clause.Data?[0], out int dataValue)
                     && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
-                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
+                    return (true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, null, state2));
                 }
             }
             return (false, null);
