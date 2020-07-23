@@ -1759,13 +1759,7 @@ namespace Microsoft.CST.OAT
                     splits[i] = splits[i][1..];
                     splits[matchingParen] = splits[matchingParen][0..^1];
 
-                    var (CanShortcut, Value) = TryShortcut(current, Operator);
-
-                    if (CanShortcut && !Clauses.Any(x => x.Capture))
-                    {
-                        current = Value;
-                    }
-                    else
+                    bool EvaluateLambda()
                     {
                         // Recursively evaluate the contents of the parentheses
                         var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2);
@@ -1777,7 +1771,21 @@ namespace Microsoft.CST.OAT
 
                         var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
 
-                        current = Operate(Operator, current, next);
+                        return Operate(Operator, current, next);
+                    }
+
+                    // One of the labels ahead has a capture, so we can't shortcut
+                    if (Clauses.Any(x => x.Capture && splits[i..(matchingParen + 1)].Contains(x.Label)))
+                    {
+                        current = EvaluateLambda();
+                    }
+                    else if (TryShortcut(current, Operator) is (bool CanShortcut, bool Value) && CanShortcut)
+                    {
+                        current = Value;
+                    }
+                    else
+                    {
+                        current = EvaluateLambda();
                     }
 
                     updated_i = matchingParen + 1;
