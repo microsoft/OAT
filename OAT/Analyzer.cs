@@ -959,20 +959,18 @@ namespace Microsoft.CST.OAT
                         }
                     }
 
-                    if (!captured.Any())
+                    if (captured.Any())
                     {
-                        return (false, null);
+                        var returnVal = clause.Capture ?
+                            new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, state1, null) :
+                            null;
+                        return (true, returnVal);
                     }
-                    var returnVal = clause.Capture ?
-                        new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, state1, null) :
-                        null;
-
-                    return (true, returnVal);
                 }
                 if (stateTwoDict.Any())
                 {
                     var captured = new List<KeyValuePair<string, string>>();
-                    foreach (var entry in stateOneDict)
+                    foreach (var entry in stateTwoDict)
                     {
                         var res = ContainsData.Contains(entry);
                         if ((res && !clause.Invert) || (clause.Invert && !res))
@@ -981,90 +979,85 @@ namespace Microsoft.CST.OAT
                         }
                     }
 
-                    if (!captured.Any())
+                    if (captured.Any())
                     {
-                        return (false, null);
+                        var returnVal = clause.Capture ?
+                            new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, null, state2) :
+                            null;
+                        return (true, returnVal);
                     }
-                    var returnVal = clause.Capture ?
-                        new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, captured, state1, null) :
-                        null;
-
-                    return (true, returnVal);
                 }
                 return (false, null);
             }
 
             if (clause.Data is List<string> ClauseData)
             {
-                if (stateOneList.Any())
+                (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                 {
-                    (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
+                    // If we are dealing with an array on the object side
+                    if (typeHolder is List<string>)
                     {
-                        // If we are dealing with an array on the object side
-                        if (typeHolder is List<string>)
+                        var foundStates = new List<string>();
+                        foreach (var entry in stateList)
                         {
-                            var foundStates = new List<string>();
-                            foreach (var entry in stateList)
+                            if ((!clause.Invert && ClauseData.Contains(entry)) || (clause.Invert && !ClauseData.Contains(entry)))
                             {
-                                if ((!clause.Invert && ClauseData.Contains(entry)) || (clause.Invert && !ClauseData.Contains(entry)))
-                                {
-                                    foundStates.Add(entry);
-                                }
+                                foundStates.Add(entry);
                             }
-                            if (foundStates.Count == 0)
-                            {
-                                return (false, null);
-                            }
+                        }
+                        if (foundStates.Count == 0)
+                        {
+                            return (false, null);
+                        }
 
-                            return (true, foundStates);
-                        }
-                        // If we are dealing with a single string we do a .Contains instead
-                        else if (typeHolder is string)
+                        return (true, foundStates);
+                    }
+                    // If we are dealing with a single string we do a .Contains instead
+                    else if (typeHolder is string)
+                    {
+                        var results = new List<string>();
+                        foreach (var datum in stateList)
                         {
-                            var results = new List<string>();
-                            foreach (var datum in stateList)
+                            if (clause.Data.Any(x => (clause.Invert && !datum.Contains(x)) || (!clause.Invert && datum.Contains(x))))
                             {
-                                if (clause.Data.Any(x => (clause.Invert && !datum.Contains(x)) || (!clause.Invert && datum.Contains(x))))
-                                {
-                                    results.Add(datum);
-                                }
+                                results.Add(datum);
                             }
-                            return (results.Any(), clause.Capture ? results : null);
                         }
-                        return (false, new List<string>());
+                        return (results.Any(), clause.Capture ? results : null);
                     }
+                    return (false, new List<string>());
+                }
 
-                    var result = ClauseAppliesToList(stateOneList);
-                    if (result.Applies)
+                var result = ClauseAppliesToList(stateOneList);
+                if (result.Applies)
+                {
+                    if (result.Matches?.Any() is true)
                     {
-                        if (result.Matches?.Any() is true)
+                        return typeHolder switch
                         {
-                            return typeHolder switch
-                            {
-                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
-                            };
-                        }
-                        else
-                        {
-                            return (true, null);
-                        }
+                            string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
+                            _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
+                        };
                     }
-                    result = ClauseAppliesToList(stateTwoList);
-                    if (result.Applies)
+                    else
                     {
-                        if (result.Matches?.Any() is true)
+                        return (true, null);
+                    }
+                }
+                result = ClauseAppliesToList(stateTwoList);
+                if (result.Applies)
+                {
+                    if (result.Matches?.Any() is true)
+                    {
+                        return typeHolder switch
                         {
-                            return typeHolder switch
-                            {
-                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), null, state2)),
-                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, null, state2)),
-                            };
-                        }
-                        else
-                        {
-                            return (true, null);
-                        }
+                            string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), null, state2)),
+                            _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, null, state2)),
+                        };
+                    }
+                    else
+                    {
+                        return (true, null);
                     }
                 }
             }
@@ -1153,67 +1146,64 @@ namespace Microsoft.CST.OAT
 
             if (clause.Data is List<string> ClauseData)
             {
-                if (stateOneList.Any())
+                (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                 {
-                    (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
+                    // If we are dealing with an array on the object side
+                    if (typeHolder is List<string>)
                     {
-                        // If we are dealing with an array on the object side
-                        if (typeHolder is List<string>)
+                        var res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
+                        if (res.Any())
                         {
-                            var res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
+                            return (true, clause.Capture ? res.ToList() : null);
+                        }
+                    }
+                    // If we are dealing with a single string we do a .Contains instead
+                    else if (typeHolder is string)
+                    {
+                        var results = new List<string>();
+                        foreach (var datum in stateList)
+                        {
+                            var res = clause.Data.Where(x => (clause.Invert && !datum.Contains(x) || (!clause.Invert && datum.Contains(x))));
                             if (res.Any())
                             {
-                                return (true, clause.Capture ? res.ToList() : null);
+                                results.Add(datum);
                             }
                         }
-                        // If we are dealing with a single string we do a .Contains instead
-                        else if (typeHolder is string)
-                        {
-                            var results = new List<string>();
-                            foreach (var datum in stateList)
-                            {
-                                var res = clause.Data.Where(x => (clause.Invert && !datum.Contains(x) || (!clause.Invert && datum.Contains(x))));
-                                if (res.Any())
-                                {
-                                    results.Add(datum);
-                                }
-                            }
-                            return (results.Any(), clause.Capture ? results : null);
-                        }
-                        return (false, new List<string>());
+                        return (results.Any(), clause.Capture ? results : null);
                     }
+                    return (false, new List<string>());
+                }
 
-                    var result = ClauseAppliesToList(stateOneList);
-                    if (result.Applies)
+                var result = ClauseAppliesToList(stateOneList);
+                if (result.Applies)
+                {
+                    if (result.Matches?.Any() is true)
                     {
-                        if (result.Matches?.Any() is true)
+                        return typeHolder switch
                         {
-                            return typeHolder switch
-                            {
-                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
-                            };
-                        }
-                        else
-                        {
-                            return (true, null);
-                        }
+                            string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
+                            _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
+                        };
                     }
-                    result = ClauseAppliesToList(stateTwoList);
-                    if (result.Applies)
+                    else
                     {
-                        if (result.Matches?.Any() is true)
+                        return (true, null);
+                    }
+                }
+                result = ClauseAppliesToList(stateTwoList);
+                if (result.Applies)
+                {
+                    if (result.Matches?.Any() is true)
+                    {
+                        return typeHolder switch
                         {
-                            return typeHolder switch
-                            {
-                                string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), state1, null)),
-                                _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, state1, null)),
-                            };
-                        }
-                        else
-                        {
-                            return (true, null);
-                        }
+                            string _ => (true, new TypedClauseCapture<string>(clause, result.Matches.First(), null, state2)),
+                            _ => (true, new TypedClauseCapture<List<string>>(clause, result.Matches, null, state2)),
+                        };
+                    }
+                    else
+                    {
+                        return (true, null);
                     }
                 }
             }
