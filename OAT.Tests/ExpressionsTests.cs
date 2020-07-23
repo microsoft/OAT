@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT.Tests
                         Label = "1",
                         Invert = true
                     },
-                    new Clause(Operation.Eq,"StringField"){
+                    new Clause(Operation.Equals,"StringField"){
                         Label = "2",
                         Data = new List<string>()
                         {
@@ -140,7 +140,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -170,7 +170,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -211,7 +211,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringDictField.One")
+                    new Clause(Operation.Equals, "StringDictField.One")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -237,7 +237,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -268,7 +268,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -298,7 +298,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -331,7 +331,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -339,7 +339,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(Operation.Eq, "IsExecutable")
+                    new Clause(Operation.Equals, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -575,7 +575,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -598,7 +598,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -606,7 +606,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(Operation.Eq, "IsExecutable")
+                    new Clause(Operation.Equals, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -674,7 +674,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -708,7 +708,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -781,7 +781,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -809,7 +809,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -842,7 +842,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -850,7 +850,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(Operation.Eq, "IsExecutable")
+                    new Clause(Operation.Equals, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -870,7 +870,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -878,7 +878,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(Operation.Eq, "IsExecutable")
+                    new Clause(Operation.Equals, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -897,7 +897,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "Path")
+                    new Clause(Operation.Equals, "Path")
                     {
                         Label = "0",
                         Data = new List<string>()
@@ -905,7 +905,7 @@ namespace Microsoft.CST.OAT.Tests
                             "TestPath2"
                         }
                     },
-                    new Clause(Operation.Eq, "IsExecutable")
+                    new Clause(Operation.Equals, "IsExecutable")
                     {
                         Label = "1",
                         Data = new List<string>()
@@ -990,7 +990,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "string",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq)
+                    new Clause(Operation.Equals)
                     {
                         Data = new List<string>()
                         {
@@ -1004,7 +1004,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq)
+                    new Clause(Operation.Equals)
                     {
                         Data = new List<string>()
                         {
@@ -1030,7 +1030,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Label = "0",
                         Data = new List<string>()

@@ -15,25 +15,19 @@
         ///     Checks that any value in the Data list or DictData dictionary have a match in the specified
         ///     field's object as appropriate.
         /// </summary>
-        Eq,
-
-        /// <summary>
-        ///     Checks that any value in the Data list or DictData dictionary does not have a match in the
-        ///     specified field's object as appropriate.
-        /// </summary>
-        Neq,
+        Equals,
 
         /// <summary>
         ///     Checks whether any of the specified fields values when parsed as an int is less than first value in
         ///     the Data list as Parsed as an int
         /// </summary>
-        Lt,
+        LessThan,
 
         /// <summary>
         ///     Checks whether any of the specified fields values when parsed as an int is greater than first value in
         ///     the Data list as Parsed as an int
         /// </summary>
-        Gt,
+        GreaterThan,
 
         /// <summary>
         ///     Checks if the specified fields values contain all of the data in the Data list or DictData

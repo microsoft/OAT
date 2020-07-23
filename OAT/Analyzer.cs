@@ -26,10 +26,9 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public Analyzer()
         {
-            EqOperationDelegate = EqOperation;
-            NeqOperationDelegate = NeqOperation;
-            LtOperationDelegate = LtOperation;
-            GtOperationDelegate = GtOperation;
+            EqualsOperationDelegate = EqualsOperation;
+            LessThanOperationDelegate = LessThanOperation;
+            GreaterThanOperationDelegate = GreaterThanOperation;
             RegexOperationDelegate = RegexOperation;
             ContainsOperationDelegate = ContainsOperation;
             ContainsAnyOperationDelegate = ContainsAnyOperation;
@@ -103,19 +102,15 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// The EQ Operation Delegate. Set to override EQ behavior.
         /// </summary>
-        public BuiltinOperationDelegate EqOperationDelegate { get; set; }
-        /// <summary>
-        /// The NEQ Operation Delegate. Set to override NEQ behavior.
-        /// </summary>
-        public BuiltinOperationDelegate NeqOperationDelegate { get; set; }
+        public BuiltinOperationDelegate EqualsOperationDelegate { get; set; }
         /// <summary>
         /// The LT Operation Delegate. Set to override LT behavior.
         /// </summary>
-        public BuiltinOperationDelegate LtOperationDelegate { get; set; }
+        public BuiltinOperationDelegate LessThanOperationDelegate { get; set; }
         /// <summary>
         /// The GT Operation Delegate. Set to override GT behavior.
         /// </summary>
-        public BuiltinOperationDelegate GtOperationDelegate { get; set; }
+        public BuiltinOperationDelegate GreaterThanOperationDelegate { get; set; }
         /// <summary>
         /// The REGEX Operation Delegate. Set to override REGEX behavior.
         /// </summary>
@@ -475,8 +470,7 @@ namespace Microsoft.CST.OAT
                     }
                     switch (clause.Operation)
                     {
-                        case Operation.Eq:
-                        case Operation.Neq:
+                        case Operation.Equals:
                             if ((clause.Data?.Count == null || clause.Data?.Count == 0))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseNoData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -512,8 +506,8 @@ namespace Microsoft.CST.OAT
                             }
                             break;
 
-                        case Operation.Gt:
-                        case Operation.Lt:
+                        case Operation.GreaterThan:
+                        case Operation.LessThan:
                             if (clause.Data?.Count == null || clause.Data is List<string> clauseList && (clauseList.Count != 1 || !int.TryParse(clause.Data.First(), out int _)))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedInt"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
@@ -804,12 +798,11 @@ namespace Microsoft.CST.OAT
 
             BuiltinOperationDelegate func = clause.Operation switch
             {
-                Operation.Eq => EqOperationDelegate,
-                Operation.Neq => NeqOperationDelegate,
+                Operation.Equals => EqualsOperationDelegate,
                 Operation.Contains => ContainsOperationDelegate,
                 Operation.ContainsAny => ContainsAnyOperationDelegate,
-                Operation.Lt => LtOperationDelegate,
-                Operation.Gt => GtOperationDelegate,
+                Operation.LessThan => LessThanOperationDelegate,
+                Operation.GreaterThan => GreaterThanOperationDelegate,
                 Operation.Regex => RegexOperationDelegate,
                 Operation.WasModified => WasModifiedOperationDelegate,
                 Operation.EndsWith => EndsWithOperationDelegate,
@@ -1228,7 +1221,7 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        internal (bool Result, ClauseCapture? Capture) GtOperation(Clause clause, object? state1, object? state2)
+        internal (bool Result, ClauseCapture? Capture) GreaterThanOperation(Clause clause, object? state1, object? state2)
         {
             (var stateOneList, _) = ObjectToValues(state1);
             (var stateTwoList, _) = ObjectToValues(state2);
@@ -1254,7 +1247,7 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        internal (bool Result, ClauseCapture? Capture) LtOperation(Clause clause, object? state1, object? state2)
+        internal (bool Result, ClauseCapture? Capture) LessThanOperation(Clause clause, object? state1, object? state2)
         {
             (var stateOneList, var stateOneDict) = ObjectToValues(state1);
             (var stateTwoList, var stateTwoDict) = ObjectToValues(state2);
@@ -1530,58 +1523,6 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        internal (bool Result, ClauseCapture? Capture) NeqOperation(Clause clause, object? state1, object? state2)
-        {
-            (var stateOneList, _) = ObjectToValues(state1);
-            (var stateTwoList, _) = ObjectToValues(state2);
-            if (clause.Data is List<string> NotEqualsData)
-            {
-                List<string> StateListToNeqList(List<string> stateList)
-                {
-                    var results = new List<string>();
-                    foreach (var datum in NotEqualsData)
-                    {
-                        foreach (var stateOneDatum in stateList)
-                        {
-                            if (clause.Invert && stateOneDatum == datum)
-                            {
-                                results.Add(stateOneDatum);
-                            }
-                            else if (!clause.Invert && stateOneDatum != datum)
-                            {
-                                results.Add(stateOneDatum);
-                            }
-                        }
-                    }
-                    return results;
-                }
-
-                var res = StateListToNeqList(stateOneList);
-                if (res.Any())
-                {
-                    var typeHolder = state1 ?? state2;
-
-                    return typeHolder switch
-                    {
-                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), state1, null)),
-                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, state1, null)),
-                    };
-                }
-                res = StateListToNeqList(stateTwoList);
-                if (res.Any())
-                {
-                    var typeHolder = state1 ?? state2;
-
-                    return typeHolder switch
-                    {
-                        string _ => (true, !clause.Capture ? null : new TypedClauseCapture<string>(clause, res.First(), null, state2)),
-                        _ => (true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, res, null, state2)),
-                    };
-                }
-            }
-            return (false, null);
-        }
-
         /// <summary>
         /// Returns false.
         /// </summary>
@@ -1594,7 +1535,7 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-        internal (bool Result, ClauseCapture? Capture) EqOperation(Clause clause, object? state1, object? state2)
+        internal (bool Result, ClauseCapture? Capture) EqualsOperation(Clause clause, object? state1, object? state2)
         {
             (var stateOneList, _) = ObjectToValues(state1);
             (var stateTwoList, _) = ObjectToValues(state2);

@@ -36,7 +36,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Eq, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -66,48 +66,6 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             Assert.IsTrue(analyzer.GetCapture(eqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
-        }
-
-        [TestMethod]
-        public void TestNEQCapture()
-        {
-            var RuleName = "Equals Capture";
-            var analyzer = new Analyzer();
-
-            var neqCaptureRule = new Rule(RuleName)
-            {
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.Neq, "StringField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "Contoso"
-                        },
-                        Capture = true
-                    }
-                }
-            };
-
-            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
-            
-            neqCaptureRule = new Rule(RuleName)
-            {
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.Neq, "StringField")
-                    {
-                        Data = new List<string>()
-                        {
-                            CorrectString
-                        },
-                        Capture = true,
-                        Invert = true
-                    }
-                }
-            };
-
-            Assert.IsTrue(analyzer.GetCapture(neqCaptureRule, testObjectTrueFalse, null).Result?.Captures.Any(x => x is TypedClauseCapture<string> y && y.Result == CorrectString) is true);
         }
 
         [TestMethod]
@@ -458,7 +416,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Lt)
+                    new Clause(Operation.LessThan)
                     {
                         Data = new List<string>()
                         {
@@ -475,7 +433,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Lt)
+                    new Clause(Operation.LessThan)
                     {
                         Data = new List<string>()
                         {
@@ -581,7 +539,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Gt)
+                    new Clause(Operation.GreaterThan)
                     {
                         Data = new List<string>()
                         {
@@ -598,7 +556,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Gt)
+                    new Clause(Operation.GreaterThan)
                     {
                         Data = new List<string>()
                         {
