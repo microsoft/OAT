@@ -507,7 +507,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var testString = "The Secret is Magic";
             var res = analyzer.GetCapture(regexCapture, testString, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Match> y && y.Result.Groups[1].Value == "Magic") is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<Match>> y && y.Result.Any(x => x.Groups[1].Value == "Magic")) is true);
 
             regexCapture = new Rule(RuleName)
             {
@@ -527,7 +527,7 @@ namespace Microsoft.CST.OAT.Tests
 
             testString = "The Secret is Tacos";
             res = analyzer.GetCapture(regexCapture, testString, null);
-            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<Match> y) is true);
+            Assert.IsTrue(res.Result?.Captures.Any(x => x is TypedClauseCapture<List<Match>> y) is true);
         }
 
         [TestMethod]

@@ -858,41 +858,65 @@ namespace Microsoft.CST.OAT
                 {
                     foreach (var state in stateOneList)
                     {
-                        var match = regex.Match(state);
-                        if (match.Success || !match.Success && clause.Invert)
+                        var matches = regex.Matches(state);
+
+                        if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            return (true, !clause.Capture ? null : new TypedClauseCapture<Match>(clause, match, state1));
+                            var outmatches = new List<Match>();
+                            foreach(var match in matches)
+                            {
+                                if (match is Match m)
+                                {
+                                    outmatches.Add(m);
+                                }
+                            }
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state1));
                         }
                     }
                     foreach (var state in stateTwoList)
                     {
-                        var match = regex.Match(state);
-                        if (match.Success || !match.Success && clause.Invert)
+                        var matches = regex.Matches(state);
+
+                        if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            return (true, !clause.Capture ? null : new TypedClauseCapture<Match>(clause, match, state2: state2));
+                            var outmatches = new List<Match>();
+                            foreach (var match in matches)
+                            {
+                                if (match is Match m)
+                                {
+                                    outmatches.Add(m);
+                                }
+                            }
+                            return (true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state2: state2));
                         }
                     }
                 }
             }
             return (false, null);
-
-            Regex? StringToRegex(string built)
-            {
-                if (!RegexCache.ContainsKey(built))
-                {
-                    try
-                    {
-                        RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
-                    }
-                    catch (ArgumentException)
-                    {
-                        Log.Warning("InvalidArgumentException when analyzing clause {0}. Regex {1} is invalid and will be skipped.", clause.Label, built);
-                        RegexCache.TryAdd(built, null);
-                    }
-                }
-                return RegexCache[built];
-            }
         }
+
+        /// <summary>
+        /// Returns the compiled regex for a string.  Backed by an internal cache to make subsequent uses of the same expression fast.
+        /// </summary>
+        /// <param name="built"></param>
+        /// <returns>The created Regex or null on error</returns>
+        public Regex? StringToRegex(string built)
+        {
+            if (!RegexCache.ContainsKey(built))
+            {
+                try
+                {
+                    RegexCache.TryAdd(built, new Regex(built, RegexOptions.Compiled));
+                }
+                catch (ArgumentException)
+                {
+                    Log.Warning("InvalidArgumentException when creating regex. Regex {0} is invalid and will be skipped.", built);
+                    RegexCache.TryAdd(built, null);
+                }
+            }
+            return RegexCache[built];
+        }
+
         internal (bool Result, ClauseCapture? Capture) ContainsAnyOperation(Clause clause, object? state1, object? state2)
         {
             var typeHolder = state1 ?? state2;
