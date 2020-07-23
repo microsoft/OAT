@@ -9,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -851,7 +850,7 @@ namespace Microsoft.CST.OAT
             (var stateTwoList, _) = ObjectToValues(state2);
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
-                var built = string.Join('|', RegexList);
+                var built = string.Join("|", RegexList);
 
                 var regex = StringToRegex(built);
 
@@ -904,6 +903,7 @@ namespace Microsoft.CST.OAT
                 {
                     foreach (var datum in clause.Data ?? new List<string>())
                     {
+                        #if !NETSTANDARD2_0
                         if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
                         {
                             if (result is Enum eresult)
@@ -918,6 +918,20 @@ namespace Microsoft.CST.OAT
                         {
                             return false;
                         }
+                        #else
+                        try
+                        {
+                            var result = Enum.Parse(typeHolder.GetType(), datum);
+                            if (state.HasFlag(result as Enum))
+                            {
+                                return true;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                        #endif
                     }
                     return false;
                 }
@@ -1065,7 +1079,6 @@ namespace Microsoft.CST.OAT
             return (false, null);
         }
 
-
         internal (bool Result, ClauseCapture? Capture) ContainsOperation(Clause clause, object? state1, object? state2)
         {
             var typeHolder = state1 ?? state2;
@@ -1076,6 +1089,7 @@ namespace Microsoft.CST.OAT
                 {
                     foreach (var datum in clause.Data ?? new List<string>())
                     {
+#if !NETSTANDARD2_0
                         if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
                         {
                             if (result is Enum eresult)
@@ -1090,6 +1104,20 @@ namespace Microsoft.CST.OAT
                         {
                             return false;
                         }
+#else
+                        try
+                        {
+                            var result = Enum.Parse(typeHolder.GetType(), datum);
+                            if (!state.HasFlag(result as Enum))
+                            {
+                                return false;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+#endif
                     }
                     return true;
                 }
