@@ -35,7 +35,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY,"StringField")
+                    new Clause(Operation.ContainsAny,"StringField")
                     {
                         Data = new List<string>()
                         {
@@ -76,7 +76,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY,"StringListField")
+                    new Clause(Operation.ContainsAny,"StringListField")
                     {
                         Data = new List<string>()
                         {
@@ -118,7 +118,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY,"StringDictField")
+                    new Clause(Operation.ContainsAny,"StringDictField")
                     {
                         DictData = new List<KeyValuePair<string, string>>()
                         {
@@ -167,7 +167,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY,"StringListDictField")
+                    new Clause(Operation.ContainsAny,"StringListDictField")
                     {
                         DictData = new List<KeyValuePair<string, string>>()
                         {
@@ -188,7 +188,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_ANY)
+                    new Clause(Operation.ContainsAny)
                     {
                         Data = new List<string>(){"Magic", "Normal"}
                     }
@@ -214,7 +214,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var falseStringObject = new TestObject()
             {
-                StringField = "ThisStringDoesNot"
+                StringField = "ThisOneDoesNot"
             };
 
             var stringContains = new Rule("String Contains Rule")
@@ -222,7 +222,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS, "StringField")
+                    new Clause(Operation.Contains, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -234,7 +234,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var stringAnalyzer = new Analyzer();
-            var ruleList = new List<Rule>() { stringContains }; ;
+            var ruleList = new List<Rule>() { stringContains };
 
             Assert.IsTrue(stringAnalyzer.Analyze(ruleList, trueStringObject).Any());
             Assert.IsFalse(stringAnalyzer.Analyze(ruleList, falseStringObject).Any());
@@ -264,7 +264,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS, "StringListField")
+                    new Clause(Operation.Contains, "StringListField")
                     {
                         Data = new List<string>()
                         {
@@ -296,7 +296,7 @@ namespace Microsoft.CST.OAT.Tests
                 StringDictField = new Dictionary<string, string>()
                 {
                     { "One", "Magic" },
-                    { "Two", "Show" },
+                    { "Two", "Something" },
                     { "Three", "Please" }
                 }
             };
@@ -306,7 +306,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS, "StringDictField")
+                    new Clause(Operation.Contains, "StringDictField")
                     {
                         DictData = new List<KeyValuePair<string, string>>()
                         {
@@ -357,7 +357,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS, "StringListDictField")
+                    new Clause(Operation.Contains, "StringListDictField")
                     {
                         DictData = new List<KeyValuePair<string, string>>()
                         {
@@ -378,7 +378,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS)
+                    new Clause(Operation.Contains)
                     {
                         Data = new List<string>(){"Magic", "Normal"}
                     }
@@ -425,7 +425,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.CONTAINS_KEY, "StringDictField")
+                    new Clause(Operation.ContainsKey, "StringDictField")
                     {
                         Data = new List<string>()
                         {
@@ -452,7 +452,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.ENDS_WITH)
+                    new Clause(Operation.EndsWith)
                     {
                         Data = new List<string>()
                         {
@@ -479,7 +479,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.STARTS_WITH)
+                    new Clause(Operation.StartsWith)
                     {
                         Data = new List<string>()
                         {
@@ -518,7 +518,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "StringField")
+                    new Clause(Operation.Equals, "StringField")
                     {
                         Data = new List<string>()
                         {
@@ -533,7 +533,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "BoolField")
+                    new Clause(Operation.Equals, "BoolField")
                     {
                         Data = new List<string>()
                         {
@@ -548,7 +548,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.EQ, "IntField")
+                    new Clause(Operation.Equals, "IntField")
                     {
                         Data = new List<string>()
                         {
@@ -574,83 +574,6 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
-        public void VerifyNeqOperator()
-        {
-            var assertFalseObject = new TestObject()
-            {
-                StringField = "Magic",
-                BoolField = true,
-                IntField = 700
-            };
-
-            var assertTrueObject = new TestObject()
-            {
-                StringField = "NotMagic",
-                BoolField = false,
-                IntField = 701
-            };
-
-            var stringNotEquals = new Rule("String Not Equals Rule")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(OPERATION.NEQ, "StringField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "Magic"
-                        }
-                    }
-                }
-            };
-
-            var boolNotEquals = new Rule("Bool Not Equals Rule")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(OPERATION.NEQ, "BoolField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "True"
-                        }
-                    }
-                }
-            };
-
-            var intNotEquals = new Rule("Int Not Equals Rule")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(OPERATION.NEQ, "IntField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "700"
-                        }
-                    }
-                }
-            };
-
-            var analyzer = new Analyzer();
-            var ruleList = new List<Rule>() { boolNotEquals, intNotEquals, stringNotEquals };
-
-            var trueObjectResults = analyzer.Analyze(ruleList, assertTrueObject);
-            var falseObjectResults = analyzer.Analyze(ruleList, assertFalseObject);
-
-            Assert.IsTrue(trueObjectResults.Any(x => x == boolNotEquals));
-            Assert.IsTrue(trueObjectResults.Any(x => x == stringNotEquals));
-            Assert.IsTrue(trueObjectResults.Any(x => x == intNotEquals));
-
-            Assert.IsFalse(falseObjectResults.Any(x => x == boolNotEquals));
-            Assert.IsFalse(falseObjectResults.Any(x => x == stringNotEquals));
-            Assert.IsFalse(falseObjectResults.Any(x => x == intNotEquals));
-        }
-
-        [TestMethod]
         public void VerifyGtOperator()
         {
             var trueGtObject = new TestObject()
@@ -667,7 +590,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.GT, "IntField")
+                    new Clause(Operation.GreaterThan, "IntField")
                     {
                         Data = new List<string>()
                         {
@@ -682,7 +605,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.GT, "IntField")
+                    new Clause(Operation.GreaterThan, "IntField")
                     {
                         Data = new List<string>()
                         {
@@ -722,7 +645,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.LT, "IntField")
+                    new Clause(Operation.LessThan, "IntField")
                     {
                         Data = new List<string>()
                         {
@@ -737,7 +660,7 @@ namespace Microsoft.CST.OAT.Tests
                 Target = "TestObject",
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.LT, "IntField")
+                    new Clause(Operation.LessThan, "IntField")
                     {
                         Data = new List<string>()
                         {
@@ -770,7 +693,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_AFTER)
+                    new Clause(Operation.IsAfter)
                     {
                         Data = new List<string>()
                         {
@@ -790,7 +713,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_AFTER)
+                    new Clause(Operation.IsAfter)
                     {
                         Data = new List<string>()
                         {
@@ -817,7 +740,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_BEFORE)
+                    new Clause(Operation.IsBefore)
                     {
                         Data = new List<string>()
                         {
@@ -837,7 +760,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_BEFORE)
+                    new Clause(Operation.IsBefore)
                     {
                         Data = new List<string>()
                         {
@@ -864,7 +787,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_EXPIRED)
+                    new Clause(Operation.IsExpired)
                 }
             };
 
@@ -883,7 +806,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_NULL)
+                    new Clause(Operation.IsNull)
                 }
             };
 
@@ -901,7 +824,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.IS_TRUE)
+                    new Clause(Operation.IsTrue)
                 }
             };
 
@@ -922,7 +845,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.REGEX)
+                    new Clause(Operation.Regex)
                     {
                         Data = new List<string>()
                         {
@@ -956,7 +879,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(OPERATION.WAS_MODIFIED)
+                    new Clause(Operation.WasModified)
                 }
             };
 

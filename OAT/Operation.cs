@@ -3,100 +3,94 @@
     /// <summary>
     ///     Operations available for Analysis rules.
     /// </summary>
-    public enum OPERATION
+    public enum Operation
     {
         /// <summary>
         ///     Generates regular expressions from the Data list provided and tests them against the specified
         ///     field. If any match it is a success.
         /// </summary>
-        REGEX,
+        Regex,
 
         /// <summary>
         ///     Checks that any value in the Data list or DictData dictionary have a match in the specified
         ///     field's object as appropriate.
         /// </summary>
-        EQ,
-
-        /// <summary>
-        ///     Checks that any value in the Data list or DictData dictionary does not have a match in the
-        ///     specified field's object as appropriate.
-        /// </summary>
-        NEQ,
+        Equals,
 
         /// <summary>
         ///     Checks whether any of the specified fields values when parsed as an int is less than first value in
         ///     the Data list as Parsed as an int
         /// </summary>
-        LT,
+        LessThan,
 
         /// <summary>
         ///     Checks whether any of the specified fields values when parsed as an int is greater than first value in
         ///     the Data list as Parsed as an int
         /// </summary>
-        GT,
+        GreaterThan,
 
         /// <summary>
         ///     Checks if the specified fields values contain all of the data in the Data list or DictData
         ///     dictionary as appropriate for the field.
         /// </summary>
-        CONTAINS,
+        Contains,
 
         /// <summary>
         ///     Checks if the specified field was modified between the two runs.
         /// </summary>
-        WAS_MODIFIED,
+        WasModified,
 
         /// <summary>
         ///     Checks if the specified field ends with any of the strings in the Data list.
         /// </summary>
-        ENDS_WITH,
+        EndsWith,
 
         /// <summary>
         ///     Checks if the specified field starts with any of the strings in the Data list.
         /// </summary>
-        STARTS_WITH,
+        StartsWith,
 
         /// <summary>
         ///     Checks if the specified fields values contain any of the data in the Data list or DictData
         ///     dictionary as appropriate for the field.
         /// </summary>
-        CONTAINS_ANY,
+        ContainsAny,
 
         /// <summary>
         ///     Checks if the specified field is null in both states.
         /// </summary>
-        IS_NULL,
+        IsNull,
 
         /// <summary>
         ///     Checks if the specified field is true in either state.
         /// </summary>
-        IS_TRUE,
+        IsTrue,
 
         /// <summary>
         ///     Checks if the specified field, as parsed as time, is before the time specified in the first
         ///     entry of the Data list
         /// </summary>
-        IS_BEFORE,
+        IsBefore,
 
         /// <summary>
         ///     Checks if the specified field, as parsed as time, is after the time specified in the first
         ///     entry of the Data list
         /// </summary>
-        IS_AFTER,
+        IsAfter,
 
         /// <summary>
         ///     Checks if the specified field, as parsed as time, is before DateTime.Now.
         /// </summary>
-        IS_EXPIRED,
+        IsExpired,
 
         /// <summary>
         ///     Checks if the field, if a dictionary, contains the specified key
         /// </summary>
-        CONTAINS_KEY,
+        ContainsKey,
 
         /// <summary>
         ///     Specifies that a custom operation has been specified
         /// </summary>
-        CUSTOM
+        Custom
     }
 }
