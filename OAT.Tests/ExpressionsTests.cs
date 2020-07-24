@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -114,7 +115,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((Clause _, object? __, object? ___) =>
+            analyzer.CustomOperationDelegates.Add((Clause _, object? __, object? ___, IEnumerable<ClauseCapture>? c) =>
             {
                 // We should shortcut calling the custom operation entirely, because it is not being captured
                 // Given the test data this line should never be hit
@@ -824,7 +825,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, before, after) =>
+            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
             {
                 if (clause.Operation == Operation.Custom)
                 {
@@ -839,6 +840,123 @@ namespace Microsoft.CST.OAT.Tests
             var ruleList = new List<Rule>() { customRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+        }
+
+        [TestMethod]
+        public void VerifyCustomImplicitAndWithCaptures()
+        {
+            var RuleName = "CustomRule";
+            var customRule = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Regex, "StringField")
+                    {
+                        Label = "Regex",
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        },
+                        Capture = true
+                    },
+                    new Clause(Operation.Custom, "StringField")
+                    {
+                        CustomOperation = "DOUBLE_CHECK",
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    },
+                }
+            };
+
+            var analyzer = new Analyzer();
+
+            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
+            {
+                if (clause.Operation == Operation.Custom)
+                {
+                    if (clause.CustomOperation == "DOUBLE_CHECK")
+                    {
+                        if (captures != null)
+                        {
+                            var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                            if (regexCapture is TypedClauseCapture<List<Match>> tcc)
+                            {
+                                if (tcc.Result[0].Groups[0].Value == "Magic")
+                                {
+                                    return (true, true, null);
+                                }
+                            }
+                        }
+                    }
+                }
+                return (false, false, null);
+            });
+
+            var ruleList = new List<Rule>() { customRule };
+
+            Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
+        }
+
+        [TestMethod]
+        public void VerifyCustomExpressionWithCaptures()
+        {
+            var RuleName = "CustomRule";
+            var customRule = new Rule(RuleName)
+            {
+                Target = "TestObject",
+                Expression = "0 AND 1",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Regex, "StringField")
+                    {
+                        Label = "Regex",
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        },
+                        Capture = true
+                    },
+                    new Clause(Operation.Custom, "StringField")
+                    {
+                        CustomOperation = "DOUBLE_CHECK",
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    },
+                }
+            };
+
+            var analyzer = new Analyzer();
+
+            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
+            {
+                if (clause.Operation == Operation.Custom)
+                {
+                    if (clause.CustomOperation == "DOUBLE_CHECK")
+                    {
+                        if (captures != null)
+                        {
+                            var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                            if (regexCapture is TypedClauseCapture<List<Match>> tcc)
+                            {
+                                if (tcc.Result[0].Groups[0].Value == clause.Data?[0])
+                                {
+                                    return (true, true, null);
+                                }
+                            }
+                        }
+                    }
+                }
+                return (false, false, null);
+            });
+
+            var ruleList = new List<Rule>() { customRule };
+
+            Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
         }
 
         [TestMethod]
