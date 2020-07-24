@@ -51,7 +51,7 @@ namespace Microsoft.CST.OAT.Tests
             return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
 
-        public (bool Applies, bool Result, ClauseCapture? Capture) OverweightOperationDelegate(Clause clause, object? state1, object? state2)
+        public (bool Applies, bool Result, ClauseCapture? Capture) OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
             if (clause.CustomOperation == "OVERWEIGHT")
             {
