@@ -108,6 +108,7 @@ namespace Microsoft.CST.OAT.Tests
                         Label = "1",
                     },
                     new Clause(Operation.Custom,"StringField"){
+                        CustomOperation = "BAR",
                         Label = "2",
                     }
                 }
@@ -117,6 +118,7 @@ namespace Microsoft.CST.OAT.Tests
 
             analyzer.AddOperation(new OatOperation(Operation.Custom, analyzer)
             {
+                CustomOperation = "BAR",
                 OperationDelegate = (Clause _, object? __, object? ___, IEnumerable<ClauseCapture>? c) =>
                 {
                     // We should shortcut calling the custom operation entirely, because it is not being captured
