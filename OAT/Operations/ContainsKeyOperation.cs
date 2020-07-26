@@ -1,12 +1,7 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -38,14 +33,14 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult ContainsKeyOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var _, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var _, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string> _, List<KeyValuePair<string, string>>? stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string> _, List<KeyValuePair<string, string>>? stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
-            var results = new List<string>();
+            List<string>? results = new List<string>();
 
-            foreach (var datum in stateOneDict.ToList() ?? new List<KeyValuePair<string, string>>())
+            foreach (KeyValuePair<string, string> datum in stateOneDict.ToList() ?? new List<KeyValuePair<string, string>>())
             {
-                var res = clause.Data.Any(x => x == datum.Key);
+                bool res = clause.Data.Any(x => x == datum.Key);
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum.Key);
@@ -57,9 +52,9 @@ namespace Microsoft.CST.OAT.Operations
                 return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, state1, null));
             }
 
-            foreach (var datum in clause.Data ?? new List<string>())
+            foreach (string? datum in clause.Data ?? new List<string>())
             {
-                var res = stateTwoDict.Any(x => x.Key == datum);
+                bool res = stateTwoDict.Any(x => x.Key == datum);
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum);

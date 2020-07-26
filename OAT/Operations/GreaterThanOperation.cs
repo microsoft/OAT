@@ -1,12 +1,7 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -38,10 +33,10 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult GreaterThanOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
-            foreach (var val in stateOneList)
+            foreach (string? val in stateOneList)
             {
                 if (int.TryParse(val, out int valToCheck)
                         && int.TryParse(clause.Data?[0], out int dataValue)
@@ -50,7 +45,7 @@ namespace Microsoft.CST.OAT.Operations
                     return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
-            foreach (var val in stateTwoList)
+            foreach (string? val in stateTwoList)
             {
                 if (int.TryParse(val, out int valToCheck)
                     && int.TryParse(clause.Data?[0], out int dataValue)

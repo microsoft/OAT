@@ -56,7 +56,7 @@ namespace Microsoft.CST.OAT.Tests
         {
             if (state1 is Vehicle vehicle)
             {
-                var res = vehicle.Weight > vehicle.Capacity;
+                bool res = vehicle.Weight > vehicle.Capacity;
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     // The rule applies and is true and the capture is available if capture is enabled
@@ -68,7 +68,7 @@ namespace Microsoft.CST.OAT.Tests
 
         public IEnumerable<Violation> OverweightOperationValidationDelegate(Rule r, Clause c)
         {
-            var violations = new List<Violation>();
+            List<Violation>? violations = new List<Violation>();
             if (r.Target != "Vehicle")
             {
                 violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
@@ -90,7 +90,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void WeighStationDemo()
         {
-            var truck = new Vehicle()
+            Vehicle? truck = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
@@ -104,7 +104,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var overweightTruck = new Vehicle()
+            Vehicle? overweightTruck = new Vehicle()
             {
                 Weight = 30000,
                 Capacity = 20000,
@@ -118,7 +118,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var expiredLicense = new Vehicle()
+            Vehicle? expiredLicense = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
@@ -132,7 +132,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var noCdl = new Vehicle()
+            Vehicle? noCdl = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
@@ -146,7 +146,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var rules = new VehicleRule[] {
+            VehicleRule[]? rules = new VehicleRule[] {
                 new VehicleRule("Overweight")
                 {
                     Cost = 50,
@@ -193,7 +193,7 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            var analyzer = new Analyzer();
+            Analyzer? analyzer = new Analyzer();
             OatOperation OverweightOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "OVERWEIGHT",
@@ -203,7 +203,7 @@ namespace Microsoft.CST.OAT.Tests
 
             analyzer.SetOperation(OverweightOperation);
 
-            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
+            List<Violation>? issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
             Assert.IsFalse(issues.Any());
 
@@ -212,8 +212,8 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
             Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
 
-            var res = analyzer.GetCaptures(rules, overweightTruck);
-            var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
+            IEnumerable<Captures.RuleCapture>? res = analyzer.GetCaptures(rules, overweightTruck);
+            int weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
 
             Assert.IsTrue(weight == 30000);
         }
@@ -221,7 +221,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void TollBoothDemo()
         {
-            var truck = new Vehicle()
+            Vehicle? truck = new Vehicle()
             {
                 Weight = 20000,
                 Capacity = 20000,
@@ -229,7 +229,7 @@ namespace Microsoft.CST.OAT.Tests
                 Occupants = 1
             };
 
-            var overweightTruck = new Vehicle()
+            Vehicle? overweightTruck = new Vehicle()
             {
                 Weight = 30000,
                 Capacity = 20000,
@@ -237,28 +237,28 @@ namespace Microsoft.CST.OAT.Tests
                 Occupants = 1
             };
 
-            var car = new Vehicle()
+            Vehicle? car = new Vehicle()
             {
                 Weight = 3000,
                 Axles = 2,
                 Occupants = 1
             };
 
-            var carpool = new Vehicle()
+            Vehicle? carpool = new Vehicle()
             {
                 Weight = 3000,
                 Axles = 2,
                 Occupants = 3
             };
 
-            var motorcycle = new Vehicle()
+            Vehicle? motorcycle = new Vehicle()
             {
                 Weight = 1000,
                 Axles = 2,
                 Occupants = 1
             };
 
-            var rules = new VehicleRule[] {
+            VehicleRule[]? rules = new VehicleRule[] {
                 new VehicleRule("Overweight")
                 {
                     Cost = 50,
@@ -372,7 +372,7 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            var analyzer = new Analyzer();
+            Analyzer? analyzer = new Analyzer();
             OatOperation OverweightOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "OVERWEIGHT",
@@ -382,7 +382,7 @@ namespace Microsoft.CST.OAT.Tests
 
             analyzer.SetOperation(OverweightOperation);
 
-            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
+            List<Violation>? issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
             Assert.IsFalse(issues.Any());
 

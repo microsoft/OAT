@@ -106,7 +106,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetOffset(int length)
         {
-            var offset = _value;
+            int offset = _value;
             if (IsFromEnd)
             {
                 // offset = length - (~value)
@@ -211,14 +211,14 @@ namespace System
         public (int Offset, int Length) GetOffsetAndLength(int length)
         {
             int start;
-            var startIndex = Start;
+            Index startIndex = Start;
             if (startIndex.IsFromEnd)
                 start = length - startIndex.Value;
             else
                 start = startIndex.Value;
 
             int end;
-            var endIndex = End;
+            Index endIndex = End;
             if (endIndex.IsFromEnd)
                 end = length - endIndex.Value;
             else
@@ -259,14 +259,14 @@ namespace System.Runtime.CompilerServices
                     return Array.Empty<T>();
                 }
 
-                var dest = new T[length];
+                T[]? dest = new T[length];
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
             }
             else
             {
                 // The array is actually a U[] where U:T.
-                var dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
+                T[]? dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
             }

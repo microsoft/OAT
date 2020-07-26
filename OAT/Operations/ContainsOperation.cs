@@ -1,12 +1,8 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -39,13 +35,13 @@ namespace Microsoft.CST.OAT.Operations
 
         internal OperationResult ContainsOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            var typeHolder = state1 ?? state2;
+            object? typeHolder = state1 ?? state2;
 
             if (typeHolder?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
             {
                 bool ParseContainsAllEnum(Enum state)
                 {
-                    foreach (var datum in clause.Data ?? new List<string>())
+                    foreach (string? datum in clause.Data ?? new List<string>())
                     {
 #if !NETSTANDARD2_0
                         if (Enum.TryParse(typeHolder.GetType(), datum, out object result))
@@ -65,7 +61,7 @@ namespace Microsoft.CST.OAT.Operations
 #else
                         try
                         {
-                            var result = Enum.Parse(typeHolder.GetType(), datum);
+                            object? result = Enum.Parse(typeHolder.GetType(), datum);
                             if (!state.HasFlag(result as Enum))
                             {
                                 return false;
@@ -82,7 +78,7 @@ namespace Microsoft.CST.OAT.Operations
 
                 if (state1 is Enum enum1)
                 {
-                    var res = ParseContainsAllEnum(enum1);
+                    bool res = ParseContainsAllEnum(enum1);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum1, state1, null));
@@ -90,7 +86,7 @@ namespace Microsoft.CST.OAT.Operations
                 }
                 if (state2 is Enum enum2)
                 {
-                    var res = ParseContainsAllEnum(enum2);
+                    bool res = ParseContainsAllEnum(enum2);
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<Enum>(clause, enum2, null, state2));
@@ -100,17 +96,17 @@ namespace Microsoft.CST.OAT.Operations
                 return new OperationResult(false, null);
             }
 
-            (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateOneList, List<KeyValuePair<string, string>>? stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateTwoList, List<KeyValuePair<string, string>>? stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
             if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
             {
                 if (stateOneDict.Any())
                 {
-                    var res = stateOneDict.Where(x => (!clause.Invert && ContainsData.Contains(x)) || (clause.Invert && !ContainsData.Contains(x)));
+                    IEnumerable<KeyValuePair<string, string>>? res = stateOneDict.Where(x => (!clause.Invert && ContainsData.Contains(x)) || (clause.Invert && !ContainsData.Contains(x)));
                     if (res.Any())
                     {
-                        var captured = clause.Capture ?
+                        TypedClauseCapture<List<KeyValuePair<string, string>>>? captured = clause.Capture ?
                             new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, res.ToList(), state1, null) :
                             null;
                         return new OperationResult(true, captured);
@@ -118,10 +114,10 @@ namespace Microsoft.CST.OAT.Operations
                 }
                 if (stateTwoDict.Any())
                 {
-                    var res = stateTwoDict.Where(x => (!clause.Invert && ContainsData.Contains(x)) || (clause.Invert && !ContainsData.Contains(x)));
+                    IEnumerable<KeyValuePair<string, string>>? res = stateTwoDict.Where(x => (!clause.Invert && ContainsData.Contains(x)) || (clause.Invert && !ContainsData.Contains(x)));
                     if (res.Any())
                     {
-                        var captured = clause.Capture ?
+                        TypedClauseCapture<List<KeyValuePair<string, string>>>? captured = clause.Capture ?
                             new TypedClauseCapture<List<KeyValuePair<string, string>>>(clause, res.ToList(), null, state2) :
                             null;
                         return new OperationResult(true, captured);
@@ -137,7 +133,7 @@ namespace Microsoft.CST.OAT.Operations
                     // If we are dealing with an array on the object side
                     if (typeHolder is List<string>)
                     {
-                        var res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
+                        IEnumerable<string>? res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
                         if (res.Any())
                         {
                             return (true, clause.Capture ? res.ToList() : null);
@@ -146,10 +142,10 @@ namespace Microsoft.CST.OAT.Operations
                     // If we are dealing with a single string we do a .Contains instead
                     else if (typeHolder is string)
                     {
-                        var results = new List<string>();
-                        foreach (var datum in stateList)
+                        List<string>? results = new List<string>();
+                        foreach (string? datum in stateList)
                         {
-                            var res = clause.Data.Where(x => (clause.Invert && !datum.Contains(x) || (!clause.Invert && datum.Contains(x))));
+                            IEnumerable<string>? res = clause.Data.Where(x => (clause.Invert && !datum.Contains(x) || (!clause.Invert && datum.Contains(x))));
                             if (res.Any())
                             {
                                 results.Add(datum);
@@ -160,7 +156,7 @@ namespace Microsoft.CST.OAT.Operations
                     return (false, new List<string>());
                 }
 
-                var result = ClauseAppliesToList(stateOneList);
+                (bool Applies, List<string>? Matches) result = ClauseAppliesToList(stateOneList);
                 if (result.Applies)
                 {
                     if (result.Matches?.Any() is true)

@@ -42,8 +42,8 @@ namespace Microsoft.CST.OAT.Utils
                     {
                         if (entry is DictionaryEntry dictionaryEntry)
                         {
-                            var keyStr = dictionaryEntry.Key.ToString();
-                            var valueStr = dictionaryEntry.Value?.ToString();
+                            string? keyStr = dictionaryEntry.Key.ToString();
+                            string? valueStr = dictionaryEntry.Value?.ToString();
                             if (keyStr is string && valueStr is string)
                                 stringList.Add(keyStr, valueStr);
                         }

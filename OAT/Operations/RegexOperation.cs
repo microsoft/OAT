@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
@@ -21,7 +20,7 @@ namespace Microsoft.CST.OAT.Operations
         /// Create an OatOperation given an analyzer
         /// </summary>
         /// <param name="analyzer">The analyzer context to work with</param>
-        public RegexOperation(Analyzer analyzer) : base(Operation.Regex,analyzer)
+        public RegexOperation(Analyzer analyzer) : base(Operation.Regex, analyzer)
         {
             OperationDelegate = RegexOperationDelegate;
             ValidationDelegate = RegexValidationDelegate;
@@ -35,7 +34,7 @@ namespace Microsoft.CST.OAT.Operations
             }
             else if (clause.Data is List<string> regexList)
             {
-                foreach (var regex in regexList)
+                foreach (string? regex in regexList)
                 {
                     if (!Helpers.IsValidRegex(regex))
                     {
@@ -51,24 +50,24 @@ namespace Microsoft.CST.OAT.Operations
 
         internal OperationResult RegexOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
-                var built = string.Join("|", RegexList);
+                string? built = string.Join("|", RegexList);
 
-                var regex = StringToRegex(built);
+                Regex? regex = StringToRegex(built);
 
                 if (regex != null)
                 {
-                    foreach (var state in stateOneList)
+                    foreach (string? state in stateOneList)
                     {
-                        var matches = regex.Matches(state);
+                        MatchCollection? matches = regex.Matches(state);
 
                         if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            var outmatches = new List<Match>();
-                            foreach (var match in matches)
+                            List<Match>? outmatches = new List<Match>();
+                            foreach (object? match in matches)
                             {
                                 if (match is Match m)
                                 {
@@ -78,14 +77,14 @@ namespace Microsoft.CST.OAT.Operations
                             return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state1));
                         }
                     }
-                    foreach (var state in stateTwoList)
+                    foreach (string? state in stateTwoList)
                     {
-                        var matches = regex.Matches(state);
+                        MatchCollection? matches = regex.Matches(state);
 
                         if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            var outmatches = new List<Match>();
-                            foreach (var match in matches)
+                            List<Match>? outmatches = new List<Match>();
+                            foreach (object? match in matches)
                             {
                                 if (match is Match m)
                                 {

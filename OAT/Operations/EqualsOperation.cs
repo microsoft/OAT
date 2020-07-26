@@ -1,12 +1,7 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -38,16 +33,16 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult EqualsOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (List<string>? stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> EqualsData)
             {
                 List<string> StateListToEqList(List<string> stateList)
                 {
-                    var results = new List<string>();
-                    foreach (var datum in EqualsData)
+                    List<string>? results = new List<string>();
+                    foreach (string? datum in EqualsData)
                     {
-                        foreach (var stateOneDatum in stateList)
+                        foreach (string? stateOneDatum in stateList)
                         {
                             if (clause.Invert && stateOneDatum != datum)
                             {
@@ -62,10 +57,10 @@ namespace Microsoft.CST.OAT.Operations
                     return results;
                 }
 
-                var res = StateListToEqList(stateOneList);
+                List<string>? res = StateListToEqList(stateOneList);
                 if (res.Any())
                 {
-                    var typeHolder = state1 ?? state2;
+                    object? typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {
@@ -76,7 +71,7 @@ namespace Microsoft.CST.OAT.Operations
                 res = StateListToEqList(stateTwoList);
                 if (res.Any())
                 {
-                    var typeHolder = state1 ?? state2;
+                    object? typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {

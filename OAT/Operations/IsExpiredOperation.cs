@@ -1,12 +1,7 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -40,13 +35,13 @@ namespace Microsoft.CST.OAT.Operations
         {
             if (state1 is DateTime date1)
             {
-                var res = date1.CompareTo(DateTime.Now) < 0;
+                bool res = date1.CompareTo(DateTime.Now) < 0;
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                     return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date1, state1, null));
             }
             if (state2 is DateTime date2)
             {
-                var res = date2.CompareTo(DateTime.Now) < 0;
+                bool res = date2.CompareTo(DateTime.Now) < 0;
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                     return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date2, null, state2));
             }

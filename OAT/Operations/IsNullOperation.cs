@@ -1,12 +1,6 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Serilog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -38,7 +32,7 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult IsNullOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            var res = state1 == null && state2 == null;
+            bool res = state1 == null && state2 == null;
             res = clause.Invert ? !res : res;
 
             return new OperationResult(res, res && clause.Capture ? new ClauseCapture(clause, state1, state2) : null);
