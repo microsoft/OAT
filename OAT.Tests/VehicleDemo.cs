@@ -1,4 +1,5 @@
-﻿using Microsoft.CST.OAT.Utils;
+﻿using Microsoft.CST.OAT.Operations;
+using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
@@ -200,7 +201,7 @@ namespace Microsoft.CST.OAT.Tests
                 ValidationDelegate = OverweightOperationValidationDelegate
             };
 
-            analyzer.AddOperation(OverweightOperation);
+            analyzer.SetOperation(OverweightOperation);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
@@ -379,7 +380,7 @@ namespace Microsoft.CST.OAT.Tests
                 ValidationDelegate = OverweightOperationValidationDelegate
             };
 
-            analyzer.AddOperation(OverweightOperation);
+            analyzer.SetOperation(OverweightOperation);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 

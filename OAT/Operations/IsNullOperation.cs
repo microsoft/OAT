@@ -8,11 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default IsNull operation
+    /// </summary>
     public class IsNullOperation : OatOperation
     {
-        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public IsNullOperation(Analyzer analyzer) : base(Operation.IsNull, analyzer)
         {
             OperationDelegate = IsNullOperationDelegate;

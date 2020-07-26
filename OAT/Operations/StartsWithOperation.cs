@@ -8,11 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default StartsWith operation
+    /// </summary>
     public class StartsWithOperation : OatOperation
     {
-        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public StartsWithOperation(Analyzer analyzer) : base(Operation.StartsWith, analyzer)
         {
             OperationDelegate = StartsWithOperationDelegate;
@@ -32,8 +38,8 @@ namespace Microsoft.CST.OAT
         }
         internal OperationResult StartsWithOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, var stateOneDict) = Analyzer.ObjectToValues(state1);
-            (var stateTwoList, var stateTwoDict) = Analyzer.ObjectToValues(state2);
+            (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> StartsWithData)
             {
                 var results = new List<string>();

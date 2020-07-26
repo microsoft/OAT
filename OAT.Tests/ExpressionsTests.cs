@@ -1,4 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
+using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -116,7 +117,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.AddOperation(new OatOperation(Operation.Custom, analyzer)
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "BAR",
                 OperationDelegate = (Clause _, object? __, object? ___, IEnumerable<ClauseCapture>? c) =>
@@ -830,7 +831,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.AddOperation(new OatOperation(Operation.Custom, analyzer)
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "RETURN_TRUE",
                 OperationDelegate = (clause, before, after, captures) =>
@@ -875,7 +876,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.AddOperation(new OatOperation(Operation.Custom, analyzer)
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "DOUBLE_CHECK",
                 OperationDelegate = (clause, before, after, captures) =>
@@ -932,7 +933,7 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.AddOperation(new OatOperation(Operation.Custom, analyzer)
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "DOUBLE_CHECK",
                 OperationDelegate = (clause, before, after, captures) =>
@@ -1298,7 +1299,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            analyzer.AddOperation(fooOperation);
+            analyzer.SetOperation(fooOperation);
 
             Assert.IsTrue(analyzer.IsRuleValid(supportedCustomOperation));
             Assert.IsFalse(analyzer.IsRuleValid(unsupportedCustomOperation));

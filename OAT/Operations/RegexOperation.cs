@@ -8,11 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default Regex operation
+    /// </summary>
     public class RegexOperation : OatOperation
     {
         private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public RegexOperation(Analyzer analyzer) : base(Operation.Regex,analyzer)
         {
             OperationDelegate = RegexOperationDelegate;
@@ -43,8 +51,8 @@ namespace Microsoft.CST.OAT
 
         internal OperationResult RegexOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, _) = Analyzer.ObjectToValues(state1);
-            (var stateTwoList, _) = Analyzer.ObjectToValues(state2);
+            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
                 var built = string.Join("|", RegexList);
@@ -91,7 +99,12 @@ namespace Microsoft.CST.OAT
             }
             return new OperationResult(false, null);
         }
-
+        /// <summary>
+        /// Converts a strings to a compiled regex.
+        /// Uses an internal cache.
+        /// </summary>
+        /// <param name="built">The regex to build</param>
+        /// <returns>The built Regex</returns>
         public Regex? StringToRegex(string built)
         {
             if (!RegexCache.ContainsKey(built))

@@ -8,11 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default Equals operation
+    /// </summary>
     public class EqualsOperation : OatOperation
     {
-        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public EqualsOperation(Analyzer analyzer) : base(Operation.Equals, analyzer)
         {
             OperationDelegate = EqualsOperationDelegate;
@@ -32,8 +38,8 @@ namespace Microsoft.CST.OAT
         }
         internal OperationResult EqualsOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, _) = Analyzer.ObjectToValues(state1);
-            (var stateTwoList, _) = Analyzer.ObjectToValues(state2);
+            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> EqualsData)
             {
                 List<string> StateListToEqList(List<string> stateList)

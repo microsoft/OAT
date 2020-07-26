@@ -8,11 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default IsExpired operation
+    /// </summary>
     public class IsExpiredOperation : OatOperation
     {
-        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public IsExpiredOperation(Analyzer analyzer) : base(Operation.IsExpired, analyzer)
         {
             OperationDelegate = IsExpiredOperationDelegate;

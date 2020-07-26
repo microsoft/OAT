@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using KellermanSoftware.CompareNetObjects;
 using Microsoft.CST.OAT.Captures;
+using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Newtonsoft.Json;
 using Serilog;
@@ -25,21 +26,21 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public Analyzer()
         {
-            AddOperation(new ContainsOperation(this));
-            AddOperation(new ContainsAnyOperation(this));
-            AddOperation(new ContainsKeyOperation(this));
-            AddOperation(new EqualsOperation(this));
-            AddOperation(new EndsWithOperation(this));
-            AddOperation(new GreaterThanOperation(this));
-            AddOperation(new IsAfterOperation(this));
-            AddOperation(new IsBeforeOperation(this));
-            AddOperation(new IsExpiredOperation(this));
-            AddOperation(new IsNullOperation(this));
-            AddOperation(new IsTrueOperation(this));
-            AddOperation(new LessThanOperation(this));
-            AddOperation(new RegexOperation(this));
-            AddOperation(new StartsWithOperation(this));
-            AddOperation(new WasModifiedOperation(this));
+            SetOperation(new ContainsOperation(this));
+            SetOperation(new ContainsAnyOperation(this));
+            SetOperation(new ContainsKeyOperation(this));
+            SetOperation(new EqualsOperation(this));
+            SetOperation(new EndsWithOperation(this));
+            SetOperation(new GreaterThanOperation(this));
+            SetOperation(new IsAfterOperation(this));
+            SetOperation(new IsBeforeOperation(this));
+            SetOperation(new IsExpiredOperation(this));
+            SetOperation(new IsNullOperation(this));
+            SetOperation(new IsTrueOperation(this));
+            SetOperation(new LessThanOperation(this));
+            SetOperation(new RegexOperation(this));
+            SetOperation(new StartsWithOperation(this));
+            SetOperation(new WasModifiedOperation(this));
         }
 
         private IEnumerable<Violation> EqualsValidationDelegate(Rule rule, Clause clause)
@@ -81,19 +82,21 @@ namespace Microsoft.CST.OAT
 
         private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
 
+        /// <summary>
+        /// Clear all the set delegates
+        /// </summary>
         public void ClearDelegates()
         {
             delegates.Clear();
         }
-
-        public bool AddOperation(OatOperation oatOperation)
+        /// <summary>
+        /// Set the OatOperation which will be trigged by the provided Operation (and when Custom, CustomOperation)
+        /// </summary>
+        /// <param name="oatOperation">The OatOperation</param>
+        /// <returns></returns>
+        public bool SetOperation(OatOperation oatOperation)
         {
-            if (delegates.ContainsKey(oatOperation.Key))
-            {
-                Log.Debug("Operation {0} is already set in delegates.", oatOperation.Key);
-                return false;
-            }
-            delegates.Add(oatOperation.Key, oatOperation);
+            delegates[oatOperation.Key] = oatOperation;
             return true;
         }
 

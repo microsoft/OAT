@@ -8,11 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.CST.OAT
+namespace Microsoft.CST.OAT.Operations
 {
+    /// <summary>
+    /// The default ContainsKey operation
+    /// </summary>
     public class ContainsKeyOperation : OatOperation
     {
-        private readonly ConcurrentDictionary<string, Regex?> RegexCache = new ConcurrentDictionary<string, Regex?>();
+        /// <summary>
+        /// Create an OatOperation given an analyzer
+        /// </summary>
+        /// <param name="analyzer">The analyzer context to work with</param>
         public ContainsKeyOperation(Analyzer analyzer) : base(Operation.ContainsKey, analyzer)
         {
             OperationDelegate = ContainsKeyOperationDelegate;
@@ -32,8 +38,8 @@ namespace Microsoft.CST.OAT
         }
         internal OperationResult ContainsKeyOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var _, var stateOneDict) = Analyzer.ObjectToValues(state1);
-            (var _, var stateTwoDict) = Analyzer.ObjectToValues(state2);
+            (var _, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var _, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
             var results = new List<string>();
 
