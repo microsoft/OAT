@@ -1279,20 +1279,18 @@ namespace Microsoft.CST.OAT.Tests
             // Rules aren't valid without a validation delegate
             Assert.IsFalse(analyzer.IsRuleValid(supportedCustomOperation));
 
+            IEnumerable<Violation> validationDelegate(Rule r, Clause c)
+            {
+                if (!c.Data.Any())
+                {
+                    yield return new Violation("FOO Operation expects data", r, c);
+                }
+            }
+
             OatOperation? fooOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "FOO",
-                ValidationDelegate = (Rule r, Clause c) =>
-                {
-                    List<Violation>? violations = new List<Violation>();
-
-                    if (!c.Data.Any())
-                    {
-                        violations.Add(new Violation("FOO Operation expects data", r, c));
-                    }
-
-                    return violations;
-                }
+                ValidationDelegate = validationDelegate
             };
 
             analyzer.SetOperation(fooOperation);
