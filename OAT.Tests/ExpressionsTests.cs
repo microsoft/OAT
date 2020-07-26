@@ -1,4 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
+using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -108,6 +109,7 @@ namespace Microsoft.CST.OAT.Tests
                         Label = "1",
                     },
                     new Clause(Operation.Custom,"StringField"){
+                        CustomOperation = "BAR",
                         Label = "2",
                     }
                 }
@@ -115,12 +117,16 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((Clause _, object? __, object? ___, IEnumerable<ClauseCapture>? c) =>
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
-                // We should shortcut calling the custom operation entirely, because it is not being captured
-                // Given the test data this line should never be hit
-                Assert.Fail();
-                return (false, false, null);
+                CustomOperation = "BAR",
+                OperationDelegate = (Clause _, object? __, object? ___, IEnumerable<ClauseCapture>? c) =>
+                {
+                    // We should shortcut calling the custom operation entirely, because it is not being captured
+                    // Given the test data this line should never be hit
+                    Assert.Fail();
+                    return new OperationResult(false, null);
+                }
             });
             var target = new TestObject()
             {
@@ -825,16 +831,13 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
-                if (clause.Operation == Operation.Custom)
+                CustomOperation = "RETURN_TRUE",
+                OperationDelegate = (clause, before, after, captures) =>
                 {
-                    if (clause.CustomOperation == "RETURN_TRUE")
-                    {
-                        return (true, true, null);
-                    }
+                    return new OperationResult(true, null);
                 }
-                return (false, false, null);
             });
 
             var ruleList = new List<Rule>() { customRule };
@@ -873,26 +876,24 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
-                if (clause.Operation == Operation.Custom)
+                CustomOperation = "DOUBLE_CHECK",
+                OperationDelegate = (clause, before, after, captures) =>
                 {
-                    if (clause.CustomOperation == "DOUBLE_CHECK")
+                    if (captures != null)
                     {
-                        if (captures != null)
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
-                            var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
-                            if (regexCapture is TypedClauseCapture<List<Match>> tcc)
+                            if (tcc.Result[0].Groups[0].Value == "Magic")
                             {
-                                if (tcc.Result[0].Groups[0].Value == "Magic")
-                                {
-                                    return (true, true, null);
-                                }
+                                return new OperationResult(true, null);
                             }
                         }
                     }
+                    return new OperationResult(false, null);
                 }
-                return (false, false, null);
             });
 
             var ruleList = new List<Rule>() { customRule };
@@ -932,26 +933,24 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
 
-            analyzer.CustomOperationDelegates.Add((clause, before, after, captures) =>
+            analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
-                if (clause.Operation == Operation.Custom)
+                CustomOperation = "DOUBLE_CHECK",
+                OperationDelegate = (clause, before, after, captures) =>
                 {
-                    if (clause.CustomOperation == "DOUBLE_CHECK")
+                    if (captures != null)
                     {
-                        if (captures != null)
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
-                            var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
-                            if (regexCapture is TypedClauseCapture<List<Match>> tcc)
+                            if (tcc.Result[0].Groups[0].Value == clause.Data?[0])
                             {
-                                if (tcc.Result[0].Groups[0].Value == clause.Data?[0])
-                                {
-                                    return (true, true, null);
-                                }
+                                return new OperationResult(true, null);
                             }
                         }
                     }
+                    return new OperationResult(false, null);
                 }
-                return (false, false, null);
             });
 
             var ruleList = new List<Rule>() { customRule };
@@ -1284,25 +1283,23 @@ namespace Microsoft.CST.OAT.Tests
             // Rules aren't valid without a validation delegate
             Assert.IsFalse(analyzer.IsRuleValid(supportedCustomOperation));
 
-            analyzer.CustomOperationValidationDelegates.Add(parseFooOperations);
-
-            (bool Applies, IEnumerable<Violation> FoundViolations) parseFooOperations(Rule r, Clause c)
+            var fooOperation = new OatOperation(Operation.Custom, analyzer)
             {
-                switch (c.CustomOperation)
+                CustomOperation = "FOO",
+                ValidationDelegate = (Rule r, Clause c) =>
                 {
-                    case "FOO":
-                        var violations = new List<Violation>();
+                    var violations = new List<Violation>();
 
-                        if (!c.Data.Any())
-                        {
-                            violations.Add(new Violation("FOO Operation expects data", r, c));
-                        }
+                    if (!c.Data.Any())
+                    {
+                        violations.Add(new Violation("FOO Operation expects data", r, c));
+                    }
 
-                        return (true, violations);
-                    default:
-                        return (false, Array.Empty<Violation>());
+                    return violations;
                 }
             };
+
+            analyzer.SetOperation(fooOperation);
 
             Assert.IsTrue(analyzer.IsRuleValid(supportedCustomOperation));
             Assert.IsFalse(analyzer.IsRuleValid(unsupportedCustomOperation));

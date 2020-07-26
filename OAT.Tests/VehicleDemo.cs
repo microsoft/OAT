@@ -1,4 +1,5 @@
-﻿using Microsoft.CST.OAT.Utils;
+﻿using Microsoft.CST.OAT.Operations;
+using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
@@ -51,46 +52,33 @@ namespace Microsoft.CST.OAT.Tests
             return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
 
-        public (bool Applies, bool Result, ClauseCapture? Capture) OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
+        public OperationResult OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            if (clause.CustomOperation == "OVERWEIGHT")
+            if (state1 is Vehicle vehicle)
             {
-                if (state1 is Vehicle vehicle)
+                var res = vehicle.Weight > vehicle.Capacity;
+                if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
-                    var res = vehicle.Weight > vehicle.Capacity;
-                    if ((res && !clause.Invert) || (clause.Invert && !res))
-                    {
-                        // The rule applies and is true and the capture is available if capture is enabled
-                        return (true, true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
-                    }
+                    // The rule applies and is true and the capture is available if capture is enabled
+                    return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
                 }
-                // The rule applies but is false
-                return (true, false, null);
             }
-            // The rule doesn't apply
-            return (false, false, null);
+            return new OperationResult(false, null);
         }
 
-        public (bool Applies, IEnumerable<Violation> Violations) OverweightOperationValidationDelegate(Rule r, Clause c)
+        public IEnumerable<Violation> OverweightOperationValidationDelegate(Rule r, Clause c)
         {
-            if (c.CustomOperation == "OVERWEIGHT")
+            var violations = new List<Violation>();
+            if (r.Target != "Vehicle")
             {
-                var violations = new List<Violation>();
-                if (r.Target != "Vehicle")
-                {
-                    violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
-                }
+                violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
+            }
 
-                if (c.Data != null || c.DictData != null)
-                {
-                    violations.Add(new Violation("Overweight operation takes no data.", r, c));
-                }
-                return (true, violations);
-            }
-            else
+            if (c.Data != null || c.DictData != null)
             {
-                return (false, Array.Empty<Violation>());
+                violations.Add(new Violation("Overweight operation takes no data.", r, c));
             }
+            return violations;
         }
 
         public class VehicleRule : Rule
@@ -206,8 +194,14 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
             var analyzer = new Analyzer();
-            analyzer.CustomOperationDelegates.Add(OverweightOperationDelegate);
-            analyzer.CustomOperationValidationDelegates.Add(OverweightOperationValidationDelegate);
+            OatOperation OverweightOperation = new OatOperation(Operation.Custom, analyzer)
+            {
+                CustomOperation = "OVERWEIGHT",
+                OperationDelegate = OverweightOperationDelegate,
+                ValidationDelegate = OverweightOperationValidationDelegate
+            };
+
+            analyzer.SetOperation(OverweightOperation);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
@@ -379,8 +373,14 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
             var analyzer = new Analyzer();
-            analyzer.CustomOperationDelegates.Add(OverweightOperationDelegate);
-            analyzer.CustomOperationValidationDelegates.Add(OverweightOperationValidationDelegate);
+            OatOperation OverweightOperation = new OatOperation(Operation.Custom, analyzer)
+            {
+                CustomOperation = "OVERWEIGHT",
+                OperationDelegate = OverweightOperationDelegate,
+                ValidationDelegate = OverweightOperationValidationDelegate
+            };
+
+            analyzer.SetOperation(OverweightOperation);
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
