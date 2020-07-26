@@ -106,7 +106,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetOffset(int length)
         {
-            int offset = _value;
+            var offset = _value;
             if (IsFromEnd)
             {
                 // offset = length - (~value)
@@ -211,14 +211,14 @@ namespace System
         public (int Offset, int Length) GetOffsetAndLength(int length)
         {
             int start;
-            Index startIndex = Start;
+            var startIndex = Start;
             if (startIndex.IsFromEnd)
                 start = length - startIndex.Value;
             else
                 start = startIndex.Value;
 
             int end;
-            Index endIndex = End;
+            var endIndex = End;
             if (endIndex.IsFromEnd)
                 end = length - endIndex.Value;
             else
@@ -248,7 +248,7 @@ namespace System.Runtime.CompilerServices
                 throw new ArgumentNullException(nameof(array));
             }
 
-            (int offset, int length) = range.GetOffsetAndLength(array.Length);
+            (var offset, var length) = range.GetOffsetAndLength(array.Length);
 
             if (default(T) != null || typeof(T[]) == array.GetType())
             {
@@ -259,14 +259,14 @@ namespace System.Runtime.CompilerServices
                     return Array.Empty<T>();
                 }
 
-                T[]? dest = new T[length];
+                var dest = new T[length];
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
             }
             else
             {
                 // The array is actually a U[] where U:T.
-                T[]? dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
+                var dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
             }

@@ -33,16 +33,16 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult EqualsOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (List<string>? stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (List<string>? stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> EqualsData)
             {
                 List<string> StateListToEqList(List<string> stateList)
                 {
-                    List<string>? results = new List<string>();
-                    foreach (string? datum in EqualsData)
+                    var results = new List<string>();
+                    foreach (var datum in EqualsData)
                     {
-                        foreach (string? stateOneDatum in stateList)
+                        foreach (var stateOneDatum in stateList)
                         {
                             if (clause.Invert && stateOneDatum != datum)
                             {
@@ -57,10 +57,10 @@ namespace Microsoft.CST.OAT.Operations
                     return results;
                 }
 
-                List<string>? res = StateListToEqList(stateOneList);
+                var res = StateListToEqList(stateOneList);
                 if (res.Any())
                 {
-                    object? typeHolder = state1 ?? state2;
+                    var typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {
@@ -71,7 +71,7 @@ namespace Microsoft.CST.OAT.Operations
                 res = StateListToEqList(stateTwoList);
                 if (res.Any())
                 {
-                    object? typeHolder = state1 ?? state2;
+                    var typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {

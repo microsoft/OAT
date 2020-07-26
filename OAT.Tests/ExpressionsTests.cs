@@ -45,7 +45,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void TestShortcutWithCapture()
         {
-            Rule? rule = new Rule("TestShortcutWithCapture")
+            var rule = new Rule("TestShortcutWithCapture")
             {
                 Expression = "1 AND 2 OR 3",
                 Clauses = new List<Clause>()
@@ -68,20 +68,20 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            TestObject? target = new TestObject()
+            var analyzer = new Analyzer();
+            var target = new TestObject()
             {
                 StringField = "Magic",
                 BoolField = true
             };
-            (bool RuleMatches, Captures.RuleCapture? Result) cap = analyzer.GetCapture(rule, target);
+            var cap = analyzer.GetCapture(rule, target);
             Assert.IsTrue(cap.Result?.Captures.First() is TypedClauseCapture<string> t && t.Result == "Magic");
         }
 
         [TestMethod]
         public void TestShortcut()
         {
-            Rule? rule = new Rule("TestShortcut")
+            var rule = new Rule("TestShortcut")
             {
                 Expression = "1 AND 2 OR 3",
                 Clauses = new List<Clause>()
@@ -99,7 +99,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Rule? rule2 = new Rule("TestShortcut")
+            var rule2 = new Rule("TestShortcut")
             {
                 Expression = "1 OR 2",
                 Clauses = new List<Clause>()
@@ -114,7 +114,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
 
             analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
@@ -127,20 +127,20 @@ namespace Microsoft.CST.OAT.Tests
                     return new OperationResult(false, null);
                 }
             });
-            TestObject? target = new TestObject()
+            var target = new TestObject()
             {
                 StringField = "Magic",
                 BoolField = true
             };
-            (bool RuleMatches, Captures.RuleCapture? Result) cap = analyzer.GetCapture(rule, target);
+            var cap = analyzer.GetCapture(rule, target);
             cap = analyzer.GetCapture(rule2, target);
         }
 
         [TestMethod]
         public void TestNotNot()
         {
-            string? RuleName = "Not Not True";
-            Rule? notNotRule = new Rule(RuleName)
+            var RuleName = "Not Not True";
+            var notNotRule = new Rule(RuleName)
             {
                 Expression = "NOT NOT 0",
                 Target = "TestObject",
@@ -157,8 +157,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { notNotRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { notNotRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
@@ -169,8 +169,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void TestXorFromNand()
         {
-            string? RuleName = "XOR from NAND";
-            Rule? xorRule = new Rule(RuleName)
+            var RuleName = "XOR from NAND";
+            var xorRule = new Rule(RuleName)
             {
                 Expression = "(0 NAND (0 NAND 1)) NAND (1 NAND (0 NAND 1))",
                 Target = "TestObject",
@@ -191,8 +191,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { xorRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { xorRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
@@ -203,7 +203,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyAccessSubproperties()
         {
-            TestObject? regObj = new TestObject()
+            var regObj = new TestObject()
             {
                 StringDictField = new Dictionary<string, string>()
                 {
@@ -211,8 +211,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            string? RuleName = "ContainsRule";
-            Rule? containsRule = new Rule(RuleName)
+            var RuleName = "ContainsRule";
+            var containsRule = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -228,17 +228,17 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { containsRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { containsRule };
             Assert.IsTrue(analyzer.Analyze(ruleList, regObj).Any(x => x.Name == RuleName));
         }
 
         [TestMethod]
         public void VerifyImplicitAndWithInvert()
         {
-            string? RuleName = "ImplicitAndWithInvert";
+            var RuleName = "ImplicitAndWithInvert";
 
-            Rule? implicitAndWithInvert = new Rule(RuleName)
+            var implicitAndWithInvert = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -255,8 +255,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { implicitAndWithInvert };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitAndWithInvert };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName)); // The first clause is inverted
@@ -267,9 +267,9 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyImplicitAnd()
         {
-            string? RuleName = "ImplicitAnd";
+            var RuleName = "ImplicitAnd";
 
-            Rule? implicitAnd = new Rule(RuleName)
+            var implicitAnd = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -285,8 +285,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { implicitAnd };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitAnd };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
@@ -297,9 +297,9 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyImplicitClauseLabels()
         {
-            string? RuleName = "ImplicitClauseLabels";
+            var RuleName = "ImplicitClauseLabels";
 
-            Rule? implicitClauseLabels = new Rule(RuleName)
+            var implicitClauseLabels = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Expression = "0 OR 1",
@@ -316,15 +316,15 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { implicitClauseLabels };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { implicitClauseLabels };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
 
-            Rule? mixedClauseLabels = new Rule(RuleName)
+            var mixedClauseLabels = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Expression = "0 OR Label",
@@ -355,8 +355,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyAnd()
         {
-            string? RuleName = "AndRule";
-            Rule? andRule = new Rule(RuleName)
+            var RuleName = "AndRule";
+            var andRule = new Rule(RuleName)
             {
                 Expression = "0 AND 1",
                 Target = "TestObject",
@@ -377,8 +377,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { andRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { andRule };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
@@ -389,7 +389,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyInvalidRuleDetection()
         {
-            Rule? invalidRule = new Rule("Unbalanced Parentheses")
+            var invalidRule = new Rule("Unbalanced Parentheses")
             {
                 Expression = "( 0 AND 1",
                 Target = "TestObject",
@@ -413,7 +413,7 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
             Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("ClauseInParenthesesLabel")
@@ -743,8 +743,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNand()
         {
-            string? RuleName = "NandRule";
-            Rule? nandRule = new Rule(RuleName)
+            var RuleName = "NandRule";
+            var nandRule = new Rule(RuleName)
             {
                 Expression = "0 NAND 1",
                 Target = "TestObject",
@@ -765,8 +765,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { nandRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { nandRule };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
@@ -777,8 +777,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNor()
         {
-            string? RuleName = "NorRule";
-            Rule? norRule = new Rule(RuleName)
+            var RuleName = "NorRule";
+            var norRule = new Rule(RuleName)
             {
                 Expression = "0 NOR 1",
                 Target = "TestObject",
@@ -799,8 +799,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { norRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { norRule };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
@@ -811,8 +811,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustom()
         {
-            string? RuleName = "CustomRule";
-            Rule? customRule = new Rule(RuleName)
+            var RuleName = "CustomRule";
+            var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -828,7 +828,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
 
             analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
@@ -836,7 +836,7 @@ namespace Microsoft.CST.OAT.Tests
                 OperationDelegate = (_, __, ___, ____) => new OperationResult(true, null)
             });
 
-            List<Rule>? ruleList = new List<Rule>() { customRule };
+            var ruleList = new List<Rule>() { customRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
         }
@@ -844,8 +844,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustomImplicitAndWithCaptures()
         {
-            string? RuleName = "CustomRule";
-            Rule? customRule = new Rule(RuleName)
+            var RuleName = "CustomRule";
+            var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -870,7 +870,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
 
             analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
@@ -879,7 +879,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     if (captures != null)
                     {
-                        ClauseCapture? regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
                         if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
                             if (tcc.Result[0].Groups[0].Value == "Magic")
@@ -892,7 +892,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             });
 
-            List<Rule>? ruleList = new List<Rule>() { customRule };
+            var ruleList = new List<Rule>() { customRule };
 
             Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
         }
@@ -900,8 +900,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustomExpressionWithCaptures()
         {
-            string? RuleName = "CustomRule";
-            Rule? customRule = new Rule(RuleName)
+            var RuleName = "CustomRule";
+            var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Expression = "0 AND 1",
@@ -927,7 +927,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
 
             analyzer.SetOperation(new OatOperation(Operation.Custom, analyzer)
             {
@@ -936,7 +936,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     if (captures != null)
                     {
-                        ClauseCapture? regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
                         if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
                             if (tcc.Result[0].Groups[0].Value == clause.Data?[0])
@@ -949,7 +949,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             });
 
-            List<Rule>? ruleList = new List<Rule>() { customRule };
+            var ruleList = new List<Rule>() { customRule };
 
             Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
         }
@@ -957,8 +957,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNot()
         {
-            string? RuleName = "NotRule";
-            Rule? notRule = new Rule(RuleName)
+            var RuleName = "NotRule";
+            var notRule = new Rule(RuleName)
             {
                 Expression = "NOT 0",
                 Target = "TestObject",
@@ -975,8 +975,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { notRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { notRule };
 
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
@@ -985,8 +985,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyOr()
         {
-            string? RuleName = "OrRule";
-            Rule? orRule = new Rule(RuleName)
+            var RuleName = "OrRule";
+            var orRule = new Rule(RuleName)
             {
                 Expression = "0 OR 1",
                 Target = "TestObject",
@@ -1007,8 +1007,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { orRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { orRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
@@ -1019,7 +1019,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyValidRuleDetection()
         {
-            Rule? validRule = new Rule("Regular Rule")
+            var validRule = new Rule("Regular Rule")
             {
                 Expression = "0 AND 1",
                 Target = "TestObject",
@@ -1044,7 +1044,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
             Assert.IsTrue(analyzer.IsRuleValid(validRule));
 
             validRule = new Rule("Extraneous Parenthesis")
@@ -1167,8 +1167,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyBareObjectQuery()
         {
-            string? RuleName = "BareObjectRule";
-            Rule? bareObjectRule = new Rule(RuleName)
+            var RuleName = "BareObjectRule";
+            var bareObjectRule = new Rule(RuleName)
             {
                 Target = "string",
                 Clauses = new List<Clause>()
@@ -1183,7 +1183,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Rule? bareObjectRuleNoTarget = new Rule(RuleName)
+            var bareObjectRuleNoTarget = new Rule(RuleName)
             {
                 Clauses = new List<Clause>()
                 {
@@ -1197,8 +1197,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { bareObjectRule, bareObjectRuleNoTarget };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { bareObjectRule, bareObjectRuleNoTarget };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, "MagicWord").Count() == 2);
         }
@@ -1206,8 +1206,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyXor()
         {
-            string? RuleName = "XorRule";
-            Rule? xorRule = new Rule(RuleName)
+            var RuleName = "XorRule";
+            var xorRule = new Rule(RuleName)
             {
                 Expression = "0 XOR 1",
                 Target = "TestObject",
@@ -1228,8 +1228,8 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Analyzer? analyzer = new Analyzer();
-            List<Rule>? ruleList = new List<Rule>() { xorRule };
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { xorRule };
 
             Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
             Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
@@ -1240,8 +1240,8 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustomRuleValidation()
         {
-            string? RuleName = "CustomRuleValidation";
-            Rule? supportedCustomOperation = new Rule(RuleName)
+            var RuleName = "CustomRuleValidation";
+            var supportedCustomOperation = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -1257,7 +1257,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Rule? unsupportedCustomOperation = new Rule(RuleName)
+            var unsupportedCustomOperation = new Rule(RuleName)
             {
                 Target = "TestObject",
                 Clauses = new List<Clause>()
@@ -1273,8 +1273,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-
-            Analyzer? analyzer = new Analyzer();
+            var analyzer = new Analyzer();
 
             // Rules aren't valid without a validation delegate
             Assert.IsFalse(analyzer.IsRuleValid(supportedCustomOperation));
@@ -1287,7 +1286,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             }
 
-            OatOperation? fooOperation = new OatOperation(Operation.Custom, analyzer)
+            var fooOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "FOO",
                 ValidationDelegate = validationDelegate

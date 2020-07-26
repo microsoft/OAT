@@ -33,11 +33,11 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult WasModifiedOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            CompareLogic? compareLogic = new CompareLogic();
+            var compareLogic = new CompareLogic();
             // Gather all differences if we are capturing
             compareLogic.Config.MaxDifferences = clause.Capture ? int.MaxValue : 1;
 
-            ComparisonResult? comparisonResult = compareLogic.Compare(state1, state2);
+            var comparisonResult = compareLogic.Compare(state1, state2);
             if ((!comparisonResult.AreEqual && !clause.Invert) || (comparisonResult.AreEqual && clause.Invert))
             {
                 return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<ComparisonResult>(clause, comparisonResult, state1, state2));

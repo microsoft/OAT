@@ -33,14 +33,14 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult ContainsKeyOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (List<string> _, List<KeyValuePair<string, string>>? stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (List<string> _, List<KeyValuePair<string, string>>? stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var _, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var _, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
-            List<string>? results = new List<string>();
+            var results = new List<string>();
 
-            foreach (KeyValuePair<string, string> datum in stateOneDict.ToList() ?? new List<KeyValuePair<string, string>>())
+            foreach (var datum in stateOneDict.ToList() ?? new List<KeyValuePair<string, string>>())
             {
-                bool res = clause.Data.Any(x => x == datum.Key);
+                var res = clause.Data.Any(x => x == datum.Key);
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum.Key);
@@ -52,9 +52,9 @@ namespace Microsoft.CST.OAT.Operations
                 return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<string>>(clause, results, state1, null));
             }
 
-            foreach (string? datum in clause.Data ?? new List<string>())
+            foreach (var datum in clause.Data ?? new List<string>())
             {
-                bool res = stateTwoDict.Any(x => x.Key == datum);
+                var res = stateTwoDict.Any(x => x.Key == datum);
                 if ((res && !clause.Invert) || (clause.Invert && !res))
                 {
                     results.Add(datum);

@@ -34,7 +34,7 @@ namespace Microsoft.CST.OAT.Utils
         {
             if (string.IsNullOrEmpty(locale))
             {
-                using Stream? stream = typeof(Rule).Assembly.GetManifestResourceStream("LogicalAnalyzer.Resources.resources");
+                using var stream = typeof(Rule).Assembly.GetManifestResourceStream("LogicalAnalyzer.Resources.resources");
                 if (stream is Stream)
                 {
                     stringList.Clear();
@@ -42,8 +42,8 @@ namespace Microsoft.CST.OAT.Utils
                     {
                         if (entry is DictionaryEntry dictionaryEntry)
                         {
-                            string? keyStr = dictionaryEntry.Key.ToString();
-                            string? valueStr = dictionaryEntry.Value?.ToString();
+                            var keyStr = dictionaryEntry.Key.ToString();
+                            var valueStr = dictionaryEntry.Value?.ToString();
                             if (keyStr is string && valueStr is string)
                                 stringList.Add(keyStr, valueStr);
                         }

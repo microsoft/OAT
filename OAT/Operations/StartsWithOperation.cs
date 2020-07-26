@@ -33,14 +33,14 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult StartsWithOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (List<string>? stateOneList, List<KeyValuePair<string, string>>? stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (List<string>? stateTwoList, List<KeyValuePair<string, string>>? stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> StartsWithData)
             {
-                List<string>? results = new List<string>();
-                foreach (string? entry in stateOneList)
+                var results = new List<string>();
+                foreach (var entry in stateOneList)
                 {
-                    bool res = StartsWithData.Any(x => entry.StartsWith(x));
+                    var res = StartsWithData.Any(x => entry.StartsWith(x));
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
@@ -49,7 +49,7 @@ namespace Microsoft.CST.OAT.Operations
 
                 if (results.Any())
                 {
-                    object? typeHolder = state1 ?? state2;
+                    var typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {
@@ -58,9 +58,9 @@ namespace Microsoft.CST.OAT.Operations
                     };
                 }
 
-                foreach (string? entry in stateTwoList)
+                foreach (var entry in stateTwoList)
                 {
-                    bool res = StartsWithData.Any(x => entry.StartsWith(x));
+                    var res = StartsWithData.Any(x => entry.StartsWith(x));
                     if ((res && !clause.Invert) || (clause.Invert && !res))
                     {
                         results.Add(entry);
@@ -69,7 +69,7 @@ namespace Microsoft.CST.OAT.Operations
 
                 if (results.Any())
                 {
-                    object? typeHolder = state1 ?? state2;
+                    var typeHolder = state1 ?? state2;
 
                     return typeHolder switch
                     {

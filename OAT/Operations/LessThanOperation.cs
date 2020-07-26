@@ -22,7 +22,7 @@ namespace Microsoft.CST.OAT.Operations
 
         private IEnumerable<Violation> LessThanValidationDelegate(Rule rule, Clause clause)
         {
-            if (clause.Data?.Count == null || clause.Data is List<string> clauseList && (clauseList.Count != 1 || !int.TryParse(clause.Data.First(), out int _)))
+            if (clause.Data?.Count == null || clause.Data is List<string> clauseList && (clauseList.Count != 1 || !int.TryParse(clause.Data.First(), out var _)))
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedInt"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
@@ -33,22 +33,22 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult LessThanOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (List<string>? stateOneList, List<KeyValuePair<string, string>>? stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (List<string>? stateTwoList, List<KeyValuePair<string, string>>? stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
-            foreach (string? val in stateOneList)
+            foreach (var val in stateOneList)
             {
-                if (int.TryParse(val, out int valToCheck)
-                        && int.TryParse(clause.Data?[0], out int dataValue)
+                if (int.TryParse(val, out var valToCheck)
+                        && int.TryParse(clause.Data?[0], out var dataValue)
                         && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
                     return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, state1, null));
                 }
             }
-            foreach (string? val in stateTwoList)
+            foreach (var val in stateTwoList)
             {
-                if (int.TryParse(val, out int valToCheck)
-                    && int.TryParse(clause.Data?[0], out int dataValue)
+                if (int.TryParse(val, out var valToCheck)
+                    && int.TryParse(clause.Data?[0], out var dataValue)
                     && ((valToCheck < dataValue) || (clause.Invert && valToCheck >= dataValue)))
                 {
                     return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<int>(clause, valToCheck, null, state2));
