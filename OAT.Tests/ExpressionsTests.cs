@@ -69,12 +69,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
-            TestObject? target = new TestObject()
+            var target = new TestObject()
             {
                 StringField = "Magic",
                 BoolField = true
             };
-            (bool RuleMatches, Captures.RuleCapture? Result) cap = analyzer.GetCapture(rule, target);
+            var cap = analyzer.GetCapture(rule, target);
             Assert.IsTrue(cap.Result?.Captures.First() is TypedClauseCapture<string> t && t.Result == "Magic");
         }
 
@@ -127,19 +127,19 @@ namespace Microsoft.CST.OAT.Tests
                     return new OperationResult(false, null);
                 }
             });
-            TestObject? target = new TestObject()
+            var target = new TestObject()
             {
                 StringField = "Magic",
                 BoolField = true
             };
-            (bool RuleMatches, Captures.RuleCapture? Result) cap = analyzer.GetCapture(rule, target);
+            var cap = analyzer.GetCapture(rule, target);
             cap = analyzer.GetCapture(rule2, target);
         }
 
         [TestMethod]
         public void TestNotNot()
         {
-            string? RuleName = "Not Not True";
+            var RuleName = "Not Not True";
             var notNotRule = new Rule(RuleName)
             {
                 Expression = "NOT NOT 0",
@@ -169,7 +169,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void TestXorFromNand()
         {
-            string? RuleName = "XOR from NAND";
+            var RuleName = "XOR from NAND";
             var xorRule = new Rule(RuleName)
             {
                 Expression = "(0 NAND (0 NAND 1)) NAND (1 NAND (0 NAND 1))",
@@ -203,7 +203,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyAccessSubproperties()
         {
-            TestObject? regObj = new TestObject()
+            var regObj = new TestObject()
             {
                 StringDictField = new Dictionary<string, string>()
                 {
@@ -211,7 +211,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            string? RuleName = "ContainsRule";
+            var RuleName = "ContainsRule";
             var containsRule = new Rule(RuleName)
             {
                 Target = "TestObject",
@@ -236,7 +236,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyImplicitAndWithInvert()
         {
-            string? RuleName = "ImplicitAndWithInvert";
+            var RuleName = "ImplicitAndWithInvert";
 
             var implicitAndWithInvert = new Rule(RuleName)
             {
@@ -267,7 +267,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyImplicitAnd()
         {
-            string? RuleName = "ImplicitAnd";
+            var RuleName = "ImplicitAnd";
 
             var implicitAnd = new Rule(RuleName)
             {
@@ -297,7 +297,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyImplicitClauseLabels()
         {
-            string? RuleName = "ImplicitClauseLabels";
+            var RuleName = "ImplicitClauseLabels";
 
             var implicitClauseLabels = new Rule(RuleName)
             {
@@ -355,7 +355,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyAnd()
         {
-            string? RuleName = "AndRule";
+            var RuleName = "AndRule";
             var andRule = new Rule(RuleName)
             {
                 Expression = "0 AND 1",
@@ -743,7 +743,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNand()
         {
-            string? RuleName = "NandRule";
+            var RuleName = "NandRule";
             var nandRule = new Rule(RuleName)
             {
                 Expression = "0 NAND 1",
@@ -777,7 +777,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNor()
         {
-            string? RuleName = "NorRule";
+            var RuleName = "NorRule";
             var norRule = new Rule(RuleName)
             {
                 Expression = "0 NOR 1",
@@ -811,7 +811,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustom()
         {
-            string? RuleName = "CustomRule";
+            var RuleName = "CustomRule";
             var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
@@ -844,7 +844,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustomImplicitAndWithCaptures()
         {
-            string? RuleName = "CustomRule";
+            var RuleName = "CustomRule";
             var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
@@ -879,7 +879,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     if (captures != null)
                     {
-                        ClauseCapture? regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
                         if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
                             if (tcc.Result[0].Groups[0].Value == "Magic")
@@ -900,7 +900,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyCustomExpressionWithCaptures()
         {
-            string? RuleName = "CustomRule";
+            var RuleName = "CustomRule";
             var customRule = new Rule(RuleName)
             {
                 Target = "TestObject",
@@ -936,7 +936,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     if (captures != null)
                     {
-                        ClauseCapture? regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
+                        var regexCapture = captures.Where(x => x.Clause.Label == "Regex").FirstOrDefault();
                         if (regexCapture is TypedClauseCapture<List<Match>> tcc)
                         {
                             if (tcc.Result[0].Groups[0].Value == clause.Data?[0])
@@ -957,7 +957,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyNot()
         {
-            string? RuleName = "NotRule";
+            var RuleName = "NotRule";
             var notRule = new Rule(RuleName)
             {
                 Expression = "NOT 0",
@@ -985,7 +985,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyOr()
         {
-            string? RuleName = "OrRule";
+            var RuleName = "OrRule";
             var orRule = new Rule(RuleName)
             {
                 Expression = "0 OR 1",
@@ -1167,7 +1167,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyBareObjectQuery()
         {
-            string? RuleName = "BareObjectRule";
+            var RuleName = "BareObjectRule";
             var bareObjectRule = new Rule(RuleName)
             {
                 Target = "string",
@@ -1206,7 +1206,7 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyXor()
         {
-            string? RuleName = "XorRule";
+            var RuleName = "XorRule";
             var xorRule = new Rule(RuleName)
             {
                 Expression = "0 XOR 1",
@@ -1286,7 +1286,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             }
 
-            OatOperation? fooOperation = new OatOperation(Operation.Custom, analyzer)
+            var fooOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "FOO",
                 ValidationDelegate = validationDelegate

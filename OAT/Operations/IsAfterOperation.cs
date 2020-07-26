@@ -23,7 +23,7 @@ namespace Microsoft.CST.OAT.Operations
 
         private IEnumerable<Violation> IsAfterValidationDelegate(Rule rule, Clause clause)
         {
-            if (clause.Data?.Count == null || clause.Data is List<string> clauseList2 && (clauseList2.Count != 1 || !DateTime.TryParse(clause.Data.First(), out DateTime _)))
+            if (clause.Data?.Count == null || clause.Data is List<string> clauseList2 && (clauseList2.Count != 1 || !DateTime.TryParse(clause.Data.First(), out var _)))
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedDateTime"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
@@ -34,23 +34,23 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult IsAfterOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            object? typeHolder = state1 ?? state2;
+            var typeHolder = state1 ?? state2;
 
             if (typeHolder is DateTime)
             {
-                foreach (string? data in clause.Data ?? new List<string>())
+                foreach (var data in clause.Data ?? new List<string>())
                 {
-                    bool compareTime = DateTime.TryParse(data, out DateTime result);
+                    var compareTime = DateTime.TryParse(data, out var result);
 
                     if (state1 is DateTime date1)
                     {
-                        bool res = date1.CompareTo(result) > 0;
+                        var res = date1.CompareTo(result) > 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
                             return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date1, state1, null));
                     }
                     if (state2 is DateTime date2)
                     {
-                        bool res = date2.CompareTo(result) > 0;
+                        var res = date2.CompareTo(result) > 0;
                         if ((res && !clause.Invert) || (clause.Invert && !res))
                             return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<DateTime>(clause, date2, null, state2));
                     }

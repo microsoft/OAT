@@ -32,7 +32,7 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult IsNullOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            bool res = state1 == null && state2 == null;
+            var res = state1 == null && state2 == null;
             res = clause.Invert ? !res : res;
 
             return new OperationResult(res, res && clause.Capture ? new ClauseCapture(clause, state1, state2) : null);

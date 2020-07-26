@@ -34,7 +34,7 @@ namespace Microsoft.CST.OAT.Operations
             }
             else if (clause.Data is List<string> regexList)
             {
-                foreach (string? regex in regexList)
+                foreach (var regex in regexList)
                 {
                     if (!Helpers.IsValidRegex(regex))
                     {
@@ -50,24 +50,24 @@ namespace Microsoft.CST.OAT.Operations
 
         internal OperationResult RegexOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (List<string>? stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (List<string>? stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
-                string? built = string.Join("|", RegexList);
+                var built = string.Join("|", RegexList);
 
-                Regex? regex = StringToRegex(built);
+                var regex = StringToRegex(built);
 
                 if (regex != null)
                 {
-                    foreach (string? state in stateOneList)
+                    foreach (var state in stateOneList)
                     {
-                        MatchCollection? matches = regex.Matches(state);
+                        var matches = regex.Matches(state);
 
                         if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            List<Match>? outmatches = new List<Match>();
-                            foreach (object? match in matches)
+                            var outmatches = new List<Match>();
+                            foreach (var match in matches)
                             {
                                 if (match is Match m)
                                 {
@@ -77,14 +77,14 @@ namespace Microsoft.CST.OAT.Operations
                             return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state1));
                         }
                     }
-                    foreach (string? state in stateTwoList)
+                    foreach (var state in stateTwoList)
                     {
-                        MatchCollection? matches = regex.Matches(state);
+                        var matches = regex.Matches(state);
 
                         if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                         {
-                            List<Match>? outmatches = new List<Match>();
-                            foreach (object? match in matches)
+                            var outmatches = new List<Match>();
+                            foreach (var match in matches)
                             {
                                 if (match is Match m)
                                 {

@@ -100,20 +100,20 @@ namespace Microsoft.CST.OAT
             }
             try
             {
-                string[]? pathPortions = pathToProperty.Split('.');
+                var pathPortions = pathToProperty.Split('.');
 
                 // We first try to get the first value to get it started
-                object? value = GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
+                var value = GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
 
                 // For the rest of the path we walk each portion to get the next object
-                for (int pathPortionIndex = 1; pathPortionIndex < pathPortions.Length; pathPortionIndex++)
+                for (var pathPortionIndex = 1; pathPortionIndex < pathPortions.Length; pathPortionIndex++)
                 {
                     if (value == null) { break; }
 
                     switch (value)
                     {
                         case Dictionary<string, string> stringDict:
-                            if (stringDict.TryGetValue(pathPortions[pathPortionIndex], out string? stringValue))
+                            if (stringDict.TryGetValue(pathPortions[pathPortionIndex], out var stringValue))
                             {
                                 value = stringValue;
                             }
@@ -124,7 +124,7 @@ namespace Microsoft.CST.OAT
                             break;
 
                         case List<string> stringList:
-                            if (int.TryParse(pathPortions[pathPortionIndex], out int ArrayIndex) && stringList.Count > ArrayIndex)
+                            if (int.TryParse(pathPortions[pathPortionIndex], out var ArrayIndex) && stringList.Count > ArrayIndex)
                             {
                                 value = stringList[ArrayIndex];
                             }
@@ -136,8 +136,8 @@ namespace Microsoft.CST.OAT
 
                         default:
                             (bool Processed, object? Result)? res = null;
-                            bool found = false;
-                            foreach (PropertyExtractionDelegate? del in CustomPropertyExtractionDelegates)
+                            var found = false;
+                            foreach (var del in CustomPropertyExtractionDelegates)
                             {
                                 res = del?.Invoke(value, pathPortions[pathPortionIndex]);
                                 if (res.HasValue && res.Value.Processed)
@@ -172,7 +172,7 @@ namespace Microsoft.CST.OAT
         public static void PrintViolations(IEnumerable<Violation> violations)
         {
             if (violations == null) return;
-            foreach (Violation? violation in violations)
+            foreach (var violation in violations)
             {
                 Log.Warning(violation.Description);
             }
@@ -187,14 +187,14 @@ namespace Microsoft.CST.OAT
         /// <returns></returns>
         public string[] GetTags(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
-            ConcurrentDictionary<string, byte>? tags = new ConcurrentDictionary<string, byte>();
+            var tags = new ConcurrentDictionary<string, byte>();
 
             Parallel.ForEach(rules, rule =>
             {
                 // If there are no tags, or all of the tags are already in the tags we've found skip otherwise apply.
                 if ((!rule.Tags.Any() || !rule.Tags.All(x => tags.Keys.Any(y => y == x))) && Applies(rule, state1, state2))
                 {
-                    foreach (string? tag in rule.Tags)
+                    foreach (var tag in rule.Tags)
                     {
                         tags.TryAdd(tag, 0);
                     }
@@ -213,11 +213,11 @@ namespace Microsoft.CST.OAT
         /// <returns></returns>
         public IEnumerable<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
-            ConcurrentStack<RuleCapture>? results = new ConcurrentStack<RuleCapture>();
+            var results = new ConcurrentStack<RuleCapture>();
 
             Parallel.ForEach(rules, rule =>
             {
-                (bool RuleMatches, RuleCapture? Result) captured = GetCapture(rule, state1, state2);
+                var captured = GetCapture(rule, state1, state2);
                 if (captured.RuleMatches && captured.Result != null)
                 {
                     results.Push(captured.Result);
@@ -238,8 +238,8 @@ namespace Microsoft.CST.OAT
         {
             if (rule != null)
             {
-                RuleCapture? ruleCapture = new RuleCapture(rule, new List<ClauseCapture>());
-                object? sample = state1 is null ? state2 : state1;
+                var ruleCapture = new RuleCapture(rule, new List<ClauseCapture>());
+                var sample = state1 is null ? state2 : state1;
 
                 // Does the name of this class match the Target in the rule?
                 // Or has no target been specified (match all)
@@ -249,9 +249,9 @@ namespace Microsoft.CST.OAT
                     // If we have no clauses .All will still match
                     if (rule.Expression is null)
                     {
-                        foreach (Clause? clause in rule.Clauses)
+                        foreach (var clause in rule.Clauses)
                         {
-                            OperationResult? res = GetClauseCapture(clause, state1, state2, ruleCapture.Captures);
+                            var res = GetClauseCapture(clause, state1, state2, ruleCapture.Captures);
                             if (res.Result)
                             {
                                 if (res.Capture != null)
@@ -269,7 +269,7 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        (bool ExpressionMatches, List<ClauseCapture> Captures) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2, ruleCapture.Captures);
+                        (var ExpressionMatches, var Captures) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2, ruleCapture.Captures);
                         if (ExpressionMatches)
                         {
                             ruleCapture.Captures.AddRange(Captures);
@@ -290,7 +290,7 @@ namespace Microsoft.CST.OAT
         /// <returns>A Stack of Rules which apply</returns>
         public IEnumerable<Rule> Analyze(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
-            ConcurrentStack<Rule>? results = new ConcurrentStack<Rule>();
+            var results = new ConcurrentStack<Rule>();
 
             Parallel.ForEach(rules, rule =>
             {
@@ -314,7 +314,7 @@ namespace Microsoft.CST.OAT
         {
             if (rule != null)
             {
-                object? sample = state1 is null ? state2 : state1;
+                var sample = state1 is null ? state2 : state1;
 
                 // Does the name of this class match the Target in the rule?
                 // Or has no target been specified (match all)
@@ -332,7 +332,7 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        (bool Success, List<ClauseCapture>? Capture) result = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        var result = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
                         if (result.Success)
                         {
                             return true;
@@ -366,18 +366,18 @@ namespace Microsoft.CST.OAT
             {
                 Strings.Setup();
             }
-            foreach (Rule rule in rules ?? Array.Empty<Rule>())
+            foreach (var rule in rules ?? Array.Empty<Rule>())
             {
-                IEnumerable<IGrouping<string?, Clause>>? clauseLabels = rule.Clauses.GroupBy(x => x.Label);
+                var clauseLabels = rule.Clauses.GroupBy(x => x.Label);
 
                 // If clauses have duplicate names
-                foreach (IGrouping<string?, Clause>? duplicateClause in clauseLabels.Where(x => x.Key != null && x.Count() > 1))
+                foreach (var duplicateClause in clauseLabels.Where(x => x.Key != null && x.Count() > 1))
                 {
                     yield return new Violation(string.Format(Strings.Get("Err_ClauseDuplicateName"), rule.Name, duplicateClause.Key ?? string.Empty), rule, duplicateClause.AsEnumerable().ToArray());
                 }
 
                 // If clause label contains illegal characters
-                foreach (Clause? clause in rule.Clauses)
+                foreach (var clause in rule.Clauses)
                 {
                     if (clause.Label is string label)
                     {
@@ -388,7 +388,7 @@ namespace Microsoft.CST.OAT
                     }
                     if (delegates.ContainsKey(clause.Key))
                     {
-                        foreach (Violation? violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
+                        foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
                         {
                             yield return violation;
                         }
@@ -399,17 +399,17 @@ namespace Microsoft.CST.OAT
                     }
                 }
 
-                List<string>? foundLabels = new List<string>();
+                var foundLabels = new List<string>();
 
                 if (rule.Expression is string expression)
                 {
                     // Are parenthesis balanced Are spaces correct Are all variables defined by
                     // clauses? Are variables and operators alternating?
-                    string[]? splits = expression.Split(' ');
-                    int foundStarts = 0;
-                    int foundEnds = 0;
-                    bool expectingOperator = false;
-                    for (int i = 0; i < splits.Length; i++)
+                    var splits = expression.Split(' ');
+                    var foundStarts = 0;
+                    var foundEnds = 0;
+                    var expectingOperator = false;
+                    for (var i = 0; i < splits.Length; i++)
                     {
                         foundStarts += splits[i].Count(x => x.Equals('('));
                         foundEnds += splits[i].Count(x => x.Equals(')'));
@@ -420,10 +420,10 @@ namespace Microsoft.CST.OAT
                         // Variable
                         if (!expectingOperator)
                         {
-                            int lastOpen = -1;
-                            int lastClose = -1;
+                            var lastOpen = -1;
+                            var lastClose = -1;
 
-                            for (int j = 0; j < splits[i].Length; j++)
+                            for (var j = 0; j < splits[i].Length; j++)
                             {
                                 // Check that the parenthesis are balanced
                                 if (splits[i][j] == '(')
@@ -465,7 +465,7 @@ namespace Microsoft.CST.OAT
                                 }
                             }
 
-                            string? variable = splits[i].Replace("(", "").Replace(")", "");
+                            var variable = splits[i].Replace("(", "").Replace(")", "");
 
                             if (variable == "NOT")
                             {
@@ -477,7 +477,7 @@ namespace Microsoft.CST.OAT
                             else
                             {
                                 foundLabels.Add(variable);
-                                if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out int result) && result < rule.Clauses.Count)))
+                                if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out var result) && result < rule.Clauses.Count)))
                                 {
                                     yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);
                                 }
@@ -488,7 +488,7 @@ namespace Microsoft.CST.OAT
                         else
                         {
                             // If we can't enum parse the operator
-                            if (!Enum.TryParse<BOOL_OPERATOR>(splits[i], out BOOL_OPERATOR op))
+                            if (!Enum.TryParse<BOOL_OPERATOR>(splits[i], out var op))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidOperator"), expression, rule.Name, splits[i]), rule);
                             }
@@ -513,7 +513,7 @@ namespace Microsoft.CST.OAT
                 }
 
                 // Were all the labels declared in clauses used?
-                foreach (string? label in rule.Clauses.Select(x => x.Label))
+                foreach (var label in rule.Clauses.Select(x => x.Label))
                 {
                     if (label is string)
                     {
@@ -524,7 +524,7 @@ namespace Microsoft.CST.OAT
                     }
                 }
 
-                IEnumerable<string?>? justTheLabels = clauseLabels.Select(x => x.Key);
+                var justTheLabels = clauseLabels.Select(x => x.Key);
                 // If any clause has a label they all must have labels
                 if (justTheLabels.Any(x => x is string) && justTheLabels.Any(x => x is null))
                 {
@@ -554,7 +554,7 @@ namespace Microsoft.CST.OAT
 
             try
             {
-                OperationResult? res = GetClauseCapture(clause, state1, state2);
+                var res = GetClauseCapture(clause, state1, state2);
                 return res.Result;
             }
             catch (Exception e)
@@ -572,7 +572,7 @@ namespace Microsoft.CST.OAT
                 state1 = GetValueByPropertyString(state1, clause.Field);
             }
 
-            string? key = string.Format("{0}{1}{2}", clause.Operation, clause.CustomOperation is null ? "" : " - ", clause.CustomOperation is null ? "" : clause.CustomOperation);
+            var key = string.Format("{0}{1}{2}", clause.Operation, clause.CustomOperation is null ? "" : " - ", clause.CustomOperation is null ? "" : clause.CustomOperation);
             if (delegates.ContainsKey(clause.Key))
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
@@ -586,9 +586,9 @@ namespace Microsoft.CST.OAT
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
-            int foundStarts = 0;
-            int foundEnds = 0;
-            for (int i = startingIndex; i < splits.Length; i++)
+            var foundStarts = 0;
+            var foundEnds = 0;
+            for (var i = startingIndex; i < splits.Length; i++)
             {
                 foundStarts += splits[i].Count(x => x.Equals('('));
                 foundEnds += splits[i].Count(x => x.Equals(')'));
@@ -619,9 +619,9 @@ namespace Microsoft.CST.OAT
         /// <returns>A tuple of A list of Strings extracted and a List of KVP extracted.</returns>
         public (List<string>, List<KeyValuePair<string, string>>) ObjectToValues(object? obj)
         {
-            List<string>? valsToCheck = new List<string>();
+            var valsToCheck = new List<string>();
             // This supports both Dictionaries and Lists of KVP
-            List<KeyValuePair<string, string>>? dictToCheck = new List<KeyValuePair<string, string>>();
+            var dictToCheck = new List<KeyValuePair<string, string>>();
             if (obj != null)
             {
                 try
@@ -637,9 +637,9 @@ namespace Microsoft.CST.OAT
                     else if (obj is Dictionary<string, List<string>> dict)
                     {
                         dictToCheck = new List<KeyValuePair<string, string>>();
-                        foreach (KeyValuePair<string, List<string>> list in dict.ToList())
+                        foreach (var list in dict.ToList())
                         {
-                            foreach (string? entry in list.Value)
+                            foreach (var entry in list.Value)
                             {
                                 dictToCheck.Add(new KeyValuePair<string, string>(list.Key, entry));
                             }
@@ -651,10 +651,10 @@ namespace Microsoft.CST.OAT
                     }
                     else
                     {
-                        bool found = false;
-                        foreach (ObjectToValuesDelegate? del in CustomObjectToValuesDelegates)
+                        var found = false;
+                        foreach (var del in CustomObjectToValuesDelegates)
                         {
-                            (bool Processed, IEnumerable<string> valsExtracted, IEnumerable<KeyValuePair<string, string>> dictExtracted)? res = del?.Invoke(obj);
+                            var res = del?.Invoke(obj);
                             if (res.HasValue && res.Value.Processed)
                             {
                                 found = true;
@@ -664,7 +664,7 @@ namespace Microsoft.CST.OAT
                         }
                         if (!found)
                         {
-                            string? val = obj?.ToString();
+                            var val = obj?.ToString();
                             if (val is string)
                             {
                                 valsToCheck.Add(val);
@@ -697,18 +697,18 @@ namespace Microsoft.CST.OAT
 
         private (bool Success, List<ClauseCapture>? Capture) Evaluate(string[] splits, List<Clause> Clauses, object? state1, object? state2, IEnumerable<ClauseCapture>? captures = null)
         {
-            bool current = false;
+            var current = false;
 
-            List<ClauseCapture>? captureOut = new List<ClauseCapture>();
+            var captureOut = new List<ClauseCapture>();
 
-            bool invertNextStatement = false;
-            bool operatorExpected = false;
+            var invertNextStatement = false;
+            var operatorExpected = false;
 
-            BOOL_OPERATOR Operator = BOOL_OPERATOR.OR;
+            var Operator = BOOL_OPERATOR.OR;
 
-            int updated_i = 0;
+            var updated_i = 0;
 
-            for (int i = 0; i < splits.Length; i = updated_i)
+            for (var i = 0; i < splits.Length; i = updated_i)
             {
                 if (operatorExpected)
                 {
@@ -719,7 +719,7 @@ namespace Microsoft.CST.OAT
                 else if (splits[i].StartsWith("("))
                 {
                     //Get the substring closing this paren
-                    int matchingParen = FindMatchingParen(splits, i);
+                    var matchingParen = FindMatchingParen(splits, i);
 
                     // First remove the parenthesis from the beginning and end
                     splits[i] = splits[i][1..];
@@ -728,15 +728,15 @@ namespace Microsoft.CST.OAT
                     bool EvaluateLambda()
                     {
                         // Recursively evaluate the contents of the parentheses
-                        IEnumerable<ClauseCapture>? capturesUnion = captures is null ? captureOut : captureOut.Union(captures);
-                        (bool Success, List<ClauseCapture>? Capture) evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
+                        var capturesUnion = captures is null ? captureOut : captureOut.Union(captures);
+                        var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
 
                         if (evaluation.Success)
                         {
                             captureOut.AddRange(evaluation.Capture ?? new List<ClauseCapture>());
                         }
 
-                        bool next = invertNextStatement ? !evaluation.Success : evaluation.Success;
+                        var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
 
                         return Operate(Operator, current, next);
                     }
@@ -769,8 +769,8 @@ namespace Microsoft.CST.OAT
                     else
                     {
                         // Ensure we have exactly 1 matching clause defined
-                        string? targetLabel = splits[i].Replace("(", "").Replace(")", "");
-                        IEnumerable<Clause>? res = Clauses.Where(x => x.Label == targetLabel);
+                        var targetLabel = splits[i].Replace("(", "").Replace(")", "");
+                        var res = Clauses.Where(x => x.Label == targetLabel);
                         if (res.Count() > 1)
                         {
                             Log.Debug($"Multiple Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
@@ -778,14 +778,14 @@ namespace Microsoft.CST.OAT
                         }
 
                         // If we couldn't find a label match fall back to trying to parse this as an index into clauses
-                        if (res.Count() == 0 && int.TryParse(targetLabel, out int result) && Clauses.Count > result)
+                        if (res.Count() == 0 && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
                         {
                             res = new Clause[] { Clauses[result] };
                         }
 
-                        Clause? clause = res.First();
+                        var clause = res.First();
 
-                        (bool CanShortcut, bool Value) shortcut = TryShortcut(current, Operator);
+                        var shortcut = TryShortcut(current, Operator);
 
                         if (shortcut.CanShortcut && !Clauses.Any(x => x.Capture))
                         {
@@ -793,15 +793,15 @@ namespace Microsoft.CST.OAT
                         }
                         else
                         {
-                            IEnumerable<ClauseCapture>? captureEnumerable = captures is null ? captureOut : captureOut.Union(captures);
-                            OperationResult? res2 = GetClauseCapture(res.First(), state1, state2, captureEnumerable);
+                            var captureEnumerable = captures is null ? captureOut : captureOut.Union(captures);
+                            var res2 = GetClauseCapture(res.First(), state1, state2, captureEnumerable);
 
                             if (res2.Result && res2.Capture != null)
                             {
                                 captureOut.Add(res2.Capture);
                             }
 
-                            bool next = invertNextStatement ? !res2.Result : res2.Result;
+                            var next = invertNextStatement ? !res2.Result : res2.Result;
 
                             current = Operate(Operator, current, next);
                         }
