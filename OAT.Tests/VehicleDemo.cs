@@ -102,6 +102,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -116,6 +117,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 30000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -130,6 +132,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -144,6 +147,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
