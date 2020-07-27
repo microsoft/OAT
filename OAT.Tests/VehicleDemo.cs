@@ -18,6 +18,14 @@ namespace Microsoft.CST.OAT.Tests
             public int Occupants { get; set; }
             public int Capacity { get; set; }
             public Driver? Driver { get; set; }
+            public VehicleType VehicleType { get; internal set; }
+        }
+
+        enum VehicleType
+        {
+            Motorcycle,
+            Car,
+            Truck
         }
 
         [ClassInitialize]
@@ -94,6 +102,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -108,6 +117,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 30000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -122,6 +132,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -136,6 +147,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Driver = new Driver()
                 {
                     License = new DriverLicense()
@@ -225,6 +237,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 20000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Axles = 5,
                 Occupants = 1
             };
@@ -233,37 +246,38 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Weight = 30000,
                 Capacity = 20000,
+                VehicleType = VehicleType.Truck,
                 Axles = 5,
                 Occupants = 1
             };
 
             var car = new Vehicle()
             {
-                Weight = 3000,
+                VehicleType = VehicleType.Car,
                 Axles = 2,
                 Occupants = 1
             };
 
             var carpool = new Vehicle()
             {
-                Weight = 3000,
+                VehicleType = VehicleType.Car,
                 Axles = 2,
                 Occupants = 3
             };
 
             var motorcycle = new Vehicle()
             {
-                Weight = 1000,
+                VehicleType = VehicleType.Motorcycle,
                 Axles = 2,
                 Occupants = 1
             };
 
             var rules = new VehicleRule[] {
-                new VehicleRule("Overweight")
+                new VehicleRule("Overweight Truck")
                 {
                     Cost = 50,
                     Severity = 9,
-                    Expression = "Overweight AND gt2Axles",
+                    Expression = "Overweight AND IsTruck",
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
@@ -272,30 +286,48 @@ namespace Microsoft.CST.OAT.Tests
                             Label = "Overweight",
                             CustomOperation = "OVERWEIGHT"
                         },
-                        new Clause(Operation.GreaterThan, "Axles")
+                        new Clause(Operation.Equals, "VehicleType")
                         {
-                            Label = "gt2Axles",
+                            Label = "IsTruck",
                             Data = new List<string>()
                             {
-                                "2"
+                                "Truck"
                             }
                         }
                     }
                 },
-                new VehicleRule("Heavy or long")
+                new VehicleRule("Regular Truck")
                 {
                     Cost = 10,
-                    Severity = 3,
-                    Expression = "Weight OR Axles",
+                    Severity = 5,
+                    Expression = "IsTruck",
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(Operation.GreaterThan, "Weight")
+                        new Clause(Operation.Equals, "VehicleType")
                         {
-                            Label = "Weight",
+                            Label = "IsTruck",
                             Data = new List<string>()
                             {
-                                "4000"
+                                "Truck"
+                            }
+                        }
+                    }
+                },
+                new VehicleRule("Car with Trailer")
+                {
+                    Cost = 10,
+                    Severity = 3,
+                    Expression = "IsCar AND Axles",
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause(Operation.Equals, "VehicleType")
+                        {
+                            Label = "IsCar",
+                            Data = new List<string>()
+                            {
+                                "Car"
                             }
                         },
                         new Clause(Operation.GreaterThan, "Axles")
@@ -314,11 +346,11 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(Operation.GreaterThan, "Weight")
+                        new Clause(Operation.Equals, "VehicleType")
                         {
                             Data = new List<string>()
                             {
-                                "1000"
+                                "Car"
                             }
                         }
                     }
@@ -327,23 +359,15 @@ namespace Microsoft.CST.OAT.Tests
                     Cost = 2,
                     Severity = 2,
                     Target = "Vehicle",
-                    Expression = "WeightGT1000 AND WeightLT4000 AND OccupantsGT2",
+                    Expression = "IsCar AND OccupantsGT2",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(Operation.GreaterThan, "Weight")
+                        new Clause(Operation.Equals, "VehicleType")
                         {
-                            Label = "WeightGT1000",
+                            Label = "IsCar",
                             Data = new List<string>()
                             {
-                                "1000"
-                            }
-                        },
-                        new Clause(Operation.LessThan, "Weight")
-                        {
-                            Label = "WeightLT4000",
-                            Data = new List<string>()
-                            {
-                                "4000"
+                                "Car"
                             }
                         },
                         new Clause(Operation.GreaterThan, "Occupants")
@@ -362,11 +386,11 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(Operation.LessThan, "Weight")
+                        new Clause(Operation.Equals, "VehicleType")
                         {
                             Data = new List<string>()
                             {
-                                "1001"
+                                "Motorcycle"
                             }
                         }
                     }
