@@ -55,7 +55,7 @@ namespace Microsoft.CST.OAT.Operations
             if (clause.Data is List<string> RegexList && RegexList.Any())
             {
                 var options = RegexOptions.Compiled;
-                
+
                 if (clause.Arguments.Contains("i"))
                 {
                     options |= RegexOptions.IgnoreCase;
@@ -67,7 +67,7 @@ namespace Microsoft.CST.OAT.Operations
 
                 var built = string.Join("|", RegexList);
 
-                var regex = StringToRegex(built,options);
+                var regex = StringToRegex(built, options);
 
                 if (regex != null)
                 {
@@ -118,11 +118,11 @@ namespace Microsoft.CST.OAT.Operations
         /// <returns>The built Regex</returns>
         public Regex? StringToRegex(string built, RegexOptions regexOptions)
         {
-            if (!RegexCache.ContainsKey((built,regexOptions)))
+            if (!RegexCache.ContainsKey((built, regexOptions)))
             {
                 try
                 {
-                    RegexCache.TryAdd((built,regexOptions), new Regex(built, regexOptions));
+                    RegexCache.TryAdd((built, regexOptions), new Regex(built, regexOptions));
                 }
                 catch (ArgumentException)
                 {
@@ -130,7 +130,7 @@ namespace Microsoft.CST.OAT.Operations
                     RegexCache.TryAdd(built, null);
                 }
             }
-            return RegexCache[(built,regexOptions)];
+            return RegexCache[(built, regexOptions)];
         }
     }
 }
