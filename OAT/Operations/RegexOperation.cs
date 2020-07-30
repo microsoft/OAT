@@ -127,7 +127,7 @@ namespace Microsoft.CST.OAT.Operations
                 catch (ArgumentException)
                 {
                     Log.Warning("InvalidArgumentException when creating regex. Regex {0} is invalid and will be skipped.", built);
-                    RegexCache.TryAdd(built, null);
+                    RegexCache.TryAdd((built, regexOptions), null);
                 }
             }
             return RegexCache[(built, regexOptions)];
