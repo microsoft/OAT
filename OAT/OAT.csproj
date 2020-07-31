@@ -12,9 +12,9 @@
 	  <RepositoryType>GitHub</RepositoryType>
       <RepositoryUrl>https://github.com/Microsoft/OAT</RepositoryUrl>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	  <Description></Description>
+	  <Description>Object Analysis Toolkit is a Data-as-Code analyzer for C# objects.</Description>
 	  <PackageId>Microsoft.CST.OAT</PackageId>
-	  <PackageTags></PackageTags>
+	  <PackageTags>Object Analysis Toolkit</PackageTags>
 	  <PackageVersion>0.0.0-placeholder</PackageVersion>
 	  <PackageProjectUrl>https://github.com/microsoft/OAT</PackageProjectUrl>
 	  <PackageIcon>icon-128.png</PackageIcon>
