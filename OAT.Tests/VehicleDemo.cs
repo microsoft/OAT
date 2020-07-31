@@ -170,7 +170,19 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            CustomOperation = "OVERWEIGHT",
+                            Imports = new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
+                            References = new List<string>(){ "OAT.Tests" },
+                            Lambda =@"          
+if (state1 is Vehicle vehicle)
+{
+    var res = vehicle.Weight > vehicle.Capacity;
+    if ((res && !clause.Invert) || (clause.Invert && !res))
+    {
+        // The rule applies and is true and the capture is available if capture is enabled
+        return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
+    }
+}
+return new OperationResult(false, null);",
                             Capture = true
                         }
                     }
@@ -284,19 +296,7 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            Imports = new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
-                            References = new List<string>(){ "OAT.Tests" },
-                            Lambda =
-@"          if (state1 is Vehicle vehicle)
-            {
-                var res = vehicle.Weight > vehicle.Capacity;
-                if ((res && !clause.Invert) || (clause.Invert && !res))
-                {
-                    // The rule applies and is true and the capture is available if capture is enabled
-                    return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
-                }
-            }
-            return new OperationResult(false, null);"
+                            CustomOperation = "OVERWEIGHT"
                         },
                         new Clause(Operation.Equals, "VehicleType")
                         {

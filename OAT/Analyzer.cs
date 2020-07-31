@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
@@ -407,7 +408,7 @@ namespace Microsoft.CST.OAT
                             options = options.AddReferences(typeof(Analyzer).Assembly);
                             if (clause.References is List<string> references)
                             {
-                                options = options.AddReferences(references);
+                                options = options.AddReferences(references.Select(Assembly.Load));
                             }
                             if (clause.Imports is List<string> imports)
                             {
@@ -619,7 +620,7 @@ namespace Microsoft.CST.OAT
                         options = options.AddReferences(typeof(Analyzer).Assembly);
                         if (clause.References is List<string> references)
                         {
-                            options = options.AddReferences(references);
+                            options = options.AddReferences(references.Select(Assembly.Load));
                         }
                         if (clause.Imports is List<string> imports)
                         {
