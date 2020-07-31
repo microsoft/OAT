@@ -8,50 +8,50 @@ using System.Linq;
 
 namespace Microsoft.CST.OAT.Tests
 {
+    public class Vehicle
+    {
+        public int Weight;
+        public int Axles { get; set; }
+        public int Occupants { get; set; }
+        public int Capacity { get; set; }
+        public Driver? Driver { get; set; }
+        public VehicleType VehicleType { get; internal set; }
+    }
+
+    public enum VehicleType
+    {
+        Motorcycle,
+        Car,
+        Truck
+    }
+
+    public class Driver
+    {
+        public DriverLicense? License { get; set; }
+    }
+
+    public class DriverLicense
+    {
+        public Endorsements Endorsements { get; set; }
+        public DateTime Expiration { get; set; }
+    }
+
+    [Flags]
+    public enum Endorsements
+    {
+        Motorcycle = 1,
+        Auto = 2,
+        CDL = 4
+    }
+
     [TestClass]
     public class VehicleDemo
     {
-        class Vehicle
-        {
-            public int Weight;
-            public int Axles { get; set; }
-            public int Occupants { get; set; }
-            public int Capacity { get; set; }
-            public Driver? Driver { get; set; }
-            public VehicleType VehicleType { get; internal set; }
-        }
-
-        enum VehicleType
-        {
-            Motorcycle,
-            Car,
-            Truck
-        }
-
         [ClassInitialize]
         public static void ClassSetup(TestContext _)
         {
             Logger.SetupVerbose();
             Strings.Setup();
-        }
-
-        class Driver
-        {
-            public DriverLicense? License { get; set; }
-        }
-
-        class DriverLicense
-        {
-            public Endorsements Endorsements { get; set; }
-            public DateTime Expiration { get; set; }
-        }
-
-        [Flags]
-        enum Endorsements
-        {
-            Motorcycle = 1,
-            Auto = 2,
-            CDL = 4
         }
 
         int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
@@ -284,7 +284,19 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            CustomOperation = "OVERWEIGHT"
+                            Imports = new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
+                            References = new List<string>(){ "OAT.Tests" },
+                            Lambda =
+@"          if (state1 is Vehicle vehicle)
+            {
+                var res = vehicle.Weight > vehicle.Capacity;
+                if ((res && !clause.Invert) || (clause.Invert && !res))
+                {
+                    // The rule applies and is true and the capture is available if capture is enabled
+                    return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
+                }
+            }
+            return new OperationResult(false, null);"
                         },
                         new Clause(Operation.Equals, "VehicleType")
                         {

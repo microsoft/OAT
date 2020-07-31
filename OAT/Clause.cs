@@ -1,4 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 
 namespace Microsoft.CST.OAT
@@ -49,6 +51,11 @@ namespace Microsoft.CST.OAT
         public string? CustomOperation { get; set; }
 
         /// <summary>
+        /// An optional lambda expression to execute
+        /// </summary>
+        public string? Lambda { get; set; }
+
+        /// <summary>
         /// If the result of the Operation should be inverted
         /// </summary>
         public bool Invert { get; set; }
@@ -74,6 +81,12 @@ namespace Microsoft.CST.OAT
                 return _key;
             }
         }
+
+        /// <summary>
+        /// List of imports to pass when using a lambda
+        /// </summary>
+        public List<string>? Imports { get; set; }
+        public List<string>? References { get; set; }
 
         private string _key = "";
     }

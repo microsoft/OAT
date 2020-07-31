@@ -178,6 +178,15 @@ namespace Microsoft.CST.OAT {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rule {0} Clause {1} has Invalid Lambda (Message: {2})..
+        /// </summary>
+        internal static string Err_ClauseInvalidLambda__0__1__2_ {
+            get {
+                return ResourceManager.GetString("Err_ClauseInvalidLambda_{0}{1}{2}", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression {0} in rule {1} contains NOT where a non-NOT operator was expected..
         /// </summary>
         internal static string Err_ClauseInvalidNotOperator {
@@ -322,11 +331,11 @@ namespace Microsoft.CST.OAT {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rule {0} Clause {1} uses unsupported Operator {2}..
+        ///   Looks up a localized string similar to Rule {0} Clause {1} uses unsupported Operator {2}:{3}..
         /// </summary>
-        internal static string Err_ClauseUnsuppportedOperator {
+        internal static string Err_ClauseUnsuppportedOperator__0__1__2__3_ {
             get {
-                return ResourceManager.GetString("Err_ClauseUnsuppportedOperator", resourceCulture);
+                return ResourceManager.GetString("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}", resourceCulture);
             }
         }
         

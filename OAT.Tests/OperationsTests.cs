@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -985,6 +986,27 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsFalse(analyzer.Analyze(ruleList, 3, 3).Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, new List<string>() { "One", "Two" }, new List<string>() { "One", "Two" }).Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, firstObject, firstObject).Any());
+        }
+
+        [TestMethod]
+        public void TestLambdas()
+        {
+            var lambda = @"return new OperationResult(state1 is true, null);";
+
+            var rule = new Rule("Lambda Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Custom)
+                    {
+                        Lambda = lambda
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var results = analyzer.Analyze(new Rule[] { rule }, true, true);
+            Assert.IsTrue(results.Any());
         }
     }
 }

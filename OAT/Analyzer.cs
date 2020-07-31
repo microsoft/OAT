@@ -1,4 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
@@ -9,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
@@ -66,6 +69,8 @@ namespace Microsoft.CST.OAT
         public List<ObjectToValuesDelegate> CustomObjectToValuesDelegates { get; set; } = new List<ObjectToValuesDelegate>();
 
         private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
+
+        private Dictionary<string,Script<OperationResult>?> lambdas { get; } = new Dictionary<string,Script<OperationResult>?>();
 
         /// <summary>
         /// Clear all the set delegates
@@ -393,9 +398,36 @@ namespace Microsoft.CST.OAT
                             yield return violation;
                         }
                     }
+                    else if (clause.Lambda != null)
+                    {
+                        Exception? yieldError = null;
+                        try
+                        {
+                            var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
+                            options = options.AddReferences(typeof(Analyzer).Assembly);
+                            if (clause.References is List<string> references)
+                            {
+                                options = options.AddReferences(references);
+                            }
+                            if (clause.Imports is List<string> imports)
+                            {
+                                options = options.AddImports(imports);
+                            }
+                            var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
+                            script.Compile();
+                        }
+                        catch(Exception e)
+                        {
+                            yieldError = e;
+                        }
+                        if (yieldError != null)
+                        {
+                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
+                        }
+                    }
                     else
                     {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
+                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
                     }
                 }
 
@@ -576,6 +608,43 @@ namespace Microsoft.CST.OAT
             if (delegates.ContainsKey(clause.Key))
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
+            }
+            else if (clause.Lambda != null)
+            {
+                if (!lambdas.ContainsKey(clause.Lambda))
+                {
+                    try
+                    {
+                        var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
+                        options = options.AddReferences(typeof(Analyzer).Assembly);
+                        if (clause.References is List<string> references)
+                        {
+                            options = options.AddReferences(references);
+                        }
+                        if (clause.Imports is List<string> imports)
+                        {
+                            options = options.AddImports(imports);
+                        }
+                        var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
+                        script.Compile();
+                        lambdas[clause.Lambda] = script;
+                    }
+                    catch(Exception e)
+                    {
+                        Log.Debug(e, $"Lambda {clause.Lambda} could not be compiled.");
+                        lambdas[clause.Lambda] = null;
+                    }
+                }
+                try
+                {
+                    var res = lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
+                    return lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
+                }
+                catch(Exception e)
+                {
+                    Log.Debug(e, "Found while attempting to execute lambda.");
+                    return new OperationResult(false, null);
+                }
             }
             else
             {
