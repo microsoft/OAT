@@ -5,6 +5,22 @@
 	  <LangVersion>8.0</LangVersion>
 	  <Nullable>Enable</Nullable>
 	  <RootNamespace>Microsoft.CST.OAT</RootNamespace>
+	  <Version>0.0.0-placeholder</Version>
+	  <Company>Microsoft</Company>
+	  <Authors>Microsoft</Authors>
+	  <copyright>© Microsoft Corporation. All rights reserved.</copyright> 
+	  <RepositoryType>GitHub</RepositoryType>
+      <RepositoryUrl>https://github.com/Microsoft/OAT</RepositoryUrl>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	  <Description>Object Analysis Toolkit is a Data-as-Code analyzer for C# objects.</Description>
+	  <PackageId>Microsoft.CST.OAT</PackageId>
+	  <PackageTags>Object Analysis Toolkit</PackageTags>
+	  <PackageVersion>0.0.0-placeholder</PackageVersion>
+	  <PackageProjectUrl>https://github.com/microsoft/OAT</PackageProjectUrl>
+	  <PackageIcon>icon-128.png</PackageIcon>
+	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	  <IncludeSymbols>true</IncludeSymbols>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,6 +46,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\icon-128.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
