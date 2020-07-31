@@ -30,20 +30,10 @@ stages:
       dotnetVersion: '3.1.x'
       projectPath: 'OAT.Tests/OAT.Tests.csproj'
 
-# - stage: SDL
-#  dependsOn: Test
-#  jobs:
-#  - template: templates/sdl-job.yml
-#    parameters:
-#      serviceTreeID: ''
-
-- stage: Build
+- stage: SDL
   dependsOn: Test
   jobs:
-  - template: templates/nuget-build-job.yml
+  - template: templates/sdl-job.yml
     parameters:
-      dotnetVersion: '3.1.x'
-      projectPath: 'OAT/OAT.csproj'
-      projectName: 'OAT'
+      serviceTreeID: '2a6899f5-60b4-432d-8b83-40c0b2dacc0e'
 
-#- stage: Release
