@@ -71,7 +71,7 @@ namespace Microsoft.CST.OAT
 
         private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
 
-        private Dictionary<string,Script<OperationResult>?> lambdas { get; } = new Dictionary<string,Script<OperationResult>?>();
+        private Dictionary<string, Script<OperationResult>?> lambdas { get; } = new Dictionary<string, Script<OperationResult>?>();
 
         /// <summary>
         /// Clear all the set delegates
@@ -362,6 +362,217 @@ namespace Microsoft.CST.OAT
         public bool IsRuleValid(Rule rule) => !EnumerateRuleIssues(new Rule[] { rule }).Any();
 
         /// <summary>
+        /// Verifies the provided rule and provides a list of issues with the rules.
+        /// </summary>
+        /// <param name="rule">A Rule.</param>
+        /// <returns>Enumerable of issues with the Rule.</returns>
+        public IEnumerable<Violation> EnumerateRuleIssues(Rule rule)
+        {
+            var clauseLabels = rule.Clauses.GroupBy(x => x.Label);
+
+            // If clauses have duplicate names
+            foreach (var duplicateClause in clauseLabels.Where(x => x.Key != null && x.Count() > 1))
+            {
+                yield return new Violation(string.Format(Strings.Get("Err_ClauseDuplicateName"), rule.Name, duplicateClause.Key ?? string.Empty), rule, duplicateClause.AsEnumerable().ToArray());
+            }
+
+            // If clause label contains illegal characters
+            foreach (var clause in rule.Clauses)
+            {
+                if (clause.Label is string label)
+                {
+                    if (label.Contains(" ") || label.Contains("(") || label.Contains(")"))
+                    {
+                        yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLabel"), rule.Name, label), rule, clause);
+                    }
+                }
+                if (delegates.ContainsKey(clause.Key))
+                {
+                    foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
+                    {
+                        yield return violation;
+                    }
+                }
+                else if (clause.Lambda != null)
+                {
+                    var issues = new List<Violation>();
+                    Exception? yieldError = null;
+                    try
+                    {
+                        var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
+                        options = options.AddReferences(typeof(Analyzer).Assembly);
+                        if (clause.References is List<string> references)
+                        {
+                            options = options.AddReferences(references.Select(Assembly.Load));
+                        }
+                        if (clause.Imports is List<string> imports)
+                        {
+                            options = options.AddImports(imports);
+                        }
+                        var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
+                        foreach(var issue in script.Compile())
+                        {
+                            issues.Add(new Violation(issue.GetMessage(), rule, clause));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        yieldError = e;
+                    }
+                    if (yieldError != null)
+                    {
+                        yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
+                    }
+                    foreach(var issue in issues)
+                    {
+                        yield return issue;
+                    }
+                }
+                else
+                {
+                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
+                }
+            }
+
+            var foundLabels = new List<string>();
+
+            if (rule.Expression is string expression)
+            {
+                // Are parenthesis balanced Are spaces correct Are all variables defined by
+                // clauses? Are variables and operators alternating?
+                var splits = expression.Split(' ');
+                var foundStarts = 0;
+                var foundEnds = 0;
+                var expectingOperator = false;
+                for (var i = 0; i < splits.Length; i++)
+                {
+                    foundStarts += splits[i].Count(x => x.Equals('('));
+                    foundEnds += splits[i].Count(x => x.Equals(')'));
+                    if (foundEnds > foundStarts)
+                    {
+                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
+                    }
+                    // Variable
+                    if (!expectingOperator)
+                    {
+                        var lastOpen = -1;
+                        var lastClose = -1;
+
+                        for (var j = 0; j < splits[i].Length; j++)
+                        {
+                            // Check that the parenthesis are balanced
+                            if (splits[i][j] == '(')
+                            {
+                                // If we've seen a ) this is now invalid
+                                if (lastClose != -1)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseParenthesisInLabel"), expression, rule.Name, splits[i]), rule);
+                                }
+                                // If there were any characters between open parenthesis
+                                if (j - lastOpen != 1)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBetweenOpenParentheses"), expression, rule.Name, splits[i]), rule);
+                                }
+                                // If there was a random parenthesis not starting the variable
+                                else if (j > 0)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBeforeOpenParentheses"), expression, rule.Name, splits[i]), rule);
+                                }
+                                lastOpen = j;
+                            }
+                            else if (splits[i][j] == ')')
+                            {
+                                // If we've seen a close before update last
+                                if (lastClose != -1 && j - lastClose != 1)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBetweenClosedParentheses"), expression, rule.Name, splits[i]), rule);
+                                }
+                                lastClose = j;
+                            }
+                            else
+                            {
+                                // If we've set a close this is invalid because we can't have
+                                // other characters after it
+                                if (lastClose != -1)
+                                {
+                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersAfterClosedParentheses"), expression, rule.Name, splits[i]), rule);
+                                }
+                            }
+                        }
+
+                        var variable = splits[i].Replace("(", "").Replace(")", "");
+
+                        if (variable == "NOT")
+                        {
+                            if (splits[i].Contains(")"))
+                            {
+                                yield return new Violation(string.Format(Strings.Get("Err_ClauseCloseParenthesesInNot"), expression, rule.Name, splits[i]), rule);
+                            }
+                        }
+                        else
+                        {
+                            foundLabels.Add(variable);
+                            if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out var result) && result < rule.Clauses.Count)))
+                            {
+                                yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);
+                            }
+                            expectingOperator = true;
+                        }
+                    }
+                    //Operator
+                    else
+                    {
+                        // If we can't enum parse the operator
+                        if (!Enum.TryParse<BOOL_OPERATOR>(splits[i], out var op))
+                        {
+                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidOperator"), expression, rule.Name, splits[i]), rule);
+                        }
+                        // We don't allow NOT operators to modify other Operators, so we can't
+                        // allow NOT here
+                        else
+                        {
+                            if (op is BOOL_OPERATOR boolOp && boolOp == BOOL_OPERATOR.NOT)
+                            {
+                                yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidNotOperator"), expression, rule.Name), rule);
+                            }
+                        }
+                        expectingOperator = false;
+                    }
+                }
+
+                // We should always end on expecting an operator (having gotten a variable)
+                if (!expectingOperator)
+                {
+                    yield return new Violation(string.Format(Strings.Get("Err_ClauseEndsWithOperator"), expression, rule.Name), rule);
+                }
+            }
+
+            // Were all the labels declared in clauses used?
+            foreach (var label in rule.Clauses.Select(x => x.Label))
+            {
+                if (label is string)
+                {
+                    if (!foundLabels.Contains(label))
+                    {
+                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnusedLabel"), label, rule.Name), rule);
+                    }
+                }
+            }
+
+            var justTheLabels = clauseLabels.Select(x => x.Key);
+            // If any clause has a label they all must have labels
+            if (justTheLabels.Any(x => x is string) && justTheLabels.Any(x => x is null))
+            {
+                yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingLabels"), rule.Name), rule);
+            }
+            // If the clause has an expression it may not have any null labels
+            if (rule.Expression != null && justTheLabels.Any(x => x is null))
+            {
+                yield return new Violation(string.Format(Strings.Get("Err_ClauseExpressionButMissingLabels"), rule.Name), rule);
+            }
+        }
+
+        /// <summary>
         /// Verifies the provided rules and provides a list of issues with the rules.
         /// </summary>
         /// <param name="rules">Enumerable of Rules.</param>
@@ -374,201 +585,11 @@ namespace Microsoft.CST.OAT
             }
             foreach (var rule in rules ?? Array.Empty<Rule>())
             {
-                var clauseLabels = rule.Clauses.GroupBy(x => x.Label);
-
-                // If clauses have duplicate names
-                foreach (var duplicateClause in clauseLabels.Where(x => x.Key != null && x.Count() > 1))
+                foreach(var issue in EnumerateRuleIssues(rule))
                 {
-                    yield return new Violation(string.Format(Strings.Get("Err_ClauseDuplicateName"), rule.Name, duplicateClause.Key ?? string.Empty), rule, duplicateClause.AsEnumerable().ToArray());
+                    yield return issue;
                 }
-
-                // If clause label contains illegal characters
-                foreach (var clause in rule.Clauses)
-                {
-                    if (clause.Label is string label)
-                    {
-                        if (label.Contains(" ") || label.Contains("(") || label.Contains(")"))
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLabel"), rule.Name, label), rule, clause);
-                        }
-                    }
-                    if (delegates.ContainsKey(clause.Key))
-                    {
-                        foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
-                        {
-                            yield return violation;
-                        }
-                    }
-                    else if (clause.Lambda != null)
-                    {
-                        Exception? yieldError = null;
-                        try
-                        {
-                            var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                            options = options.AddReferences(typeof(Analyzer).Assembly);
-                            if (clause.References is List<string> references)
-                            {
-                                options = options.AddReferences(references.Select(Assembly.Load));
-                            }
-                            if (clause.Imports is List<string> imports)
-                            {
-                                options = options.AddImports(imports);
-                            }
-                            var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
-                            script.Compile();
-                        }
-                        catch(Exception e)
-                        {
-                            yieldError = e;
-                        }
-                        if (yieldError != null)
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
-                        }
-                    }
-                    else
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
-                    }
-                }
-
-                var foundLabels = new List<string>();
-
-                if (rule.Expression is string expression)
-                {
-                    // Are parenthesis balanced Are spaces correct Are all variables defined by
-                    // clauses? Are variables and operators alternating?
-                    var splits = expression.Split(' ');
-                    var foundStarts = 0;
-                    var foundEnds = 0;
-                    var expectingOperator = false;
-                    for (var i = 0; i < splits.Length; i++)
-                    {
-                        foundStarts += splits[i].Count(x => x.Equals('('));
-                        foundEnds += splits[i].Count(x => x.Equals(')'));
-                        if (foundEnds > foundStarts)
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
-                        }
-                        // Variable
-                        if (!expectingOperator)
-                        {
-                            var lastOpen = -1;
-                            var lastClose = -1;
-
-                            for (var j = 0; j < splits[i].Length; j++)
-                            {
-                                // Check that the parenthesis are balanced
-                                if (splits[i][j] == '(')
-                                {
-                                    // If we've seen a ) this is now invalid
-                                    if (lastClose != -1)
-                                    {
-                                        yield return new Violation(string.Format(Strings.Get("Err_ClauseParenthesisInLabel"), expression, rule.Name, splits[i]), rule);
-                                    }
-                                    // If there were any characters between open parenthesis
-                                    if (j - lastOpen != 1)
-                                    {
-                                        yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBetweenOpenParentheses"), expression, rule.Name, splits[i]), rule);
-                                    }
-                                    // If there was a random parenthesis not starting the variable
-                                    else if (j > 0)
-                                    {
-                                        yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBeforeOpenParentheses"), expression, rule.Name, splits[i]), rule);
-                                    }
-                                    lastOpen = j;
-                                }
-                                else if (splits[i][j] == ')')
-                                {
-                                    // If we've seen a close before update last
-                                    if (lastClose != -1 && j - lastClose != 1)
-                                    {
-                                        yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersBetweenClosedParentheses"), expression, rule.Name, splits[i]), rule);
-                                    }
-                                    lastClose = j;
-                                }
-                                else
-                                {
-                                    // If we've set a close this is invalid because we can't have
-                                    // other characters after it
-                                    if (lastClose != -1)
-                                    {
-                                        yield return new Violation(string.Format(Strings.Get("Err_ClauseCharactersAfterClosedParentheses"), expression, rule.Name, splits[i]), rule);
-                                    }
-                                }
-                            }
-
-                            var variable = splits[i].Replace("(", "").Replace(")", "");
-
-                            if (variable == "NOT")
-                            {
-                                if (splits[i].Contains(")"))
-                                {
-                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseCloseParenthesesInNot"), expression, rule.Name, splits[i]), rule);
-                                }
-                            }
-                            else
-                            {
-                                foundLabels.Add(variable);
-                                if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out var result) && result < rule.Clauses.Count)))
-                                {
-                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);
-                                }
-                                expectingOperator = true;
-                            }
-                        }
-                        //Operator
-                        else
-                        {
-                            // If we can't enum parse the operator
-                            if (!Enum.TryParse<BOOL_OPERATOR>(splits[i], out var op))
-                            {
-                                yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidOperator"), expression, rule.Name, splits[i]), rule);
-                            }
-                            // We don't allow NOT operators to modify other Operators, so we can't
-                            // allow NOT here
-                            else
-                            {
-                                if (op is BOOL_OPERATOR boolOp && boolOp == BOOL_OPERATOR.NOT)
-                                {
-                                    yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidNotOperator"), expression, rule.Name), rule);
-                                }
-                            }
-                            expectingOperator = false;
-                        }
-                    }
-
-                    // We should always end on expecting an operator (having gotten a variable)
-                    if (!expectingOperator)
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseEndsWithOperator"), expression, rule.Name), rule);
-                    }
-                }
-
-                // Were all the labels declared in clauses used?
-                foreach (var label in rule.Clauses.Select(x => x.Label))
-                {
-                    if (label is string)
-                    {
-                        if (!foundLabels.Contains(label))
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseUnusedLabel"), label, rule.Name), rule);
-                        }
-                    }
-                }
-
-                var justTheLabels = clauseLabels.Select(x => x.Key);
-                // If any clause has a label they all must have labels
-                if (justTheLabels.Any(x => x is string) && justTheLabels.Any(x => x is null))
-                {
-                    yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingLabels"), rule.Name), rule);
-                }
-                // If the clause has an expression it may not have any null labels
-                if (rule.Expression != null && justTheLabels.Any(x => x is null))
-                {
-                    yield return new Violation(string.Format(Strings.Get("Err_ClauseExpressionButMissingLabels"), rule.Name), rule);
-                }
-            }
+            }       
         }
 
         /// <summary>
