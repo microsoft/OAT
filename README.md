@@ -37,7 +37,7 @@ var res = analyzer.GetCaptures(rules, target);
 
 ## Detailed Usage
 
-A full [walkthrough](https://github.com/microsoft/OAT/wiki/Walkthrough) includng creating a custom operation and validating your custom operation rules and capturing Clause values is available on the wiki.
+A full [walkthrough](https://github.com/microsoft/OAT/wiki/Walkthrough) including creating a custom operation and validating your custom operation rules and capturing Clause values is available on the wiki.
 
 ## Authoring Rules
 
