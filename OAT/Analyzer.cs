@@ -71,7 +71,7 @@ namespace Microsoft.CST.OAT
 
         private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
 
-        private Dictionary<string, Script<OperationResult>?> lambdas { get; } = new Dictionary<string, Script<OperationResult>?>();
+        private Dictionary<(string, string, string), Script<OperationResult>?> lambdas { get; } = new Dictionary<(string, string, string), Script<OperationResult>?>();
 
         /// <summary>
         /// Clear all the set delegates
@@ -633,7 +633,9 @@ namespace Microsoft.CST.OAT
             }
             else if (clause.Lambda != null)
             {
-                if (!lambdas.ContainsKey(clause.Lambda))
+                var importsJoin = string.Join(",", clause.Imports);
+                var referencesJoin = string.Join(",", clause.References);
+                if (!lambdas.ContainsKey((clause.Lambda, importsJoin, referencesJoin)))
                 {
                     try
                     {
@@ -649,7 +651,7 @@ namespace Microsoft.CST.OAT
                         }
                         var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
                         script.Compile();
-                        lambdas[clause.Lambda] = script;
+                        lambdas[(clause.Lambda, importsJoin, referencesJoin)] = script;
                     }
                     catch(Exception e)
                     {
