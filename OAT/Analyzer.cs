@@ -656,13 +656,13 @@ namespace Microsoft.CST.OAT
                     catch(Exception e)
                     {
                         Log.Debug(e, $"Lambda {clause.Lambda} could not be compiled.");
-                        lambdas[clause.Lambda] = null;
+                        lambdas[(clause.Lambda, importsJoin, referencesJoin)] = null;
                     }
                 }
                 try
                 {
-                    var res = lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
-                    return lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
+                    var res = lambdas[(clause.Lambda, importsJoin, referencesJoin)]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
+                    return res?.Result.ReturnValue ?? new OperationResult(false, null);
                 }
                 catch(Exception e)
                 {
