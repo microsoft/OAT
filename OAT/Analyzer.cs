@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
@@ -405,7 +404,7 @@ namespace Microsoft.CST.OAT
                         options = options.AddImports(clauseScript.Imports);
 
                         var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                        foreach(var issue in script.Compile())
+                        foreach (var issue in script.Compile())
                         {
                             issues.Add(new Violation(issue.GetMessage(), rule, clause));
                         }
@@ -418,7 +417,7 @@ namespace Microsoft.CST.OAT
                     {
                         yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
                     }
-                    foreach(var issue in issues)
+                    foreach (var issue in issues)
                     {
                         yield return issue;
                     }
@@ -580,11 +579,11 @@ namespace Microsoft.CST.OAT
             }
             foreach (var rule in rules ?? Array.Empty<Rule>())
             {
-                foreach(var issue in EnumerateRuleIssues(rule))
+                foreach (var issue in EnumerateRuleIssues(rule))
                 {
                     yield return issue;
                 }
-            }       
+            }
         }
 
         /// <summary>
@@ -640,7 +639,7 @@ namespace Microsoft.CST.OAT
                         script.Compile();
                         lambdas[clauseScript] = script;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Log.Debug(e, $"Lambda {clauseScript.Code} could not be compiled.");
                         lambdas[clauseScript] = null;
@@ -651,7 +650,7 @@ namespace Microsoft.CST.OAT
                     var res = lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
                     return lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Log.Debug(e, "Found while attempting to execute lambda.");
                     return new OperationResult(false, null);

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Microsoft.CST.OAT
 {
@@ -18,26 +16,26 @@ namespace Microsoft.CST.OAT
         /// <param name="captures">The previous Clause Captures</param>
         public OperationArguments(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            this.clause = clause;
-            this.state1 = state1;
-            this.state2 = state2;
-            this.captures = captures;
+            Clause = clause;
+            State1 = state1;
+            State2 = state2;
+            Captures = captures;
         }
         /// <summary>
         /// The clause associated with these arguments
         /// </summary>
-        public Clause clause { get; }
+        public Clause Clause { get; }
         /// <summary>
         /// The first object state
         /// </summary>
-        public object? state1 { get; }
+        public object? State1 { get; }
         /// <summary>
         /// The second object state
         /// </summary>
-        public object? state2 { get; }
+        public object? State2 { get; }
         /// <summary>
         /// The captures from previous clauses in the same rule.
         /// </summary>
-        public IEnumerable<ClauseCapture>? captures { get; }
+        public IEnumerable<ClauseCapture>? Captures { get; }
     }
 }

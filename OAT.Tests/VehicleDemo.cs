@@ -8,14 +8,12 @@ using System.Linq;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    public class Vehicle
+    [Flags]
+    public enum Endorsements
     {
-        public int Weight;
-        public int Axles { get; set; }
-        public int Occupants { get; set; }
-        public int Capacity { get; set; }
-        public Driver? Driver { get; set; }
-        public VehicleType VehicleType { get; internal set; }
+        Motorcycle = 1,
+        Auto = 2,
+        CDL = 4
     }
 
     public enum VehicleType
@@ -36,12 +34,14 @@ namespace Microsoft.CST.OAT.Tests
         public DateTime Expiration { get; set; }
     }
 
-    [Flags]
-    public enum Endorsements
+    public class Vehicle
     {
-        Motorcycle = 1,
-        Auto = 2,
-        CDL = 4
+        public int Weight;
+        public int Axles { get; set; }
+        public int Capacity { get; set; }
+        public Driver? Driver { get; set; }
+        public int Occupants { get; set; }
+        public VehicleType VehicleType { get; internal set; }
     }
 
     [TestClass]
@@ -52,12 +52,6 @@ namespace Microsoft.CST.OAT.Tests
         {
             Logger.SetupVerbose();
             Strings.Setup();
-        }
-
-        int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
-        {
-            // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules 0 cost
-            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
 
         public OperationResult OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
@@ -87,159 +81,6 @@ namespace Microsoft.CST.OAT.Tests
                 violations.Add(new Violation("Overweight operation takes no data.", r, c));
             }
             return violations;
-        }
-
-        public class VehicleRule : Rule
-        {
-            public int Cost;
-            public VehicleRule(string name) : base(name) { }
-        }
-
-        [TestMethod]
-        public void WeighStationDemo()
-        {
-            var truck = new Vehicle()
-            {
-                Weight = 20000,
-                Capacity = 20000,
-                VehicleType = VehicleType.Truck,
-                Driver = new Driver()
-                {
-                    License = new DriverLicense()
-                    {
-                        Endorsements = Endorsements.CDL | Endorsements.Auto,
-                        Expiration = DateTime.Now.AddYears(1)
-                    }
-                }
-            };
-
-            var overweightTruck = new Vehicle()
-            {
-                Weight = 30000,
-                Capacity = 20000,
-                VehicleType = VehicleType.Truck,
-                Driver = new Driver()
-                {
-                    License = new DriverLicense()
-                    {
-                        Endorsements = Endorsements.CDL | Endorsements.Auto,
-                        Expiration = DateTime.Now.AddYears(1)
-                    }
-                }
-            };
-
-            var expiredLicense = new Vehicle()
-            {
-                Weight = 20000,
-                Capacity = 20000,
-                VehicleType = VehicleType.Truck,
-                Driver = new Driver()
-                {
-                    License = new DriverLicense()
-                    {
-                        Endorsements = Endorsements.CDL | Endorsements.Auto,
-                        Expiration = DateTime.Now.AddYears(-1)
-                    }
-                }
-            };
-
-            var noCdl = new Vehicle()
-            {
-                Weight = 20000,
-                Capacity = 20000,
-                VehicleType = VehicleType.Truck,
-                Driver = new Driver()
-                {
-                    License = new DriverLicense()
-                    {
-                        Endorsements = Endorsements.Auto,
-                        Expiration = DateTime.Now.AddYears(1)
-                    }
-                }
-            };
-
-            var rules = new VehicleRule[] {
-                new VehicleRule("Overweight")
-                {
-                    Cost = 50,
-                    Severity = 9,
-                    Expression = "Overweight",
-                    Target = "Vehicle",
-                    Clauses = new List<Clause>()
-                    {
-                        new Clause(Operation.Custom)
-                        {
-                            Label = "Overweight",
-                            Script = new ScriptData(@"          
-if (state1 is Vehicle vehicle)
-{
-    var res = vehicle.Weight > vehicle.Capacity;
-    if ((res && !clause.Invert) || (clause.Invert && !res))
-    {
-        // The rule applies and is true and the capture is available if capture is enabled
-        return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
-    }
-}
-return new OperationResult(false, null);",
-                                imports: new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
-                                references: new List<string>(){ "OAT.Tests" }),
-                            Capture = true
-                        }
-                    }
-                },
-                new VehicleRule("No CDL")
-                {
-                    Cost = 100,
-                    Severity = 3,
-                    Target = "Vehicle",
-                    Expression = "NOT Has_Cdl",
-                    Clauses = new List<Clause>()
-                    {
-                        new Clause(Operation.Contains, "Driver.License.Endorsements")
-                        {
-                            Label = "Has_Cdl",
-                            Data = new List<string>()
-                            {
-                                "CDL"
-                            }
-                        }
-                    }
-                },
-                new VehicleRule("Expired License"){
-                    Cost = 75,
-                    Severity = 1,
-                    Target = "Vehicle",
-                    Clauses = new List<Clause>()
-                    {
-                        new Clause(Operation.IsExpired, "Driver.License.Expiration")
-                        {
-                        }
-                    }
-                }
-            };
-            var analyzer = new Analyzer();
-            var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
-            {
-                CustomOperation = "OVERWEIGHT",
-                OperationDelegate = OverweightOperationDelegate,
-                ValidationDelegate = OverweightOperationValidationDelegate
-            };
-
-            analyzer.SetOperation(OverweightOperation);
-
-            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
-
-            Assert.IsFalse(issues.Any());
-
-            Assert.IsTrue(!analyzer.Analyze(rules, truck).Any()); // Compliant
-            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight")); // Overweight
-            Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
-            Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
-
-            var res = analyzer.GetCaptures(rules, overweightTruck);
-            var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
-
-            Assert.IsTrue(weight == 30000);
         }
 
         [TestMethod]
@@ -425,8 +266,171 @@ return new OperationResult(false, null);",
             Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50);
             Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
             Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
-            Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2 
+            Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2
             Assert.IsTrue(GetCost(motorcycle, analyzer, rules) == 1); // 1
+        }
+
+        [TestMethod]
+        public void WeighStationDemo()
+        {
+            var truck = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                VehicleType = VehicleType.Truck,
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
+                }
+            };
+
+            var overweightTruck = new Vehicle()
+            {
+                Weight = 30000,
+                Capacity = 20000,
+                VehicleType = VehicleType.Truck,
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
+                }
+            };
+
+            var expiredLicense = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                VehicleType = VehicleType.Truck,
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.CDL | Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(-1)
+                    }
+                }
+            };
+
+            var noCdl = new Vehicle()
+            {
+                Weight = 20000,
+                Capacity = 20000,
+                VehicleType = VehicleType.Truck,
+                Driver = new Driver()
+                {
+                    License = new DriverLicense()
+                    {
+                        Endorsements = Endorsements.Auto,
+                        Expiration = DateTime.Now.AddYears(1)
+                    }
+                }
+            };
+
+            var rules = new VehicleRule[] {
+                new VehicleRule("Overweight")
+                {
+                    Cost = 50,
+                    Severity = 9,
+                    Expression = "Overweight",
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause(Operation.Custom)
+                        {
+                            Label = "Overweight",
+                            Script = new ScriptData(@"
+if (State1 is Vehicle vehicle)
+{
+    var res = vehicle.Weight > vehicle.Capacity;
+    if ((res && !Clause.Invert) || (Clause.Invert && !res))
+    {
+        // The rule applies and is true and the capture is available if capture is enabled
+        return new OperationResult(true, Clause.Capture ? new TypedClauseCapture<int>(Clause, vehicle.Weight, State1, State2) : null);
+    }
+}
+return new OperationResult(false, null);",
+                                imports: new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
+                                references: new List<string>(){ "OAT.Tests" }),
+                            Capture = true
+                        }
+                    }
+                },
+                new VehicleRule("No CDL")
+                {
+                    Cost = 100,
+                    Severity = 3,
+                    Target = "Vehicle",
+                    Expression = "NOT Has_Cdl",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause(Operation.Contains, "Driver.License.Endorsements")
+                        {
+                            Label = "Has_Cdl",
+                            Data = new List<string>()
+                            {
+                                "CDL"
+                            }
+                        }
+                    }
+                },
+                new VehicleRule("Expired License"){
+                    Cost = 75,
+                    Severity = 1,
+                    Target = "Vehicle",
+                    Clauses = new List<Clause>()
+                    {
+                        new Clause(Operation.IsExpired, "Driver.License.Expiration")
+                        {
+                        }
+                    }
+                }
+            };
+            var analyzer = new Analyzer();
+            var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
+            {
+                CustomOperation = "OVERWEIGHT",
+                OperationDelegate = OverweightOperationDelegate,
+                ValidationDelegate = OverweightOperationValidationDelegate
+            };
+
+            analyzer.SetOperation(OverweightOperation);
+
+            var issues = analyzer.EnumerateRuleIssues(rules).ToList();
+
+            Assert.IsFalse(issues.Any());
+
+            Assert.IsTrue(!analyzer.Analyze(rules, truck).Any()); // Compliant
+            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight")); // Overweight
+            Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
+            Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
+
+            var res = analyzer.GetCaptures(rules, overweightTruck);
+            var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
+
+            Assert.IsTrue(weight == 30000);
+        }
+
+        public class VehicleRule : Rule
+        {
+            public int Cost;
+
+            public VehicleRule(string name) : base(name)
+            {
+            }
+        }
+
+        private int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
+        {
+            // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules
+            // 0 cost
+            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
     }
 }
