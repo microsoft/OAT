@@ -30,7 +30,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = lambda
+                        Script = new ScriptData(lambda, Array.Empty<string>(), Array.Empty<string>())
                     }
                 }
             };
@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = badLambda
+                        Script = new ScriptData(badLambda, Array.Empty<string>(), Array.Empty<string>())
                     }
                 }
             };
@@ -74,8 +74,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = okayLambda,
-                        Imports = new List<string>(){ "Not.A.Package" }
+                        Script = new ScriptData(okayLambda, new List<string>(){ "Not.A.Package" }, Array.Empty<string>())
                     }
                 }
             };
@@ -96,8 +95,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = okayLambda,
-                        References = new List<string>(){ "Not.An.Assembly" }
+                        Script = new ScriptData(okayLambda, Array.Empty<string>(), new List<string>(){ "Not.An.Assembly" })
                     }
                 }
             };
@@ -118,7 +116,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = missingReference
+                        Script = new ScriptData(missingReference, Array.Empty<string>(), Array.Empty<string>())
                     }
                 }
             };
@@ -139,7 +137,7 @@ namespace Microsoft.CST.OAT.Tests
                 {
                     new Clause(Operation.Custom)
                     {
-                        Lambda = missingReference
+                        Script = new ScriptData(missingReference, Array.Empty<string>(), Array.Empty<string>())
                     }
                 }
             };

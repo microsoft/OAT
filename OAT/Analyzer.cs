@@ -71,7 +71,7 @@ namespace Microsoft.CST.OAT
 
         private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
 
-        private Dictionary<(string, string, string), Script<OperationResult>?> lambdas { get; } = new Dictionary<(string, string, string), Script<OperationResult>?>();
+        private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
 
         /// <summary>
         /// Clear all the set delegates
@@ -393,7 +393,7 @@ namespace Microsoft.CST.OAT
                         yield return violation;
                     }
                 }
-                else if (clause.Lambda != null)
+                else if (clause.Script is ScriptData clauseScript)
                 {
                     var issues = new List<Violation>();
                     Exception? yieldError = null;
@@ -401,15 +401,10 @@ namespace Microsoft.CST.OAT
                     {
                         var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
                         options = options.AddReferences(typeof(Analyzer).Assembly);
-                        if (clause.References is List<string> references)
-                        {
-                            options = options.AddReferences(references.Select(Assembly.Load));
-                        }
-                        if (clause.Imports is List<string> imports)
-                        {
-                            options = options.AddImports(imports);
-                        }
-                        var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
+                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                        options = options.AddImports(clauseScript.Imports);
+
+                        var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
                         foreach(var issue in script.Compile())
                         {
                             issues.Add(new Violation(issue.GetMessage(), rule, clause));
@@ -631,38 +626,30 @@ namespace Microsoft.CST.OAT
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
             }
-            else if (clause.Lambda != null)
+            else if (clause.Script is ScriptData clauseScript)
             {
-                var importsJoin = string.Join(",", clause.Imports);
-                var referencesJoin = string.Join(",", clause.References);
-                if (!lambdas.ContainsKey((clause.Lambda, importsJoin, referencesJoin)))
+                if (!lambdas.ContainsKey(clauseScript))
                 {
                     try
                     {
                         var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
                         options = options.AddReferences(typeof(Analyzer).Assembly);
-                        if (clause.References is List<string> references)
-                        {
-                            options = options.AddReferences(references.Select(Assembly.Load));
-                        }
-                        if (clause.Imports is List<string> imports)
-                        {
-                            options = options.AddImports(imports);
-                        }
-                        var script = CSharpScript.Create<OperationResult>(clause.Lambda, globalsType: typeof(OperationArguments), options: options);
+                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                        options = options.AddImports(clauseScript.Imports);
+                        var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
                         script.Compile();
-                        lambdas[(clause.Lambda, importsJoin, referencesJoin)] = script;
+                        lambdas[clauseScript] = script;
                     }
                     catch(Exception e)
                     {
-                        Log.Debug(e, $"Lambda {clause.Lambda} could not be compiled.");
-                        lambdas[clause.Lambda] = null;
+                        Log.Debug(e, $"Lambda {clauseScript.Code} could not be compiled.");
+                        lambdas[clauseScript] = null;
                     }
                 }
                 try
                 {
-                    var res = lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
-                    return lambdas[clause.Lambda]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
+                    var res = lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
+                    return lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
                 }
                 catch(Exception e)
                 {

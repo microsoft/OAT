@@ -170,9 +170,7 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            Imports = new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
-                            References = new List<string>(){ "OAT.Tests" },
-                            Lambda =@"          
+                            Script = new ScriptData(@"          
 if (state1 is Vehicle vehicle)
 {
     var res = vehicle.Weight > vehicle.Capacity;
@@ -183,6 +181,8 @@ if (state1 is Vehicle vehicle)
     }
 }
 return new OperationResult(false, null);",
+                                imports: new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
+                                references: new List<string>(){ "OAT.Tests" }),
                             Capture = true
                         }
                     }

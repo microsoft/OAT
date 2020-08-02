@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// An optional lambda expression to execute
         /// </summary>
-        public string? Lambda { get; set; }
+        public ScriptData? Script { get; set; }
 
         /// <summary>
         /// If the result of the Operation should be inverted
@@ -81,12 +81,6 @@ namespace Microsoft.CST.OAT
                 return _key;
             }
         }
-
-        /// <summary>
-        /// List of imports to pass when using a lambda
-        /// </summary>
-        public List<string>? Imports { get; set; }
-        public List<string>? References { get; set; }
 
         private string _key = "";
     }
