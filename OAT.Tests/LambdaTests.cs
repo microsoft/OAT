@@ -167,8 +167,10 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
             analyzer.RunScripts = true;
+
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
             Assert.IsFalse(ruleIssues.Any());
+
             var results = analyzer.Analyze(new Rule[] { rule }, true, true);
             Assert.IsTrue(results.Any());
         }
