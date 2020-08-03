@@ -41,7 +41,7 @@ namespace Microsoft.CST.OAT.Tests
         public int Capacity { get; set; }
         public Driver? Driver { get; set; }
         public int Occupants { get; set; }
-        public VehicleType VehicleType { get; internal set; }
+        public VehicleType VehicleType { get; set; }
     }
 
     [TestClass]
