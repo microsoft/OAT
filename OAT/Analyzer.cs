@@ -43,6 +43,9 @@ namespace Microsoft.CST.OAT
             SetOperation(new WasModifiedOperation(this));
         }
 
+        // ToDO respect this
+        public bool RunScripts { get; set; } = false;
+
         /// <summary>
         /// This delegate is for iterating into complex objects like dictionaries that the Analyzer doesn't natively understand
         /// </summary>
@@ -394,32 +397,38 @@ namespace Microsoft.CST.OAT
                 }
                 else if (clause.Script is ScriptData clauseScript)
                 {
-                    var issues = new List<Violation>();
-                    Exception? yieldError = null;
-                    try
+                    if (!RunScripts) {
+                        yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
+                    }
+                    else
                     {
-                        var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                        options = options.AddReferences(typeof(Analyzer).Assembly);
-                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                        options = options.AddImports(clauseScript.Imports);
-
-                        var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                        foreach (var issue in script.Compile())
+                        var issues = new List<Violation>();
+                        Exception? yieldError = null;
+                        try
                         {
-                            issues.Add(new Violation(issue.GetMessage(), rule, clause));
+                            var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
+                            options = options.AddReferences(typeof(Analyzer).Assembly);
+                            options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                            options = options.AddImports(clauseScript.Imports);
+
+                            var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
+                            foreach (var issue in script.Compile())
+                            {
+                                issues.Add(new Violation(issue.GetMessage(), rule, clause));
+                            }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        yieldError = e;
-                    }
-                    if (yieldError != null)
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
-                    }
-                    foreach (var issue in issues)
-                    {
-                        yield return issue;
+                        catch (Exception e)
+                        {
+                            yieldError = e;
+                        }
+                        if (yieldError != null)
+                        {
+                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
+                        }
+                        foreach (var issue in issues)
+                        {
+                            yield return issue;
+                        }
                     }
                 }
                 else
@@ -627,6 +636,11 @@ namespace Microsoft.CST.OAT
             }
             else if (clause.Script is ScriptData clauseScript)
             {
+                if (!RunScripts)
+                {
+                    Log.Warning("Detected Script {0} but RunScripts is false.", clauseScript.Code);
+                    return new OperationResult(false, null);
+                }
                 if (!lambdas.ContainsKey(clauseScript))
                 {
                     try
@@ -636,7 +650,11 @@ namespace Microsoft.CST.OAT
                         options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
                         options = options.AddImports(clauseScript.Imports);
                         var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                        script.Compile();
+                        var issues = script.Compile();
+                        if (issues.Any())
+                        {
+                            Log.Debug($"Lambda {clauseScript.Code} could not be compiled. ({string.Join("\n",issues)})");
+                        }
                         lambdas[clauseScript] = script;
                     }
                     catch (Exception e)

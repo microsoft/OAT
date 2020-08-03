@@ -159,6 +159,9 @@
   <data name="Err_ClauseInvalidLambda_{0}{1}{2}" xml:space="preserve">
     <value>Rule {0} Clause {1} has Invalid Lambda (Message: {2}).</value>
   </data>
+  <data name="Err_ScriptingDisabled_{0}{1}" xml:space="preserve">
+    <value>Rule {0} Clause {1} has Script but RunScripts is false.</value>
+  </data>
   <data name="Err_ClauseInvalidNotOperator" xml:space="preserve">
     <value>Expression {0} in rule {1} contains NOT where a non-NOT operator was expected.</value>
   </data>

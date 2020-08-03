@@ -19,6 +19,27 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
+        public void TestScriptingDisabled()
+        {
+            var okayLambda = @"return new OperationResult(state1 is true, null);";
+            var invalidImportRule = new Rule("Lambda Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Custom)
+                    {
+                        Script = new ScriptData(okayLambda, Array.Empty<string>(), Array.Empty<string>())
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            Assert.IsFalse(analyzer
+                .EnumerateRuleIssues(invalidImportRule)
+                .Any());
+        }
+
+        [TestMethod]
         public void TestInvalidImports()
         {
             var okayLambda = @"return new OperationResult(state1 is true, null);";
@@ -34,6 +55,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
+            analyzer.RunScripts = true;
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(invalidImportRule)
                 .Any());
@@ -56,6 +78,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
+            analyzer.RunScripts = true;
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(badLambdaRule)
                 .Any());
@@ -77,6 +100,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
+            analyzer.RunScripts = true;
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(invalidReferenceRule)
                 .Any());
@@ -119,6 +143,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
+            analyzer.RunScripts = true;
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(missingReferenceRule)
                 .Any());
@@ -141,6 +166,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
+            analyzer.RunScripts = true;
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
             Assert.IsFalse(ruleIssues.Any());
             var results = analyzer.Analyze(new Rule[] { rule }, true, true);
