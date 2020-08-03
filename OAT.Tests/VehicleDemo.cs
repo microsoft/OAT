@@ -137,7 +137,7 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            CustomOperation = "OVERWEIGHT"
+                            CustomOperation = "OverweightOperation"
                         },
                         new Clause(Operation.Equals, "VehicleType")
                         {
@@ -252,7 +252,7 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
             {
-                CustomOperation = "OVERWEIGHT",
+                CustomOperation = "OverweightOperation",
                 OperationDelegate = OverweightOperationDelegate,
                 ValidationDelegate = OverweightOperationValidationDelegate
             };
@@ -345,7 +345,7 @@ namespace Microsoft.CST.OAT.Tests
                         new Clause(Operation.Custom)
                         {
                             Label = "Overweight",
-                            Script = new ScriptData(@"
+                            Script = new ScriptData(code: @"
 if (State1 is Vehicle vehicle)
 {
     var res = vehicle.Weight > vehicle.Capacity;
@@ -395,7 +395,7 @@ return new OperationResult(false, null);",
             var analyzer = new Analyzer();
             var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
             {
-                CustomOperation = "OVERWEIGHT",
+                CustomOperation = "OverweightOperation",
                 OperationDelegate = OverweightOperationDelegate,
                 ValidationDelegate = OverweightOperationValidationDelegate
             };
