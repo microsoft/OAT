@@ -74,7 +74,7 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public List<ObjectToValuesDelegate> CustomObjectToValuesDelegates { get; set; } = new List<ObjectToValuesDelegate>();
 
-        private Dictionary<string, OatOperation> delegates { get; } = new Dictionary<string, OatOperation>();
+        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
 
         private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
 
