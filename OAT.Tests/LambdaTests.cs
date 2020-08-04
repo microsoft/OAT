@@ -55,8 +55,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var analyzer = new Analyzer();
-            analyzer.RunScripts = true;
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(invalidImportRule)
                 .Any());
@@ -78,8 +77,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var analyzer = new Analyzer();
-            analyzer.RunScripts = true;
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(badLambdaRule)
                 .Any());
@@ -100,8 +98,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var analyzer = new Analyzer();
-            analyzer.RunScripts = true;
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(invalidReferenceRule)
                 .Any());
@@ -143,8 +140,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var analyzer = new Analyzer();
-            analyzer.RunScripts = true;
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
             Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(missingReferenceRule)
                 .Any());
@@ -166,8 +162,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            var analyzer = new Analyzer();
-            analyzer.RunScripts = true;
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
 
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
             Assert.IsFalse(ruleIssues.Any());

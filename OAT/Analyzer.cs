@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Operations;
@@ -24,8 +25,9 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// The constructor for Analyzer takes no arguments.
         /// </summary>
-        public Analyzer()
+        public Analyzer(OAT.AnalyzerOptions? analyzerOptions = null)
         {
+            Options = analyzerOptions ?? new AnalyzerOptions();
             SetOperation(new ContainsOperation(this));
             SetOperation(new ContainsAnyOperation(this));
             SetOperation(new ContainsKeyOperation(this));
@@ -43,12 +45,6 @@ namespace Microsoft.CST.OAT
             SetOperation(new WasModifiedOperation(this));
             SetOperation(new NoOperation(this));
         }
-
-
-        /// <summary>
-        /// Is running Scripts as Clause Operations enabled
-        /// </summary>
-        public bool RunScripts { get; set; } = false;
 
         /// <summary>
         /// This delegate is for iterating into complex objects like dictionaries that the Analyzer doesn't natively understand
@@ -78,6 +74,11 @@ namespace Microsoft.CST.OAT
         private Dictionary<(Operation Operation, string CustomOperation), OatOperation> delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
 
         private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
+
+        /// <summary>
+        /// The options for the Analyzer
+        /// </summary>
+        public AnalyzerOptions Options { get; } = new AnalyzerOptions();
 
         /// <summary>
         /// Clear all the set delegates
@@ -401,7 +402,7 @@ namespace Microsoft.CST.OAT
                 }
                 else if (clause.Script is ScriptData clauseScript)
                 {
-                    if (!RunScripts) {
+                    if (!Options.RunScripts) {
                         yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                     }
                     else
@@ -639,7 +640,7 @@ namespace Microsoft.CST.OAT
             }
             else if (clause.Script is ScriptData clauseScript)
             {
-                if (!RunScripts)
+                if (!Options.RunScripts)
                 {
                     Log.Warning("Detected Script {0} but RunScripts is false.", clauseScript.Code);
                     return new OperationResult(false, null);

@@ -392,7 +392,7 @@ return new OperationResult(false, null);",
                     }
                 }
             };
-            var analyzer = new Analyzer();
+            var analyzer = new Analyzer(new AnalyzerOptions(true));
             var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
             {
                 CustomOperation = "OverweightOperation",
@@ -401,8 +401,6 @@ return new OperationResult(false, null);",
             };
 
             analyzer.SetOperation(OverweightOperation);
-            // Enable Scripting so our Script based rule can run
-            analyzer.RunScripts = true;
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
