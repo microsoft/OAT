@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Benchmarks", "OAT.Benchmarks\OAT.Benchmarks.csproj", "{F7BF4714-746B-4D02-9BA0-FFC0B2FF28C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E14DC8E-F742-4579-B88C-9CB4823EA7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7BF4714-746B-4D02-9BA0-FFC0B2FF28C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7BF4714-746B-4D02-9BA0-FFC0B2FF28C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7BF4714-746B-4D02-9BA0-FFC0B2FF28C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7BF4714-746B-4D02-9BA0-FFC0B2FF28C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
