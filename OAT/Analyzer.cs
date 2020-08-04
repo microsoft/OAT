@@ -43,7 +43,10 @@ namespace Microsoft.CST.OAT
             SetOperation(new WasModifiedOperation(this));
         }
 
-        // ToDO respect this
+
+        /// <summary>
+        /// Is running Scripts as Clause Operations enabled
+        /// </summary>
         public bool RunScripts { get; set; } = false;
 
         /// <summary>
