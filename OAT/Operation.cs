@@ -6,6 +6,10 @@
     public enum Operation
     {
         /// <summary>
+        ///     Invalid Operation
+        /// </summary>
+        NoOperation,
+        /// <summary>
         ///     Specifies that a custom operation has been specified
         /// </summary>
         Custom,
@@ -90,6 +94,6 @@
         /// <summary>
         ///     Checks if the field, if a dictionary, contains the specified key
         /// </summary>
-        ContainsKey
+        ContainsKey,
     }
 }

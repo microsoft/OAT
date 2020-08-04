@@ -49,6 +49,11 @@ namespace Microsoft.CST.OAT
         public string? CustomOperation { get; set; }
 
         /// <summary>
+        /// An optional lambda expression to execute
+        /// </summary>
+        public ScriptData? Script { get; set; }
+
+        /// <summary>
         /// If the result of the Operation should be inverted
         /// </summary>
         public bool Invert { get; set; }
@@ -63,18 +68,18 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public List<string> Arguments { get; set; } = new List<string>();
 
-        internal string Key
+        internal (Operation Operation, string CustomOperation) Key
         {
             get
             {
-                if (string.IsNullOrEmpty(_key))
+                if (_key is (Operation.NoOperation, _))
                 {
-                    _key = string.Format("{0}{1}{2}", Operation, CustomOperation is null ? "" : " - ", CustomOperation is null ? "" : CustomOperation);
+                    _key = (Operation, CustomOperation ?? "");
                 }
                 return _key;
             }
         }
 
-        private string _key = "";
+        private (Operation Operation, string CustomOperation) _key = (OAT.Operation.NoOperation, "");
     }
 }

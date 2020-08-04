@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -222,6 +224,50 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
+        public void VerifyContainsKeyOperator()
+        {
+            var trueAlgDict = new TestObject()
+            {
+                StringDictField = new Dictionary<string, string>()
+                {
+                    { "Magic", "Anything" }
+                }
+            };
+
+            var falseAlgDict = new TestObject()
+            {
+                StringDictField = new Dictionary<string, string>()
+                {
+                    { "No Magic", "Anything" }
+                }
+            };
+
+            var dictContainsKey = new Rule("DictContainsKey")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.ContainsKey, "StringDictField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    }
+                }
+            };
+
+            var algDictAnalyzer = new Analyzer();
+            var ruleList = new List<Rule>() { dictContainsKey };
+
+            Assert.IsTrue(algDictAnalyzer.Analyze(ruleList, trueAlgDict).Any());
+            Assert.IsFalse(algDictAnalyzer.Analyze(ruleList, falseAlgDict).Any());
+
+            Assert.IsTrue(algDictAnalyzer.Analyze(ruleList, null, trueAlgDict).Any());
+            Assert.IsFalse(algDictAnalyzer.Analyze(ruleList, null, falseAlgDict).Any());
+        }
+
+        [TestMethod]
         public void VerifyContainsOperator()
         {
             var trueStringObject = new TestObject()
@@ -426,58 +472,6 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsFalse(enumAnalyzer.Analyze(ruleList, null, Words.Normal).Any());
         }
 
-        [Flags]
-        enum Words
-        {
-            Normal = 1,
-            Magic = 2,
-            Shazam = 4
-        }
-
-        [TestMethod]
-        public void VerifyContainsKeyOperator()
-        {
-            var trueAlgDict = new TestObject()
-            {
-                StringDictField = new Dictionary<string, string>()
-                {
-                    { "Magic", "Anything" }
-                }
-            };
-
-            var falseAlgDict = new TestObject()
-            {
-                StringDictField = new Dictionary<string, string>()
-                {
-                    { "No Magic", "Anything" }
-                }
-            };
-
-            var dictContainsKey = new Rule("DictContainsKey")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.ContainsKey, "StringDictField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "Magic"
-                        }
-                    }
-                }
-            };
-
-            var algDictAnalyzer = new Analyzer();
-            var ruleList = new List<Rule>() { dictContainsKey };
-
-            Assert.IsTrue(algDictAnalyzer.Analyze(ruleList, trueAlgDict).Any());
-            Assert.IsFalse(algDictAnalyzer.Analyze(ruleList, falseAlgDict).Any());
-
-            Assert.IsTrue(algDictAnalyzer.Analyze(ruleList, null, trueAlgDict).Any());
-            Assert.IsFalse(algDictAnalyzer.Analyze(ruleList, null, falseAlgDict).Any());
-        }
-
         [TestMethod]
         public void VerifyEndsWithOperator()
         {
@@ -506,36 +500,6 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsTrue(endsWithAnalyzer.Analyze(ruleList, null, trueEndsWithObject).Any());
             Assert.IsFalse(endsWithAnalyzer.Analyze(ruleList, null, falseEndsWithObject).Any());
-        }
-
-        [TestMethod]
-        public void VerifyStartsWithOperator()
-        {
-            var trueEndsWithObject = "MagicStartsThisStringOff";
-            var falseEndsWithObject = "ThisStringHasMagicButLater";
-
-            var startsWithRule = new Rule("Starts With Rule")
-            {
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.StartsWith)
-                    {
-                        Data = new List<string>()
-                        {
-                            "Magic"
-                        }
-                    }
-                }
-            };
-
-            var analyzer = new Analyzer();
-            var ruleList = new List<Rule>() { startsWithRule };
-
-            Assert.IsTrue(analyzer.Analyze(ruleList, trueEndsWithObject).Any());
-            Assert.IsFalse(analyzer.Analyze(ruleList, falseEndsWithObject).Any());
-
-            Assert.IsTrue(analyzer.Analyze(ruleList, null, trueEndsWithObject).Any());
-            Assert.IsFalse(analyzer.Analyze(ruleList, null, falseEndsWithObject).Any());
         }
 
         [TestMethod]
@@ -685,66 +649,6 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
-        public void VerifyLtOperator()
-        {
-            var trueGtObject = new TestObject()
-            {
-                IntField = 8999
-            };
-            var falseGtObject = new TestObject()
-            {
-                IntField = 9000
-            };
-
-            var gtRule = new Rule("Lt Rule")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.LessThan, "IntField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "9000"
-                        }
-                    }
-                }
-            };
-
-            var badGtRule = new Rule("Bad Lt Rule")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.LessThan, "IntField")
-                    {
-                        Data = new List<string>()
-                        {
-                            "CONTOSO"
-                        }
-                    }
-                }
-            };
-
-            var ltAnalyzer = new Analyzer();
-            var ruleList = new List<Rule>() { gtRule };
-
-            Assert.IsTrue(ltAnalyzer.Analyze(ruleList, trueGtObject).Any());
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, falseGtObject).Any());
-
-            Assert.IsTrue(ltAnalyzer.Analyze(ruleList, null, trueGtObject).Any());
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, falseGtObject).Any());
-
-            ruleList = new List<Rule>() { badGtRule };
-
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, trueGtObject).Any());
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, falseGtObject).Any());
-
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, trueGtObject).Any());
-            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, falseGtObject).Any());
-        }
-
-        [TestMethod]
         public void VerifyIsAfterOperator()
         {
             var falseIsAfterObject = DateTime.MinValue;
@@ -795,7 +699,6 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsTrue(isAfterAnalyzer.Analyze(ruleList, null, trueIsAfterObject).Any());
             Assert.IsFalse(isAfterAnalyzer.Analyze(ruleList, null, falseIsAfterObject).Any());
-
         }
 
         [TestMethod]
@@ -879,7 +782,6 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void VerifyIsNullOperator()
         {
-
             var isNullRule = new Rule("Is Null Rule")
             {
                 Clauses = new List<Clause>()
@@ -920,6 +822,66 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
+        public void VerifyLtOperator()
+        {
+            var trueGtObject = new TestObject()
+            {
+                IntField = 8999
+            };
+            var falseGtObject = new TestObject()
+            {
+                IntField = 9000
+            };
+
+            var gtRule = new Rule("Lt Rule")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.LessThan, "IntField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "9000"
+                        }
+                    }
+                }
+            };
+
+            var badGtRule = new Rule("Bad Lt Rule")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.LessThan, "IntField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "CONTOSO"
+                        }
+                    }
+                }
+            };
+
+            var ltAnalyzer = new Analyzer();
+            var ruleList = new List<Rule>() { gtRule };
+
+            Assert.IsTrue(ltAnalyzer.Analyze(ruleList, trueGtObject).Any());
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, falseGtObject).Any());
+
+            Assert.IsTrue(ltAnalyzer.Analyze(ruleList, null, trueGtObject).Any());
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, falseGtObject).Any());
+
+            ruleList = new List<Rule>() { badGtRule };
+
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, trueGtObject).Any());
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, falseGtObject).Any());
+
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, trueGtObject).Any());
+            Assert.IsFalse(ltAnalyzer.Analyze(ruleList, null, falseGtObject).Any());
+        }
+
+        [TestMethod]
         public void VerifyRegexOperator()
         {
             var falseRegexObject = "TestPathHere";
@@ -947,6 +909,36 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsTrue(regexAnalyzer.Analyze(ruleList, null, trueRegexObject).Any());
             Assert.IsFalse(regexAnalyzer.Analyze(ruleList, null, falseRegexObject).Any());
+        }
+
+        [TestMethod]
+        public void VerifyStartsWithOperator()
+        {
+            var trueEndsWithObject = "MagicStartsThisStringOff";
+            var falseEndsWithObject = "ThisStringHasMagicButLater";
+
+            var startsWithRule = new Rule("Starts With Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.StartsWith)
+                    {
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { startsWithRule };
+
+            Assert.IsTrue(analyzer.Analyze(ruleList, trueEndsWithObject).Any());
+            Assert.IsFalse(analyzer.Analyze(ruleList, falseEndsWithObject).Any());
+
+            Assert.IsTrue(analyzer.Analyze(ruleList, null, trueEndsWithObject).Any());
+            Assert.IsFalse(analyzer.Analyze(ruleList, null, falseEndsWithObject).Any());
         }
 
         [TestMethod]
@@ -979,12 +971,19 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(analyzer.Analyze(ruleList, new List<string>() { "One", "Two" }, new List<string>() { "Three", "Four" }).Any());
             Assert.IsTrue(analyzer.Analyze(ruleList, firstObject, secondObject).Any());
 
-
             Assert.IsFalse(analyzer.Analyze(ruleList, true, true).Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, "A String", "A String").Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, 3, 3).Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, new List<string>() { "One", "Two" }, new List<string>() { "One", "Two" }).Any());
             Assert.IsFalse(analyzer.Analyze(ruleList, firstObject, firstObject).Any());
+        }
+
+        [Flags]
+        private enum Words
+        {
+            Normal = 1,
+            Magic = 2,
+            Shazam = 4
         }
     }
 }

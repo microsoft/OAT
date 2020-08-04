@@ -156,6 +156,12 @@
   <data name="Err_ClauseInvalidLabel" xml:space="preserve">
     <value>Rule {0} has clauses invalid name {1}. Names may not contains spaces or parentheses.</value>
   </data>
+  <data name="Err_ClauseInvalidLambda_{0}{1}{2}" xml:space="preserve">
+    <value>Rule {0} Clause {1} has Invalid Lambda (Message: {2}).</value>
+  </data>
+  <data name="Err_ScriptingDisabled_{0}{1}" xml:space="preserve">
+    <value>Rule {0} Clause {1} has Script but RunScripts is false.</value>
+  </data>
   <data name="Err_ClauseInvalidNotOperator" xml:space="preserve">
     <value>Expression {0} in rule {1} contains NOT where a non-NOT operator was expected.</value>
   </data>
@@ -204,13 +210,16 @@
   <data name="Err_ClauseUnexpectedDictData" xml:space="preserve">
     <value>Rule {0} Clause {1} contains unexpected Dictionary Data.</value>
   </data>
-  <data name="Err_ClauseUnsuppportedOperator" xml:space="preserve">
-    <value>Rule {0} Clause {1} uses unsupported Operator {2}.</value>
+  <data name="Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}" xml:space="preserve">
+    <value>Rule {0} Clause {1} uses unsupported Operator {2}:{3}.</value>
   </data>
   <data name="Err_ClauseUnusedLabel" xml:space="preserve">
     <value>Clause {0} is declared but never used in rule {1}.</value>
   </data>
   <data name="Err_ValidationDelegateUndefined_{0}{1}{2}" xml:space="preserve">
     <value>Rule {0} Clause {1} has Operation {2} with undefined validation delegate.</value>
+  </data>
+  <data name="Err_NoOperation_{0}{1}" xml:space="preserve">
+    <value>Rule {0}, Clause {1} is invalid as the Operator is set to NoOperation.</value>
   </data>
 </root>
