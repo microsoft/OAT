@@ -41,6 +41,7 @@ namespace Microsoft.CST.OAT
             SetOperation(new RegexOperation(this));
             SetOperation(new StartsWithOperation(this));
             SetOperation(new WasModifiedOperation(this));
+            SetOperation(new NoOperation(this));
         }
 
 
@@ -632,7 +633,6 @@ namespace Microsoft.CST.OAT
                 state1 = GetValueByPropertyString(state1, clause.Field);
             }
 
-            var key = string.Format("{0}{1}{2}", clause.Operation, clause.CustomOperation is null ? "" : " - ", clause.CustomOperation is null ? "" : clause.CustomOperation);
             if (delegates.ContainsKey(clause.Key))
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
@@ -679,8 +679,7 @@ namespace Microsoft.CST.OAT
             }
             else
             {
-                Log.Debug("No delegate found for {0}. Skipping evaluation.", key);
-                return new OperationResult(false, null);
+                return delegates[(Operation.NoOperation, "")].OperationDelegate.Invoke(clause, state1, state2, captures);
             }
         }
 

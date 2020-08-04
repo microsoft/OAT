@@ -219,4 +219,7 @@
   <data name="Err_ValidationDelegateUndefined_{0}{1}{2}" xml:space="preserve">
     <value>Rule {0} Clause {1} has Operation {2} with undefined validation delegate.</value>
   </data>
+  <data name="Err_NoOperation_{0}{1}" xml:space="preserve">
+    <value>Rule {0}, Clause {1} is invalid as the Operator is set to NoOperation.</value>
+  </data>
 </root>

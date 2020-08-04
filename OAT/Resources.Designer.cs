@@ -250,5 +250,11 @@ namespace Microsoft.CST.OAT {
                 return ResourceManager.GetString("Err_ValidationDelegateUndefined_{0}{1}{2}", resourceCulture);
             }
         }
+        
+        internal static string Err_NoOperation__0__1_ {
+            get {
+                return ResourceManager.GetString("Err_NoOperation_{0}{1}", resourceCulture);
+            }
+        }
     }
 }
