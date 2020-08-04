@@ -401,6 +401,8 @@ return new OperationResult(false, null);",
             };
 
             analyzer.SetOperation(OverweightOperation);
+            // Enable Scripting so our Script based rule can run
+            analyzer.RunScripts = true;
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 

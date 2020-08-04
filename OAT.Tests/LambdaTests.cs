@@ -34,7 +34,8 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
-            Assert.IsFalse(analyzer
+            // We should receive an issue that scripting is disabled
+            Assert.IsTrue(analyzer
                 .EnumerateRuleIssues(invalidImportRule)
                 .Any());
         }
