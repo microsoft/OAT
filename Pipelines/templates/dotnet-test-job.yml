@@ -42,4 +42,4 @@ jobs:
     inputs:
       command: 'test'
       publishTestResults: true
-      projects: ${{ parameters.projectPath }}
+      projects: ${{ parameters.projectPath }} --collect:"XPlat Code Coverage"
