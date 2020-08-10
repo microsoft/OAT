@@ -1,10 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.CST.OAT;
-using Microsoft.CST.OAT.Tests;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using static Microsoft.CST.OAT.Tests.VehicleDemo;
 
 namespace OAT.Benchmarks
 {

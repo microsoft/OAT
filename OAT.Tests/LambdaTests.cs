@@ -1,10 +1,8 @@
-﻿using KellermanSoftware.CompareNetObjects;
-using Microsoft.CST.OAT.Utils;
+﻿using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Tests
 {
