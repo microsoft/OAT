@@ -19,9 +19,3 @@ jobs:
         dotnet-version: 3.1.301
     - name: Nerdbank.GitVersioning
       uses: dotnet/nbgv@v0.3.1
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
