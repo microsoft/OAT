@@ -1,7 +1,7 @@
 # Object Analysis Toolkit
 ![Nuget](https://img.shields.io/nuget/v/Microsoft.CST.OAT)
 
-Object Analysis Toolkit (OAT) is a Rules drive metaprogramming engine for arbitrary C# objects.
+Object Analysis Toolkit (OAT) is a Rules driven metaprogramming engine for arbitrary C# objects.
 
 OAT 1.0 is available on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packages/Microsoft.CST.OAT/).
 
