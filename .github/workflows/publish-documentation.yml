@@ -16,10 +16,12 @@ jobs:
           dotnet-version: "3.1.300"
       - name: Install NBGV
         run: dotnet tool install -g nbgv
+      - name: Show Commit
+        run: git rev-parse HEAD
       - name: Generate Documentation
         uses: FuLagann/csharp-docs-generator@v1.0
         with:
-          build-tasks: nbgv set-version 1.0,dotnet build
+          build-tasks: dotnet build
           cleanup-tasks: dotnet clean
           binaries: OAT/bin/Debug/netstandard2.1/OAT.dll
           output-path: docs/api
