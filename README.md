@@ -1,18 +1,18 @@
 # Object Analysis Toolkit
 ![Nuget](https://img.shields.io/nuget/v/Microsoft.CST.OAT) ![Nuget](https://img.shields.io/nuget/dt/Microsoft.CST.OAT)
 
-Object Analysis Toolkit (OAT) is a Rules driven metaprogramming engine for arbitrary C# objects.
+Object Analysis Toolkit (OAT) is a rules driven metaprogramming engine for arbitrary C# objects.
 
 OAT 1.0 is available on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packages/Microsoft.CST.OAT/).
 
+The best documentation is on the [Wiki](https://github.com/microsoft/OAT/wiki).
+
 ## Overview
-* [Rules](https://github.com/microsoft/OAT/blob/main/OAT/Rule.cs) contain a Target, a Severity, a boolean Expression and a List of [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) which are applied to the targeted object.
-* [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of a Target.  The Field can be any property or subproperty or field of the object specified with dot notation to separate levels.
-* Clauses can also Capture the result of their operation.
+* [Rules](https://github.com/microsoft/OAT/blob/main/OAT/Rule.cs) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) which are applied to the targeted object.
+* [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
+* Clauses can also Capture the result of their operation, to be returned with the applied Rule.
 * The Operation set can be expanded with delegates.
 * The object types supported by existing operations can also be expanded with delegates.
-
-Check the [Wiki](https://github.com/microsoft/OAT/wiki) for additional detail.
 
 ## Basic Usage
 
