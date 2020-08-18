@@ -82,28 +82,6 @@ namespace Microsoft.CST.OAT
         public AnalyzerOptions Options { get; } = new AnalyzerOptions();
 
         /// <summary>
-        ///     Gets the object value stored at the field or property named by the string. Property tried
-        ///     first. Returns null if none found.
-        /// </summary>
-        /// <param name="obj"> The target object </param>
-        /// <param name="propertyName"> The Property or Field name </param>
-        /// <returns> The object at that Name or null </returns>
-        public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
-
-        /// <summary>
-        ///     Prints out the Enumerable of violations to Warning
-        /// </summary>
-        /// <param name="violations"> An Enumerable of Violations to print </param>
-        public static void PrintViolations(IEnumerable<Violation> violations)
-        {
-            if (violations == null) return;
-            foreach (var violation in violations)
-            {
-                Log.Warning(violation.Description);
-            }
-        }
-
-        /// <summary>
         ///     Try to shortcut a boolean operation
         /// </summary>
         /// <param name="current"> The current boolean state </param>
@@ -582,7 +560,7 @@ namespace Microsoft.CST.OAT
                 var pathPortions = pathToProperty.Split('.');
 
                 // We first try to get the first value to get it started
-                var value = GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
+                var value = Helpers.GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
 
                 // For the rest of the path we walk each portion to get the next object
                 for (var pathPortionIndex = 1; pathPortionIndex < pathPortions.Length; pathPortionIndex++)
@@ -630,7 +608,7 @@ namespace Microsoft.CST.OAT
                             // If we couldn't do any custom parsing fall back to the default
                             if (!found)
                             {
-                                value = GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
+                                value = Helpers.GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
                             }
                             break;
                     }

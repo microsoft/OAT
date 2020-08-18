@@ -36,6 +36,7 @@ namespace Microsoft.CST.OAT.Tests
 
     public class Vehicle
     {
+        public string Plate { get; set; } = string.Empty;
         public int Weight;
         public int Axles { get; set; }
         public int Capacity { get; set; }

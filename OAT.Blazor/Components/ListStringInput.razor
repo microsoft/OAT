@@ -1,0 +1,33 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using Microsoft.CST.OAT.Blazor.Components; 
+
+<input id="@id" type="text" @bind="CurrentInput"/>
+
+@foreach (var text in SubProperty)
+{
+    <StringInput Object="text" />
+}
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    string CurrentInput { get; set; }
+
+    public List<string> SubProperty
+    {
+        get
+        {
+            return (List<string>)Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+        }
+    }
+}

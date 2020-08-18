@@ -1,0 +1,63 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+<tbody>
+    <tr>
+        <td>
+            <label for="ruleName">Name:</label>
+        </td>
+        <td>
+            <StringInput id="ruleName" Object="Rule" SubPath="Name" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleDescription">Description:</label>
+        </td>
+        <td>
+            <StringInput id="ruleDescription" Object="Rule" SubPath="Description" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleExpression">Expression:</label>
+        </td>
+        <td>
+            <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleTarget">Name:</label>
+        </td>
+        <td>
+            <StringInput id="ruleExpression" Object="Rule" SubPath="Target" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleSeverity">Severity:</label>
+        </td>
+        <td>
+            <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
+        </td>
+    </tr>
+</tbody>
+<button @onclick="AddClause">Add Clause</button>
+@for(var i = 0; i < Rule.Clauses.Count; i++)
+{
+    <ClauseInput Clause="@Rule.Clauses[i]" PassedInOnClick="@Remove(i)" />
+}
+@code {
+    [Parameter]
+    public Rule Rule { get; set; }
+
+    Task Remove(int index)
+    {
+        return new Task(() => Rule.Clauses.RemoveAt(index));
+    }
+
+    void AddClause()
+    {
+        Rule.Clauses.Add(new Clause(Operation.Regex));
+    }
+}

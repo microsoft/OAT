@@ -1,0 +1,32 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using Microsoft.CST.OAT.Blazor.Components; 
+
+<button @onclick="PassedInOnClick">Remove</button>
+<tbody>
+    <tr>
+        <td>
+            <label for="ruleLabel">Label:</label>
+        </td>
+        <td>
+            <StringInput id="ruleLabel" Object="Clause" SubPath="Label" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleArguments">Arguments:</label>
+        </td>
+        <td>
+            <ListStringInput id="ruleDescription" Object="Clause" SubPath="Arguments" />
+        </td>
+    </tr>
+</tbody>
+@code {
+    [Parameter]
+    public Clause Clause { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+    [Parameter]
+    public EventCallback PassedInOnClick { get; set; }
+}
