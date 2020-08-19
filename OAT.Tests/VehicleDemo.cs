@@ -21,34 +21,7 @@ namespace Microsoft.CST.OAT.Tests
             Strings.Setup();
         }
 
-        public OperationResult OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
-        {
-            if (state1 is Vehicle vehicle)
-            {
-                var res = vehicle.Weight > vehicle.Capacity;
-                if ((res && !clause.Invert) || (clause.Invert && !res))
-                {
-                    // The rule applies and is true and the capture is available if capture is enabled
-                    return new OperationResult(true, clause.Capture ? new TypedClauseCapture<int>(clause, vehicle.Weight, state1, state2) : null);
-                }
-            }
-            return new OperationResult(false, null);
-        }
-
-        public IEnumerable<Violation> OverweightOperationValidationDelegate(Rule r, Clause c)
-        {
-            var violations = new List<Violation>();
-            if (r.Target != "Vehicle")
-            {
-                violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
-            }
-
-            if (c.Data != null || c.DictData != null)
-            {
-                violations.Add(new Violation("Overweight operation takes no data.", r, c));
-            }
-            return violations;
-        }
+        
 
         [TestMethod]
         public void TollBoothDemo()
@@ -216,25 +189,19 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            var analyzer = new Analyzer();
-            var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
-            {
-                CustomOperation = "OverweightOperation",
-                OperationDelegate = OverweightOperationDelegate,
-                ValidationDelegate = OverweightOperationValidationDelegate
-            };
+            var analyzer = new Analyzer();            
 
-            analyzer.SetOperation(OverweightOperation);
+            analyzer.SetOperation(new OverweightOperation(analyzer));
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
             Assert.IsFalse(issues.Any());
 
-            Assert.IsTrue(GetCost(overweightTruck, analyzer, rules) == 50);
-            Assert.IsTrue(GetCost(truck, analyzer, rules) == 10);// 10
-            Assert.IsTrue(GetCost(car, analyzer, rules) == 3); // 3
-            Assert.IsTrue(GetCost(carpool, analyzer, rules) == 2); // 2
-            Assert.IsTrue(GetCost(motorcycle, analyzer, rules) == 1); // 1
+            Assert.IsTrue(VehicleDemoHelpers.GetCost(overweightTruck, analyzer, rules) == 50);
+            Assert.IsTrue(VehicleDemoHelpers.GetCost(truck, analyzer, rules) == 10);// 10
+            Assert.IsTrue(VehicleDemoHelpers.GetCost(car, analyzer, rules) == 3); // 3
+            Assert.IsTrue(VehicleDemoHelpers.GetCost(carpool, analyzer, rules) == 2); // 2
+            Assert.IsTrue(VehicleDemoHelpers.GetCost(motorcycle, analyzer, rules) == 1); // 1
         }
 
         [TestMethod]
@@ -323,8 +290,8 @@ if (State1 is Vehicle vehicle)
     }
 }
 return new OperationResult(false, null);",
-                                imports: new List<string>() {"System", "Microsoft.CST.OAT.Tests"},
-                                references: new List<string>(){ "OAT.Tests" }),
+                                imports: new List<string>() {"System", "Microsoft.CST.OAT.VehicleDemo"},
+                                references: new List<string>(){ "VehicleDemo" }),
                             Capture = true
                         }
                     }
@@ -360,14 +327,7 @@ return new OperationResult(false, null);",
                 }
             };
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            var OverweightOperation = new OatOperation(Operation.Custom, analyzer)
-            {
-                CustomOperation = "OverweightOperation",
-                OperationDelegate = OverweightOperationDelegate,
-                ValidationDelegate = OverweightOperationValidationDelegate
-            };
-
-            analyzer.SetOperation(OverweightOperation);
+            analyzer.SetOperation(new OverweightOperation(analyzer));
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
@@ -382,22 +342,6 @@ return new OperationResult(false, null);",
             var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
 
             Assert.IsTrue(weight == 30000);
-        }
-
-        public class VehicleRule : Rule
-        {
-            public int Cost;
-
-            public VehicleRule(string name) : base(name)
-            {
-            }
-        }
-
-        private int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
-        {
-            // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules
-            // 0 cost
-            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
     }
 }

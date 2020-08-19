@@ -31,6 +31,12 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        _selectedType = Array.IndexOf(Types,Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
+        base.OnInitialized();
+    }
+
     int _selectedType;
 
     public void UpdateProperty()

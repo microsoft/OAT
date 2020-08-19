@@ -34,9 +34,18 @@
                 <td>
                     <label for="ruleTarget">Target:</label>
                 </td>
-                <td>
-                    <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="@GetTypes()" />
-                </td>
+                @if (Types.Any())
+                {
+                    <td>
+                        <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="@Types" />
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <StringInput id="ruleTarget" Object="Rule" SubPath="Target" />
+                    </td>
+                }
             </tr>
             <tr>
                 <td>
@@ -57,16 +66,16 @@
         }
         break;
     case ComponentCollapsedState.Collapsed:
+        <br />
         <span>@Rule.Name</span>
         <button @onclick="Expand">Expand</button>
+        <br />
         break;
 }
 
 @code {
-    Type[] GetTypes()
-    {
-        return Helpers.GetTypesInNamespace(typeof(Vehicle).Assembly, "Microsoft.CST.OAT.VehicleDemo");
-    }
+    [Parameter]
+    public Type[] Types { get; set; } = Array.Empty<Type>();
 
     void Expand(EventArgs eventArgs)
     {
