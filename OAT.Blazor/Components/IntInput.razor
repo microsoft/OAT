@@ -1,7 +1,6 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using System;
  
-
 <input id="@id" type="text" @bind="SubProperty"/>
 @code {
     [Parameter]
@@ -17,7 +16,7 @@
     {
         get
         {
-            // This is Enum.ToString();
+            //This is Int.ToString();
             return Helpers.GetValueByPropertyOrFieldName(Object, SubPath).ToString();
         }
         set
