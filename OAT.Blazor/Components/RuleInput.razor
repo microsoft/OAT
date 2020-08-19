@@ -1,59 +1,92 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-
-<tbody>
-    <tr>
-        <td>
-            <label for="ruleName">Name:</label>
-        </td>
-        <td>
-            <StringInput id="ruleName" Object="Rule" SubPath="Name" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="ruleDescription">Description:</label>
-        </td>
-        <td>
-            <StringInput id="ruleDescription" Object="Rule" SubPath="Description" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="ruleExpression">Expression:</label>
-        </td>
-        <td>
-            <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="ruleTarget">Name:</label>
-        </td>
-        <td>
-            <StringInput id="ruleExpression" Object="Rule" SubPath="Target" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="ruleSeverity">Severity:</label>
-        </td>
-        <td>
-            <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
-        </td>
-    </tr>
-</tbody>
-<button @onclick="AddClause">Add Clause</button>
-@for(var i = 0; i < Rule.Clauses.Count; i++)
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@switch (CollapsedState)
 {
-    <ClauseInput Clause="@Rule.Clauses[i]" PassedInOnClick="@Remove(i)" />
+    case ComponentCollapsedState.Expanded:
+        <button @onclick="Collapse">Collapse</button>
+        <tbody>
+            <tr>
+                <td>
+                    <label for="ruleName">Name:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleName" Object="Rule" SubPath="Name" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleDescription">Description:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleDescription" Object="Rule" SubPath="Description" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleExpression">Expression:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleTarget">Target:</label>
+                </td>
+                <td>
+                    <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="@GetTypes()" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleSeverity">Severity:</label>
+                </td>
+                <td>
+                    <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
+                </td>
+            </tr>
+        </tbody>
+        <br />
+        <button @onclick="AddClause">Add Clause</button>
+        <button @onclick="RemoveLastClause">Remove Last Clause</button>
+        <br />
+        @for (var i = 0; i < Rule.Clauses.Count; i++)
+        {
+            <ClauseInput Rule="@Rule" Clause="@i" />
+        }
+        break;
+    case ComponentCollapsedState.Collapsed:
+        <span>@Rule.Name</span>
+        <button @onclick="Expand">Expand</button>
+        break;
 }
+
 @code {
+    Type[] GetTypes()
+    {
+        return Helpers.GetTypesInNamespace(typeof(Vehicle).Assembly, "Microsoft.CST.OAT.VehicleDemo");
+    }
+
+    void Expand(EventArgs eventArgs)
+    {
+        CollapsedState = ComponentCollapsedState.Expanded;
+    }
+
+    void Collapse(EventArgs eventArgs)
+    {
+        CollapsedState = ComponentCollapsedState.Collapsed;
+    }
+
+    [Parameter]
+    public ComponentCollapsedState CollapsedState { get; set; } = ComponentCollapsedState.Collapsed;
+
     [Parameter]
     public Rule Rule { get; set; }
 
-    Task Remove(int index)
+    void RemoveLastClause()
     {
-        return new Task(() => Rule.Clauses.RemoveAt(index));
+        Rule.Clauses.RemoveAt(Rule.Clauses.Count - 1);
     }
 
     void AddClause()

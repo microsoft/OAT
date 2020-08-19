@@ -1,32 +1,70 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-@using Microsoft.CST.OAT.Blazor.Components; 
-
-<button @onclick="PassedInOnClick">Remove</button>
+<br/>
 <tbody>
     <tr>
         <td>
             <label for="ruleLabel">Label:</label>
         </td>
         <td>
-            <StringInput id="ruleLabel" Object="Clause" SubPath="Label" />
+            <StringInput id="ruleLabel" Object="Rule.Clauses[Clause]" SubPath="Label" />
         </td>
     </tr>
+    <tr>
+        <td>
+            <label for="captureinput">Capture:</label>
+        </td>
+        <td>
+            <BoolInput id="captureinput" Object="Rule.Clauses[Clause]" SubPath="Capture" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="operationInput">Operation:</label>
+        </td>
+        <td>
+            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" />
+        </td>
+    </tr>
+    @if (Rule.Clauses[Clause].Operation == Operation.Custom)
+    {
+        <tr>
+            <td>
+                <label for="customOperationInput">CustomOperation:</label>
+            </td>
+            <td>
+                <StringInput id="customOperationInput" Object="Rule.Clauses[Clause]" SubPath="CustomOperation" />
+            </td>
+        </tr>
+    }
     <tr>
         <td>
             <label for="ruleArguments">Arguments:</label>
         </td>
         <td>
-            <ListStringInput id="ruleDescription" Object="Clause" SubPath="Arguments" />
+            <ListStringInput id="ruleArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleData">Data:</label>
+        </td>
+        <td>
+            <ListStringInput id="ruleData" Object="Rule.Clauses[Clause]" SubPath="Data" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="ruleDictData">Dictionary Data:</label>
+        </td>
+        <td>
+            <ListKvpStringStringInput id="ruleDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
         </td>
     </tr>
 </tbody>
 @code {
     [Parameter]
-    public Clause Clause { get; set; }
+    public Rule Rule { get; set; }
 
     [Parameter]
-    public int Index { get; set; }
-
-    [Parameter]
-    public EventCallback PassedInOnClick { get; set; }
+    public int Clause { get; set; }
 }

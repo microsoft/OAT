@@ -1,12 +1,22 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.CST.OAT.Utils
 {
+    /// <summary>
+    /// Some helper functions used by OAT.
+    /// </summary>
     public static class Helpers
     {
+        /// <summary>
+        /// Determines if a Regex is valid or not by checking if a Regex object can be created with it.
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
         public static bool IsValidRegex(string pattern)
         {
             if (string.IsNullOrEmpty(pattern)) return false;
@@ -66,5 +76,19 @@ namespace Microsoft.CST.OAT.Utils
                 Log.Warning(violation.Description);
             }
         }
-    }
+
+        /// <summary>
+        /// Returns a list of the Types in the given namespace in the given assembly.
+        /// </summary>
+        /// <param name="assembly">The Assembly to scan</param>
+        /// <param name="nameSpace">The Namespace to look for.</param>
+        /// <returns></returns>
+        public static Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
+        {
+            return
+              assembly.GetTypes()
+                      .Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal))
+                      .ToArray();
+        }
+}
 }

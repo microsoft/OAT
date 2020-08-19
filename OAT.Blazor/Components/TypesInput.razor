@@ -1,0 +1,40 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+<select id="@id" @bind="SelectedType">
+    @for(int i = 0; i < Types.Length; i++)
+    {
+        <option value="@i">@Types[i].FullName</option>
+    }
+</select>
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public Type[] Types { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    int SelectedType
+    {
+        get
+        {
+            return _selectedType;
+        }
+        set {
+            _selectedType = value;
+            UpdateProperty();
+        }
+    }
+
+    int _selectedType;
+
+    public void UpdateProperty()
+    {
+        Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Types[SelectedType].Name);
+    }
+}

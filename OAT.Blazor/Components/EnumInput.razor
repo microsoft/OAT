@@ -1,0 +1,40 @@
+﻿@using Microsoft.CST.OAT.Utils;
+<select id="@id" @bind="SubProperty">
+    @foreach (var e in Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()))
+    {
+        <option value="@e">@e</option>
+    }
+</select>
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    Type type;
+
+    protected override void OnInitialized()
+    {
+        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType();
+        base.OnInitialized();
+    }
+
+    public string SubProperty
+    {
+        get
+        {
+            return Helpers.GetValueByPropertyOrFieldName(Object, SubPath).ToString();
+        }
+        set
+        {
+            if (Enum.TryParse(type,value, out object enumVal))
+            {
+                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, enumVal);
+            }
+        }
+    }
+}

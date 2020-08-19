@@ -1,12 +1,19 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-@using Microsoft.CST.OAT.Blazor.Components; 
 
-<input id="@id" type="text" @bind="CurrentInput"/>
-
-@foreach (var text in SubProperty)
+<input id="@id" type="text" @bind="CurrentInput" />
+<button @onclick="AddData">Add Data</button>
+<br />
+@if (SubProperty.Count > 0)
 {
-    <StringInput Object="text" />
+    <select @bind="SelectedIndex">
+        @for (int i = 0; i < SubProperty.Count; i++)
+        {
+            <option value="@i">@SubProperty[i]</option>
+        }
+    </select>
+    <button @onclick="RemoveData">Remove Data</button>
 }
+
 @code {
     [Parameter]
     public object Object { get; set; }
@@ -17,13 +24,31 @@
     [Parameter]
     public string id { get; set; }
 
+    int SelectedIndex { get; set; }
+
     string CurrentInput { get; set; }
+
+    void AddData(EventArgs eventArgs)
+    {
+        if (SubProperty == null)
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, new List<string>());
+        }
+        SubProperty.Add(CurrentInput);
+        CurrentInput = string.Empty;
+    }
+
+    void RemoveData(EventArgs eventArgs)
+    {
+        SubProperty.RemoveAt(SelectedIndex);
+    }
+
 
     public List<string> SubProperty
     {
         get
         {
-            return (List<string>)Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+            return (List<string>)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? new List<string>());
         }
         set
         {

@@ -1,6 +1,6 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
-<input id="@id" type="text" @bind="SubProperty"/>
+<input id="@id" type="checkbox" @bind="SubProperty"/>
 @code {
     [Parameter]
     public object Object { get; set; }
@@ -11,11 +11,11 @@
     [Parameter]
     public string id { get; set; }
 
-    public string SubProperty
+    public bool SubProperty
     {
         get
         {
-            return (string)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? string.Empty);
+            return (bool)Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
         }
         set
         {
