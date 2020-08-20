@@ -6,7 +6,7 @@
         if (e is Enum enuM){
             <input type="checkbox" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
         }
-}
+    }
 </form>
 @code {
         [Parameter]
