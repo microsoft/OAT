@@ -1,7 +1,7 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
 <input id="@id" type="text" @bind="CurrentInput" />
-<button @onclick="AddData">Add Data</button>
+<button @onclick="AddData">Add @buttonText</button>
 <br />
 @if (SubProperty.Count > 0)
 {
@@ -11,7 +11,7 @@
             <option value="@i">@SubProperty[i]</option>
         }
     </select>
-    <button @onclick="RemoveData">Remove Data</button>
+    <button @onclick="RemoveData">Remove @buttonText</button>
 }
 
 @code {
@@ -20,6 +20,9 @@
 
     [Parameter]
     public string SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; }
 
     [Parameter]
     public string id { get; set; }

@@ -2,7 +2,7 @@
 
 <input id="@id" type="text" @bind="CurrentInputKey" />
 <input type="text" @bind="CurrentInputValue" />
-<button @onclick="AddKvp">Add KVP</button>
+<button @onclick="AddKvp">Add @buttonText</button>
 <br />
 @if (SubProperty.Count > 0)
 {
@@ -12,7 +12,7 @@
             <option value="@i">@SubProperty[i].Key : @SubProperty[i].Value</option>
         }
     </select>
-    <button @onclick="RemoveKvp">Remove KVP</button>
+    <button @onclick="RemoveKvp">Remove @buttonText</button>
     <br />
 }
 
@@ -22,6 +22,9 @@
 
     [Parameter]
     public string SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; }
 
     [Parameter]
     public string id { get; set; }

@@ -1,7 +1,17 @@
 ﻿@page "/sandbox"
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
-<h3>Sandbox</h3>
-This is the sandbox for creating objects and testing them against rules.
+@for(int i = 0; i < AppState.DemoTestObjects.Count; i++)
+{
+    @i<br/>
+    <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]"/>
+}
 @code {
+    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
+    protected override void OnInitialized()
+    {
+        var results = analyzer.Analyze(AppState.Rules);
+        base.OnInitialized();
+    }
 }

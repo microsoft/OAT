@@ -3,10 +3,18 @@
 <tbody>
     <tr>
         <td>
-            <label for="ruleLabel">Label:</label>
+            <label for="clauseLabel">Label:</label>
         </td>
         <td>
-            <StringInput id="ruleLabel" Object="Rule.Clauses[Clause]" SubPath="Label" />
+            <StringInput id="clauseLabel" Object="Rule.Clauses[Clause]" SubPath="Label" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="clauseField">Field:</label>
+        </td>
+        <td>
+            <StringInput id="clauseField" Object="Rule.Clauses[Clause]" SubPath="Field" />
         </td>
     </tr>
     <tr>
@@ -38,26 +46,26 @@
     }
     <tr>
         <td>
-            <label for="ruleArguments">Arguments:</label>
+            <label for="clauseArguments">Arguments:</label>
         </td>
         <td>
-            <ListStringInput id="ruleArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="ruleData">Data:</label>
-        </td>
-        <td>
-            <ListStringInput id="ruleData" Object="Rule.Clauses[Clause]" SubPath="Data" />
+            <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
         </td>
     </tr>
     <tr>
         <td>
-            <label for="ruleDictData">Dictionary Data:</label>
+            <label for="clauseData">Data:</label>
         </td>
         <td>
-            <ListKvpStringStringInput id="ruleDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
+            <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="clauseDictData">Dictionary Data:</label>
+        </td>
+        <td>
+            <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
         </td>
     </tr>
 </tbody>

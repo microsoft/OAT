@@ -1,4 +1,5 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+@SubPath
 <select id="@id" @bind="SubProperty">
     @foreach (var e in Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()))
     {

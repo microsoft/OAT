@@ -1,0 +1,118 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+@for (int i = 0; i < Properties.Length; i++)
+{
+    if (Properties[i].CanWrite)
+    {
+        var type = Properties[i].PropertyType;
+        var appendedName = AppendNameToPath(Properties[i].Name);
+
+        <label for="@ToName(appendedName, i)">@Properties[i].Name</label>
+        if (type.IsEquivalentTo(typeof(string)))
+        {
+            <StringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        else if (type.IsEquivalentTo(typeof(int)))
+        {
+            <IntInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        else if (type.IsEquivalentTo(typeof(Enum)))
+        {
+            if (type.IsDefined(typeof(FlagsAttribute), false))
+            {
+                <FlagsInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+            }
+            else
+            {
+                <EnumInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+            }
+        }
+        else if (type.IsEquivalentTo(typeof(DateTime)))
+        {
+            <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        else
+        {
+            <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        <br />
+    }
+    else
+    {
+        <span>Read only parameters @Properties[i].Name</span>
+        <br />
+    }
+}
+@for (int i = 0; i < Fields.Length; i++)
+{
+    var type = Fields[i].FieldType;
+    var appendedName = AppendNameToPath(Fields[i].Name);
+
+    <label for="@ToName(appendedName, i)">@Fields[i].Name</label>
+    if (type.IsEquivalentTo(typeof(string)))
+    {
+        <StringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    else if (type.IsEquivalentTo(typeof(int)))
+    {
+        <IntInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    else if (type.IsEquivalentTo(typeof(Enum)))
+    {
+        if (type.IsDefined(typeof(FlagsAttribute), false))
+        {
+            <FlagsInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        else
+        {
+            <EnumInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+    }
+    else if (type.IsEquivalentTo(typeof(DateTime)))
+    {
+        <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    else
+    {
+        <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    <br />
+}
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    private System.Reflection.PropertyInfo[] Properties = Array.Empty<System.Reflection.PropertyInfo>();
+
+    private System.Reflection.FieldInfo[] Fields = Array.Empty<System.Reflection.FieldInfo>();
+
+    string ToName(string name, int element)
+    {
+        return $"{name}-{element}";
+    }
+
+    public string AppendNameToPath(string Name)
+    {
+        if (string.IsNullOrEmpty(SubPath))
+        {
+            return Name;
+        }
+        else
+        {
+            return $"{SubPath}.{Name}";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Properties = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetProperties() ?? Array.Empty<System.Reflection.PropertyInfo>();
+        Fields = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetFields() ?? Array.Empty<System.Reflection.FieldInfo>();
+        base.OnInitialized();
+    }
+}

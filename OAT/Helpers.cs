@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Microsoft.CodeAnalysis.FlowAnalysis;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,12 @@ namespace Microsoft.CST.OAT.Utils
             return true;
         }
 
+
+        internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
+        {
+            return obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+        }
+
         /// <summary>
         ///     Gets the object value stored at the field or property named by the string. Property tried
         ///     first. Returns null if none found.
@@ -40,7 +47,15 @@ namespace Microsoft.CST.OAT.Utils
         /// <param name="obj"> The target object </param>
         /// <param name="propertyName"> The Property or Field name </param>
         /// <returns> The object at that Name or null </returns>
-        public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+        public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName)
+        {
+            var obj2 = obj;
+            foreach (var split in propertyName?.Split('.') ?? Array.Empty<string>())
+            {
+                obj2 = GetValueByPropertyOrFieldNameInternal(obj2, split);
+            }
+            return obj2;
+        }
 
         /// <summary>
         ///     Sets the object value stored at the field or property named by the string. Property tried
