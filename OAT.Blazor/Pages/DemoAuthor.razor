@@ -1,0 +1,30 @@
+﻿@page "/demoauthor"
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+
+<br />
+<button @onclick="AddRule">Add Rule</button>
+<button @onclick="RemoveLastRule">Remove Last Rule</button>
+<br />
+@foreach (var rule in AppState.DemoRules)
+{
+    <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+}
+
+@code{
+    System.Reflection.Assembly assembly = typeof(VehicleDemo.Vehicle).Assembly;
+    string nameSpace = "Microsoft.CST.OAT.VehicleDemo";
+    Type[] GetTypes()
+    {
+        return Helpers.GetTypesInNamespace(assembly, nameSpace);
+    }
+
+    void RemoveLastRule()
+    {
+        AppState.DemoRules.RemoveAt(AppState.DemoRules.Count - 1);
+    }
+
+    void AddRule()
+    {
+        AppState.DemoRules.Add(new Rule("Rule Name Here"));
+    }
+}
