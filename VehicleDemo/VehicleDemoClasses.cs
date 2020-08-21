@@ -80,7 +80,11 @@ public class VehicleRule : Rule
 
     public class Driver
     {
-        public DriverLicense? License { get; set; }
+        public Driver()
+        {
+            License = new DriverLicense();
+        }
+        public DriverLicense License { get; set; }
     }
 
     public class DriverLicense
@@ -95,7 +99,7 @@ public class VehicleRule : Rule
         public int Weight;
         public int Axles { get; set; }
         public int Capacity { get; set; }
-        public Driver? Driver { get; set; }
+        public Driver Driver { get; set; } = new Driver();
         public int Occupants { get; set; }
         public VehicleType VehicleType { get; set; }
     }

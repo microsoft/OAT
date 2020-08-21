@@ -1,21 +1,22 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-
-<form id="@id">
-    @foreach (var e in Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()))
+<br/>
+@{var enums = Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()); }
+@for (int i = 0; i < enums.Length; i++)
+{
+    var curEnum = (Enum)enums.GetValue(i);
+    if (((Enum)Helpers.GetValueByPropertyOrFieldName(Object, SubPath)).HasFlag(curEnum))
     {
-        if (e is Enum enuM)
-        {
-            if (((Enum)Helpers.GetValueByPropertyOrFieldName(Object, SubPath)).HasFlag(enuM))
-            {
-                <input type="checkbox" checked="checked" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
-            }
-            else
-            {
-                <input type="checkbox" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
-            }
-        }
+        <input type="checkbox" checked="checked" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
     }
-</form>
+    else
+    {
+        <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
+    }
+    if (i < enums.Length - 1)
+    {
+        <br />
+    }
+}
 @code {
     [Parameter]
     public object Object { get; set; }

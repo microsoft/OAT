@@ -33,6 +33,7 @@
         }
         else
         {
+            <br/>
             <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
         }
         <br />
@@ -94,7 +95,7 @@
 
     string ToName(string name, int element)
     {
-        return $"{name}-{element}";
+        return $"{id}-{name}-{element}";
     }
 
     public string AppendNameToPath(string Name)
