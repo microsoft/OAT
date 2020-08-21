@@ -24,6 +24,7 @@
 
     protected override void OnInitialized()
     {
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
         var results = analyzer.Analyze(AppState.Rules);
         base.OnInitialized();
     }

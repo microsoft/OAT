@@ -75,7 +75,8 @@ public class VehicleRule : Rule
     {
         Motorcycle,
         Car,
-        Truck
+        Truck,
+        Bus
     }
 
     public class Driver
