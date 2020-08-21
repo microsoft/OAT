@@ -21,7 +21,13 @@ namespace Microsoft.CST.OAT.Tests
             Strings.Setup();
         }
 
-        
+        [TestMethod]
+        public void EnumTests()
+        {
+            var typ = Endorsements.Auto;
+            var outp = (Enum)Convert.ChangeType((int)typ + (int)Endorsements.CDL, typ.GetType());
+            Assert.IsTrue(outp.HasFlag(Endorsements.CDL));
+        }
 
         [TestMethod]
         public void TollBoothDemo()

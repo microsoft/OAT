@@ -3,22 +3,30 @@
 <form id="@id">
     @foreach (var e in Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()))
     {
-        if (e is Enum enuM){
-            <input type="checkbox" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
+        if (e is Enum enuM)
+        {
+            if (((Enum)Helpers.GetValueByPropertyOrFieldName(Object, SubPath)).HasFlag(enuM))
+            {
+                <input type="checkbox" checked="checked" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
+            }
+            else
+            {
+                <input type="checkbox" value="@e" id="@e" @onchange="eventArgs => { CheckboxClicked(enuM, eventArgs.Value); }" /><label for="@e">@e</label><br />
+            }
         }
     }
 </form>
 @code {
-        [Parameter]
-        public object Object { get; set; }
+    [Parameter]
+    public object Object { get; set; }
 
-        [Parameter]
-        public string SubPath { get; set; }
+    [Parameter]
+    public string SubPath { get; set; }
 
-        [Parameter]
-        public string id { get; set; }
+    [Parameter]
+    public string id { get; set; }
 
-        Type type;
+    Type type;
 
     protected override void OnInitialized()
     {
@@ -30,90 +38,89 @@
     {
         if ((bool)checkedValue)
         {
-                    if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            {
+                if (!SubProperty.HasFlag(enumValue))
+                {
+                    object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
+                    object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
+                    if (val is int)
                     {
-                        if (!SubProperty.HasFlag(enumValue))
-                        {
-                            object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
-                            object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
-                            if (val is int)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((int)val + (int)val2, type);
-                            }
-                            else if (val is long)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((long)val + (long)val2, type);
-                            }
-                            else if (val is byte)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((byte)val + (byte)val2, type);
-                            }
-                            else if (val is sbyte)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((sbyte)val + (sbyte)val2, type);
-                            }
-                            else if (val is short)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((short)val + (short)val2, type);
-                            }
-                            else if (val is ushort)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((ushort)val + (ushort)val2, type);
-                            }
-                            else if (val is uint)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((uint)val + (uint)val2, type);
-                            }
-                            else if (val is ulong)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((ulong)val + (ulong)val2, type);
-                            }
-                        }
+                        SubProperty = (Enum)Enum.ToObject(type,(int)val + (int)val2);
                     }
+                    else if (val is long)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (long)val + (long)val2);
+                    }
+                    else if (val is byte)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (byte)val + (byte)val2);
+                    }
+                    else if (val is sbyte)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (sbyte)val + (sbyte)val2);
+                    }
+                    else if (val is short)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (short)val + (short)val2);
+                    }
+                    else if (val is ushort)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (ushort)val + (ushort)val2);
+                    }
+                    else if (val is uint)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (uint)val + (uint)val2);
+                    }
+                    else if (val is ulong)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (ulong)val + (ulong)val2);
+                    }
+                }
+            }
         }
         else
         {
-                    if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            {
+                if (SubProperty.HasFlag(enumValue))
+                {
+                    object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
+                    object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
+                    if (val is int)
                     {
-                        if (SubProperty.HasFlag(enumValue))
-                        {
-                            object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
-                            object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
-                            if (val is int)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((int)val - (int)val2, type);
-                            }
-                            else if (val is long)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((long)val - (long)val2, type);
-                            }
-                            else if (val is byte)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((byte)val - (byte)val2, type);
-                            }
-                            else if (val is sbyte)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((sbyte)val - (sbyte)val2, type);
-                            }
-                            else if (val is short)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((short)val - (short)val2, type);
-                            }
-                            else if (val is ushort)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((ushort)val - (ushort)val2, type);
-                            }
-                            else if (val is uint)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((uint)val - (uint)val2, type);
-                            }
-                            else if (val is ulong)
-                            {
-                                SubProperty = (Enum)Convert.ChangeType((ulong)val - (ulong)val2, type);
-                            }
-                        }
+                        SubProperty = (Enum)Enum.ToObject(type, (int)val + (int)val2);
                     }
-             
+                    else if (val is long)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (long)val + (long)val2);
+                    }
+                    else if (val is byte)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (byte)val + (byte)val2);
+                    }
+                    else if (val is sbyte)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (sbyte)val + (sbyte)val2);
+                    }
+                    else if (val is short)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (short)val + (short)val2);
+                    }
+                    else if (val is ushort)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (ushort)val + (ushort)val2);
+                    }
+                    else if (val is uint)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (uint)val + (uint)val2);
+                    }
+                    else if (val is ulong)
+                    {
+                        SubProperty = (Enum)Enum.ToObject(type, (ulong)val + (ulong)val2);
+                    }
+                }
+            }
         }
     }
 
