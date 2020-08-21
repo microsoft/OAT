@@ -139,7 +139,6 @@ namespace Microsoft.CST.OAT.Blazor
             {
                 Cost = 50,
                 Severity = 9,
-                Expression = "Overweight",
                 Target = "Vehicle",
                 Clauses = new List<Clause>()
                 {
@@ -149,7 +148,7 @@ namespace Microsoft.CST.OAT.Blazor
                         {
                             "Truck"
                         }
-                    },                    
+                    },
                     new Clause(Operation.Custom)
                     {
                         Label = "Overweight",

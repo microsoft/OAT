@@ -266,7 +266,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var rules = new VehicleRule[] {
-                new VehicleRule("Overweight")
+                new VehicleRule("Overweight Script")
                 {
                     Cost = 50,
                     Severity = 9,
@@ -325,14 +325,13 @@ return new OperationResult(false, null);",
                 }
             };
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            analyzer.SetOperation(new OverweightOperation(analyzer));
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
             Assert.IsFalse(issues.Any());
 
             Assert.IsTrue(!analyzer.Analyze(rules, truck).Any()); // Compliant
-            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight")); // Overweight
+            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight Script")); // Overweight
             Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
             Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
 
