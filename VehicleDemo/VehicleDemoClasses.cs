@@ -47,7 +47,7 @@ namespace Microsoft.CST.OAT.VehicleDemo
                 violations.Add(new Violation("Overweight operation requires a Vehicle object", r, c));
             }
 
-            if (c.Data != null || c.DictData != null)
+            if (c.Data?.Any() is true || c.DictData.Any() is true)
             {
                 violations.Add(new Violation("Overweight operation takes no data.", r, c));
             }
