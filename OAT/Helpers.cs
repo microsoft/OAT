@@ -67,12 +67,25 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns> The object at that Name or null </returns>
         public static void SetValueByPropertyOrFieldName(object? obj, string? propertyName, object? value)
         {
-            var prop = obj?.GetType().GetProperty(propertyName ?? string.Empty);
+            var obj2 = obj;
+            var splits = propertyName?.Split('.');
+            if (splits != null)
+            {
+                for (int i = 0; i < splits.Length - 1; i++)
+                {
+                    obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
+                }
+                SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
+            }
+        }
+        internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
+        {
+            var prop = obj?.GetType().GetProperty(propertyName);
             if (prop != null)
             {
                 prop.SetValue(obj, value);
             }
-            var field = obj?.GetType().GetField(propertyName ?? string.Empty);
+            var field = obj?.GetType().GetField(propertyName);
             if (field != null)
             {
                 field.SetValue(obj, value);
