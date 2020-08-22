@@ -31,9 +31,17 @@
         {
             <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
         }
+        else if (type.Equals(typeof(List<string>)))
+        {
+            <ListStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
+        else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
+        {
+            <ListKvpStringStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+        }
         else
         {
-            <br/>
+            <br />
             <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
         }
         <br />
@@ -72,6 +80,14 @@
     else if (type.IsEquivalentTo(typeof(DateTime)))
     {
         <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    else if (type.Equals(typeof(List<string>)))
+    {
+        <ListStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
+    }
+    else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
+    {
+        <ListKvpStringStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
     }
     else
     {

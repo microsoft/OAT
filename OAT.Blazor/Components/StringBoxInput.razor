@@ -1,0 +1,25 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+<textarea id="@id" rows="5" cols="50" @bind="SubProperty"/>
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    public string SubProperty
+    {
+        get
+        {
+            return (string)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? string.Empty);
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+        }
+    }
+}

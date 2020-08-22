@@ -27,6 +27,14 @@
     </tr>
     <tr>
         <td>
+            <label for="invertinput">Invert:</label>
+        </td>
+        <td>
+            <BoolInput id="invertinput" Object="Rule.Clauses[Clause]" SubPath="Invert" />
+        </td>
+    </tr>
+    <tr>
+        <td>
             <label for="operationInput">Operation:</label>
         </td>
         <td>
@@ -41,6 +49,30 @@
             </td>
             <td>
                 <StringInput id="customOperationInput" Object="Rule.Clauses[Clause]" SubPath="CustomOperation" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="customScriptInput">Script:</label>
+            </td>
+            <td>
+                <StringBoxInput id="customScriptInput" Object="Rule.Clauses[Clause]" SubPath="Script.Code" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="customOperationImports">Imports:</label>
+            </td>
+            <td>
+                <ListStringInput id="customOperationImports" Object="Rule.Clauses[Clause]" SubPath="Script.Imports" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="customOperationReferences">References:</label>
+            </td>
+            <td>
+                <ListStringInput id="customOperationReferences" Object="Rule.Clauses[Clause]" SubPath="Script.References" />
             </td>
         </tr>
     }
