@@ -5,8 +5,14 @@
 <button @onclick="AddRule">Add Rule</button>
 <button @onclick="RemoveLastRule">Remove Last Rule</button>
 <br />
+<button @onclick="ValidateRules">Validate Rules</button>
+<br/>
 @foreach (var rule in AppState.DemoRules)
 {
+    @foreach(var problem in issues[rule])
+    {
+        <span>@problem.Description</span><br/>
+    }
     <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
 }
 
@@ -18,13 +24,35 @@
         return Helpers.GetTypesInNamespace(assembly, nameSpace);
     }
 
+    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+
+    protected override void OnInitialized()
+    {
+        Strings.Setup();
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        ValidateRules();
+        base.OnInitialized();
+    }
+
+    Dictionary<Rule, IEnumerable<Violation>> issues = new Dictionary<Rule, IEnumerable<Violation>>();
+
+    void ValidateRules()
+    {
+        foreach (var rule in AppState.DemoRules)
+        {
+            issues[rule] = analyzer.EnumerateRuleIssues(rule);
+        }
+    }
+
     void RemoveLastRule()
     {
         AppState.DemoRules.RemoveAt(AppState.DemoRules.Count - 1);
+        ValidateRules();
     }
 
     void AddRule()
     {
         AppState.DemoRules.Add(new Rule("Rule Name Here"));
+        ValidateRules();
     }
 }
