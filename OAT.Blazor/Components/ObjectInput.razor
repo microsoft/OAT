@@ -1,100 +1,39 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
-@for (int i = 0; i < Properties.Length; i++)
+@switch (itemState)
 {
-    if (Properties[i].CanWrite)
-    {
-        var type = Properties[i].PropertyType;
-        var appendedName = AppendNameToPath(Properties[i].Name);
-
-        <label for="@ToName(appendedName, i)">@Properties[i].Name</label>
-        if (type.Equals(typeof(string)))
+    case ItemState.Expanded:
+        if (Collapsable)
         {
-            <StringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else if (type.Equals(typeof(int)))
-        {
-            <IntInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else if (type.IsEnum)
-        {
-            if (type.IsDefined(typeof(FlagsAttribute), false))
-            {
-                <FlagsInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-            }
-            else
-            {
-                <EnumInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-            }
-        }
-        else if (type.Equals(typeof(DateTime)))
-        {
-            <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else if (type.Equals(typeof(List<string>)))
-        {
-            <ListStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
-        {
-            <ListKvpStringStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else
-        {
+            @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+            <button @onclick="Collapse">Collapse</button>
             <br />
-            <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
         }
+        @for (int i = 0; i < Properties.Length; i++)
+        {
+            var type = Properties[i].PropertyType;
+            var appendedName = AppendNameToPath(Properties[i].Name);
+            var name = ToName(appendedName, i);
+            <label for="@name">@Properties[i].Name</label>
+            <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+        }
+        @for (int i = 0; i < Fields.Length; i++)
+        {
+            var type = Fields[i].FieldType;
+            var appendedName = AppendNameToPath(Fields[i].Name);
+            var name = ToName(appendedName, i);
+            <label for="@name">@Fields[i].Name</label>
+            <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+        }
+        break;
+    case ItemState.Collapsed:
+        @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+        <button @onclick="Expand">Expand</button>
         <br />
-    }
-    else
-    {
-        <span>Read only parameters @Properties[i].Name</span>
-        <br />
-    }
+        break;
 }
-@for (int i = 0; i < Fields.Length; i++)
-{
-    var type = Fields[i].FieldType;
-    var appendedName = AppendNameToPath(Fields[i].Name);
 
-    <label for="@ToName(appendedName, i)">@Fields[i].Name</label>
-    if (type.IsEquivalentTo(typeof(string)))
-    {
-        <StringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    else if (type.IsEquivalentTo(typeof(int)))
-    {
-        <IntInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    else if (type.IsEquivalentTo(typeof(Enum)))
-    {
-        if (type.IsDefined(typeof(FlagsAttribute), false))
-        {
-            <FlagsInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-        else
-        {
-            <EnumInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-        }
-    }
-    else if (type.IsEquivalentTo(typeof(DateTime)))
-    {
-        <DateTimeInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    else if (type.Equals(typeof(List<string>)))
-    {
-        <ListStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
-    {
-        <ListKvpStringStringInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    else
-    {
-        <ObjectInput id="@ToName(appendedName, i)" Object="Object" SubPath="@appendedName" />
-    }
-    <br />
-}
+
 @code {
     [Parameter]
     public object Object { get; set; }
@@ -105,6 +44,17 @@
     [Parameter]
     public string id { get; set; }
 
+    [Parameter]
+    public bool Collapsable { get; set; }
+
+    enum ItemState
+    {
+        Expanded,
+        Collapsed
+    }
+
+    ItemState itemState = ItemState.Expanded;
+
     private System.Reflection.PropertyInfo[] Properties = Array.Empty<System.Reflection.PropertyInfo>();
 
     private System.Reflection.FieldInfo[] Fields = Array.Empty<System.Reflection.FieldInfo>();
@@ -112,6 +62,16 @@
     string ToName(string name, int element)
     {
         return $"{id}-{name}-{element}";
+    }
+
+    void Expand()
+    {
+        itemState = ItemState.Expanded;
+    }
+
+    void Collapse()
+    {
+        itemState = ItemState.Collapsed;
     }
 
     public string AppendNameToPath(string Name)
@@ -128,6 +88,10 @@
 
     protected override void OnInitialized()
     {
+        if (Collapsable)
+        {
+            itemState = ItemState.Collapsed;
+        }
         Properties = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetProperties() ?? Array.Empty<System.Reflection.PropertyInfo>();
         Fields = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetFields() ?? Array.Empty<System.Reflection.FieldInfo>();
         base.OnInitialized();

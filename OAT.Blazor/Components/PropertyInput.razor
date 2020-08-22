@@ -1,0 +1,52 @@
+﻿
+                @if (type.Equals(typeof(string)))
+                {
+<StringInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else if (type.Equals(typeof(int)))
+                {
+<IntInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else if (type.IsEnum)
+                {
+                    if (type.IsDefined(typeof(FlagsAttribute), false))
+                    {
+<FlagsInput id="@id" Object="Object" SubPath="@SubPath" />
+                    }
+                    else
+                    {
+<EnumInput id="@id" Object="Object" SubPath="@SubPath" />
+                    }
+                }
+                else if (type.Equals(typeof(DateTime)))
+                {
+<DateTimeInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else if (type.Equals(typeof(List<string>
+    )))
+    {
+    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
+    }
+    else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
+                {
+                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else
+                {
+                    <br />
+                    <ObjectInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                <br />
+@code {
+    [Parameter]
+    public object Object { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; }
+
+    [Parameter]
+    public Type type { get; set; }
+}
