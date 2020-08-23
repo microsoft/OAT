@@ -43,6 +43,10 @@ namespace Microsoft.CST.OAT
             SetOperation(new StartsWithOperation(this));
             SetOperation(new WasModifiedOperation(this));
             SetOperation(new NoOperation(this));
+            if (Options.RunScripts)
+            {
+                SetOperation(new ScriptOperation(this));
+            }
         }
 
         /// <summary>
@@ -239,46 +243,16 @@ namespace Microsoft.CST.OAT
                         yield return violation;
                     }
                 }
-                else if (clause.Script is ScriptData clauseScript)
+                else
+                {
+                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
+                }
+                if (clause.Script is ScriptData clauseScript && !string.IsNullOrEmpty(clauseScript.Code))
                 {
                     if (!Options.RunScripts)
                     {
                         yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
                     }
-                    else
-                    {
-                        var issues = new List<Violation>();
-                        Exception? yieldError = null;
-                        try
-                        {
-                            var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                            options = options.AddReferences(typeof(Analyzer).Assembly);
-                            options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                            options = options.AddImports(clauseScript.Imports);
-
-                            var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                            foreach (var issue in script.Compile())
-                            {
-                                issues.Add(new Violation(issue.GetMessage(), rule, clause));
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            yieldError = e;
-                        }
-                        if (yieldError != null)
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
-                        }
-                        foreach (var issue in issues)
-                        {
-                            yield return issue;
-                        }
-                    }
-                }
-                else
-                {
-                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
                 }
             }
 
@@ -711,8 +685,6 @@ namespace Microsoft.CST.OAT
 
         private Dictionary<(Operation Operation, string CustomOperation), OatOperation> delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
 
-        private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
-
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
             var foundStarts = 0;
@@ -877,46 +849,6 @@ namespace Microsoft.CST.OAT
             if (delegates.ContainsKey(clause.Key))
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
-            }
-            else if (clause.Script is ScriptData clauseScript)
-            {
-                if (!Options.RunScripts)
-                {
-                    Log.Warning("Detected Script {0} but RunScripts is false.", clauseScript.Code);
-                    return new OperationResult(false, null);
-                }
-                if (!lambdas.ContainsKey(clauseScript))
-                {
-                    try
-                    {
-                        var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                        options = options.AddReferences(typeof(Analyzer).Assembly);
-                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                        options = options.AddImports(clauseScript.Imports);
-                        var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                        var issues = script.Compile();
-                        if (issues.Any())
-                        {
-                            Log.Debug($"Lambda {clauseScript.Code} could not be compiled. ({string.Join("\n", issues)})");
-                        }
-                        lambdas[clauseScript] = script;
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Debug(e, $"Lambda {clauseScript.Code} could not be compiled.");
-                        lambdas[clauseScript] = null;
-                    }
-                }
-                try
-                {
-                    var res = lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
-                    return lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
-                }
-                catch (Exception e)
-                {
-                    Log.Debug(e, "Found while attempting to execute lambda.");
-                    return new OperationResult(false, null);
-                }
             }
             else
             {

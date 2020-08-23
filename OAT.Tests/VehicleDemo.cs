@@ -274,7 +274,7 @@ namespace Microsoft.CST.OAT.Tests
                     Target = "Vehicle",
                     Clauses = new List<Clause>()
                     {
-                        new Clause(Operation.Custom)
+                        new Clause(Operation.Script)
                         {
                             Label = "Overweight",
                             Script = new ScriptData(code: @"

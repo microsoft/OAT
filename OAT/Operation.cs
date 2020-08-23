@@ -95,5 +95,9 @@
         ///     Checks if the field, if a dictionary, contains the specified key
         /// </summary>
         ContainsKey,
+        /// <summary>
+        ///    Compiles and runs the provided script.
+        /// </summary>
+        Script
     }
 }
