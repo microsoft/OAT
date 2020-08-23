@@ -14,7 +14,7 @@ namespace Microsoft.CST.OAT.Operations
     /// <summary>
     /// An operation that uses a provided script which is compiled and run.
     /// </summary>
-    class ScriptOperation : OatOperation
+    public class ScriptOperation : OatOperation
     {
         /// <summary>
         /// The constructor takes the Analyzer context.
@@ -26,6 +26,20 @@ namespace Microsoft.CST.OAT.Operations
             ValidationDelegate = ScriptOperationValidationDelegate;
         }
 
+        /// <summary>
+        /// Create a script Operation that has the provided Assemblies added by reference.
+        /// </summary>
+        /// <param name="analyzer"></param>
+        /// <param name="assemblies"></param>
+        public ScriptOperation(Analyzer analyzer, List<Assembly> assemblies) : base (Operation.Script, analyzer)
+        {
+            Assemblies = assemblies;
+            OperationDelegate = ScriptOperationDelegate;
+            ValidationDelegate = ScriptOperationValidationDelegate;
+        }
+
+        private List<Assembly>? Assemblies = null;
+
         internal IEnumerable<Violation> ScriptOperationValidationDelegate(Rule rule, Clause clause)
         {
             if (clause.Script is ScriptData clauseScript)
@@ -36,6 +50,10 @@ namespace Microsoft.CST.OAT.Operations
                 {
                     var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
                     options = options.AddReferences(typeof(Analyzer).Assembly);
+                    if (Assemblies != null)
+                    {
+                        options = options.AddReferences(Assemblies);
+                    }
                     options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
                     options = options.AddImports(clauseScript.Imports);
 
@@ -76,8 +94,13 @@ namespace Microsoft.CST.OAT.Operations
                     {
                         var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
                         options = options.AddReferences(typeof(Analyzer).Assembly);
+                        if (Assemblies != null)
+                        {
+                            options = options.AddReferences(Assemblies);
+                        }
                         options = options.AddReferences(scriptData.References.Select(Assembly.Load));
                         options = options.AddImports(scriptData.Imports);
+
                         var script = CSharpScript.Create<OperationResult>(scriptData.Code, globalsType: typeof(OperationArguments), options: options);
                         var issues = script.Compile();
                         if (issues.Any())
