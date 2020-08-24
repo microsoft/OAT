@@ -8,21 +8,24 @@
 
 <button @onclick="RefreshState">Re-Run Rules</button>
 <br />
+<br />
 <button @onclick="AddObject">Add Vehicle</button>
 <button @onclick="RemoveLastObject">Remove Last Vehicle</button>
 <br />
 @for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
 {
     var results = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]);
-    <span>@results.Count() rules applied.</span>
-    <br />
-    foreach (var result in results)
-    {
+    <div class="card">
+        <span>@results.Count() rules applied.</span>
+        <br />
+        @foreach (var result in results)
+        {
         <b>@result.Name</b>
         <br />
-    }
-    <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]" Collapsable="true" />
-
+        }
+        <br />
+        <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]" Collapsable="true" />
+    </div>
 }
 @code {
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));

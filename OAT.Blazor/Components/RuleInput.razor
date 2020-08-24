@@ -4,7 +4,13 @@
 @switch (CollapsedState)
 {
     case ComponentCollapsedState.Expanded:
-        <button @onclick="Collapse">Collapse</button>
+        <div class="font-large">
+            <button class="btn-tr oi oi-minus" @onclick="Collapse">
+                <span class="reset-font-fam font-large">   @Rule.Name</span>
+            </button>
+        </div>
+        <hr />
+        
         <tbody>
             <tr>
                 <td>
@@ -66,10 +72,12 @@
         }
         break;
     case ComponentCollapsedState.Collapsed:
-        <br />
-        <span>@Rule.Name</span>
-        <button @onclick="Expand">Expand</button>
-        <br />
+        <div class="font-large">
+            <button class="btn-tr oi oi-plus" @onclick="Expand">
+                <span class="reset-font-fam font-large">   @Rule.Name</span>
+            </button>
+        </div>
+        <hr />
         break;
 }
 

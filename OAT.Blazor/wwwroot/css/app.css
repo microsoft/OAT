@@ -1,17 +1,19 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-html, body {
+html, body, .reset-font-fam {
     font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-}
-
-a, .btn-link {
-    color: white;
 }
 
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+}
+
+.btn-tr {
+    background-color: transparent;
+    color: #243a5e;
+    border: none;
 }
 
 app {
@@ -22,12 +24,6 @@ app {
 
 button {
     border-radius: 7px;
-}
-
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
 }
 
 .glowBlue {
@@ -49,19 +45,26 @@ button {
 }
 
     .main .top-row {
-        background-color: #7d8fad;
+        display: flex;
+        align-items: center;
         justify-content: flex-end;
+        background-color: #7d8fad;
+        height: 3.24rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        z-index: 1;
     }
+        .main .top-row a {
+            color: white;
+        }
+        .main .top-row a:hover {
+            color: darkblue;
+        }
 
         .main .top-row > a, .main .top-row .btn-link {
             white-space: nowrap;
             margin-left: 1.5rem;
         }
-
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 .sidebar {
     background-color: #243a5e;
@@ -82,6 +85,11 @@ button {
             width: 201px;
             margin: auto;
             display: block;
+        }
+
+        .sidebar .bottom-row .version {
+            color: white;
+            text-align: center;
         }
 
     .sidebar .navbar-brand {
@@ -162,21 +170,17 @@ button {
         border-radius: 7px;
     }
 
-    .card .entry {
-        display: block;
-        font-size: medium;
+    .card .font-large {
+        font-size: large;
+        font-weight: bold;
     }
-        .card .entry:first-of-type {
-            font-weight: bold;
-            font-size: large;
-        }
-            .card .entry:first-of-type input[type=checkbox] {
-                height: 1.6vh;
-                width: 1.6vh;
-                max-height: 1.6vh;
-                max-width: 1.6vh;
-            }
-    
+
+    .card .problem {
+        font-weight: bold;
+        font-size: medium;
+        font-style: italic;
+        color: #a6611a;
+    }
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
