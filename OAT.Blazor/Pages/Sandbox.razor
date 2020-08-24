@@ -1,8 +1,124 @@
 ﻿@page "/sandbox"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@inject NavigationManager NavigationManager;
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
-<h3>Sandbox</h3>
-This is the Sandbox page.
-
+@if (AppState.Assemblies.Any())
+{
+    <label for="namespaceInput">Namespace To Search:</label>
+    <select id="namespaceInput" @bind="nameSpace">
+        @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
+                   .Select(t => t.Namespace)
+                  ).Distinct())
+        {
+            <option value="@names">@names</option>
+        }
+    </select>
+    <br />
+    <label for="typeToCreate">Type to Create:</label>
+    <select id="typeToCreate" @bind="constructorToInvoke">
+        @for (int i = 0; i < Types.Length; i++)
+        {
+            <option value="@i">@Types[i].FullName</option>
+        }
+    </select>
+}
+<br />
+<button @onclick="RefreshState">Re-Run Rules</button>
+<br />
+<br />
+@if (@Types.Any())
+{
+    <button @onclick="AddObject">Add @Types[constructorToInvoke].FullName</button>
+}
+<button @onclick="RemoveLastObject">Remove Last Object</button>
+<br />
+@for (int i = 0; i < AppState.TestObjects.Count; i++)
+{
+    var results = analyzer.Analyze(AppState.Rules, AppState.TestObjects[i]);
+    <div class="card">
+        <span>@results.Count() rules applied.</span>
+        <br />
+        @foreach (var result in results)
+        {
+            <b>@result.Name</b>
+            <br />
+        }
+        <br />
+        <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
+    </div>
+}
 @code {
+    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
+    int constructorToInvoke
+    {
+        get
+        {
+            return _constructorToInvoke;
+        }
+        set
+        {
+            _constructorToInvoke = value;
+            RefreshState();
+        }
+    }
+
+    int _constructorToInvoke;
+
+    string nameSpace
+    {
+        get {
+            return _nameSpace;
+        } set {
+            _nameSpace = value;
+            UpdateTypes();
+        }
+    }
+
+    string _nameSpace = string.Empty;
+
+    void UpdateTypes()
+    {
+        var types = AppState.Assemblies.SelectMany(x => Helpers.GetTypesInNamespace(x, nameSpace));
+        var results = new List<Type>();
+        foreach (var type in types)
+        {
+            var constructor = type.GetConstructor(Type.EmptyTypes);
+            if (constructor != null)
+            {
+                results.Add(type);
+            }
+        }
+        Types = results.ToArray();
+        RefreshState();
+    }
+
+    Type[] Types { get; set; } = Array.Empty<Type>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        var results = analyzer.Analyze(AppState.Rules);
+        UpdateTypes();
+        await base.OnInitializedAsync();
+    }
+
+    void RefreshState()
+    {
+        this.StateHasChanged();
+    }
+
+    void RemoveLastObject()
+    {
+        AppState.TestObjects.RemoveAt(AppState.DemoTestObjects.Count - 1);
+    }
+
+    void AddObject()
+    {
+        AppState.TestObjects.Add(System.Activator.CreateInstance(Types[constructorToInvoke]));
+    }
 }
