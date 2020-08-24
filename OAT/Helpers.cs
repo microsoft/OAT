@@ -1,7 +1,9 @@
-﻿using Microsoft.CodeAnalysis.FlowAnalysis;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -34,6 +36,18 @@ namespace Microsoft.CST.OAT.Utils
             return true;
         }
 
+
+        public static List<string> GetAllNestedFieldsAndProperties(Type type, string? parentPath = null)
+        {
+            var results = new List<string>();
+            foreach(var property in type.GetProperties())
+            {
+                var newProperty = parentPath is null ? property.Name : $"{parentPath}.{property.Name}";
+                results.Add(newProperty);
+                results.AddRange(GetAllNestedFieldsAndProperties(property.PropertyType, newProperty));
+            }
+            return results;
+        }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {

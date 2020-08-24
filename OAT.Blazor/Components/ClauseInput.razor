@@ -9,14 +9,36 @@
             <StringInput id="clauseLabel" Object="Rule.Clauses[Clause]" SubPath="Label" />
         </td>
     </tr>
-    <tr>
-        <td>
-            <label for="clauseField">Field:</label>
-        </td>
-        <td>
-            <StringInput id="clauseField" Object="Rule.Clauses[Clause]" SubPath="Field" />
-        </td>
-    </tr>
+    @if (Types.Any())
+    {
+        <tr>
+            <td>
+                <label for="clauseField">Field:</label>
+            </td>
+            <td>
+                @Types[TypeIndex.Value].FullName
+                <select id="clauseField" @bind="FieldProperty">
+                    <option value=""></option>
+                        @foreach (string path in Helpers.GetAllNestedFieldsAndProperties(Types[TypeIndex.Value]))
+                        {
+                            Console.WriteLine(path);
+                            <option value="@path">@path</option>
+                        }
+                </select>
+            </td>
+        </tr>
+    }
+    else
+    {
+        <tr>
+            <td>
+                <label for="clauseField">Field:</label>
+            </td>
+            <td>
+                <StringInput id="clauseField" Object="Rule.Clauses[Clause]" SubPath="Field" />
+            </td>
+        </tr>
+    }
     <tr>
         <td>
             <label for="captureinput">Capture:</label>
@@ -38,7 +60,7 @@
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis"/>
+            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis" />
         </td>
     </tr>
     @if (Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -52,8 +74,8 @@
             </td>
         </tr>
     }
-    @if(Rule.Clauses[Clause].Operation == Operation.Script)
-    { 
+    @if (Rule.Clauses[Clause].Operation == Operation.Script)
+    {
         <tr>
             <td>
                 <label for="customScriptInput">Script:</label>
@@ -110,6 +132,18 @@
 
     [Parameter]
     public int Clause { get; set; }
+
+    [Parameter]
+    public Type[] Types { get; set; } = Array.Empty<Type>();
+
+    [Parameter]
+    public IntHolder TypeIndex { get; set; }
+
+    string FieldProperty
+    {
+        get { return Rule.Clauses[Clause].Field; }
+        set { Rule.Clauses[Clause].Field = value; }
+    }
 
     public void RefreshThis()
     {

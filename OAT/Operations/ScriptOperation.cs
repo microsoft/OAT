@@ -52,8 +52,8 @@ namespace Microsoft.CST.OAT.Operations
                     {
                         options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
                     }
-
                     var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
+
                     foreach (var issue in script.Compile())
                     {
                         issues.Add(new Violation(issue.GetMessage(), rule, clause));

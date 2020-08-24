@@ -19,6 +19,9 @@
     [Parameter]
     public string id { get; set; }
 
+    [Parameter]
+    public IntHolder BindIndex { get; set; }
+
     int SelectedType
     {
         get
@@ -27,6 +30,7 @@
         }
         set {
             _selectedType = value;
+            BindIndex.Value = _selectedType;
             UpdateProperty();
         }
     }
@@ -34,6 +38,7 @@
     protected override void OnInitialized()
     {
         _selectedType = Array.IndexOf(Types,Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
+        BindIndex.Value = _selectedType;
         base.OnInitialized();
     }
 

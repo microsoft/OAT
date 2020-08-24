@@ -10,7 +10,7 @@
             </button>
         </div>
         <hr />
-        
+
         <tbody>
             <tr>
                 <td>
@@ -43,7 +43,7 @@
                 @if (Types.Any())
                 {
                     <td>
-                        <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="@Types" />
+                        <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="@Types" BindIndex="@idx"/>
                     </td>
                 }
                 else
@@ -68,7 +68,14 @@
         <br />
         @for (var i = 0; i < Rule.Clauses.Count; i++)
         {
-            <ClauseInput Rule="@Rule" Clause="@i" />
+            @if (Types.Any())
+            {
+                <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx"/>
+            }
+            else
+            {
+                <ClauseInput Rule="@Rule" Clause="@i" />
+            }
         }
         break;
     case ComponentCollapsedState.Collapsed:
@@ -84,6 +91,8 @@
 @code {
     [Parameter]
     public Type[] Types { get; set; } = Array.Empty<Type>();
+
+    IntHolder idx = new IntHolder();
 
     void Expand(EventArgs eventArgs)
     {
