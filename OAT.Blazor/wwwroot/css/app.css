@@ -24,12 +24,6 @@ button {
     border-radius: 7px;
 }
 
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
-
 .glowBlue {
     border-color: blue;
     -webkit-box-shadow: 0 0 8px blue;
@@ -49,19 +43,19 @@ button {
 }
 
     .main .top-row {
-        background-color: #7d8fad;
+        display: flex;
+        align-items: center;
         justify-content: flex-end;
+        background-color: #7d8fad;
+        height: 3.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
         .main .top-row > a, .main .top-row .btn-link {
             white-space: nowrap;
             margin-left: 1.5rem;
         }
-
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 .sidebar {
     background-color: #243a5e;
