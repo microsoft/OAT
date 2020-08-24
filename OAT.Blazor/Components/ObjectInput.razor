@@ -5,9 +5,11 @@
     case ItemState.Expanded:
         if (Collapsable)
         {
-            @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
-            <button @onclick="Collapse">Collapse</button>
-            <br />
+            <div class="font-large">
+                @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+                <button @onclick="Collapse">Collapse</button>
+            </div>
+            <hr />
         }
         @for (int i = 0; i < Properties.Length; i++)
         {
@@ -27,9 +29,11 @@
         }
         break;
     case ItemState.Collapsed:
-        @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
-        <button @onclick="Expand">Expand</button>
-        <br />
+        <div class="font-large">
+            @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+            <button @onclick="Expand">Expand</button>
+        </div>
+        <hr />
         break;
 }
 

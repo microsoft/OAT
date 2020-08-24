@@ -4,16 +4,23 @@
 <br />
 <button @onclick="AddRule">Add Rule</button>
 <button @onclick="RemoveLastRule">Remove Last Rule</button>
-<br />
 <button @onclick="ValidateRules">Validate Rules</button>
 <br/>
 @foreach (var rule in AppState.DemoRules)
 {
-    @foreach(var problem in issues[rule])
-    {
-        <span>@problem.Description</span><br/>
-    }
-    <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+    <div class="card">
+        @foreach (var problem in issues[rule])
+        {
+            <div class="problem">
+                <span class="oi oi-warning"></span>
+                @problem.Description
+            </div>
+        }
+        @if (issues[rule].Count() > 0) {
+            <br />
+        } 
+        <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+    </div>
 }
 
 @code{
