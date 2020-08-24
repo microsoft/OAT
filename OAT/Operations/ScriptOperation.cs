@@ -1,11 +1,14 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Utils;
+using Pose;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 
@@ -17,45 +20,35 @@ namespace Microsoft.CST.OAT.Operations
     public class ScriptOperation : OatOperation
     {
         /// <summary>
-        /// The constructor takes the Analyzer context.
-        /// </summary>
-        /// <param name="analyzer"></param>
-        public ScriptOperation(Analyzer analyzer) : base(Operation.Script, analyzer)
-        {
-            OperationDelegate = ScriptOperationDelegate;
-            ValidationDelegate = ScriptOperationValidationDelegate;
-        }
-
-        /// <summary>
         /// Create a script Operation that has the provided Assemblies added by reference.
         /// </summary>
         /// <param name="analyzer"></param>
         /// <param name="assemblies"></param>
-        public ScriptOperation(Analyzer analyzer, List<Assembly> assemblies) : base (Operation.Script, analyzer)
+        public ScriptOperation(Analyzer analyzer, List<PortableExecutableReference>? assemblies = null) : base (Operation.Script, analyzer)
         {
             Assemblies = assemblies;
             OperationDelegate = ScriptOperationDelegate;
             ValidationDelegate = ScriptOperationValidationDelegate;
         }
 
-        private List<Assembly>? Assemblies = null;
+        List<PortableExecutableReference>? Assemblies = null;
 
         internal IEnumerable<Violation> ScriptOperationValidationDelegate(Rule rule, Clause clause)
         {
             if (clause.Script is ScriptData clauseScript)
             {
-                var issues = new List<Violation>();
+                List<Violation> issues = new List<Violation>();
                 Exception? yieldError = null;
                 try
                 {
                     var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                    options = options.AddReferences(typeof(Analyzer).Assembly);
+                    options = options.AddImports(clauseScript.Imports);
+
                     if (Assemblies != null)
                     {
                         options = options.AddReferences(Assemblies);
                     }
                     options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                    options = options.AddImports(clauseScript.Imports);
 
                     var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
                     foreach (var issue in script.Compile())
@@ -93,13 +86,17 @@ namespace Microsoft.CST.OAT.Operations
                     try
                     {
                         var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                        options = options.AddReferences(typeof(Analyzer).Assembly);
+                        options = options.AddImports(scriptData.Imports);
+
                         if (Assemblies != null)
                         {
                             options = options.AddReferences(Assemblies);
                         }
-                        options = options.AddReferences(scriptData.References.Select(Assembly.Load));
-                        options = options.AddImports(scriptData.Imports);
+                        else
+                        {
+                            options = options.AddReferences(typeof(Analyzer).Assembly);
+                            options = options.AddReferences(scriptData.References.Select(Assembly.Load));
+                        }
 
                         var script = CSharpScript.Create<OperationResult>(scriptData.Code, globalsType: typeof(OperationArguments), options: options);
                         var issues = script.Compile();

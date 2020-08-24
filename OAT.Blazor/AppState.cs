@@ -149,7 +149,7 @@ namespace Microsoft.CST.OAT.Blazor
                             "Truck"
                         }
                     },
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Label = "Overweight",
                         Script = new ScriptData(code: @"
@@ -164,7 +164,7 @@ if (State1 is Vehicle vehicle)
 }
 return new OperationResult(false, null);",
                             imports: new List<string>() {"System", "Microsoft.CST.OAT.VehicleDemo"},
-                            references: new List<string>(){ "VehicleDemo" }),
+                            references: new List<string>(){ }),
                         Capture = true
                     }
                 }

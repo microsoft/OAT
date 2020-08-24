@@ -1,4 +1,5 @@
-﻿using Microsoft.CST.OAT.Operations;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Microsoft.CST.OAT.VehicleDemo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -197,9 +198,9 @@ else
             };
 
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            var assemblies = new List<Assembly>();
+            var assemblies = new List<PortableExecutableReference>();
             // We used vehicle above so we need to load its assembly.
-            assemblies.Add(typeof(Vehicle).Assembly);
+            assemblies.Add(ModuleMetadata.CreateFromStream(typeof(Vehicle).Assembly.GetManifestResourceStream(typeof(Vehicle),"VehicleDemo.dll")).GetReference());
             analyzer.SetOperation(new ScriptOperation(analyzer, assemblies));
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
             Assert.IsFalse(ruleIssues.Any());

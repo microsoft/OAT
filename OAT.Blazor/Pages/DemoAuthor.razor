@@ -1,4 +1,9 @@
 ﻿@page "/demoauthor"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
 <br />
@@ -6,12 +11,13 @@
 <button @onclick="RemoveLastRule">Remove Last Rule</button>
 <br />
 <button @onclick="ValidateRules">Validate Rules</button>
-<br/>
+<br />
 @foreach (var rule in AppState.DemoRules)
 {
-    @foreach(var problem in issues[rule])
+    @foreach (var problem in issues[rule])
     {
-        <span>@problem.Description</span><br/>
+        <span>@problem.Description</span>
+        <br />
     }
     <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
 }
@@ -26,12 +32,36 @@
 
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Strings.Setup();
         analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        await UpdateAnalyzerAssemblies();
         ValidateRules();
         base.OnInitialized();
+    }
+
+    List<PortableExecutableReference> assemblies = new List<PortableExecutableReference>();
+
+    async Task UpdateAnalyzerAssemblies()
+    {
+        assemblies.Clear();
+        var refs = AppDomain.CurrentDomain.GetAssemblies();
+
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri(NavigationManager.BaseUri)
+        };
+
+        var references = new List<MetadataReference>();
+
+        foreach (var reference in refs.Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location)))
+        {
+            var stream = await client.GetStreamAsync($"_framework/_bin/{reference.Location}");
+            references.Add(MetadataReference.CreateFromStream(stream));
+        }
+
+        analyzer.SetOperation(new Microsoft.CST.OAT.Operations.ScriptOperation(analyzer, assemblies));
     }
 
     Dictionary<Rule, IEnumerable<Violation>> issues = new Dictionary<Rule, IEnumerable<Violation>>();

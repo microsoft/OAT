@@ -49,7 +49,6 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns> The object at that Name or null </returns>
         public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName)
         {
-            Console.WriteLine(propertyName);
             var obj2 = obj;
             foreach (var split in propertyName?.Split('.') ?? Array.Empty<string>())
             {
