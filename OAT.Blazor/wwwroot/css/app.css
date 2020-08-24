@@ -4,10 +4,6 @@ html, body {
     font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
-a, .btn-link {
-    color: white;
-}
-
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
@@ -51,6 +47,12 @@ button {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+        .main .top-row a {
+            color: white;
+        }
+        .main .top-row a:hover {
+            color: darkblue;
+        }
 
         .main .top-row > a, .main .top-row .btn-link {
             white-space: nowrap;
@@ -76,6 +78,11 @@ button {
             width: 201px;
             margin: auto;
             display: block;
+        }
+
+        .sidebar .bottom-row .version {
+            color: white;
+            text-align: center;
         }
 
     .sidebar .navbar-brand {
