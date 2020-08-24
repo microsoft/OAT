@@ -2,12 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT.Blazor
 {
     public class AppState
     {
+        public List<Assembly> Assemblies { get; set; } = new List<Assembly>();
+
         public List<Rule> Rules { get; set; } = new List<Rule>();
         public List<object> TestObjects { get; set; } = new List<object>();
 
