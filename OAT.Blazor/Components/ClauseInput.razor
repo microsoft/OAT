@@ -38,7 +38,7 @@
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" />
+            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis"/>
         </td>
     </tr>
     @if (Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -51,6 +51,9 @@
                 <StringInput id="customOperationInput" Object="Rule.Clauses[Clause]" SubPath="CustomOperation" />
             </td>
         </tr>
+    }
+    @if(Rule.Clauses[Clause].Operation == Operation.Script)
+    { 
         <tr>
             <td>
                 <label for="customScriptInput">Script:</label>
@@ -107,4 +110,9 @@
 
     [Parameter]
     public int Clause { get; set; }
+
+    public void RefreshThis()
+    {
+        this.StateHasChanged();
+    }
 }

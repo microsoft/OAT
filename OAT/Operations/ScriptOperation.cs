@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Utils;
@@ -30,7 +31,7 @@ namespace Microsoft.CST.OAT.Operations
             ValidationDelegate = ScriptOperationValidationDelegate;
         }
 
-        List<PortableExecutableReference>? Assemblies = null;
+        readonly List<PortableExecutableReference>? Assemblies = null;
 
         internal IEnumerable<Violation> ScriptOperationValidationDelegate(Rule rule, Clause clause)
         {
@@ -47,7 +48,10 @@ namespace Microsoft.CST.OAT.Operations
                     {
                         options = options.AddReferences(Assemblies);
                     }
-                    options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                    else
+                    {
+                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                    }
 
                     var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
                     foreach (var issue in script.Compile())

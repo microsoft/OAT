@@ -135,40 +135,6 @@ namespace Microsoft.CST.OAT.Blazor
                     }
                 }
             },
-            new VehicleRule("Overweight Truck by Script")
-            {
-                Cost = 50,
-                Severity = 9,
-                Target = "Vehicle",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.Equals, "VehicleType")
-                    {
-                        Data = new List<string>()
-                        {
-                            "Truck"
-                        }
-                    },
-                    new Clause(Operation.Script)
-                    {
-                        Label = "Overweight",
-                        Script = new ScriptData(code: @"
-if (State1 is Vehicle vehicle)
-{
-    var res = vehicle.Weight > vehicle.Capacity;
-    if ((res && !Clause.Invert) || (Clause.Invert && !res))
-    {
-        // The rule applies and is true and the capture is available if capture is enabled
-        return new OperationResult(true, Clause.Capture ? new TypedClauseCapture<int>(Clause, vehicle.Weight, State1, State2) : null);
-    }
-}
-return new OperationResult(false, null);",
-                            imports: new List<string>() {"System", "Microsoft.CST.OAT.VehicleDemo"},
-                            references: new List<string>(){ }),
-                        Capture = true
-                    }
-                }
-            },
             new VehicleRule("No CDL")
             {
                 Cost = 100,

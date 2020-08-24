@@ -15,6 +15,9 @@
     [Parameter]
     public string id { get; set; }
 
+    [Parameter]
+    public Action OnChange { get; set; }
+
     Type type;
 
     protected override void OnInitialized()
@@ -35,6 +38,7 @@
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, enumVal);
             }
+            OnChange();
         }
     }
 }

@@ -367,30 +367,6 @@ namespace Microsoft.CST.OAT
                     yield return new Violation(string.Format(Strings.Get("Err_ClauseEndsWithOperator"), expression, rule.Name), rule);
                 }
             }
-
-            // Were all the labels declared in clauses used?
-            foreach (var label in rule.Clauses.Select(x => x.Label))
-            {
-                if (label is string)
-                {
-                    if (!foundLabels.Contains(label))
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnusedLabel"), label, rule.Name), rule);
-                    }
-                }
-            }
-
-            var justTheLabels = clauseLabels.Select(x => x.Key);
-            // If any clause has a label they all must have labels
-            if (justTheLabels.Any(x => x is string) && justTheLabels.Any(x => x is null))
-            {
-                yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingLabels"), rule.Name), rule);
-            }
-            // If the clause has an expression it may not have any null labels
-            if (rule.Expression != null && justTheLabels.Any(x => x is null))
-            {
-                yield return new Violation(string.Format(Strings.Get("Err_ClauseExpressionButMissingLabels"), rule.Name), rule);
-            }
         }
 
         /// <summary>

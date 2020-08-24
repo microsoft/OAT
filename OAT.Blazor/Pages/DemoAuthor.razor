@@ -3,6 +3,7 @@
 @using Microsoft.CodeAnalysis;
 @using System.Reflection;
 @using Microsoft.CST.OAT.VehicleDemo;
+@using System.IO;
 @inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
@@ -13,7 +14,9 @@
 <br />
 @foreach (var rule in AppState.DemoRules)
 {
-    <div class="card">
+<div class="card">
+    @if (issues.ContainsKey(rule))
+    {
         @foreach (var problem in issues[rule])
         {
             <div class="problem">
@@ -21,11 +24,18 @@
                 @problem.Description
             </div>
         }
-        @if (issues[rule].Count() > 0) {
+        @if (issues[rule].Count() > 0)
+        {
             <br />
-        } 
-        <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
-    </div>
+        }
+    }
+    else
+    {
+        <p>Processing Issues for Rule...</p>
+    }
+
+    <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+</div>
 }
 
 @code{
@@ -38,36 +48,12 @@
 
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Strings.Setup();
         analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
-        await UpdateAnalyzerAssemblies();
         ValidateRules();
         base.OnInitialized();
-    }
-
-    List<PortableExecutableReference> assemblies = new List<PortableExecutableReference>();
-
-    async Task UpdateAnalyzerAssemblies()
-    {
-        assemblies.Clear();
-        var refs = AppDomain.CurrentDomain.GetAssemblies();
-
-        var client = new HttpClient
-        {
-            BaseAddress = new Uri(NavigationManager.BaseUri)
-        };
-
-        var references = new List<MetadataReference>();
-
-        foreach (var reference in refs.Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location)))
-        {
-            var stream = await client.GetStreamAsync($"_framework/_bin/{reference.Location}");
-            references.Add(MetadataReference.CreateFromStream(stream));
-        }
-
-        analyzer.SetOperation(new Microsoft.CST.OAT.Operations.ScriptOperation(analyzer, assemblies));
     }
 
     Dictionary<Rule, IEnumerable<Violation>> issues = new Dictionary<Rule, IEnumerable<Violation>>();
