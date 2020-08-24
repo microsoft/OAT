@@ -6,19 +6,19 @@
     }
 </select>
 @code {
-    [Parameter]
-    public object Object { get; set; }
+        [Parameter]
+        public object Object { get; set; }
 
-    [Parameter]
-    public string SubPath { get; set; }
+        [Parameter]
+        public string SubPath { get; set; }
 
-    [Parameter]
-    public string id { get; set; }
+        [Parameter]
+        public string id { get; set; }
 
-    [Parameter]
-    public Action OnChange { get; set; }
+        [Parameter]
+        public Action? OnChange { get; set; }
 
-    Type type;
+        Type type;
 
     protected override void OnInitialized()
     {
@@ -38,7 +38,9 @@
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, enumVal);
             }
-            OnChange();
+            if (OnChange != null) {
+                OnChange();
+            }
         }
     }
 }

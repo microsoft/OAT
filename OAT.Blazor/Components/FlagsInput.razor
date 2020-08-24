@@ -90,35 +90,35 @@
                     object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
                     if (val is int)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (int)val + (int)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (int)val - (int)val2);
                     }
                     else if (val is long)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (long)val + (long)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (long)val - (long)val2);
                     }
                     else if (val is byte)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (byte)val + (byte)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (byte)val - (byte)val2);
                     }
                     else if (val is sbyte)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (sbyte)val + (sbyte)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (sbyte)val - (sbyte)val2);
                     }
                     else if (val is short)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (short)val + (short)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (short)val - (short)val2);
                     }
                     else if (val is ushort)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (ushort)val + (ushort)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (ushort)val - (ushort)val2);
                     }
                     else if (val is uint)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (uint)val + (uint)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (uint)val - (uint)val2);
                     }
                     else if (val is ulong)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type, (ulong)val + (ulong)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (ulong)val - (ulong)val2);
                     }
                 }
             }
