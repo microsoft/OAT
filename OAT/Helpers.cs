@@ -119,5 +119,14 @@ namespace Microsoft.CST.OAT.Utils
                       .Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal))
                       .ToArray();
         }
-}
+
+        /// <summary>
+        /// Returns the assembly version string.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetVersionString()
+        {
+            return (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute[])?[0].InformationalVersion ?? "Unknown";
+        }
+    }
 }
