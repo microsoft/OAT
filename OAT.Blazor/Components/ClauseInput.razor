@@ -16,12 +16,10 @@
                 <label for="clauseField">Field:</label>
             </td>
             <td>
-                @Types[TypeIndex.Value].FullName
                 <select id="clauseField" @bind="FieldProperty">
-                    <option value=""></option>
+                    <option value="">Use full Target</option>
                         @foreach (string path in Helpers.GetAllNestedFieldsAndProperties(Types[TypeIndex.Value]))
                         {
-                            Console.WriteLine(path);
                             <option value="@path">@path</option>
                         }
                 </select>

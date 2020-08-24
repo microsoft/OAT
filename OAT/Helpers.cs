@@ -37,14 +37,34 @@ namespace Microsoft.CST.OAT.Utils
         }
 
 
-        public static List<string> GetAllNestedFieldsAndProperties(Type type, string? parentPath = null)
+        public static List<string> GetAllNestedFieldsAndProperties(Type type, string? currentPath = null)
         {
             var results = new List<string>();
-            foreach(var property in type.GetProperties())
+            if (!string.IsNullOrEmpty(currentPath))
             {
-                var newProperty = parentPath is null ? property.Name : $"{parentPath}.{property.Name}";
-                results.Add(newProperty);
-                results.AddRange(GetAllNestedFieldsAndProperties(property.PropertyType, newProperty));
+                results.Add(currentPath);
+            }
+            if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
+                    type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
+                    type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
+                    type == typeof(DateTime) || type.IsEnum)
+            {
+                // Don't crawl into basic types
+            }
+            else
+            {
+                foreach (var property in type.GetProperties())
+                {
+                    var newProperty = currentPath is null ? property.Name : $"{currentPath}.{property.Name}";
+                    // Base case is basic types
+                    results.AddRange(GetAllNestedFieldsAndProperties(property.PropertyType, newProperty));
+
+                }
+                foreach (var field in type.GetFields())
+                {
+                    var newField = currentPath is null ? field.Name : $"{currentPath}.{field.Name}";
+                    results.AddRange(GetAllNestedFieldsAndProperties(field.FieldType, newField));
+                }
             }
             return results;
         }
