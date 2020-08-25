@@ -46,10 +46,6 @@
 <button @onclick="ValidateRules">Validate Rules</button>
 <button @onclick="DownloadRules">Export Rules to JSON</button>
 <br />
-@foreach (var assembly in AppState.Assemblies)
-{
-    @assembly.FullName
-}
 @foreach (var rule in AppState.Rules)
 {
     <div class="card">
