@@ -203,15 +203,15 @@
     public async Task ReadJson()
     {
         AppState.Rules.Clear();
-        max = 0;
-        value = 0;
+        maxJson = 0;
+        valueJson = 0;
         Output = string.Empty;
         this.StateHasChanged();
-        var files = await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync();
+        var files = await fileReaderService.CreateReference(jsonInput).EnumerateFilesAsync();
         foreach (var file in files)
         {
             var fileInfo = await file.ReadFileInfoAsync();
-            max = fileInfo.Size;
+            maxJson = fileInfo.Size;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -234,7 +234,7 @@
                     Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
                     this.InvokeAsync(this.StateHasChanged);
                     e.Acknowledge();
-                    value = e.Position;
+                    valueJson = e.Position;
                     stopwatch.Start();
                 }
             };
@@ -265,8 +265,9 @@
                 CanCancel = false;
             }
 
-            value = max;
+            valueJson = maxJson;
             Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
+            ValidateRules();
             await InvokeAsync(StateHasChanged);
         }
     }
