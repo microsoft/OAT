@@ -586,53 +586,6 @@ namespace Microsoft.CST.OAT.Tests
 
             Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
 
-            invalidRule = new Rule("UnusedLabel")
-            {
-                Expression = "0",
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.IsNull, "Path")
-                    {
-                        Label = "1"
-                    },
-                    new Clause(Operation.IsNull, "Path")
-                    {
-                        Label = "0"
-                    }
-                }
-            };
-
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
-
-            invalidRule = new Rule("MissingLabel")
-            {
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.IsNull, "Path")
-                    {
-                        Label = "0"
-                    },
-                    new Clause(Operation.IsNull, "Path")
-                }
-            };
-
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
-
-            invalidRule = new Rule("ExpressionRequiresLabels")
-            {
-                Expression = "0 AND 1",
-                Target = "TestObject",
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.IsNull, "Path"),
-                    new Clause(Operation.IsNull, "Path")
-                }
-            };
-
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
-
             invalidRule = new Rule("OutOfOrder")
             {
                 Expression = "0 1 AND",
