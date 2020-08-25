@@ -2,17 +2,39 @@
 @using System.Reflection.Metadata;
 @using Microsoft.CodeAnalysis;
 @using System.Reflection;
-@using Microsoft.CST.OAT.VehicleDemo;
+@using System.Diagnostics;
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
 @inject NavigationManager NavigationManager;
-@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+@inject AppState AppState;
+@inject IFileReaderService fileReaderService;
+@inject IJSRuntime JSRuntime
+
 
 @if (AppState.Assemblies.Any())
 {
+    
+<h2>State</h2>
+<p>Load in JSON serialized Sandbox State.</p>
+<input type="file" @ref=jsonInput />
+<button @onclick=ReadJson class="btn btn-primary">Read Sandbox State</button>
+<button @onclick=CancelJson disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
+<br />
+<progress max="@maxJson" value="@valueJson" />
+<br />
+
+<button @onclick="SaveSandboxState">Save Sandbox State</button>
+@foreach(var error in SandBoxErrors)
+{
+    <p>Error: @error</p>
+}
+<h3>Settings</h3>
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
-        @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
-       .Select(t => t.Namespace)
-      ).Distinct())
+        @foreach (var names in GetNamespaces())
         {
             <option value="@names">@names</option>
         }
@@ -25,9 +47,6 @@
             <option value="@i">@Types[i].FullName</option>
         }
     </select>
-
-<br />
-<button @onclick="RefreshState">Re-Run Rules</button>
 <br />
 <br />
 
@@ -35,7 +54,7 @@
 {
     <button @onclick="AddObject">Add @Types[constructorToInvoke].FullName</button>
 }
-<button @onclick="RemoveLastObject">Remove Last Object</button>
+<button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Object</button><button @onclick="RefreshState">Re-Run Rules</button>
 <br />
 @for (int i = 0; i < AppState.TestObjects.Count; i++)
 {
@@ -59,6 +78,8 @@ else
 }
 @code {
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+
+    List<string> SandBoxErrors = new List<string>();
 
     int constructorToInvoke
     {
@@ -120,11 +141,313 @@ else
 
     void RemoveLastObject()
     {
-        AppState.TestObjects.RemoveAt(AppState.DemoTestObjects.Count - 1);
+        if (AppState.TestObjects.Count > 0)
+        {
+            AppState.TestObjects.RemoveAt(AppState.TestObjects.Count - 1);
+        }
     }
 
     void AddObject()
     {
         AppState.TestObjects.Add(System.Activator.CreateInstance(Types[constructorToInvoke]));
     }
+    private static string nl = Environment.NewLine;
+    public long maxJson;
+    public long valueJson;
+    ElementReference jsonInput;
+    public System.Threading.CancellationTokenSource? cancellationTokenSource;
+    string Output { get; set; } = string.Empty;
+
+    public bool CanCancel { get; set; }
+    public bool IsCancelDisabled => !CanCancel;
+
+    IEnumerable<string> GetNamespaces(Assembly? assembly = null)
+    {
+        if (assembly is null)
+        {
+            return AppState.Assemblies
+                .SelectMany(x => x.GetTypes()
+                .Select(t => t.Namespace)
+            ).Distinct();
+        }
+        else
+        {
+            return assembly.GetTypes()
+                .Select(t => t.Namespace)
+                .Distinct();
+        }
+    }
+
+    public async Task ReadJson()
+    {
+        AppState.Rules.Clear();
+        maxJson = 0;
+        valueJson = 0;
+        Output = string.Empty;
+        this.StateHasChanged();
+        var files = await fileReaderService.CreateReference(jsonInput).EnumerateFilesAsync();
+        foreach (var file in files)
+        {
+            var fileInfo = await file.ReadFileInfoAsync();
+            maxJson = fileInfo.Size;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Output += $"Reading file..." + nl;
+            this.StateHasChanged();
+            Console.WriteLine(Output);
+            cancellationTokenSource?.Dispose();
+            cancellationTokenSource = new System.Threading.CancellationTokenSource();
+            CanCancel = true;
+
+            const int onlyReportProgressAfterThisPercentDelta = 10;
+
+            // Subscribe to progress (change of position)
+            fileInfo.PositionInfo.PositionChanged += (s, e) =>
+            {
+                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
+                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
+                {
+                    stopwatch.Stop();
+                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
+                    this.InvokeAsync(this.StateHasChanged);
+                    e.Acknowledge();
+                    valueJson = e.Position;
+                    stopwatch.Start();
+                }
+            };
+
+            try
+            {
+                SandBoxErrors.Clear();
+                using var stream = await file.OpenReadAsync();
+                using var sr = new StreamReader(stream);
+                JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
+                var failed = false;
+                foreach (var assembly in ((JArray)sandboxState["AssemblyNames"]).Select(x => (string)x))
+                {
+                    if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
+                    {
+                        failed = true;
+                        Console.WriteLine("Assembly {0} isn't loaded.", assembly);
+                        SandBoxErrors.Add($"Assembly {assembly} isn't loaded.");
+                        break;
+                    }
+                }
+                if (!failed)
+                {
+                    foreach (var objectType in ((JObject)sandboxState["Objects"]).Properties().Select(x => x.Name).ToList())
+                    {
+                        Console.WriteLine(objectType);
+                        var types = new List<Type>();
+                        foreach(var assembly in AppState.Assemblies)
+                        {
+                            foreach(var nameSpace in GetNamespaces(assembly))
+                            {
+                                types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
+                            }
+                        }
+                        var results = new List<Type>();
+                        foreach (var typed in types)
+                        {
+                            var constructor = typed.GetConstructor(Type.EmptyTypes);
+                            if (constructor != null)
+                            {
+                                results.Add(typed);
+                            }
+                        }
+                        var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
+                        if (type != null)
+                        {
+                            foreach (var objState in (JArray)sandboxState["Objects"][objectType])
+                            {
+                                var empty = System.Activator.CreateInstance(type);
+                                foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
+                                {
+                                    var obj = objState;
+                                    foreach (var split in prop.Path.Split('.'))
+                                    {
+                                        obj = obj[split];
+                                    }
+                                    Console.WriteLine($"{prop.Path} : {JsonConvert.SerializeObject(obj)}");
+                                    var stringRepresentation = obj.ToObject<string>();
+
+                                    if (prop.MemInfo is PropertyInfo propInfo)
+                                    {
+                                        object? value = GetValueFromJObject(propInfo.PropertyType, stringRepresentation);
+                                        Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                    }
+                                    if (prop.MemInfo is FieldInfo fieldInfo)
+                                    {
+                                        object? value = GetValueFromJObject(fieldInfo.FieldType, stringRepresentation);
+                                        Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                    }
+                                }
+                                Console.WriteLine("Adding object");
+                                AppState.TestObjects.Add(empty);
+                            }
+                        }
+                        else
+                        {
+                            failed = true;
+                            SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
+                            Console.WriteLine($"Type {objectType} isn't loaded and won't be loaded.");
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Output += $"Operation was cancelled";
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine($"{name}: {message} ({type}:{stackTrace})");
+                Output += $"{name}: {message} ({type}:{stackTrace})";
+            }
+            finally
+            {
+                CanCancel = false;
+            }
+
+            valueJson = maxJson;
+            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async Task CancelJson()
+    {
+        Output += $"Cancel requested.{nl}";
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+        cancellationTokenSource.Cancel();
+    }
+
+    object? GetValueFromJObject(Type type, string objectState)
+    {
+        if (type == typeof(int))
+        {
+            if (int.TryParse(objectState, out int intVal))
+            {
+                return intVal;
+            }
+        }
+        else if (type == typeof(string))
+        {
+            return objectState;
+        }
+        else if (type == typeof(char))
+        {
+            return objectState[0];
+        }
+        else if (type == typeof(long))
+        {
+            if (long.TryParse(objectState, out long longVal))
+            {
+                return longVal;
+            }
+        }
+        else if (type == typeof(float))
+        {
+            if (float.TryParse(objectState, out float floatVal))
+            {
+                return floatVal;
+            }
+        }
+        else if (type == typeof(double))
+        {
+            if (double.TryParse(objectState, out double doubleVal))
+            {
+                return doubleVal;
+            }
+        }
+        else if (type == typeof(decimal))
+        {
+            if (decimal.TryParse(objectState, out decimal decimalVal))
+            {
+                return decimalVal;
+            }
+        }
+        else if (type == typeof(bool))
+        {
+            if (bool.TryParse(objectState, out bool boolVal))
+            {
+                return boolVal;
+            }
+        }
+        else if (type == typeof(uint))
+        {
+            if (uint.TryParse(objectState, out uint uintVal))
+            {
+                return uintVal;
+            }
+        }
+        else if (type == typeof(ulong))
+        {
+            if (ulong.TryParse(objectState, out ulong ulongVal))
+            {
+                return ulongVal;
+            }
+        }
+        else if (type == typeof(short))
+        {
+            if (short.TryParse(objectState, out short shortVal))
+            {
+                return shortVal;
+            }
+        }
+        else if (type == typeof(ushort))
+        {
+            if (ushort.TryParse(objectState, out ushort ushortVal))
+            {
+                return ushortVal;
+            }
+        }
+        else if (type == typeof(DateTime))
+        {
+            if (DateTime.TryParse(objectState, out DateTime dateTimeVal))
+            {
+                return dateTimeVal;
+            }
+        }
+        else if (type.IsEnum)
+        {
+            if (Enum.TryParse(type, objectState, out object result))
+            {
+                return Convert.ChangeType(result,type);
+            }
+        }
+        return null;
+    }
+
+    public async Task SaveSandboxState()
+    {
+        var objects = new Dictionary<string, List<object>>();
+        foreach(var obj in AppState.TestObjects)
+        {
+            var t = obj.GetType();
+            if (!objects.ContainsKey(t.FullName))
+            {
+                objects.Add(t.FullName, new List<object>());
+            }
+            objects[t.FullName].Add(obj);
+        }
+        var state = new SandboxState(AppState.Assemblies.Select(x => x.GetName().Name).ToList(), objects);
+        await JSRuntime.InvokeAsync<object>(
+            "FileSaveAs",
+            "SandboxState.json",
+            "data:text/plain;charset=utf-8,",
+            Newtonsoft.Json.JsonConvert.SerializeObject(state)
+        );
+    }
+        public bool removeDisabled => AppState.TestObjects.Count == 0;
+
 }

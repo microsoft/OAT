@@ -9,7 +9,7 @@
 
 <br />
 <button @onclick="AddRule">Add Rule</button>
-<button @onclick="RemoveLastRule">Remove Last Rule</button>
+<button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
 <button @onclick="ValidateRules">Validate Rules</button>
 <br />
 @foreach (var rule in AppState.DemoRules)
@@ -68,7 +68,10 @@
 
     void RemoveLastRule()
     {
-        AppState.DemoRules.RemoveAt(AppState.DemoRules.Count - 1);
+        if (AppState.DemoRules.Count > 0)
+        {
+            AppState.DemoRules.RemoveAt(AppState.DemoRules.Count - 1);
+        }
         ValidateRules();
     }
 
@@ -77,4 +80,6 @@
         AppState.DemoRules.Add(new Rule("Rule Name Here"));
         ValidateRules();
     }
+
+    public bool removeDisabled => AppState.DemoRules.Count == 0;
 }

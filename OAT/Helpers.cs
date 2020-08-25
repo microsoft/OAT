@@ -36,6 +36,51 @@ namespace Microsoft.CST.OAT.Utils
             return true;
         }
 
+        public static List<(string Path, MemberInfo MemInfo)> GetAllNestedFieldsAndPropertiesMemberInfo(Type type, string? currentPath = null)
+        {
+            var results = new List<(string Path, MemberInfo MemInfo)>();
+            bool IsBasicType(Type type)
+            {
+                if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
+                    type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
+                    type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
+                    type == typeof(DateTime) || type.IsEnum)
+                {
+                    // Only return basic types
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            foreach (var property in type.GetProperties())
+            {
+                var newProperty = currentPath is null ? property.Name : $"{currentPath}.{property.Name}";
+                if (IsBasicType(property.PropertyType))
+                {
+                    results.Add((newProperty, property));
+                }
+                else
+                {
+                    results.AddRange(GetAllNestedFieldsAndPropertiesMemberInfo(property.PropertyType, newProperty));
+                }
+
+            }
+            foreach (var field in type.GetFields())
+            {
+                var newField = currentPath is null ? field.Name : $"{currentPath}.{field.Name}";
+                if (IsBasicType(field.FieldType))
+                {
+                    results.Add((newField, field));
+                }
+                else
+                {
+                    results.AddRange(GetAllNestedFieldsAndPropertiesMemberInfo(field.FieldType, newField));
+                }
+            }
+            return results;
+        }
 
         public static List<string> GetAllNestedFieldsAndProperties(Type type, string? currentPath = null)
         {

@@ -28,15 +28,13 @@
 <br />
 <progress max="@maxJson" value="@valueJson" />
 <br />
-<button @onclick="DownloadRules">Export Rules to JSON</button>
-<br />
 @if (AppState.Assemblies.Any())
 {
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
         @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
-                     .Select(t => t.Namespace)
-                    ).Distinct())
+                    .Select(t => t.Namespace)
+                   ).Distinct())
         {
             <option value="@names">@names</option>
         }
@@ -44,8 +42,9 @@
 }
 <br />
 <button @onclick="AddRule">Add Rule</button>
-<button @onclick="RemoveLastRule">Remove Last Rule</button>
+<button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
 <button @onclick="ValidateRules">Validate Rules</button>
+<button @onclick="DownloadRules">Export Rules to JSON</button>
 <br />
 @foreach (var assembly in AppState.Assemblies)
 {
@@ -84,6 +83,8 @@
     public long max;
     public long value;
     ElementReference inputElement;
+
+    public bool removeDisabled => AppState.Rules.Count == 0;
 
     public long maxJson;
     public long valueJson;
@@ -308,7 +309,10 @@
 
     void RemoveLastRule()
     {
-        AppState.Rules.RemoveAt(AppState.Rules.Count - 1);
+        if (AppState.Rules.Count > 0)
+        {
+            AppState.Rules.RemoveAt(AppState.Rules.Count - 1);
+        }
         ValidateRules();
     }
 
