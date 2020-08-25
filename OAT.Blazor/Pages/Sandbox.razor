@@ -11,8 +11,8 @@
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
         @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
-                   .Select(t => t.Namespace)
-                  ).Distinct())
+       .Select(t => t.Namespace)
+      ).Distinct())
         {
             <option value="@names">@names</option>
         }
@@ -25,11 +25,12 @@
             <option value="@i">@Types[i].FullName</option>
         }
     </select>
-}
+
 <br />
 <button @onclick="RefreshState">Re-Run Rules</button>
 <br />
 <br />
+
 @if (@Types.Any())
 {
     <button @onclick="AddObject">Add @Types[constructorToInvoke].FullName</button>
@@ -50,6 +51,11 @@
         <br />
         <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
     </div>
+}
+}
+else
+{
+    <p>Load an assembly via the Author page to use the Sandbox.</p>
 }
 @code {
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));

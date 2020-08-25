@@ -9,23 +9,34 @@
 @using System.Diagnostics;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 @inject IFileReaderService fileReaderService;
+@inject IJSRuntime JSRuntime
 
 <h2>Assembly</h2>
 <p>Choose Assembly to use for file types (optional).</p>
 <input type="file" @ref=inputElement />
 <button @onclick=ReadFile class="btn btn-primary">Read file</button>
-<button @onclick=ClearFile class="btn btn-primary">Clear</button>
+<button @onclick=ClearFile class="btn btn-primary">Clear Assemblies</button>
 <button @onclick=CancelFile disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
 <br />
 <progress max="@max" value="@value" />
+<br />
+<h2>Rules</h2>
+<p>Load in JSON serialized rules.</p>
+<input type="file" @ref=jsonInput />
+<button @onclick=ReadJson class="btn btn-primary">Read file</button>
+<button @onclick=CancelJson disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
+<br />
+<progress max="@maxJson" value="@valueJson" />
+<br />
+<button @onclick="DownloadRules">Export Rules to JSON</button>
 <br />
 @if (AppState.Assemblies.Any())
 {
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
         @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
-                       .Select(t => t.Namespace)
-                      ).Distinct())
+                     .Select(t => t.Namespace)
+                    ).Distinct())
         {
             <option value="@names">@names</option>
         }
@@ -73,6 +84,11 @@
     public long max;
     public long value;
     ElementReference inputElement;
+
+    public long maxJson;
+    public long valueJson;
+    ElementReference jsonInput;
+
     public System.Threading.CancellationTokenSource? cancellationTokenSource;
     string Output { get; set; } = string.Empty;
 
@@ -83,6 +99,16 @@
     {
         AppState.Assemblies.Clear();
         await fileReaderService.CreateReference(inputElement).ClearValue();
+    }
+
+    public async void DownloadRules()
+    {
+        await JSRuntime.InvokeAsync<object>(
+            "FileSaveAs",
+            "OAT-Rules.json",
+            "data:text/plain;charset=utf-8,",
+            Newtonsoft.Json.JsonConvert.SerializeObject(AppState.Rules)
+        );
     }
 
     public async Task ReadFile()
@@ -112,8 +138,8 @@
             // Subscribe to progress (change of position)
             fileInfo.PositionInfo.PositionChanged += (s, e) =>
             {
-            // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
-            if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
+                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
+                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
                 {
                     stopwatch.Stop();
                     Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
@@ -167,6 +193,85 @@
     }
 
     public async Task CancelFile()
+    {
+        Output += $"Cancel requested.{nl}";
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+        cancellationTokenSource.Cancel();
+    }
+
+    public async Task ReadJson()
+    {
+        AppState.Rules.Clear();
+        max = 0;
+        value = 0;
+        Output = string.Empty;
+        this.StateHasChanged();
+        var files = await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync();
+        foreach (var file in files)
+        {
+            var fileInfo = await file.ReadFileInfoAsync();
+            max = fileInfo.Size;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Output += $"Reading file..." + nl;
+            this.StateHasChanged();
+            Console.WriteLine(Output);
+            cancellationTokenSource?.Dispose();
+            cancellationTokenSource = new System.Threading.CancellationTokenSource();
+            CanCancel = true;
+
+            const int onlyReportProgressAfterThisPercentDelta = 10;
+
+            // Subscribe to progress (change of position)
+            fileInfo.PositionInfo.PositionChanged += (s, e) =>
+            {
+                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
+                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
+                {
+                    stopwatch.Stop();
+                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
+                    this.InvokeAsync(this.StateHasChanged);
+                    e.Acknowledge();
+                    value = e.Position;
+                    stopwatch.Start();
+                }
+            };
+
+            try
+            {
+                using var stream = await file.OpenReadAsync();
+                using var sr = new StreamReader(stream);
+                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync());
+            }
+            catch (OperationCanceledException)
+            {
+                Output += $"Operation was cancelled";
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Output += $"{name}: {message} ({type}:{stackTrace})";
+            }
+            finally
+            {
+                CanCancel = false;
+            }
+
+            value = max;
+            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async Task CancelJson()
     {
         Output += $"Cancel requested.{nl}";
         await InvokeAsync(StateHasChanged);
