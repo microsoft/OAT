@@ -194,7 +194,7 @@
         Output += $"Cancel requested.{nl}";
         await InvokeAsync(StateHasChanged);
         await Task.Delay(1);
-        cancellationTokenSource.Cancel();
+        cancellationTokenSource?.Cancel();
     }
 
     public async Task ReadJson()
@@ -274,7 +274,7 @@
         Output += $"Cancel requested.{nl}";
         await InvokeAsync(StateHasChanged);
         await Task.Delay(1);
-        cancellationTokenSource.Cancel();
+        cancellationTokenSource?.Cancel();
     }
 
     string nameSpace = string.Empty;

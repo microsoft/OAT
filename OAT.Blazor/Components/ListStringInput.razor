@@ -15,43 +15,47 @@
 }
 
 @code {
-    [Parameter]
-    public object Object { get; set; }
+        [Parameter]
+        public object? Object { get; set; }
 
-    [Parameter]
-    public string SubPath { get; set; }
+        [Parameter]
+        public string? SubPath { get; set; }
 
-    [Parameter]
-    public string buttonText { get; set; }
+        [Parameter]
+        public string buttonText { get; set; } = "Item";
 
-    [Parameter]
-    public string id { get; set; }
+        [Parameter]
+        public string id { get; set; } = string.Empty;
 
-    int SelectedIndex { get; set; }
+        int SelectedIndex { get; set; }
 
-    string CurrentInput { get; set; }
+        string CurrentInput { get; set; } = string.Empty;
 
-    void AddData(EventArgs eventArgs)
-    {
-        if (SubProperty == null)
+        void AddData(EventArgs eventArgs)
         {
-            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, new List<string>());
+            if (SubProperty == null)
+            {
+                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, new List<string>());
+            }
+            SubProperty?.Add(CurrentInput);
+            CurrentInput = string.Empty;
         }
-        SubProperty.Add(CurrentInput);
-        CurrentInput = string.Empty;
-    }
 
-    void RemoveData(EventArgs eventArgs)
-    {
-        SubProperty.RemoveAt(SelectedIndex);
-    }
+        void RemoveData(EventArgs eventArgs)
+        {
+            SubProperty.RemoveAt(SelectedIndex);
+        }
 
 
     public List<string> SubProperty
     {
         get
         {
-            return (List<string>)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? new List<string>());
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is List<string> val) 
+            {
+                return val;
+            }
+            return new List<string>();
         }
         set
         {

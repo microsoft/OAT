@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -200,7 +199,11 @@ else
             var analyzer = new Analyzer(new AnalyzerOptions(true));
             var assemblies = new List<PortableExecutableReference>();
             // We used vehicle above so we need to load its assembly.
-            assemblies.Add(ModuleMetadata.CreateFromStream(typeof(Vehicle).Assembly.GetManifestResourceStream(typeof(Vehicle),"VehicleDemo.dll")).GetReference());
+            var stream = typeof(Vehicle).Assembly.GetManifestResourceStream(typeof(Vehicle), "VehicleDemo.dll");
+            if (stream != null)
+            {
+                assemblies.Add(ModuleMetadata.CreateFromStream(stream).GetReference());
+            }
             analyzer.SetOperation(new ScriptOperation(analyzer, assemblies));
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
             Assert.IsFalse(ruleIssues.Any());

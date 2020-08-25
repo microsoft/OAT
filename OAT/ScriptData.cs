@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.CST.OAT
@@ -25,7 +24,7 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// The Script code
         /// </summary>
-        public string Code { get; set;  }
+        public string Code { get; set; }
         /// <summary>
         /// The Script Imports
         /// </summary>

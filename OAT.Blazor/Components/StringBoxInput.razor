@@ -2,20 +2,24 @@
 
 <textarea id="@id" rows="5" cols="50" @bind="SubProperty"/>
 @code {
-    [Parameter]
-    public object Object { get; set; }
+        [Parameter]
+        public object? Object { get; set; }
 
-    [Parameter]
-    public string SubPath { get; set; }
+        [Parameter]
+        public string? SubPath { get; set; }
 
-    [Parameter]
-    public string id { get; set; }
+        [Parameter]
+        public string id { get; set; } = string.Empty;
 
     public string SubProperty
     {
         get
         {
-            return (string)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? string.Empty);
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is string val) 
+            {
+                return val;
+            }
+            return string.Empty;
         }
         set
         {

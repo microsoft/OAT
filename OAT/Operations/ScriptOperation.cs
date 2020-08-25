@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Utils;
@@ -8,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Text;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -24,7 +21,7 @@ namespace Microsoft.CST.OAT.Operations
         /// </summary>
         /// <param name="analyzer"></param>
         /// <param name="assemblies"></param>
-        public ScriptOperation(Analyzer analyzer, List<PortableExecutableReference>? assemblies = null) : base (Operation.Script, analyzer)
+        public ScriptOperation(Analyzer analyzer, List<PortableExecutableReference>? assemblies = null) : base(Operation.Script, analyzer)
         {
             Assemblies = assemblies;
             OperationDelegate = ScriptOperationDelegate;

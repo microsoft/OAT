@@ -1,37 +1,47 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<br/>
-@{var enums = Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()); }
-@for (int i = 0; i < enums.Length; i++)
-{
-    var curEnum = (Enum)enums.GetValue(i);
-    if (((Enum)Helpers.GetValueByPropertyOrFieldName(Object, SubPath)).HasFlag(curEnum))
+<br />
+@{
+    var type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
+    if (type != null)
     {
-        <input type="checkbox" checked="checked" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
-    }
-    else
-    {
-        <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
-    }
-    if (i < enums.Length - 1)
-    {
-        <br />
+        var enums = Enum.GetValues(type);
+
+        for (int i = 0; i < enums.Length; i++)
+        {
+            var curEnum = (Enum)enums.GetValue(i);
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Enum val)
+            {
+                if (val.HasFlag(curEnum))
+                {
+                    <input type="checkbox" checked="checked" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
+                }
+                else
+                {
+                    <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value); }" /><label for="@curEnum">@curEnum</label>
+                }
+                if (i < enums.Length - 1)
+                {
+                    <br />
+                }
+            }
+        }
     }
 }
 @code {
     [Parameter]
-    public object Object { get; set; }
+    public object? Object { get; set; }
 
     [Parameter]
-    public string SubPath { get; set; }
+    public string? SubPath { get; set; }
 
     [Parameter]
-    public string id { get; set; }
+    public string id { get; set; } = string.Empty;
 
-    Type type;
+    Type? type;
 
     protected override void OnInitialized()
     {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType();
+        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
         base.OnInitialized();
     }
 
@@ -39,7 +49,7 @@
     {
         if ((bool)checkedValue)
         {
-            if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
             {
                 if (!SubProperty.HasFlag(enumValue))
                 {
@@ -47,7 +57,7 @@
                     object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
                     if (val is int)
                     {
-                        SubProperty = (Enum)Enum.ToObject(type,(int)val + (int)val2);
+                        SubProperty = (Enum)Enum.ToObject(type, (int)val + (int)val2);
                     }
                     else if (val is long)
                     {
@@ -82,7 +92,7 @@
         }
         else
         {
-            if (SubProperty.GetType().IsDefined(typeof(FlagsAttribute), false))
+            if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
             {
                 if (SubProperty.HasFlag(enumValue))
                 {
@@ -125,11 +135,15 @@
         }
     }
 
-    public Enum SubProperty
+    public Enum? SubProperty
     {
         get
         {
-            return (Enum)Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Enum val)
+            {
+                return val;
+            }
+            return null; 
         }
         set
         {

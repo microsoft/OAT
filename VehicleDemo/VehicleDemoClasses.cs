@@ -1,28 +1,45 @@
-﻿using System;
+﻿
+/* Unmerged change from project 'VehicleDemo (netstandard2.1)'
+Before:
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+After:
+using Microsoft.CST.OAT;
+using Microsoft.Collections.Generic;
+*/
+using Microsoft.CST.OAT.Operations;
+using MoreLinq;
+using System;
+using System.Collections.Generic;
+
+/* Unmerged change from project 'VehicleDemo (netstandard2.1)'
+Before:
 using Microsoft.CST.OAT;
 using Microsoft.CST.OAT.Operations;
 using MoreLinq;
+After:
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+*/
+using System.Linq;
 
 namespace Microsoft.CST.OAT.VehicleDemo
 {
     public static class VehicleDemoHelpers
-    { 
-
-    public static int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
     {
-        // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules
-        // 0 cost
-        return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
+
+        public static int GetCost(Vehicle vehicle, Analyzer analyzer, IEnumerable<Rule> rules)
+        {
+            // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules
+            // 0 cost
+            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
+        }
     }
-}
 
     public class OverweightOperation : OatOperation
     {
-        public OverweightOperation(Analyzer analyzer) : base(Operation.Custom,OverweightOperationDelegate, OverweightOperationValidationDelegate, analyzer, "OverweightOperation")
+        public OverweightOperation(Analyzer analyzer) : base(Operation.Custom, OverweightOperationDelegate, OverweightOperationValidationDelegate, analyzer, "OverweightOperation")
         {
         }
         public static OperationResult OverweightOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
@@ -55,7 +72,7 @@ namespace Microsoft.CST.OAT.VehicleDemo
         }
     }
 
-public class VehicleRule : Rule
+    public class VehicleRule : Rule
     {
         public int Cost;
 

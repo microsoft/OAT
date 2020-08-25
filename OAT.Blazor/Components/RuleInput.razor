@@ -6,7 +6,7 @@
     case ComponentCollapsedState.Expanded:
         <div class="font-large">
             <button class="btn-tr oi oi-minus" @onclick="Collapse">
-                <span class="reset-font-fam font-large">   @Rule.Name</span>
+                <span class="reset-font-fam font-large">   @Rule?.Name</span>
             </button>
         </div>
         <hr />
@@ -66,7 +66,7 @@
         <button @onclick="AddClause">Add Clause</button>
         <button @onclick="RemoveLastClause">Remove Last Clause</button>
         <br />
-        @for (var i = 0; i < Rule.Clauses.Count; i++)
+        @for (var i = 0; i < Rule?.Clauses.Count; i++)
         {
             @if (Types.Any())
             {
@@ -81,7 +81,7 @@
     case ComponentCollapsedState.Collapsed:
         <div class="font-large">
             <button class="btn-tr oi oi-plus" @onclick="Expand">
-                <span class="reset-font-fam font-large">   @Rule.Name</span>
+                <span class="reset-font-fam font-large">   @Rule?.Name</span>
             </button>
         </div>
         <hr />
@@ -108,15 +108,15 @@
     public ComponentCollapsedState CollapsedState { get; set; } = ComponentCollapsedState.Collapsed;
 
     [Parameter]
-    public Rule Rule { get; set; }
+    public Rule? Rule { get; set; }
 
     void RemoveLastClause()
     {
-        Rule.Clauses.RemoveAt(Rule.Clauses.Count - 1);
+        Rule?.Clauses.RemoveAt(Rule.Clauses.Count - 1);
     }
 
     void AddClause()
     {
-        Rule.Clauses.Add(new Clause(Operation.Regex));
+        Rule?.Clauses.Add(new Clause(Operation.Regex));
     }
 }
