@@ -7,6 +7,8 @@ OAT 1.0 is available on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packa
 
 The best documentation is on the [Wiki](https://github.com/microsoft/OAT/wiki).
 
+You can Author and Test rules directly in your browser using [OAT Blazor](https://microsoft.github.io/OAT/).
+
 ## Overview
 * [Rules](https://github.com/microsoft/OAT/blob/main/OAT/Rule.cs) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) which are applied to the targeted object.
 * [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
