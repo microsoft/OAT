@@ -35,10 +35,15 @@
 <br />
 
 <button @onclick="SaveSandboxState">Save Sandbox State</button>
+
+<div class="alert alert-warning" role="alert">
 @foreach(var error in SandBoxErrors)
 {
-    <p>Error: @error</p>
+    <p>@error</p>
 }
+</div>
+
+
 <h3>Settings</h3>
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
@@ -82,9 +87,11 @@
 
 <br />
 
-// Add / bind variable here
 <div class="alert alert-warning" role="alert">
-
+@foreach(var parseError in ParseErrors)
+{
+    @parseError
+}
 </div>
 
 @if (@Types.Any())
@@ -120,6 +127,8 @@ else
     <p>Load an Assembly to use the Sandbox.</p>
 }
 @code {
+
+    List<string> ParseErrors = new List<string>();
     public long max;
     public long value;
     ElementReference inputElement;
@@ -350,7 +359,7 @@ else
         }
         catch(Exception e)
         {
-            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
+            ParseErrors.Add($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
         }
     }
     private static string nl = Environment.NewLine;
@@ -377,7 +386,7 @@ else
                     types.AddRange(e.Types.Where(x => x is Type));
                     foreach(var ex in e.LoaderExceptions)
                     {
-                        //Debug.WriteLine(e.Message);
+                        SandBoxErrors.Add(ex.Message);
                     }
                 }
             }
@@ -395,7 +404,7 @@ else
                 types.AddRange(e.Types.Where(x => x is Type));
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    //Debug.WriteLine(e.Message);
+                    SandBoxErrors.Add(ex.Message);
                 }
             }
             return types.Select(x => x.Namespace).Distinct();
