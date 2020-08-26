@@ -13,10 +13,18 @@
 @inject IFileReaderService fileReaderService;
 @inject IJSRuntime JSRuntime
 
+<h2>Assembly</h2>
+<p>Choose Assembly to use objects.</p>
+<input type="file" @ref=inputElement />
+<button @onclick=ReadFile class="btn btn-primary">Read file</button>
+<button @onclick=ClearFile class="btn btn-primary">Clear Assemblies</button>
+<button @onclick=CancelFile disabled=@IsAssemblyCancelDisabled class="btn btn-primary">Cancel</button>
+<br />
+<progress max="@max" value="@value" />
+<br />
 
 @if (AppState.Assemblies.Any())
 {
-    
 <h2>State</h2>
 <p>Load in JSON serialized Sandbox State.</p>
 <input type="file" @ref=jsonInput />
@@ -41,18 +49,39 @@
     </select>
     <br />
     <label for="typeToCreate">Type to Create:</label>
-    <select id="typeToCreate" @bind="constructorToInvoke">
-        @for (int i = 0; i < Types.Length; i++)
+    <select id="typeToCreate" @bind="typeToInvoke">
+        @foreach(var type in Types.Keys)
         {
-            <option value="@i">@Types[i].FullName</option>
+            <option value="@type.FullName">@type.FullName</option>
         }
     </select>
+    <label for="constructorToUse">Constructor to Create:</label>
+    <select id="constructorToUse" @bind="constructorToInvoke">
+        @{
+            var constructors = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
+            if (constructors != null)
+            {
+                @for (int i = 0; i < constructors.Count; i++)
+        {
+            <option value="@i">@constructors[i].ToString()</option>
+        }
+            }
+        }
+        
+    </select>
+
 <br />
 <br />
 
 @if (@Types.Any())
 {
-    <button @onclick="AddObject">Add @Types[constructorToInvoke].FullName</button>
+    var types = Types.Where(x => x.Key.FullName == typeToInvoke);
+    if (types.Any())
+    {
+        var type = types.FirstOrDefault();
+        var constructor = type.Value[constructorToInvoke];
+        <button @onclick="AddObject">Add @type.Key.FullName</button>
+    }
 }
 <button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Object</button><button @onclick="RefreshState">Re-Run Rules</button>
 <br />
@@ -74,12 +103,119 @@
 }
 else
 {
-    <p>Load an assembly via the Author page to use the Sandbox.</p>
+    <p>Load an Assembly to use the Sandbox.</p>
 }
 @code {
+    public long max;
+    public long value;
+    ElementReference inputElement;
+
+    public System.Threading.CancellationTokenSource? cancellationTokenSource;
+    string Output { get; set; } = string.Empty;
+
+    public bool CanCancel { get; set; }
+    public bool IsCancelDisabled => !CanCancel;
+
+    public async Task ClearFile()
+    {
+        AppState.Assemblies.Clear();
+        await fileReaderService.CreateReference(inputElement).ClearValue();
+    }
+
+    public async Task ReadFile()
+    {
+        AppState.Assemblies.Clear();
+        max = 0;
+        value = 0;
+        Output = string.Empty;
+        this.StateHasChanged();
+        var files = await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync();
+        foreach (var file in files)
+        {
+            var fileInfo = await file.ReadFileInfoAsync();
+            max = fileInfo.Size;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Output += $"Reading file..." + nl;
+            this.StateHasChanged();
+            Console.WriteLine(Output);
+            cancellationTokenSource?.Dispose();
+            cancellationTokenSource = new System.Threading.CancellationTokenSource();
+            CanCancel = true;
+
+            const int onlyReportProgressAfterThisPercentDelta = 10;
+
+            // Subscribe to progress (change of position)
+            fileInfo.PositionInfo.PositionChanged += (s, e) =>
+            {
+                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
+                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
+                {
+                    stopwatch.Stop();
+                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
+                    this.InvokeAsync(this.StateHasChanged);
+                    e.Acknowledge();
+                    value = e.Position;
+                    stopwatch.Start();
+                }
+            };
+
+            try
+            {
+                using var stream = await file.OpenReadAsync();
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                var assembly = Assembly.Load(ms.ToArray());
+                if (assembly != null)
+                {
+                    AppState.Assemblies.Add(assembly);
+                    await this.InvokeAsync(this.StateHasChanged);
+                }
+                else
+                {
+                    Console.WriteLine("Assembly is null");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Output += $"Operation was cancelled";
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Output += $"{name}: {message} ({type}:{stackTrace})";
+            }
+            finally
+            {
+                CanCancel = false;
+            }
+
+            value = max;
+            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async Task CancelFile()
+    {
+        Output += $"Cancel requested.{nl}";
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+        cancellationTokenSource?.Cancel();
+    }
+
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
     List<string> SandBoxErrors = new List<string>();
+
+    Dictionary<string, object> values = new Dictionary<string, object>();
 
     int constructorToInvoke
     {
@@ -93,6 +229,21 @@ else
             RefreshState();
         }
     }
+
+    string typeToInvoke
+    {
+        get
+        {
+            return _typeToInvoke;
+        }
+        set
+        {
+            _typeToInvoke = value;
+            RefreshState();
+        }
+    }
+
+    string _typeToInvoke = string.Empty;
 
     public bool removeDisabled => AppState.TestObjects.Count == 0;
 
@@ -113,15 +264,27 @@ else
     void UpdateTypes()
     {
         var types = AppState.Assemblies.SelectMany(x => Helpers.GetTypesInNamespace(x, nameSpace));
-        var results = new List<Type>();
+        var results = new Dictionary<Type, List<ConstructorInfo>>();
         foreach (var type in types)
         {
             try
             {
-                var constructor = type.GetConstructor(Type.EmptyTypes);
-                if (constructor != null)
+                var allowedConstructors = new List<ConstructorInfo>();
+                var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+                foreach (var constructorItr in constructors)
                 {
-                    results.Add(type);
+                    foreach (var parameter in constructorItr.GetParameters())
+                    {
+                        if (!Helpers.IsBasicType(parameter.ParameterType))
+                        {
+                            break;
+                        }
+                    }
+                    allowedConstructors.Add(constructorItr);
+                }
+                if (allowedConstructors.Any())
+                {
+                    results.Add(type, allowedConstructors);
                 }
             }
             catch(Exception e)
@@ -129,11 +292,11 @@ else
                 Console.WriteLine($"Failed to get constructor:{e.Message}");
             }
         }
-        Types = results.ToArray();
+        Types = results;
         RefreshState();
     }
 
-    Type[] Types { get; set; } = Array.Empty<Type>();
+    Dictionary<Type, List<ConstructorInfo>> Types { get; set; } = new Dictionary<Type, List<ConstructorInfo>>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,17 +321,33 @@ else
 
     void AddObject()
     {
-        AppState.TestObjects.Add(System.Activator.CreateInstance(Types[constructorToInvoke]));
+        var type = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault();
+        var constructor = type.Value[constructorToInvoke];
+        var inputs = new List<object>();
+        foreach(var parameter in constructor.GetParameters())
+        {
+            if (parameter.ParameterType == typeof(int))
+            {
+                inputs.Add((int)0);
+            }
+            if (parameter.ParameterType == typeof(uint))
+            {
+                inputs.Add((uint)0);
+            }
+            if (parameter.ParameterType == typeof(string))
+            {
+                inputs.Add(string.Empty);
+            }
+        }
+        AppState.TestObjects.Add(constructor.Invoke(inputs.ToArray()));
     }
     private static string nl = Environment.NewLine;
     public long maxJson;
     public long valueJson;
     ElementReference jsonInput;
-    public System.Threading.CancellationTokenSource? cancellationTokenSource;
-    string Output { get; set; } = string.Empty;
+    public System.Threading.CancellationTokenSource? cancellationTokenSourceAssemblyLoader;
 
-    public bool CanCancel { get; set; }
-    public bool IsCancelDisabled => !CanCancel;
+    public bool IsAssemblyCancelDisabled => !CanCancel;
 
     IEnumerable<string> GetNamespaces(Assembly? assembly = null)
     {
@@ -229,8 +408,8 @@ else
             Output += $"Reading file..." + nl;
             this.StateHasChanged();
             Console.WriteLine(Output);
-            cancellationTokenSource?.Dispose();
-            cancellationTokenSource = new System.Threading.CancellationTokenSource();
+            cancellationTokenSourceAssemblyLoader?.Dispose();
+            cancellationTokenSourceAssemblyLoader = new System.Threading.CancellationTokenSource();
             CanCancel = true;
 
             const int onlyReportProgressAfterThisPercentDelta = 10;

@@ -5,6 +5,10 @@
     {
         <StringInput id="@id" Object="Object" SubPath="@SubPath" />
     }
+    else if (type.Equals(typeof(bool)))
+    {
+        <BoolInput id="@id" Object="Object" SubPath="@SubPath" />
+    }
     else if (type.Equals(typeof(int)))
     {
         <IntInput id="@id" Object="Object" SubPath="@SubPath" />
@@ -24,8 +28,7 @@
     {
         <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" />
     }
-    else if (type.Equals(typeof(List<string>
-    )))
+    else if (type.Equals(typeof(List<string>)))
     {
         <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
     }
