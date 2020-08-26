@@ -64,7 +64,7 @@
         </tbody>
         <br />
         <button @onclick="AddClause">Add Clause</button>
-        <button @onclick="RemoveLastClause">Remove Last Clause</button>
+        <button @onclick="RemoveLastClause" disabled="@HasNoClauses()">Remove Last Clause</button>
         <br />
         @for (var i = 0; i < Rule?.Clauses.Count; i++)
         {
@@ -102,6 +102,11 @@
     void Collapse(EventArgs eventArgs)
     {
         CollapsedState = ComponentCollapsedState.Collapsed;
+    }
+
+    bool HasNoClauses()
+    {
+        return Rule?.Clauses.Count == 0;
     }
 
     [Parameter]
