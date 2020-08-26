@@ -32,9 +32,7 @@
 {
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
-        @foreach (var names in AppState.Assemblies.SelectMany(x => x.GetTypes()
-                    .Select(t => t.Namespace)
-                   ).Distinct())
+        @foreach (var names in GetNamespaces())
         {
             <option value="@names">@names</option>
         }
@@ -316,5 +314,46 @@
     {
         AppState.Rules.Add(new Rule("Rule Name Here"));
         ValidateRules();
+    }
+
+    IEnumerable<string> GetNamespaces(Assembly? assembly = null)
+    {
+        if (assembly is null)
+        {
+            var types = new List<Type>();
+            foreach (var appStateAssembly in AppState.Assemblies)
+            {
+                try
+                {
+                    types.AddRange(appStateAssembly.GetTypes());
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    types.AddRange(e.Types.Where(x => x is Type));
+                    foreach (var ex in e.LoaderExceptions)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
+        else
+        {
+            var types = new List<Type>();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types.AddRange(e.Types.Where(x => x is Type));
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
     }
 }

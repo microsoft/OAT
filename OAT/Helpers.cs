@@ -208,10 +208,21 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns></returns>
         public static Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
         {
-            return
-              assembly.GetTypes()
-                      .Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal))
-                      .ToArray();
+            
+            var types = new List<Type>();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types.AddRange(e.Types.Where(x => x is Type));
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    Console.WriteLine($"Failed to load Type: {e.Message}");
+                }
+            }
+            return types.Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();
         }
 
         /// <summary>

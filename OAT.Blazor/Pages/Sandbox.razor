@@ -116,10 +116,17 @@ else
         var results = new List<Type>();
         foreach (var type in types)
         {
-            var constructor = type.GetConstructor(Type.EmptyTypes);
-            if (constructor != null)
+            try
             {
-                results.Add(type);
+                var constructor = type.GetConstructor(Type.EmptyTypes);
+                if (constructor != null)
+                {
+                    results.Add(type);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Failed to get constructor:{e.Message}");
             }
         }
         Types = results.ToArray();
@@ -167,16 +174,40 @@ else
     {
         if (assembly is null)
         {
-            return AppState.Assemblies
-                .SelectMany(x => x.GetTypes()
-                .Select(t => t.Namespace)
-            ).Distinct();
+            var types = new List<Type>();
+            foreach(var appStateAssembly in AppState.Assemblies)
+            {
+                try
+                {
+                    types.AddRange(appStateAssembly.GetTypes());
+                }
+                catch(ReflectionTypeLoadException e)
+                {
+                    types.AddRange(e.Types.Where(x => x is Type));
+                    foreach(var ex in e.LoaderExceptions)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
         }
         else
         {
-            return assembly.GetTypes()
-                .Select(t => t.Namespace)
-                .Distinct();
+            var types = new List<Type>();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types.AddRange(e.Types.Where(x => x is Type));
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
         }
     }
 
