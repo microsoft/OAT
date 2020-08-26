@@ -76,8 +76,8 @@
 @foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
 {
     Parameters.Add(parameter.Name, parameter.DefaultValue);
-    <label for="">@parameter.Name</label>
-    <PropertyInput Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
+    <label for="@parameter.Name">@parameter.Name</label>
+    <PropertyInput Id="@parameter.Name" Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
 }
 
 <br />
