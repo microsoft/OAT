@@ -345,7 +345,7 @@ else
         }
         catch(Exception e)
         {
-            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
+            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA only supports types which are fully defined within the provided assembly. ({e.Message})");
         }
     }
     private static string nl = Environment.NewLine;
