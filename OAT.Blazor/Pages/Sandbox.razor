@@ -62,15 +62,24 @@
             if (constructors != null)
             {
                 @for (int i = 0; i < constructors.Count; i++)
-        {
-            <option value="@i">@constructors[i].ToString()</option>
-        }
+                {
+                    <option value="@i">@constructors[i].ToString()</option>
+                }
             }
         }
-        
     </select>
-
 <br />
+@if (Parameters.Any())
+{
+    Parameters.Clear();
+}
+@foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
+{
+    Parameters.Add(parameter.Name, parameter.DefaultValue);
+    <label for="">@parameter.Name</label>
+    <PropertyInput Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
+}
+
 <br />
 
 @if (@Types.Any())
@@ -139,7 +148,6 @@ else
             stopwatch.Start();
             Output += $"Reading file..." + nl;
             this.StateHasChanged();
-            Console.WriteLine(Output);
             cancellationTokenSource?.Dispose();
             cancellationTokenSource = new System.Threading.CancellationTokenSource();
             CanCancel = true;
@@ -287,9 +295,10 @@ else
                     results.Add(type, allowedConstructors);
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                Console.WriteLine($"Failed to get constructor:{e.Message}");
+                // Skip this constructor, we can't make it work.
+                //Console.WriteLine($"Failed to get constructor:{e.Message}");
             }
         }
         Types = results;
@@ -319,27 +328,25 @@ else
         }
     }
 
+    Dictionary<string,object> Parameters = new Dictionary<string, object>();
+
     void AddObject()
     {
         var type = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault();
         var constructor = type.Value[constructorToInvoke];
-        var inputs = new List<object>();
-        foreach(var parameter in constructor.GetParameters())
+        try
         {
-            if (parameter.ParameterType == typeof(int))
+            var inputs = new List<object>();
+            foreach(var parameter in constructor.GetParameters())
             {
-                inputs.Add((int)0);
+                inputs.Add(Parameters[parameter.Name]);
             }
-            if (parameter.ParameterType == typeof(uint))
-            {
-                inputs.Add((uint)0);
-            }
-            if (parameter.ParameterType == typeof(string))
-            {
-                inputs.Add(string.Empty);
-            }
+            AppState.TestObjects.Add(constructor.Invoke(inputs.ToArray()));
         }
-        AppState.TestObjects.Add(constructor.Invoke(inputs.ToArray()));
+        catch(Exception e)
+        {
+            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
+        }
     }
     private static string nl = Environment.NewLine;
     public long maxJson;
@@ -365,7 +372,7 @@ else
                     types.AddRange(e.Types.Where(x => x is Type));
                     foreach(var ex in e.LoaderExceptions)
                     {
-                        Console.WriteLine(e.Message);
+                        //Debug.WriteLine(e.Message);
                     }
                 }
             }
@@ -383,7 +390,7 @@ else
                 types.AddRange(e.Types.Where(x => x is Type));
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    Console.WriteLine(e.Message);
+                    //Debug.WriteLine(e.Message);
                 }
             }
             return types.Select(x => x.Namespace).Distinct();
@@ -407,7 +414,6 @@ else
             stopwatch.Start();
             Output += $"Reading file..." + nl;
             this.StateHasChanged();
-            Console.WriteLine(Output);
             cancellationTokenSourceAssemblyLoader?.Dispose();
             cancellationTokenSourceAssemblyLoader = new System.Threading.CancellationTokenSource();
             CanCancel = true;
@@ -452,7 +458,6 @@ else
                     {
                         foreach (var objectType in sandBoxObjects.Properties().Select(x => x.Name).ToList())
                         {
-                            Console.WriteLine(objectType);
                             var types = new List<Type>();
                             foreach (var assembly in AppState.Assemblies)
                             {
@@ -485,7 +490,6 @@ else
                                             {
                                                 obj = obj?[split];
                                             }
-                                            Console.WriteLine($"{prop.Path} : {JsonConvert.SerializeObject(obj)}");
                                             var stringRepresentation = obj.ToObject<string>();
                                             if (stringRepresentation is string representation)
                                             {
@@ -502,7 +506,6 @@ else
 
                                             }
                                         }
-                                        Console.WriteLine("Adding object");
                                         AppState.TestObjects.Add(empty);
                                     }
 
@@ -512,7 +515,6 @@ else
                             {
                                 failed = true;
                                 SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
-                                Console.WriteLine($"Type {objectType} isn't loaded and won't be loaded.");
                             }
                         }
 

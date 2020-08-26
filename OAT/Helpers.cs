@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,7 +118,6 @@ namespace Microsoft.CST.OAT.Utils
                 foreach (var property in type.GetProperties())
                 {
                     var newProperty = currentPath is null ? property.Name : $"{currentPath}.{property.Name}";
-                    // Base case is basic types
                     results.AddRange(GetAllNestedFieldsAndProperties(property.PropertyType, newProperty));
 
                 }
@@ -132,7 +132,14 @@ namespace Microsoft.CST.OAT.Utils
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
-            return obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+            if (obj is Dictionary<string,object> dict && propertyName != null)
+            {
+                return dict[propertyName];
+            }
+            else
+            {
+                return obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+            }
         }
 
         /// <summary>
@@ -170,11 +177,20 @@ namespace Microsoft.CST.OAT.Utils
                 {
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
+
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
             }
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
+            if (obj is Dictionary<string, object> dictionary)
+            {
+                if (value is { })
+                {
+                    dictionary[propertyName] = value;
+                }
+                return;
+            }
             var prop = obj?.GetType().GetProperty(propertyName);
             if (prop != null)
             {
@@ -222,6 +238,7 @@ namespace Microsoft.CST.OAT.Utils
                     Console.WriteLine($"Failed to load Type: {e.Message}");
                 }
             }
+            catch (Exception) { }
             return types.Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();
         }
 
