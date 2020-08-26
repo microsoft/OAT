@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Utils;
@@ -8,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Text;
 
 namespace Microsoft.CST.OAT.Operations
 {
@@ -24,9 +21,8 @@ namespace Microsoft.CST.OAT.Operations
         /// </summary>
         /// <param name="analyzer"></param>
         /// <param name="assemblies"></param>
-        public ScriptOperation(Analyzer analyzer, List<PortableExecutableReference>? assemblies = null) : base (Operation.Script, analyzer)
+        public ScriptOperation(Analyzer analyzer) : base(Operation.Script, analyzer)
         {
-            Assemblies = assemblies;
             OperationDelegate = ScriptOperationDelegate;
             ValidationDelegate = ScriptOperationValidationDelegate;
         }
@@ -43,15 +39,9 @@ namespace Microsoft.CST.OAT.Operations
                 {
                     var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
                     options = options.AddImports(clauseScript.Imports);
+                    options = options.AddReferences(typeof(Analyzer).Assembly);
 
-                    if (Assemblies != null)
-                    {
-                        options = options.AddReferences(Assemblies);
-                    }
-                    else
-                    {
-                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                    }
+                    options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
                     var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
 
                     foreach (var issue in script.Compile())

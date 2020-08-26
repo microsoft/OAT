@@ -18,22 +18,22 @@
 
 @code {
     [Parameter]
-    public object Object { get; set; }
+    public object? Object { get; set; }
 
     [Parameter]
-    public string SubPath { get; set; }
+    public string? SubPath { get; set; }
 
     [Parameter]
-    public string buttonText { get; set; }
+    public string buttonText { get; set; } = "KVP";
 
     [Parameter]
-    public string id { get; set; }
+    public string id { get; set; } = string.Empty;
 
     int SelectedKey { get; set; }
 
-    string CurrentInputKey { get; set; }
+    string CurrentInputKey { get; set; } = string.Empty;
 
-    string CurrentInputValue { get; set; }
+    string CurrentInputValue { get; set; } = string.Empty;
 
     void RemoveKvp()
     {

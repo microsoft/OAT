@@ -1,5 +1,4 @@
-﻿using System;
-namespace Microsoft.CST.OAT.Blazor
+﻿namespace Microsoft.CST.OAT.Blazor
 {
     public class IntHolder
     {

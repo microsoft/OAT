@@ -1,15 +1,14 @@
-﻿using Microsoft.CST.OAT.Operations;
-using Microsoft.CST.OAT.Utils;
+﻿using Microsoft.CST.OAT.Utils;
+using Microsoft.CST.OAT.VehicleDemo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CST.OAT.VehicleDemo;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    
+
 
     [TestClass]
     public class VehicleDemo
@@ -187,7 +186,7 @@ namespace Microsoft.CST.OAT.Tests
                     }
                 }
             };
-            var analyzer = new Analyzer();            
+            var analyzer = new Analyzer();
 
             analyzer.SetOperation(new OverweightOperation(analyzer));
 

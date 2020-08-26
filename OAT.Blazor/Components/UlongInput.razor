@@ -4,19 +4,23 @@
 <input id="@id" type="text" @bind="SubProperty"/>
 @code {
     [Parameter]
-    public object Object { get; set; }
+    public object? Object { get; set; }
 
     [Parameter]
-    public string SubPath { get; set; }
+    public string? SubPath { get; set; }
 
     [Parameter]
-    public string id { get; set; }
+    public string id { get; set; } = string.Empty;
 
     public string SubProperty
     {
         get
         {
-            return Helpers.GetValueByPropertyOrFieldName(Object, SubPath).ToString();
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is ulong val)
+            {
+                return val.ToString();
+            }
+            return string.Empty;
         }
         set
         {

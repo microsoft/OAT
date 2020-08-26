@@ -94,6 +94,8 @@ else
         }
     }
 
+    public bool removeDisabled => AppState.TestObjects.Count == 0;
+
     int _constructorToInvoke;
 
     string nameSpace
@@ -224,7 +226,7 @@ else
                 using var sr = new StreamReader(stream);
                 JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
                 var failed = false;
-                foreach (var assembly in ((JArray)sandboxState["AssemblyNames"]).Select(x => (string)x))
+                foreach (var assembly in sandboxState["AssemblyNames"].Select(x => (string?)x ?? string.Empty))
                 {
                     if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
                     {
@@ -236,63 +238,74 @@ else
                 }
                 if (!failed)
                 {
-                    foreach (var objectType in ((JObject)sandboxState["Objects"]).Properties().Select(x => x.Name).ToList())
+                    if (sandboxState["Objects"] is JObject sandBoxObjects)
                     {
-                        Console.WriteLine(objectType);
-                        var types = new List<Type>();
-                        foreach(var assembly in AppState.Assemblies)
+                        foreach (var objectType in sandBoxObjects.Properties().Select(x => x.Name).ToList())
                         {
-                            foreach(var nameSpace in GetNamespaces(assembly))
+                            Console.WriteLine(objectType);
+                            var types = new List<Type>();
+                            foreach (var assembly in AppState.Assemblies)
                             {
-                                types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
-                            }
-                        }
-                        var results = new List<Type>();
-                        foreach (var typed in types)
-                        {
-                            var constructor = typed.GetConstructor(Type.EmptyTypes);
-                            if (constructor != null)
-                            {
-                                results.Add(typed);
-                            }
-                        }
-                        var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
-                        if (type != null)
-                        {
-                            foreach (var objState in (JArray)sandboxState["Objects"][objectType])
-                            {
-                                var empty = System.Activator.CreateInstance(type);
-                                foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
+                                foreach (var nameSpace in GetNamespaces(assembly))
                                 {
-                                    var obj = objState;
-                                    foreach (var split in prop.Path.Split('.'))
-                                    {
-                                        obj = obj[split];
-                                    }
-                                    Console.WriteLine($"{prop.Path} : {JsonConvert.SerializeObject(obj)}");
-                                    var stringRepresentation = obj.ToObject<string>();
-
-                                    if (prop.MemInfo is PropertyInfo propInfo)
-                                    {
-                                        object? value = GetValueFromJObject(propInfo.PropertyType, stringRepresentation);
-                                        Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
-                                    }
-                                    if (prop.MemInfo is FieldInfo fieldInfo)
-                                    {
-                                        object? value = GetValueFromJObject(fieldInfo.FieldType, stringRepresentation);
-                                        Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
-                                    }
+                                    types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
                                 }
-                                Console.WriteLine("Adding object");
-                                AppState.TestObjects.Add(empty);
+                            }
+                            var results = new List<Type>();
+                            foreach (var typed in types)
+                            {
+                                var constructor = typed.GetConstructor(Type.EmptyTypes);
+                                if (constructor != null)
+                                {
+                                    results.Add(typed);
+                                }
+                            }
+                            var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
+                            if (type != null)
+                            {
+                                if (sandboxState["Objects"]?[objectType] is JArray jArray)
+                                {
+                                    foreach (var objState in jArray)
+                                    {
+                                        var empty = System.Activator.CreateInstance(type);
+                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
+                                        {
+                                            var obj = objState;
+                                            foreach (var split in prop.Path.Split('.'))
+                                            {
+                                                obj = obj?[split];
+                                            }
+                                            Console.WriteLine($"{prop.Path} : {JsonConvert.SerializeObject(obj)}");
+                                            var stringRepresentation = obj.ToObject<string>();
+                                            if (stringRepresentation is string representation)
+                                            {
+                                                if (prop.MemInfo is PropertyInfo propInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(propInfo.PropertyType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+                                                if (prop.MemInfo is FieldInfo fieldInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(fieldInfo.FieldType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+
+                                            }
+                                        }
+                                        Console.WriteLine("Adding object");
+                                        AppState.TestObjects.Add(empty);
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                failed = true;
+                                SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
+                                Console.WriteLine($"Type {objectType} isn't loaded and won't be loaded.");
                             }
                         }
-                        else
-                        {
-                            failed = true;
-                            SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
-                            Console.WriteLine($"Type {objectType} isn't loaded and won't be loaded.");
-                        }
+
                     }
                 }
             }
@@ -328,7 +341,7 @@ else
         Output += $"Cancel requested.{nl}";
         await InvokeAsync(StateHasChanged);
         await Task.Delay(1);
-        cancellationTokenSource.Cancel();
+        cancellationTokenSource?.Cancel();
     }
 
     object? GetValueFromJObject(Type type, string objectState)
@@ -448,6 +461,4 @@ else
             Newtonsoft.Json.JsonConvert.SerializeObject(state)
         );
     }
-        public bool removeDisabled => AppState.TestObjects.Count == 0;
-
 }

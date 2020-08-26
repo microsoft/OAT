@@ -6,7 +6,7 @@
             <label for="clauseLabel">Label:</label>
         </td>
         <td>
-            <StringInput id="clauseLabel" Object="Rule.Clauses[Clause]" SubPath="Label" />
+            <StringInput id="clauseLabel" Object="Rule?.Clauses[Clause]" SubPath="Label" />
         </td>
     </tr>
     @if (Types.Any())
@@ -18,10 +18,13 @@
             <td>
                 <select id="clauseField" @bind="FieldProperty">
                     <option value="">Use full Target</option>
+                    @if (TypeIndex != null)
+                    {
                         @foreach (string path in Helpers.GetAllNestedFieldsAndProperties(Types[TypeIndex.Value]))
                         {
                             <option value="@path">@path</option>
                         }
+                    }
                 </select>
             </td>
         </tr>
@@ -33,7 +36,7 @@
                 <label for="clauseField">Field:</label>
             </td>
             <td>
-                <StringInput id="clauseField" Object="Rule.Clauses[Clause]" SubPath="Field" />
+                <StringInput id="clauseField" Object="Rule?.Clauses[Clause]" SubPath="Field" />
             </td>
         </tr>
     }
@@ -42,7 +45,7 @@
             <label for="captureinput">Capture:</label>
         </td>
         <td>
-            <BoolInput id="captureinput" Object="Rule.Clauses[Clause]" SubPath="Capture" />
+            <BoolInput id="captureinput" Object="Rule?.Clauses[Clause]" SubPath="Capture" />
         </td>
     </tr>
     <tr>
@@ -50,7 +53,7 @@
             <label for="invertinput">Invert:</label>
         </td>
         <td>
-            <BoolInput id="invertinput" Object="Rule.Clauses[Clause]" SubPath="Invert" />
+            <BoolInput id="invertinput" Object="Rule?.Clauses[Clause]" SubPath="Invert" />
         </td>
     </tr>
     <tr>
@@ -58,7 +61,7 @@
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis" />
+            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis" />
         </td>
     </tr>
     @if (Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -126,7 +129,7 @@
 </tbody>
 @code {
     [Parameter]
-    public Rule Rule { get; set; }
+    public Rule? Rule { get; set; }
 
     [Parameter]
     public int Clause { get; set; }
@@ -135,12 +138,17 @@
     public Type[] Types { get; set; } = Array.Empty<Type>();
 
     [Parameter]
-    public IntHolder TypeIndex { get; set; }
+    public IntHolder? TypeIndex { get; set; }
 
     string FieldProperty
     {
-        get { return Rule.Clauses[Clause].Field; }
-        set { Rule.Clauses[Clause].Field = value; }
+        get { return Rule?.Clauses[Clause].Field ?? string.Empty; }
+        set {
+            if (Rule != null)
+            {
+                Rule.Clauses[Clause].Field = value;
+            }
+        }
     }
 
     public void RefreshThis()

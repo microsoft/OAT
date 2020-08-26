@@ -1,9 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.FlowAnalysis;
-using Serilog;
+﻿using Serilog;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -36,23 +33,36 @@ namespace Microsoft.CST.OAT.Utils
             return true;
         }
 
+        /// <summary>
+        /// Checks if this is a basic type that OAT Blazor Supports
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsBasicType(Type type)
+        {
+            if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
+                type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
+                type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
+                type == typeof(DateTime) || type.IsEnum)
+            {
+                // Only return basic types
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get MemberInfo and Paths for all the BasicType properties and fields in the Type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="currentPath"></param>
+        /// <returns></returns>
         public static List<(string Path, MemberInfo MemInfo)> GetAllNestedFieldsAndPropertiesMemberInfo(Type type, string? currentPath = null)
         {
             var results = new List<(string Path, MemberInfo MemInfo)>();
-            bool IsBasicType(Type type)
-            {
-                if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
-                    type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
-                    type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                    type == typeof(DateTime) || type.IsEnum)
-                {
-                    // Only return basic types
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
 
             foreach (var property in type.GetProperties())
             {
@@ -82,6 +92,12 @@ namespace Microsoft.CST.OAT.Utils
             return results;
         }
 
+        /// <summary>
+        /// Gets the Paths of all the Fields and Properties in the provided Type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="currentPath"></param>
+        /// <returns></returns>
         public static List<string> GetAllNestedFieldsAndProperties(Type type, string? currentPath = null)
         {
             var results = new List<string>();

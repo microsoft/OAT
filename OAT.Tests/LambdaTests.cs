@@ -5,8 +5,8 @@ using Microsoft.CST.OAT.VehicleDemo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -170,42 +170,6 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsFalse(ruleIssues.Any());
 
             var results = analyzer.Analyze(new Rule[] { rule }, true, true);
-            Assert.IsTrue(results.Any());
-        }
-
-        [TestMethod]
-        public void TestValidLambdaWithAssembliesPassed()
-        {
-            var lambda = @"
-if (State1 is Vehicle) 
-{ 
-    return new OperationResult(true, null); 
-} 
-else 
-{ 
-    return new OperationResult(false, null);
-}";
-
-            var rule = new Rule("Lambda Rule")
-            {
-                Clauses = new List<Clause>()
-                {
-                    new Clause(Operation.Script)
-                    {
-                        Script = new ScriptData(lambda,  new string[]{"Microsoft.CST.OAT.VehicleDemo" }, Array.Empty<string>())
-                    }
-                }
-            };
-
-            var analyzer = new Analyzer(new AnalyzerOptions(true));
-            var assemblies = new List<PortableExecutableReference>();
-            // We used vehicle above so we need to load its assembly.
-            assemblies.Add(ModuleMetadata.CreateFromStream(typeof(Vehicle).Assembly.GetManifestResourceStream(typeof(Vehicle),"VehicleDemo.dll")).GetReference());
-            analyzer.SetOperation(new ScriptOperation(analyzer, assemblies));
-            var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
-            Assert.IsFalse(ruleIssues.Any());
-
-            var results = analyzer.Analyze(new Rule[] { rule }, new Vehicle(), true);
             Assert.IsTrue(results.Any());
         }
     }

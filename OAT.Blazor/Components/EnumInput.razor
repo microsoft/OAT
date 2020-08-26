@@ -6,23 +6,23 @@
     }
 </select>
 @code {
-        [Parameter]
-        public object Object { get; set; }
+    [Parameter]
+    public object? Object { get; set; }
 
-        [Parameter]
-        public string SubPath { get; set; }
+    [Parameter]
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string id { get; set; }
+    [Parameter]
+    public string id { get; set; } = string.Empty;
 
-        [Parameter]
-        public Action? OnChange { get; set; }
+    [Parameter]
+    public Action? OnChange { get; set; }
 
-        Type type;
+    Type? type;
 
     protected override void OnInitialized()
     {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType();
+        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
         base.OnInitialized();
     }
 
@@ -30,7 +30,10 @@
     {
         get
         {
-            return Helpers.GetValueByPropertyOrFieldName(Object, SubPath).ToString();
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Enum val){
+                return val.ToString();
+            }
+            return string.Empty;
         }
         set
         {
