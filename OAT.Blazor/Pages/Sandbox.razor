@@ -82,6 +82,11 @@
 
 <br />
 
+// Add / bind variable here
+<div class="alert alert-warning" role="alert">
+
+</div>
+
 @if (@Types.Any())
 {
     var types = Types.Where(x => x.Key.FullName == typeToInvoke);
@@ -345,7 +350,7 @@ else
         }
         catch(Exception e)
         {
-            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA only supports types which are fully defined within the provided assembly. ({e.Message})");
+            Console.WriteLine($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
         }
     }
     private static string nl = Environment.NewLine;
