@@ -7,27 +7,17 @@
 @using Tewr.Blazor.FileReader;
 @using System.Runtime.Loader;
 @using System.Diagnostics;
+
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 @inject IFileReaderService fileReaderService;
 @inject IJSRuntime JSRuntime
 
 <h2>Assembly</h2>
 <p>Choose Assembly to use for file types (optional).</p>
-<input type="file" @ref=inputElement />
-<button @onclick=ReadFile class="btn btn-primary">Read file</button>
-<button @onclick=ClearFile class="btn btn-primary">Clear Assemblies</button>
-<button @onclick=CancelFile disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
-<br />
-<progress max="@max" value="@value" />
-<br />
+<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
 <h2>Rules</h2>
 <p>Load in JSON serialized rules.</p>
-<input type="file" @ref=jsonInput />
-<button @onclick=ReadJson class="btn btn-primary">Read file</button>
-<button @onclick=CancelJson disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
-<br />
-<progress max="@maxJson" value="@valueJson" />
-<br />
+<FileUpload ProcessFile="LoadRules" ReadLabel="Load Rules" ClearAction="ClearRules" ClearLabel="Clear Rules" />
 @if (AppState.Assemblies.Any())
 {
     <label for="namespaceInput">Namespace To Search:</label>
@@ -71,6 +61,17 @@
 }
 @code
 {
+
+    void ClearAssemblies()
+    {
+        AppState.Assemblies.Clear();
+    }
+
+    void ClearRules()
+    {
+        AppState.Rules.Clear();
+    }
+
     private static string nl = Environment.NewLine;
     [Parameter]
     public int BufferSize { get; set; } = 20480;
@@ -90,11 +91,14 @@
     public bool CanCancel { get; set; }
     public bool IsCancelDisabled => !CanCancel;
 
-    public async Task ClearFile()
+    Func<Stream, Task> LoadAssembly;
+    Func<Stream, Task> LoadRules;
+
+    void RefreshPage()
     {
-        AppState.Assemblies.Clear();
-        await fileReaderService.CreateReference(inputElement).ClearValue();
+        this.StateHasChanged();
     }
+
 
     public async void DownloadRules()
     {
@@ -106,175 +110,6 @@
         );
     }
 
-    public async Task ReadFile()
-    {
-        AppState.Assemblies.Clear();
-        max = 0;
-        value = 0;
-        Output = string.Empty;
-        this.StateHasChanged();
-        var files = await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync();
-        foreach (var file in files)
-        {
-            var fileInfo = await file.ReadFileInfoAsync();
-            max = fileInfo.Size;
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            Output += $"Reading file..." + nl;
-            this.StateHasChanged();
-            Console.WriteLine(Output);
-            cancellationTokenSource?.Dispose();
-            cancellationTokenSource = new System.Threading.CancellationTokenSource();
-            CanCancel = true;
-
-            const int onlyReportProgressAfterThisPercentDelta = 10;
-
-            // Subscribe to progress (change of position)
-            fileInfo.PositionInfo.PositionChanged += (s, e) =>
-            {
-                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
-                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
-                {
-                    stopwatch.Stop();
-                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
-                    this.InvokeAsync(this.StateHasChanged);
-                    e.Acknowledge();
-                    value = e.Position;
-                    stopwatch.Start();
-                }
-            };
-
-            try
-            {
-                using var stream = await file.OpenReadAsync();
-                using var ms = new MemoryStream();
-                await stream.CopyToAsync(ms);
-                var assembly = Assembly.Load(ms.ToArray());
-                if (assembly != null)
-                {
-                    AppState.Assemblies.Add(assembly);
-                    await this.InvokeAsync(this.StateHasChanged);
-                }
-                else
-                {
-                    Console.WriteLine("Assembly is null");
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Output += $"Operation was cancelled";
-                await InvokeAsync(StateHasChanged);
-                await Task.Delay(1);
-            }
-            catch (Exception e)
-            {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
-                Output += $"{name}: {message} ({type}:{stackTrace})";
-            }
-            finally
-            {
-                CanCancel = false;
-            }
-
-            value = max;
-            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-
-    public async Task CancelFile()
-    {
-        Output += $"Cancel requested.{nl}";
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(1);
-        cancellationTokenSource?.Cancel();
-    }
-
-    public async Task ReadJson()
-    {
-        AppState.Rules.Clear();
-        maxJson = 0;
-        valueJson = 0;
-        Output = string.Empty;
-        this.StateHasChanged();
-        var files = await fileReaderService.CreateReference(jsonInput).EnumerateFilesAsync();
-        foreach (var file in files)
-        {
-            var fileInfo = await file.ReadFileInfoAsync();
-            maxJson = fileInfo.Size;
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            Output += $"Reading file..." + nl;
-            this.StateHasChanged();
-            Console.WriteLine(Output);
-            cancellationTokenSource?.Dispose();
-            cancellationTokenSource = new System.Threading.CancellationTokenSource();
-            CanCancel = true;
-
-            const int onlyReportProgressAfterThisPercentDelta = 10;
-
-            // Subscribe to progress (change of position)
-            fileInfo.PositionInfo.PositionChanged += (s, e) =>
-            {
-                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
-                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
-                {
-                    stopwatch.Stop();
-                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
-                    this.InvokeAsync(this.StateHasChanged);
-                    e.Acknowledge();
-                    valueJson = e.Position;
-                    stopwatch.Start();
-                }
-            };
-
-            try
-            {
-                using var stream = await file.OpenReadAsync();
-                using var sr = new StreamReader(stream);
-                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync());
-            }
-            catch (OperationCanceledException)
-            {
-                Output += $"Operation was cancelled";
-                await InvokeAsync(StateHasChanged);
-                await Task.Delay(1);
-            }
-            catch (Exception e)
-            {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
-                Output += $"{name}: {message} ({type}:{stackTrace})";
-            }
-            finally
-            {
-                CanCancel = false;
-            }
-
-            valueJson = maxJson;
-            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
-            ValidateRules();
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-
-    public async Task CancelJson()
-    {
-        Output += $"Cancel requested.{nl}";
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(1);
-        cancellationTokenSource?.Cancel();
-    }
-
     string nameSpace = string.Empty;
 
     Type[] GetTypes()
@@ -284,8 +119,72 @@
 
     Analyzer analyzer = new Analyzer();
 
+    void SetLoadAssembly()
+    {
+        LoadAssembly = async assemblyStream =>
+        {
+            try
+            {
+                using var ms = new MemoryStream();
+                await assemblyStream.CopyToAsync(ms);
+                var assembly = Assembly.Load(ms.ToArray());
+                if (assembly != null)
+                {
+                    AppState.Assemblies.Add(assembly);
+                }
+                else
+                {
+                    Console.WriteLine("Assembly is null");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Operation was cancelled");
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            RefreshPage();
+        };
+    }
+
+    void SetLoadRules()
+    {
+        LoadRules = async stream =>
+        {
+            try
+            {
+                using var sr = new StreamReader(stream);
+                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync());
+            }
+            catch (OperationCanceledException)
+            {
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            ValidateRules();
+        };
+    }
+
     protected override void OnInitialized()
     {
+        SetLoadAssembly();
+        SetLoadRules();
         Strings.Setup();
         ValidateRules();
         base.OnInitialized();

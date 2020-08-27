@@ -15,24 +15,14 @@
 
 <h2>Assembly</h2>
 <p>Choose Assembly to use objects.</p>
-<input type="file" @ref=inputElement />
-<button @onclick=ReadFile class="btn btn-primary">Read file</button>
-<button @onclick=ClearFile class="btn btn-primary">Clear Assemblies</button>
-<button @onclick=CancelFile disabled=@IsAssemblyCancelDisabled class="btn btn-primary">Cancel</button>
-<br />
-<progress max="@max" value="@value" />
-<br />
+<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
+
 
 @if (AppState.Assemblies.Any())
 {
 <h2>State</h2>
 <p>Load in JSON serialized Sandbox State.</p>
-<input type="file" @ref=jsonInput />
-<button @onclick=ReadJson class="btn btn-primary">Read Sandbox State</button>
-<button @onclick=CancelJson disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
-<br />
-<progress max="@maxJson" value="@valueJson" />
-<br />
+<FileUpload ProcessFile="LoadSandbox" ReadLabel="Load Sandbox" ClearAction="ClearSandbox" ClearLabel="Clear Sandbox" />
 
 <button @onclick="SaveSandboxState">Save Sandbox State</button>
 
@@ -127,81 +117,122 @@ else
     <p>Load an Assembly to use the Sandbox.</p>
 }
 @code {
+    Func<Stream, Task> LoadAssembly;
+    Func<Stream, Task> LoadSandbox;
 
-    List<string> ParseErrors = new List<string>();
-    public long max;
-    public long value;
-    ElementReference inputElement;
-
-    public System.Threading.CancellationTokenSource? cancellationTokenSource;
-    string Output { get; set; } = string.Empty;
-
-    public bool CanCancel { get; set; }
-    public bool IsCancelDisabled => !CanCancel;
-
-    public async Task ClearFile()
+    void ClearAssemblies()
     {
         AppState.Assemblies.Clear();
-        await fileReaderService.CreateReference(inputElement).ClearValue();
     }
 
-    public async Task ReadFile()
+    void ClearSandbox()
     {
-        AppState.Assemblies.Clear();
-        max = 0;
-        value = 0;
-        Output = string.Empty;
+        AppState.TestObjects.Clear();
+    }
+
+    void RefreshPage()
+    {
         this.StateHasChanged();
-        var files = await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync();
-        foreach (var file in files)
+    }
+
+    void SetLoadSandbox()
+    {
+        LoadSandbox = async assemblyStream =>
         {
-            var fileInfo = await file.ReadFileInfoAsync();
-            max = fileInfo.Size;
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            Output += $"Reading file..." + nl;
-            this.StateHasChanged();
-            cancellationTokenSource?.Dispose();
-            cancellationTokenSource = new System.Threading.CancellationTokenSource();
-            CanCancel = true;
-
-            const int onlyReportProgressAfterThisPercentDelta = 10;
-
-            // Subscribe to progress (change of position)
-            fileInfo.PositionInfo.PositionChanged += (s, e) =>
-            {
-                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
-                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
-                {
-                    stopwatch.Stop();
-                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
-                    this.InvokeAsync(this.StateHasChanged);
-                    e.Acknowledge();
-                    value = e.Position;
-                    stopwatch.Start();
-                }
-            };
+            SandBoxErrors.Clear();
 
             try
             {
-                using var stream = await file.OpenReadAsync();
-                using var ms = new MemoryStream();
-                await stream.CopyToAsync(ms);
-                var assembly = Assembly.Load(ms.ToArray());
-                if (assembly != null)
+                using var sr = new StreamReader(assemblyStream);
+                JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
+                var failed = false;
+                foreach(var assembly in AppState.Assemblies)
                 {
-                    AppState.Assemblies.Add(assembly);
-                    await this.InvokeAsync(this.StateHasChanged);
+                    Console.WriteLine(assembly.GetName().Name);
                 }
-                else
+                Console.WriteLine($"{AppState.Assemblies.Count} assemblies are loaded.");
+                foreach (var assembly in sandboxState["AssemblyNames"].Select(x => (string?)x ?? string.Empty))
                 {
-                    Console.WriteLine("Assembly is null");
+
+                    if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
+                    {
+                        failed = true;
+                        Console.WriteLine("Assembly {0} isn't loaded.", assembly);
+                        SandBoxErrors.Add($"Assembly {assembly} isn't loaded.");
+                        break;
+                    }
+                }
+                if (!failed)
+                {
+                    if (sandboxState["Objects"] is JObject sandBoxObjects)
+                    {
+                        foreach (var objectType in sandBoxObjects.Properties().Select(x => x.Name).ToList())
+                        {
+                            var types = new List<Type>();
+                            foreach (var assembly in AppState.Assemblies)
+                            {
+                                foreach (var nameSpace in GetNamespaces(assembly))
+                                {
+                                    types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
+                                }
+                            }
+                            var results = new List<Type>();
+                            foreach (var typed in types)
+                            {
+                                var constructor = typed.GetConstructor(Type.EmptyTypes);
+                                if (constructor != null)
+                                {
+                                    results.Add(typed);
+                                }
+                            }
+                            var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
+                            if (type != null)
+                            {
+                                if (sandboxState["Objects"]?[objectType] is JArray jArray)
+                                {
+                                    foreach (var objState in jArray)
+                                    {
+                                        var empty = System.Activator.CreateInstance(type);
+                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
+                                        {
+                                            var obj = objState;
+                                            foreach (var split in prop.Path.Split('.'))
+                                            {
+                                                obj = obj?[split];
+                                            }
+                                            var stringRepresentation = obj.ToObject<string>();
+                                            if (stringRepresentation is string representation)
+                                            {
+                                                if (prop.MemInfo is PropertyInfo propInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(propInfo.PropertyType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+                                                if (prop.MemInfo is FieldInfo fieldInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(fieldInfo.FieldType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+
+                                            }
+                                        }
+                                        AppState.TestObjects.Add(empty);
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                failed = true;
+                                SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
+                            }
+                        }
+
+                    }
                 }
             }
             catch (OperationCanceledException)
             {
-                Output += $"Operation was cancelled";
                 await InvokeAsync(StateHasChanged);
                 await Task.Delay(1);
             }
@@ -212,26 +243,47 @@ else
                 var type = e.GetType();
                 var name = type.Name;
                 type = e.GetType();
-                Output += $"{name}: {message} ({type}:{stackTrace})";
+                Console.WriteLine($"{name}: {message} ({type}:{stackTrace})");
             }
-            finally
-            {
-                CanCancel = false;
-            }
-
-            value = max;
-            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
-            await InvokeAsync(StateHasChanged);
-        }
+            RefreshPage();
+        };
     }
 
-    public async Task CancelFile()
+    void SetLoadAssembly()
     {
-        Output += $"Cancel requested.{nl}";
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(1);
-        cancellationTokenSource?.Cancel();
+        LoadAssembly = async assemblyStream =>
+        {
+            try
+            {
+                using var ms = new MemoryStream();
+                await assemblyStream.CopyToAsync(ms);
+                var assembly = Assembly.Load(ms.ToArray());
+                if (assembly != null)
+                {
+                    AppState.Assemblies.Add(assembly);
+                }
+                else
+                {
+                    Console.WriteLine("Assembly is null");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Operation was cancelled");
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            RefreshPage();
+        };
     }
+    List<string> ParseErrors = new List<string>();
 
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
@@ -323,6 +375,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        SetLoadAssembly();
+        SetLoadSandbox();
         analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
         var results = analyzer.Analyze(AppState.Rules);
         UpdateTypes();
@@ -362,13 +416,6 @@ else
             ParseErrors.Add($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
         }
     }
-    private static string nl = Environment.NewLine;
-    public long maxJson;
-    public long valueJson;
-    ElementReference jsonInput;
-    public System.Threading.CancellationTokenSource? cancellationTokenSourceAssemblyLoader;
-
-    public bool IsAssemblyCancelDisabled => !CanCancel;
 
     IEnumerable<string> GetNamespaces(Assembly? assembly = null)
     {
@@ -409,165 +456,6 @@ else
             }
             return types.Select(x => x.Namespace).Distinct();
         }
-    }
-
-    public async Task ReadJson()
-    {
-        AppState.Rules.Clear();
-        maxJson = 0;
-        valueJson = 0;
-        Output = string.Empty;
-        this.StateHasChanged();
-        var files = await fileReaderService.CreateReference(jsonInput).EnumerateFilesAsync();
-        foreach (var file in files)
-        {
-            var fileInfo = await file.ReadFileInfoAsync();
-            maxJson = fileInfo.Size;
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            Output += $"Reading file..." + nl;
-            this.StateHasChanged();
-            cancellationTokenSourceAssemblyLoader?.Dispose();
-            cancellationTokenSourceAssemblyLoader = new System.Threading.CancellationTokenSource();
-            CanCancel = true;
-
-            const int onlyReportProgressAfterThisPercentDelta = 10;
-
-            // Subscribe to progress (change of position)
-            fileInfo.PositionInfo.PositionChanged += (s, e) =>
-            {
-                // (optional) Only report progress in console / progress bar if percentage has moved over 10% since last call to Acknowledge()
-                if (e.PercentageDeltaSinceAcknowledge > onlyReportProgressAfterThisPercentDelta)
-                {
-                    stopwatch.Stop();
-                    Output += $"Read {(e.PositionDeltaSinceAcknowledge)} bytes ({e.Percentage:00}%). {e.Position} / {fileInfo.Size}{nl}";
-                    this.InvokeAsync(this.StateHasChanged);
-                    e.Acknowledge();
-                    valueJson = e.Position;
-                    stopwatch.Start();
-                }
-            };
-
-            try
-            {
-                SandBoxErrors.Clear();
-                using var stream = await file.OpenReadAsync();
-                using var sr = new StreamReader(stream);
-                JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
-                var failed = false;
-                foreach (var assembly in sandboxState["AssemblyNames"].Select(x => (string?)x ?? string.Empty))
-                {
-                    if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
-                    {
-                        failed = true;
-                        Console.WriteLine("Assembly {0} isn't loaded.", assembly);
-                        SandBoxErrors.Add($"Assembly {assembly} isn't loaded.");
-                        break;
-                    }
-                }
-                if (!failed)
-                {
-                    if (sandboxState["Objects"] is JObject sandBoxObjects)
-                    {
-                        foreach (var objectType in sandBoxObjects.Properties().Select(x => x.Name).ToList())
-                        {
-                            var types = new List<Type>();
-                            foreach (var assembly in AppState.Assemblies)
-                            {
-                                foreach (var nameSpace in GetNamespaces(assembly))
-                                {
-                                    types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
-                                }
-                            }
-                            var results = new List<Type>();
-                            foreach (var typed in types)
-                            {
-                                var constructor = typed.GetConstructor(Type.EmptyTypes);
-                                if (constructor != null)
-                                {
-                                    results.Add(typed);
-                                }
-                            }
-                            var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
-                            if (type != null)
-                            {
-                                if (sandboxState["Objects"]?[objectType] is JArray jArray)
-                                {
-                                    foreach (var objState in jArray)
-                                    {
-                                        var empty = System.Activator.CreateInstance(type);
-                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
-                                        {
-                                            var obj = objState;
-                                            foreach (var split in prop.Path.Split('.'))
-                                            {
-                                                obj = obj?[split];
-                                            }
-                                            var stringRepresentation = obj.ToObject<string>();
-                                            if (stringRepresentation is string representation)
-                                            {
-                                                if (prop.MemInfo is PropertyInfo propInfo)
-                                                {
-                                                    object? value = GetValueFromJObject(propInfo.PropertyType, representation);
-                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
-                                                }
-                                                if (prop.MemInfo is FieldInfo fieldInfo)
-                                                {
-                                                    object? value = GetValueFromJObject(fieldInfo.FieldType, representation);
-                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
-                                                }
-
-                                            }
-                                        }
-                                        AppState.TestObjects.Add(empty);
-                                    }
-
-                                }
-                            }
-                            else
-                            {
-                                failed = true;
-                                SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
-                            }
-                        }
-
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Output += $"Operation was cancelled";
-                await InvokeAsync(StateHasChanged);
-                await Task.Delay(1);
-            }
-            catch (Exception e)
-            {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
-                Console.WriteLine($"{name}: {message} ({type}:{stackTrace})");
-                Output += $"{name}: {message} ({type}:{stackTrace})";
-            }
-            finally
-            {
-                CanCancel = false;
-            }
-
-            valueJson = maxJson;
-            Output += $"Done reading file {fileInfo.Name} - {fileInfo.Size} bytes in {stopwatch.ElapsedMilliseconds}ms.{nl}.";
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-
-    public async Task CancelJson()
-    {
-        Output += $"Cancel requested.{nl}";
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(1);
-        cancellationTokenSource?.Cancel();
     }
 
     object? GetValueFromJObject(Type type, string objectState)
