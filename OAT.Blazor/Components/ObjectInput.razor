@@ -5,7 +5,7 @@
     case ItemState.Expanded:
         <button class="card-top" type="button" @onclick="Collapse">
             <span class="oi oi-chevron-top mx-3"></span>
-            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName</span>
+            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().Name</span>
         </button>
         <div class="card-bottom">
             <form class="mx-3 pt-2" onsubmit="return false;">
@@ -45,7 +45,7 @@
     case ItemState.Collapsed:
         <button class="card-top mb-2" type="button" @onclick="Expand">
             <span class="oi oi-chevron-bottom mx-3"></span>
-            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName</span>
+            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().Name</span>
         </button>
         break;
 }
