@@ -5,9 +5,13 @@ html, body, .reset-font-fam {
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
+    color: white;
+    background-color: #086972;
     border-color: #1861ac;
+}
+
+.btn-secondary {
+    background-color: #5d656d;
 }
 
 .btn-tr {

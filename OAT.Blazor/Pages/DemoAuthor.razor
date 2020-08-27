@@ -11,15 +11,15 @@
 
 <h3 class="pb-1">Demo: Author Rules</h3>
 <hr class="hr-th"/>
-<div>
-<button @onclick="AddRule">Add Rule</button>
-<button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
-<button @onclick="ValidateRules">Validate Rules</button>
+<div class="pb-3">
+    <button class="btn btn-secondary" @onclick="AddRule">Add Rule</button>
+    <button class="btn btn-secondary" @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
+    <button class="btn btn-secondary" @onclick="ValidateRules">Validate Rules</button>
 </div>
 
-@foreach (var rule in AppState.DemoRules)
-{
-    <div class="card">
+<div class="">
+    @foreach (var rule in AppState.DemoRules)
+    {
         @if (issues.ContainsKey(rule))
         {
             @foreach (var problem in issues[rule])
@@ -40,8 +40,8 @@
         }
 
         <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
-    </div>
-}
+    }
+</div>
 
 @code{
     System.Reflection.Assembly assembly = typeof(VehicleDemo.Vehicle).Assembly;
