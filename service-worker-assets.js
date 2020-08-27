@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-coG41W6EDTyLl8\/13nNyeUMHu85lopX7CV\/AbxULsxs=",
+      "hash": "sha256-dOlG8sLlCWh9wMvBncqvn3M6gaop9fpyKG0mNMnlP8A=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-UUalY7tW+IqyLIEMAZZhOcr1mrlhRQqvthIgNnsTRas=",
+      "hash": "sha256-NMcDPtMFQAqgRIQXV30NPDd++wqG+J0Haf7yjdFdt\/E=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-Mup9jVkJNZ8JpKdk4UXqV764tjm\/lON34+xdluQf0m4=",
+      "hash": "sha256-SuZllr9KqE77qMec9UPyQswuyUc9T8rvCkMZRb7SGjs=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-RphEVAo3BHaNaEEr1SKrRAj\/f\/+teokGUuh6WtPCO8g=",
+      "hash": "sha256-Jqvr\/jTYaUCab4GKCLu28IgP0l7WTewrapiOTb2UekM=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-GLcM8fnVXWP\/6H2Kf9CrL9xBzI8nuoX37Of0l8Td5Io=",
+      "hash": "sha256-VSwl83Y1GKOcqDNC3t1744cBTsuZsgx0uF5B5ap2S6I=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-ZmGIMgp3c7B28FZsD3aSJgNiQFGFMu2g2jD0R87wM+M=",
+      "hash": "sha256-\/JXDooUtfdHmET80UDyRMfJZTCDdTg1AptMKoXlrvBM=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-o34seMubc6fQSE8WmZ72Wgu4qNtOv38CakCfG4J6UZk=",
+      "hash": "sha256-7eRab7rWg1GLEToxewIJ+JNdwjVZGDT70o9x75QTh\/U=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "cUSgj9+L"
+  "version": "egzvvRMP"
 };
