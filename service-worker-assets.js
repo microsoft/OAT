@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-pBE6x5HUlQwznutoQjCbPpHT8GGBs156g7uMzkg99XE=",
+      "hash": "sha256-vV1F+bMUbfLHgXbyKeg7JyHs0x9Y8ZV0tLYZCUNyVTU=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-M4ioblSvyzJ6v8rqHzfNU5x\/TUtAy245oLpqjuTelAc=",
+      "hash": "sha256-0j2FHzaPc+gKjyeJY9YWMeMUeLwdYd4iPU+cabri8Wg=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-ICpbTsvmI45jrF3XyYP6584tLkarg9zXKGLJYeQbRZA=",
+      "hash": "sha256-PIF+JpJ+Alvd\/f8KTWqJy6hIUlH8MAURPkWeUMMCrGE=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-0gBfftFs9NrrzY\/VeSLwKCZihj60gIPyL566SBhtmvE=",
+      "hash": "sha256-Agop6v6Eubsdv79gBMSyGXOcVQw0HtzVnvBvvpvHOJs=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-F38RWGM6lF54XC+WAh95fbtUp7BoOiMYZ7BCn+THUhE=",
+      "hash": "sha256-q9ci2fZeo8t2MRv1TDuOZzAEY1SaiVf9TPRBFKqCn7g=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-lsDJiNRRlNC9KxDgt+aqtwvBUXgOn109G6akjN4zMf4=",
+      "hash": "sha256-41ODnaSNNMf8SVnshyV5V1lcuksLEiQW4dlI4HQgbfY=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-YnKo23H6m8NhHUngnyOcdN2FUVM6EJPTmzOba6kUkQI=",
+      "hash": "sha256-QIvR0qVpzQwtqbgxVQY\/4BaNY0De7u9MvO2BKChw\/m8=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "WdKsKmz+"
+  "version": "YyhGfuA1"
 };
