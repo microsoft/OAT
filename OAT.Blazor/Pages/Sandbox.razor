@@ -17,24 +17,25 @@
 <p>Choose Assembly to use objects.</p>
 <FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
 
-
 @if (AppState.Assemblies.Any())
 {
-<h2>State</h2>
-<p>Load in JSON serialized Sandbox State.</p>
-<FileUpload ProcessFile="LoadSandbox" ReadLabel="Load Sandbox" ClearAction="ClearSandbox" ClearLabel="Clear Sandbox" />
+    <h2>State</h2>
+    <p>Load in JSON serialized Sandbox State.</p>
+    <FileUpload ProcessFile="LoadSandbox" ReadLabel="Load Sandbox" ClearAction="ClearSandbox" ClearLabel="Clear Sandbox" />
 
-<button @onclick="SaveSandboxState">Save Sandbox State</button>
+    <button @onclick="SaveSandboxState">Save Sandbox State</button>
 
-<div class="alert alert-warning" role="alert">
-@foreach(var error in SandBoxErrors)
-{
-    <p>@error</p>
-}
-</div>
+    @if (SandBoxErrors.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+        @foreach(var error in SandBoxErrors)
+        {
+            <p>@error</p>
+        }
+        </div>
+    }
 
-
-<h3>Settings</h3>
+    <h3>Settings</h3>
     <label for="namespaceInput">Namespace To Search:</label>
     <select id="namespaceInput" @bind="nameSpace">
         @foreach (var names in GetNamespaces())
@@ -63,54 +64,58 @@
             }
         }
     </select>
-<br />
-@if (Parameters.Any())
-{
-    Parameters.Clear();
-}
-@foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
-{
-    Parameters.Add(parameter.Name, parameter.DefaultValue);
-    <label for="@parameter.Name">@parameter.Name</label>
-    <PropertyInput Id="@parameter.Name" Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
-}
-
-<br />
-
-<div class="alert alert-warning" role="alert">
-@foreach(var parseError in ParseErrors)
-{
-    @parseError
-}
-</div>
-
-@if (@Types.Any())
-{
-    var types = Types.Where(x => x.Key.FullName == typeToInvoke);
-    if (types.Any())
+    <br />
+    @if (Parameters.Any())
     {
-        var type = types.FirstOrDefault();
-        var constructor = type.Value[constructorToInvoke];
-        <button @onclick="AddObject">Add @type.Key.FullName</button>
+        Parameters.Clear();
     }
-}
-<button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Object</button><button @onclick="RefreshState">Re-Run Rules</button>
-<br />
-@for (int i = 0; i < AppState.TestObjects.Count; i++)
-{
-    var results = analyzer.Analyze(AppState.Rules, AppState.TestObjects[i]);
-    <div class="card">
-        <span>@results.Count() rules applied.</span>
-        <br />
-        @foreach (var result in results)
+    @foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
+    {
+        Parameters.Add(parameter.Name, parameter.DefaultValue);
+        <label for="@parameter.Name">@parameter.Name</label>
+        <PropertyInput Id="@parameter.Name" Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
+    }
+
+    <br />
+
+    @if (ParseErrors.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+        @foreach(var parseError in ParseErrors)
         {
-            <b>@result.Name</b>
-            <br />
+            @parseError
         }
-        <br />
-        <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
-    </div>
-}
+        </div>
+    }
+
+
+    @if (@Types.Any())
+    {
+        var types = Types.Where(x => x.Key.FullName == typeToInvoke);
+        if (types.Any())
+        {
+            var type = types.FirstOrDefault();
+            var constructor = type.Value[constructorToInvoke];
+            <button @onclick="AddObject">Add @type.Key.FullName</button>
+        }
+    }
+    <button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Object</button><button @onclick="RefreshState">Re-Run Rules</button>
+    <br />
+    @for (int i = 0; i < AppState.TestObjects.Count; i++)
+    {
+        var results = analyzer.Analyze(AppState.Rules, AppState.TestObjects[i]);
+        <div class="card">
+            <span>@results.Count() rules applied.</span>
+            <br />
+            @foreach (var result in results)
+            {
+                <b>@result.Name</b>
+                <br />
+            }
+            <br />
+            <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
+        </div>
+    }
 }
 else
 {
@@ -129,6 +134,8 @@ else
     void ClearSandbox()
     {
         AppState.TestObjects.Clear();
+        SandBoxErrors.Clear();
+        ParseErrors.Clear();
         this.StateHasChanged();
     }
 
