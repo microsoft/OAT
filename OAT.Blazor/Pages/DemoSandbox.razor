@@ -1,0 +1,59 @@
+﻿@page "/demosandbox"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@inject NavigationManager NavigationManager;
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+
+<button @onclick="RefreshState">Re-Run Rules</button>
+<br />
+<br />
+<button @onclick="AddObject">Add Vehicle</button>
+<button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Vehicle</button>
+<br />
+@for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
+{
+    var results = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]);
+    <div class="card">
+        <span>@results.Count() rules applied.</span>
+        <br />
+        @foreach (var result in results)
+        {
+        <b>@result.Name</b>
+        <br />
+        }
+        <br />
+        <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]" Collapsable="true" />
+    </div>
+}
+@code {
+    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+
+    protected override async Task OnInitializedAsync()
+    {
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        var results = analyzer.Analyze(AppState.DemoRules);
+        await base.OnInitializedAsync();
+    }
+
+    void RefreshState()
+    {
+        this.StateHasChanged();
+    }
+
+    void RemoveLastObject()
+    {
+        if (AppState.DemoTestObjects.Count > 0)
+        {
+            AppState.DemoTestObjects.RemoveAt(AppState.DemoTestObjects.Count - 1);
+        }
+    }
+
+    void AddObject()
+    {
+        AppState.DemoTestObjects.Add(new Microsoft.CST.OAT.VehicleDemo.Vehicle());
+    }
+        public bool removeDisabled => AppState.DemoTestObjects.Count == 0;
+
+}

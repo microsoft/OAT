@@ -98,7 +98,7 @@ namespace Microsoft.CST.OAT.Operations
             (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
 
-            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData)
+            if (clause.DictData is List<KeyValuePair<string, string>> ContainsData && ContainsData.Any())
             {
                 if (stateOneDict.Any())
                 {
@@ -143,7 +143,7 @@ namespace Microsoft.CST.OAT.Operations
                 return new OperationResult(false, null);
             }
 
-            if (clause.Data is List<string> ClauseData)
+            if (clause.Data is List<string> ClauseData && ClauseData.Any())
             {
                 (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                 {

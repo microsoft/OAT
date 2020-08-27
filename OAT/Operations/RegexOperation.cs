@@ -42,7 +42,7 @@ namespace Microsoft.CST.OAT.Operations
                     }
                 }
             }
-            if (clause.DictData != null || clause.DictData?.Count > 0)
+            if (clause.DictData != null && clause.DictData?.Count > 0)
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseDictDataUnexpected"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
             }

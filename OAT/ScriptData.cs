@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.CST.OAT
@@ -15,30 +14,39 @@ namespace Microsoft.CST.OAT
         /// <param name="code">The Code to run</param>
         /// <param name="imports">The imports to include. For example "System.IO".</param>
         /// <param name="references">The assembly references to include.  For example "MyAssembly" for "MyAssembly.dll"</param>
-        public ScriptData(string code, IEnumerable<string>? imports = null, IEnumerable<string>? references = null)
+        public ScriptData(string? code = null, IEnumerable<string>? imports = null, IEnumerable<string>? references = null)
         {
             Code = code ?? string.Empty;
-            Imports = imports?.ToArray() ?? Array.Empty<string>();
-            References = references?.ToArray() ?? Array.Empty<string>();
-            ImportString = string.Join(",", Imports);
-            ReferencesString = string.Join(",", References);
-            _hashCode = (Code, ImportString, ReferencesString).GetHashCode();
+            Imports = imports?.ToList() ?? new List<string>();
+            References = references?.ToList() ?? new List<string>();
         }
 
         /// <summary>
         /// The Script code
         /// </summary>
-        public string Code { get; }
+        public string Code { get; set; }
         /// <summary>
         /// The Script Imports
         /// </summary>
-        public string[] Imports { get; }
+        public List<string> Imports { get; set; }
         /// <summary>
         /// The Script References
         /// </summary>
-        public string[] References { get; }
-        internal string ImportString { get; }
-        internal string ReferencesString { get; }
+        public List<string> References { get; set; }
+        internal string ImportString
+        {
+            get
+            {
+                return string.Join(",", Imports);
+            }
+        }
+        internal string ReferencesString
+        {
+            get
+            {
+                return string.Join(",", References);
+            }
+        }
 
         /// <summary>
         /// Overridden Equality constructor
@@ -62,16 +70,13 @@ namespace Microsoft.CST.OAT
             }
             return false;
         }
-
-        private int _hashCode;
-
         /// <summary>
         /// Get the HashCode for this ScriptData
         /// </summary>
         /// <returns>The HashCode over the Code, Imports and References. Imports and References are order sensitive.</returns>
         public override int GetHashCode()
         {
-            return _hashCode;
+            return (Code, ImportString, ReferencesString).GetHashCode();
         }
     }
 }

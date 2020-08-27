@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+    <div class="bottom-row">
+        <div class="version">v @Helpers.GetVersionString()</div>
+        <img class="logo" src="images/microsoft-logo.png" />
+    </div>
+</div>
+
+<div class="main">
+    <div class="top-row">
+        <a href="https://www.github.com/microsoft/OAT" target="_blank">
+            <img src="images/github-32.png" />
+        </a>
+        <a href="https://www.github.com/microsoft/OAT/wiki" target="_blank">Docs</a>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>

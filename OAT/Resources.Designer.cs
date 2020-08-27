@@ -131,6 +131,12 @@ namespace Microsoft.CST.OAT {
             }
         }
         
+        internal static string Err_ClauseMissingScript__0__1_ {
+            get {
+                return ResourceManager.GetString("Err_ClauseMissingScript_{0}{1}", resourceCulture);
+            }
+        }
+        
         internal static string Err_ScriptingDisabled__0__1_ {
             get {
                 return ResourceManager.GetString("Err_ScriptingDisabled_{0}{1}", resourceCulture);

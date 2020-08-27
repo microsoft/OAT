@@ -1,7 +1,11 @@
-﻿using Microsoft.CST.OAT.Utils;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CST.OAT.Operations;
+using Microsoft.CST.OAT.Utils;
+using Microsoft.CST.OAT.VehicleDemo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.CST.OAT.Tests
@@ -24,7 +28,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(okayLambda, Array.Empty<string>(), Array.Empty<string>())
                     }
@@ -46,7 +50,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(okayLambda, new List<string>(){ "Not.A.Package" }, Array.Empty<string>())
                     }
@@ -68,7 +72,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(badLambda, Array.Empty<string>(), Array.Empty<string>())
                     }
@@ -89,7 +93,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(okayLambda, Array.Empty<string>(), new List<string>(){ "Not.An.Assembly" })
                     }
@@ -110,7 +114,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(missingReference, Array.Empty<string>(), Array.Empty<string>())
                     }
@@ -131,7 +135,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(missingReference, Array.Empty<string>(), Array.Empty<string>())
                     }
@@ -153,7 +157,7 @@ namespace Microsoft.CST.OAT.Tests
             {
                 Clauses = new List<Clause>()
                 {
-                    new Clause(Operation.Custom)
+                    new Clause(Operation.Script)
                     {
                         Script = new ScriptData(lambda, Array.Empty<string>(), Array.Empty<string>())
                     }

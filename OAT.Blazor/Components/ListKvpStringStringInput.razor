@@ -1,0 +1,61 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+<input id="@id" type="text" @bind="CurrentInputKey" />
+<input type="text" @bind="CurrentInputValue" />
+<button @onclick="AddKvp">Add @buttonText</button>
+<br />
+@if (SubProperty.Count > 0)
+{
+    <select @bind="SelectedKey">
+        @for (int i = 0; i < SubProperty.Count; i++)
+        {
+            <option value="@i">@SubProperty[i].Key : @SubProperty[i].Value</option>
+        }
+    </select>
+    <button @onclick="RemoveKvp">Remove @buttonText</button>
+    <br />
+}
+
+@code {
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; } = "KVP";
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    int SelectedKey { get; set; }
+
+    string CurrentInputKey { get; set; } = string.Empty;
+
+    string CurrentInputValue { get; set; } = string.Empty;
+
+    void RemoveKvp()
+    {
+        SubProperty.RemoveAt(SelectedKey);
+    }
+
+    void AddKvp()
+    {
+        SubProperty.Add(new KeyValuePair<string, string>(CurrentInputKey, CurrentInputValue));
+        CurrentInputKey = string.Empty;
+        CurrentInputValue = string.Empty;
+    }
+
+    public List<KeyValuePair<string, string>> SubProperty
+    {
+        get
+        {
+            return (List<KeyValuePair<string, string>>)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? new List<KeyValuePair<string, string>>());
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+        }
+    }
+}

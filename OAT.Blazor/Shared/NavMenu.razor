@@ -1,0 +1,47 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Object Analysis Toolkit</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <img class="nav-icon mr-2" src="images/house-door-wh.png" aria-hidden="true" /> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="demoauthor">
+                <img class="nav-icon mr-2" src="images/box-seam-wh.png" aria-hidden="true" /> Demo Author
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="demosandbox">
+                <img class="nav-icon mr-2" src="images/box-seam-wh.png" aria-hidden="true" /> Demo Sandbox
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="author">
+                <img class="nav-icon mr-2" src="images/pencil-square-wh.png" aria-hidden="true" /> Author
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="sandbox">
+                <img class="nav-icon mr-2" src="images/card-checklist-wh.png" aria-hidden="true" /> Sandbox
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

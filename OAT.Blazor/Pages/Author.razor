@@ -1,0 +1,260 @@
+﻿@page "/author"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+@using System.Runtime.Loader;
+@using System.Diagnostics;
+
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+@inject IFileReaderService fileReaderService;
+@inject IJSRuntime JSRuntime
+
+<h2>Assembly</h2>
+<p>Choose Assembly to use for file types (optional).</p>
+<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
+<h2>Rules</h2>
+<p>Load in JSON serialized rules.</p>
+<FileUpload ProcessFile="LoadRules" ReadLabel="Load Rules" ClearAction="ClearRules" ClearLabel="Clear Rules" />
+@if (AppState.Assemblies.Any())
+{
+    <label for="namespaceInput">Namespace To Search:</label>
+    <select id="namespaceInput" @bind="nameSpace">
+        @foreach (var names in GetNamespaces())
+        {
+            <option value="@names">@names</option>
+        }
+    </select>
+}
+<br />
+<button @onclick="AddRule">Add Rule</button>
+<button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
+<button @onclick="ValidateRules">Validate Rules</button>
+<button @onclick="DownloadRules">Export Rules to JSON</button>
+<br />
+@foreach (var rule in AppState.Rules)
+{
+    <div class="card">
+        @if (issues.ContainsKey(rule))
+        {
+            @foreach (var problem in issues[rule])
+            {
+                <div class="problem">
+                    <span class="oi oi-warning"></span>
+                    @problem.Description
+                </div>
+            }
+            @if (issues[rule].Count() > 0)
+            {
+                <br />
+            }
+        }
+        else
+        {
+            <p>Processing Issues for Rule...</p>
+        }
+
+        <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+    </div>
+}
+@code
+{
+
+    void ClearAssemblies()
+    {
+        AppState.Assemblies.Clear();
+    }
+
+    void ClearRules()
+    {
+        AppState.Rules.Clear();
+    }
+
+    private static string nl = Environment.NewLine;
+    [Parameter]
+    public int BufferSize { get; set; } = 20480;
+    public long max;
+    public long value;
+    ElementReference inputElement;
+
+    public bool removeDisabled => AppState.Rules.Count == 0;
+
+    public long maxJson;
+    public long valueJson;
+    ElementReference jsonInput;
+
+    public System.Threading.CancellationTokenSource? cancellationTokenSource;
+    string Output { get; set; } = string.Empty;
+
+    public bool CanCancel { get; set; }
+    public bool IsCancelDisabled => !CanCancel;
+
+    Func<Stream, Task> LoadAssembly;
+    Func<Stream, Task> LoadRules;
+
+    void RefreshPage()
+    {
+        this.StateHasChanged();
+    }
+
+
+    public async void DownloadRules()
+    {
+        await JSRuntime.InvokeAsync<object>(
+            "FileSaveAs",
+            "OAT-Rules.json",
+            "data:text/plain;charset=utf-8,",
+            Newtonsoft.Json.JsonConvert.SerializeObject(AppState.Rules)
+        );
+    }
+
+    string nameSpace = string.Empty;
+
+    Type[] GetTypes()
+    {
+        return AppState.Assemblies.SelectMany(x => Helpers.GetTypesInNamespace(x, nameSpace)).ToArray();
+    }
+
+    Analyzer analyzer = new Analyzer();
+
+    void SetLoadAssembly()
+    {
+        LoadAssembly = async assemblyStream =>
+        {
+            try
+            {
+                using var ms = new MemoryStream();
+                await assemblyStream.CopyToAsync(ms);
+                var assembly = Assembly.Load(ms.ToArray());
+                if (assembly != null)
+                {
+                    AppState.Assemblies.Add(assembly);
+                }
+                else
+                {
+                    Console.WriteLine("Assembly is null");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Operation was cancelled");
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            RefreshPage();
+        };
+    }
+
+    void SetLoadRules()
+    {
+        LoadRules = async stream =>
+        {
+            try
+            {
+                using var sr = new StreamReader(stream);
+                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync());
+            }
+            catch (OperationCanceledException)
+            {
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            ValidateRules();
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        SetLoadAssembly();
+        SetLoadRules();
+        Strings.Setup();
+        ValidateRules();
+        base.OnInitialized();
+    }
+
+    Dictionary<Rule, IEnumerable<Violation>> issues = new Dictionary<Rule, IEnumerable<Violation>>();
+
+    void ValidateRules()
+    {
+        issues.Clear();
+        foreach (var rule in AppState.Rules)
+        {
+            issues[rule] = analyzer.EnumerateRuleIssues(rule);
+        }
+        this.StateHasChanged();
+    }
+
+    void RemoveLastRule()
+    {
+        if (AppState.Rules.Count > 0)
+        {
+            AppState.Rules.RemoveAt(AppState.Rules.Count - 1);
+        }
+        ValidateRules();
+    }
+
+    void AddRule()
+    {
+        AppState.Rules.Add(new Rule("Rule Name Here"));
+        ValidateRules();
+    }
+
+    IEnumerable<string> GetNamespaces(Assembly? assembly = null)
+    {
+        if (assembly is null)
+        {
+            var types = new List<Type>();
+            foreach (var appStateAssembly in AppState.Assemblies)
+            {
+                try
+                {
+                    types.AddRange(appStateAssembly.GetTypes());
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    types.AddRange(e.Types.Where(x => x is Type));
+                    foreach (var ex in e.LoaderExceptions)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
+        else
+        {
+            var types = new List<Type>();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types.AddRange(e.Types.Where(x => x is Type));
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
+    }
+}

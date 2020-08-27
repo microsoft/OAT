@@ -27,7 +27,7 @@ namespace Microsoft.CST.OAT.Operations
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseExpectedDateTime"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
-            if (clause.DictData != null || clause.DictData?.Count > 0)
+            if (clause.DictData != null && clause.DictData?.Count > 0)
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseDictDataUnexpected"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString()), rule, clause);
             }

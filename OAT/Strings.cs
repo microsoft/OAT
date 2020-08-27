@@ -34,7 +34,7 @@ namespace Microsoft.CST.OAT.Utils
         {
             if (string.IsNullOrEmpty(locale))
             {
-                using var stream = typeof(Rule).Assembly.GetManifestResourceStream("LogicalAnalyzer.Resources.resources");
+                using var stream = typeof(Rule).Assembly.GetManifestResourceStream("Microsoft.CST.OAT.Resources.resources");
                 if (stream is Stream)
                 {
                     stringList.Clear();

@@ -1,0 +1,117 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+@switch (itemState)
+{
+    case ItemState.Expanded:
+        if (Collapsable)
+        {
+            <div class="font-large">
+                @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+                <button @onclick="Collapse">Collapse</button>
+            </div>
+            <hr />
+        }
+        @for (int i = 0; i < Properties.Length; i++)
+        {
+            if (Properties[i].CanWrite)
+            {
+                var type = Properties[i].PropertyType;
+                var appendedName = AppendNameToPath(Properties[i].Name);
+                var name = ToName(appendedName, i);
+                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+                {
+                    type = deNullabled;
+                }
+                <label for="@name">@Properties[i].Name</label>
+                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+            }
+        }
+        @for (int i = 0; i < Fields.Length; i++)
+        {
+            if (Fields[i].IsPublic)
+            {
+                var type = Fields[i].FieldType;
+                var appendedName = AppendNameToPath(Fields[i].Name);
+                var name = ToName(appendedName, i);
+                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+                {
+                    type = deNullabled;
+                }
+                <label for="@name">@Fields[i].Name</label>
+                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+            }
+        }
+        break;
+    case ItemState.Collapsed:
+        <div class="font-large">
+            @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
+            <button @onclick="Expand">Expand</button>
+        </div>
+        <hr />
+        break;
+}
+
+
+@code {
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Collapsable { get; set; }
+
+    enum ItemState
+    {
+        Expanded,
+        Collapsed
+    }
+
+    ItemState itemState = ItemState.Expanded;
+
+    private System.Reflection.PropertyInfo[] Properties = Array.Empty<System.Reflection.PropertyInfo>();
+
+    private System.Reflection.FieldInfo[] Fields = Array.Empty<System.Reflection.FieldInfo>();
+
+    string ToName(string name, int element)
+    {
+        return $"{id}-{name}-{element}";
+    }
+
+    void Expand()
+    {
+        itemState = ItemState.Expanded;
+    }
+
+    void Collapse()
+    {
+        itemState = ItemState.Collapsed;
+    }
+
+    public string AppendNameToPath(string Name)
+    {
+        if (string.IsNullOrEmpty(SubPath))
+        {
+            return Name;
+        }
+        else
+        {
+            return $"{SubPath}.{Name}";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Collapsable)
+        {
+            itemState = ItemState.Collapsed;
+        }
+        Properties = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetProperties() ?? Array.Empty<System.Reflection.PropertyInfo>();
+        Fields = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetFields() ?? Array.Empty<System.Reflection.FieldInfo>();
+        base.OnInitialized();
+    }
+}

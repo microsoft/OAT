@@ -1,0 +1,101 @@
+﻿@page "/demoauthor"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@using System.IO;
+@using Newtonsoft.Json;
+
+@inject NavigationManager NavigationManager;
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+
+<h3 class="pb-1">Demo: Author Rules</h3>
+<hr class="hr-th"/>
+<div class="pb-3">
+    <button class="btn btn-secondary" @onclick="AddRule">Add Rule</button>
+    <button class="btn btn-secondary" @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
+    <button class="btn btn-secondary" @onclick="ValidateRules">Validate Rules</button>
+</div>
+
+<div class="">
+    @foreach (var rule in AppState.DemoRules)
+    {
+        @if (issues.ContainsKey(rule))
+        {
+            @foreach (var problem in issues[rule])
+            {
+                <div class="problem">
+                    <span class="oi oi-warning"></span>
+                    @problem.Description
+                </div>
+            }
+            @if (issues[rule].Count() > 0)
+            {
+                <br />
+            }
+        }
+        else
+        {
+            <p>Processing Issues for Rule...</p>
+        }
+
+        <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+    }
+</div>
+
+@code{
+    System.Reflection.Assembly assembly = typeof(VehicleDemo.Vehicle).Assembly;
+    string nameSpace = "Microsoft.CST.OAT.VehicleDemo";
+    Type[] GetTypes()
+    {
+        return Helpers.GetTypesInNamespace(assembly, nameSpace);
+    }
+
+    Analyzer analyzer = new Analyzer();
+
+    protected override void OnInitialized()
+    {
+        Strings.Setup();
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        ValidateRules();
+        base.OnInitialized();
+    }
+
+    Dictionary<Rule, IEnumerable<Violation>> issues = new Dictionary<Rule, IEnumerable<Violation>>();
+
+    void ValidateRules()
+    {
+        issues.Clear();
+        foreach (var rule in AppState.DemoRules)
+        {
+            if (rule.Clauses.Any())
+            {
+                Console.WriteLine(rule.Clauses[0].Operation);
+            }
+            issues[rule] = analyzer.EnumerateRuleIssues(rule);
+            foreach(var issue in issues[rule])
+            {
+                Console.WriteLine(issue.Description);
+                Console.WriteLine(JsonConvert.SerializeObject(issue.Clauses));
+            }
+        }
+        this.StateHasChanged();
+    }
+
+    void RemoveLastRule()
+    {
+        if (AppState.DemoRules.Count > 0)
+        {
+            AppState.DemoRules.RemoveAt(AppState.DemoRules.Count - 1);
+        }
+        ValidateRules();
+    }
+
+    void AddRule()
+    {
+        AppState.DemoRules.Add(new Rule("Rule Name Here"));
+        ValidateRules();
+    }
+
+    public bool removeDisabled => AppState.DemoRules.Count == 0;
+}

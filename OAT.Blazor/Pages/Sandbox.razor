@@ -1,0 +1,623 @@
+﻿@page "/sandbox"
+@using System.Reflection.Metadata;
+@using Microsoft.CodeAnalysis;
+@using System.Reflection;
+@using System.Diagnostics;
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@inject NavigationManager NavigationManager;
+@inject AppState AppState;
+@inject IFileReaderService fileReaderService;
+@inject IJSRuntime JSRuntime
+
+<h2>Assembly</h2>
+<p>Choose Assembly to use objects.</p>
+<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
+
+@if (AppState.Assemblies.Any())
+{
+    <h2>State</h2>
+    <p>Load in JSON serialized Sandbox State.</p>
+    <FileUpload ProcessFile="LoadSandbox" ReadLabel="Load Sandbox" ClearAction="ClearSandbox" ClearLabel="Clear Sandbox" />
+
+    <button @onclick="SaveSandboxState">Save Sandbox State</button>
+
+    @if (SandBoxErrors.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+        @foreach(var error in SandBoxErrors)
+        {
+            <p>@error</p>
+        }
+        </div>
+    }
+
+    <h3>Settings</h3>
+    <label for="namespaceInput">Namespace To Search:</label>
+    <select id="namespaceInput" @bind="nameSpace">
+        @foreach (var names in GetNamespaces())
+        {
+            <option value="@names">@names</option>
+        }
+    </select>
+    <br />
+    <label for="typeToCreate">Type to Create:</label>
+    <select id="typeToCreate" @bind="typeToInvoke">
+        @foreach(var type in Types.Keys)
+        {
+            <option value="@type.FullName">@type.FullName</option>
+        }
+    </select>
+    <label for="constructorToUse">Constructor to Create:</label>
+    <select id="constructorToUse" @bind="constructorToInvoke">
+        @{
+            var constructors = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
+            if (constructors != null)
+            {
+                @for (int i = 0; i < constructors.Count; i++)
+                {
+                    <option value="@i">@constructors[i].ToString()</option>
+                }
+            }
+        }
+    </select>
+    <br />
+    @if (Parameters.Any())
+    {
+        Parameters.Clear();
+    }
+    @foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
+    {
+        Parameters.Add(parameter.Name, parameter.DefaultValue);
+        <label for="@parameter.Name">@parameter.Name</label>
+        <PropertyInput Id="@parameter.Name" Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
+    }
+
+    <br />
+
+    @if (ParseErrors.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+        @foreach(var parseError in ParseErrors)
+        {
+            @parseError
+        }
+        </div>
+    }
+
+
+    @if (@Types.Any())
+    {
+        var types = Types.Where(x => x.Key.FullName == typeToInvoke);
+        if (types.Any())
+        {
+            var type = types.FirstOrDefault();
+            var constructor = type.Value[constructorToInvoke];
+            <button @onclick="AddObject">Add @type.Key.FullName</button>
+        }
+    }
+    <button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Object</button><button @onclick="RefreshState">Re-Run Rules</button>
+    <br />
+    @for (int i = 0; i < AppState.TestObjects.Count; i++)
+    {
+        var results = analyzer.Analyze(AppState.Rules, AppState.TestObjects[i]);
+        <div class="card">
+            <span>@results.Count() rules applied.</span>
+            <br />
+            @foreach (var result in results)
+            {
+                <b>@result.Name</b>
+                <br />
+            }
+            <br />
+            <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
+        </div>
+    }
+}
+else
+{
+    <p>Load an Assembly to use the Sandbox.</p>
+}
+@code {
+    Func<Stream, Task> LoadAssembly;
+    Func<Stream, Task> LoadSandbox;
+
+    void ClearAssemblies()
+    {
+        AppState.Assemblies.Clear();
+        this.StateHasChanged();
+    }
+
+    void ClearSandbox()
+    {
+        AppState.TestObjects.Clear();
+        SandBoxErrors.Clear();
+        ParseErrors.Clear();
+        this.StateHasChanged();
+    }
+
+    void RefreshPage()
+    {
+        this.StateHasChanged();
+    }
+
+    void SetLoadSandbox()
+    {
+        LoadSandbox = async assemblyStream =>
+        {
+            SandBoxErrors.Clear();
+
+            try
+            {
+                using var sr = new StreamReader(assemblyStream);
+                JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
+                var failed = false;
+                foreach (var assembly in AppState.Assemblies)
+                {
+                    Console.WriteLine(assembly.GetName().Name);
+                }
+                Console.WriteLine($"{AppState.Assemblies.Count} assemblies are loaded.");
+                foreach (var assembly in sandboxState["AssemblyNames"].Select(x => (string?)x ?? string.Empty))
+                {
+
+                    if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
+                    {
+                        failed = true;
+                        Console.WriteLine("Assembly {0} isn't loaded.", assembly);
+                        SandBoxErrors.Add($"Assembly {assembly} isn't loaded.");
+                        break;
+                    }
+                }
+                if (!failed)
+                {
+                    if (sandboxState["Objects"] is JObject sandBoxObjects)
+                    {
+                        foreach (var objectType in sandBoxObjects.Properties().Select(x => x.Name).ToList())
+                        {
+                            var types = new List<Type>();
+                            foreach (var assembly in AppState.Assemblies)
+                            {
+                                foreach (var nameSpace in GetNamespaces(assembly))
+                                {
+                                    types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
+                                }
+                            }
+                            var results = new List<(Type, ConstructorInfo)>();
+                            foreach (var typed in types)
+                            {
+                                var constructor = typed.GetConstructor(Type.EmptyTypes);
+                                if (constructor != null)
+                                {
+                                    results.Add((typed, constructor));
+                                }
+                                else
+                                {
+                                    foreach (var ctor in typed.GetConstructors())
+                                    {
+                                        var ctorFailed = false;
+                                        foreach (var param in ctor.GetParameters())
+                                        {
+                                            if (!Helpers.IsBasicType(param.ParameterType))
+                                            {
+                                                ctorFailed = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!ctorFailed)
+                                        {
+                                            results.Add((typed, ctor));
+                                        }
+                                    }
+                                }
+                            }
+                            var selected = results.Select(x => $"{x.Item1.FullName}");
+                            Console.WriteLine(JsonConvert.SerializeObject(selected));
+                            Console.WriteLine(objectType);
+                            Console.WriteLine(results.Any(x => $"{x.Item1.FullName}" == objectType));
+                            var resultTypes = results.Where(x => $"{x.Item1.Namespace}.{x.Item1.Name}" == objectType);
+                            if (resultTypes.Any())
+                            {
+                                var type = resultTypes.First();
+                                if (sandboxState["Objects"]?[objectType] is JArray jArray)
+                                {
+                                    foreach (var objState in jArray)
+                                    {
+                                        var ctor = type.Item2;
+                                        var inputs = new List<object?>();
+                                        foreach (var param in ctor.GetParameters())
+                                        {
+                                            var representation = objState?[param.Name]?.ToObject<string>();
+                                            if (representation != null && GetValueFromJObject(param.ParameterType, representation) is { } obj)
+                                            {
+                                                inputs.Add(obj);
+                                            }
+                                            else
+                                            {
+                                                inputs.Add(null);
+                                            }
+                                        }
+                                        var empty = ctor.Invoke(inputs.ToArray());
+                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type.Item1))
+                                        {
+                                            var obj = objState;
+                                            foreach (var split in prop.Path.Split('.'))
+                                            {
+                                                obj = obj?[split];
+                                            }
+                                            var stringRepresentation = obj.ToObject<string>();
+                                            if (stringRepresentation is string representation)
+                                            {
+                                                if (prop.MemInfo is PropertyInfo propInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(propInfo.PropertyType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+                                                if (prop.MemInfo is FieldInfo fieldInfo)
+                                                {
+                                                    object? value = GetValueFromJObject(fieldInfo.FieldType, representation);
+                                                    Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
+                                                }
+                                            }
+                                        }
+                                        AppState.TestObjects.Add(empty);
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                failed = true;
+                                SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine($"{name}: {message} ({type}:{stackTrace})");
+            }
+            RefreshPage();
+        };
+    }
+
+    void SetLoadAssembly()
+    {
+        LoadAssembly = async assemblyStream =>
+        {
+            try
+            {
+                using var ms = new MemoryStream();
+                await assemblyStream.CopyToAsync(ms);
+                var assembly = Assembly.Load(ms.ToArray());
+                if (assembly != null)
+                {
+                    AppState.Assemblies.Add(assembly);
+                }
+                else
+                {
+                    Console.WriteLine("Assembly is null");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Operation was cancelled");
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+                var stackTrace = e.StackTrace;
+                var type = e.GetType();
+                var name = type.Name;
+                type = e.GetType();
+                Console.WriteLine(e.Message);
+            }
+            RefreshPage();
+        };
+    }
+    List<string> ParseErrors = new List<string>();
+
+    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+
+    List<string> SandBoxErrors = new List<string>();
+
+    Dictionary<string, object> values = new Dictionary<string, object>();
+
+    int constructorToInvoke
+    {
+        get
+        {
+            return _constructorToInvoke;
+        }
+        set
+        {
+            _constructorToInvoke = value;
+            RefreshState();
+        }
+    }
+
+    string typeToInvoke
+    {
+        get
+        {
+            return _typeToInvoke;
+        }
+        set
+        {
+            _typeToInvoke = value;
+            RefreshState();
+        }
+    }
+
+    string _typeToInvoke = string.Empty;
+
+    public bool removeDisabled => AppState.TestObjects.Count == 0;
+
+    int _constructorToInvoke;
+
+    string nameSpace
+    {
+        get {
+            return _nameSpace;
+        } set {
+            _nameSpace = value;
+            UpdateTypes();
+        }
+    }
+
+    string _nameSpace = string.Empty;
+
+    void UpdateTypes()
+    {
+        var types = AppState.Assemblies.SelectMany(x => Helpers.GetTypesInNamespace(x, nameSpace));
+        var results = new Dictionary<Type, List<ConstructorInfo>>();
+        foreach (var type in types)
+        {
+            try
+            {
+                var allowedConstructors = new List<ConstructorInfo>();
+                var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+                foreach (var constructorItr in constructors)
+                {
+                    foreach (var parameter in constructorItr.GetParameters())
+                    {
+                        if (!Helpers.IsBasicType(parameter.ParameterType))
+                        {
+                            break;
+                        }
+                    }
+                    allowedConstructors.Add(constructorItr);
+                }
+                if (allowedConstructors.Any())
+                {
+                    results.Add(type, allowedConstructors);
+                }
+            }
+            catch(Exception)
+            {
+                // Skip this constructor, we can't make it work.
+                //Console.WriteLine($"Failed to get constructor:{e.Message}");
+            }
+        }
+        Types = results;
+        RefreshState();
+    }
+
+    Dictionary<Type, List<ConstructorInfo>> Types { get; set; } = new Dictionary<Type, List<ConstructorInfo>>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetLoadAssembly();
+        SetLoadSandbox();
+        analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
+        var results = analyzer.Analyze(AppState.Rules);
+        UpdateTypes();
+        await base.OnInitializedAsync();
+    }
+
+    void RefreshState()
+    {
+        this.StateHasChanged();
+    }
+
+    void RemoveLastObject()
+    {
+        if (AppState.TestObjects.Count > 0)
+        {
+            AppState.TestObjects.RemoveAt(AppState.TestObjects.Count - 1);
+        }
+    }
+
+    Dictionary<string,object> Parameters = new Dictionary<string, object>();
+
+    void AddObject()
+    {
+        var type = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault();
+        var constructor = type.Value[constructorToInvoke];
+        try
+        {
+            var inputs = new List<object>();
+            foreach(var parameter in constructor.GetParameters())
+            {
+                inputs.Add(Parameters[parameter.Name]);
+            }
+            AppState.TestObjects.Add(constructor.Invoke(inputs.ToArray()));
+        }
+        catch(Exception e)
+        {
+            ParseErrors.Add($"Failed to construct object.  This likely is due to an external assembly reference.  This PWA currently only supports types which are fully defined within the provided assembly. ({e.Message})");
+        }
+    }
+
+    IEnumerable<string> GetNamespaces(Assembly? assembly = null)
+    {
+        if (assembly is null)
+        {
+            var types = new List<Type>();
+            foreach(var appStateAssembly in AppState.Assemblies)
+            {
+                try
+                {
+                    types.AddRange(appStateAssembly.GetTypes());
+                }
+                catch(ReflectionTypeLoadException e)
+                {
+                    types.AddRange(e.Types.Where(x => x is Type));
+                    foreach(var ex in e.LoaderExceptions)
+                    {
+                        SandBoxErrors.Add(ex.Message);
+                    }
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
+        else
+        {
+            var types = new List<Type>();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types.AddRange(e.Types.Where(x => x is Type));
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    SandBoxErrors.Add(ex.Message);
+                }
+            }
+            return types.Select(x => x.Namespace).Distinct();
+        }
+    }
+
+    object? GetValueFromJObject(Type type, string objectState)
+    {
+        if (type == typeof(int))
+        {
+            if (int.TryParse(objectState, out int intVal))
+            {
+                return intVal;
+            }
+        }
+        else if (type == typeof(string))
+        {
+            return objectState;
+        }
+        else if (type == typeof(char))
+        {
+            return objectState[0];
+        }
+        else if (type == typeof(long))
+        {
+            if (long.TryParse(objectState, out long longVal))
+            {
+                return longVal;
+            }
+        }
+        else if (type == typeof(float))
+        {
+            if (float.TryParse(objectState, out float floatVal))
+            {
+                return floatVal;
+            }
+        }
+        else if (type == typeof(double))
+        {
+            if (double.TryParse(objectState, out double doubleVal))
+            {
+                return doubleVal;
+            }
+        }
+        else if (type == typeof(decimal))
+        {
+            if (decimal.TryParse(objectState, out decimal decimalVal))
+            {
+                return decimalVal;
+            }
+        }
+        else if (type == typeof(bool))
+        {
+            if (bool.TryParse(objectState, out bool boolVal))
+            {
+                return boolVal;
+            }
+        }
+        else if (type == typeof(uint))
+        {
+            if (uint.TryParse(objectState, out uint uintVal))
+            {
+                return uintVal;
+            }
+        }
+        else if (type == typeof(ulong))
+        {
+            if (ulong.TryParse(objectState, out ulong ulongVal))
+            {
+                return ulongVal;
+            }
+        }
+        else if (type == typeof(short))
+        {
+            if (short.TryParse(objectState, out short shortVal))
+            {
+                return shortVal;
+            }
+        }
+        else if (type == typeof(ushort))
+        {
+            if (ushort.TryParse(objectState, out ushort ushortVal))
+            {
+                return ushortVal;
+            }
+        }
+        else if (type == typeof(DateTime))
+        {
+            if (DateTime.TryParse(objectState, out DateTime dateTimeVal))
+            {
+                return dateTimeVal;
+            }
+        }
+        else if (type.IsEnum)
+        {
+            if (Enum.TryParse(type, objectState, out object result))
+            {
+                return Convert.ChangeType(result,type);
+            }
+        }
+        return null;
+    }
+
+    public async Task SaveSandboxState()
+    {
+        var objects = new Dictionary<string, List<object>>();
+        foreach(var obj in AppState.TestObjects)
+        {
+            var t = obj.GetType();
+            if (!objects.ContainsKey(t.FullName))
+            {
+                objects.Add(t.FullName, new List<object>());
+            }
+            objects[t.FullName].Add(obj);
+        }
+        var state = new SandboxState(AppState.Assemblies.Select(x => x.GetName().Name).ToList(), objects);
+        await JSRuntime.InvokeAsync<object>(
+            "FileSaveAs",
+            "SandboxState.json",
+            "data:text/plain;charset=utf-8,",
+            Newtonsoft.Json.JsonConvert.SerializeObject(state)
+        );
+    }
+}

@@ -1,0 +1,127 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using System.Reflection;
+@using Microsoft.CST.OAT.VehicleDemo;
+@switch (CollapsedState)
+{
+    case ComponentCollapsedState.Expanded:
+        <div class="font-large">
+            <button class="btn-tr oi oi-minus" @onclick="Collapse">
+                <span class="reset-font-fam font-large">   @Rule?.Name</span>
+            </button>
+        </div>
+        <hr />
+
+        <tbody>
+            <tr>
+                <td>
+                    <label for="ruleName">Name:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleName" Object="Rule" SubPath="Name" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleDescription">Description:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleDescription" Object="Rule" SubPath="Description" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleExpression">Expression:</label>
+                </td>
+                <td>
+                    <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleTarget">Target:</label>
+                </td>
+                @if (Types.Any())
+                {
+                    <td>
+                        <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="Types" BindIndex="idx"/>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <StringInput id="ruleTarget" Object="Rule" SubPath="Target" />
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>
+                    <label for="ruleSeverity">Severity:</label>
+                </td>
+                <td>
+                    <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
+                </td>
+            </tr>
+        </tbody>
+        <br />
+        <button @onclick="AddClause">Add Clause</button>
+        <button @onclick="RemoveLastClause" disabled="@HasNoClauses()">Remove Last Clause</button>
+        <br />
+        @for (var i = 0; i < Rule?.Clauses.Count; i++)
+        {
+            @if (Types.Any())
+            {
+                <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx"/>
+            }
+            else
+            {
+                <ClauseInput Rule="@Rule" Clause="@i" />
+            }
+        }
+        break;
+    case ComponentCollapsedState.Collapsed:
+        <div class="font-large">
+            <button class="btn-tr oi oi-plus" @onclick="Expand">
+                <span class="reset-font-fam font-large">   @Rule?.Name</span>
+            </button>
+        </div>
+        <hr />
+        break;
+}
+
+@code {
+    [Parameter]
+    public Type[] Types { get; set; } = Array.Empty<Type>();
+
+    IntHolder idx = new IntHolder();
+
+    void Expand(EventArgs eventArgs)
+    {
+        CollapsedState = ComponentCollapsedState.Expanded;
+    }
+
+    void Collapse(EventArgs eventArgs)
+    {
+        CollapsedState = ComponentCollapsedState.Collapsed;
+    }
+
+    bool HasNoClauses()
+    {
+        return Rule?.Clauses.Count == 0;
+    }
+
+    [Parameter]
+    public ComponentCollapsedState CollapsedState { get; set; } = ComponentCollapsedState.Collapsed;
+
+    [Parameter]
+    public Rule? Rule { get; set; }
+
+    void RemoveLastClause()
+    {
+        Rule?.Clauses.RemoveAt(Rule.Clauses.Count - 1);
+    }
+
+    void AddClause()
+    {
+        Rule?.Clauses.Add(new Clause(Operation.Regex));
+    }
+}

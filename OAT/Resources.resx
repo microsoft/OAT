@@ -159,6 +159,10 @@
   <data name="Err_ClauseInvalidLambda_{0}{1}{2}" xml:space="preserve">
     <value>Rule {0} Clause {1} has Invalid Lambda (Message: {2}).</value>
   </data>
+  <data name="Err_ClauseMissingScript_{0}{1}" xml:space="preserve">
+    <value>Rule {0} Clause {1} is missing required Script Data for Script operation.</value>
+  </data>
+  
   <data name="Err_ScriptingDisabled_{0}{1}" xml:space="preserve">
     <value>Rule {0} Clause {1} has Script but RunScripts is false.</value>
   </data>
@@ -222,4 +226,5 @@
   <data name="Err_NoOperation_{0}{1}" xml:space="preserve">
     <value>Rule {0}, Clause {1} is invalid as the Operator is set to NoOperation.</value>
   </data>
+    
 </root>

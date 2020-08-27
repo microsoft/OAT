@@ -1,6 +1,4 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
@@ -11,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
@@ -43,6 +40,14 @@ namespace Microsoft.CST.OAT
             SetOperation(new StartsWithOperation(this));
             SetOperation(new WasModifiedOperation(this));
             SetOperation(new NoOperation(this));
+            if (Options.RunScripts)
+            {
+                SetOperation(new ScriptOperation(this));
+            }
+            else
+            {
+                SetOperation(new ScriptsDisabledOperation(this));
+            }
         }
 
         /// <summary>
@@ -80,28 +85,6 @@ namespace Microsoft.CST.OAT
         ///     The options for the Analyzer
         /// </summary>
         public AnalyzerOptions Options { get; } = new AnalyzerOptions();
-
-        /// <summary>
-        ///     Gets the object value stored at the field or property named by the string. Property tried
-        ///     first. Returns null if none found.
-        /// </summary>
-        /// <param name="obj"> The target object </param>
-        /// <param name="propertyName"> The Property or Field name </param>
-        /// <returns> The object at that Name or null </returns>
-        public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName) => obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
-
-        /// <summary>
-        ///     Prints out the Enumerable of violations to Warning
-        /// </summary>
-        /// <param name="violations"> An Enumerable of Violations to print </param>
-        public static void PrintViolations(IEnumerable<Violation> violations)
-        {
-            if (violations == null) return;
-            foreach (var violation in violations)
-            {
-                Log.Warning(violation.Description);
-            }
-        }
 
         /// <summary>
         ///     Try to shortcut a boolean operation
@@ -258,49 +241,20 @@ namespace Microsoft.CST.OAT
                 {
                     foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
                     {
+                        Console.WriteLine(clause.Key);
                         yield return violation;
-                    }
-                }
-                else if (clause.Script is ScriptData clauseScript)
-                {
-                    if (!Options.RunScripts)
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
-                    }
-                    else
-                    {
-                        var issues = new List<Violation>();
-                        Exception? yieldError = null;
-                        try
-                        {
-                            var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                            options = options.AddReferences(typeof(Analyzer).Assembly);
-                            options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                            options = options.AddImports(clauseScript.Imports);
-
-                            var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                            foreach (var issue in script.Compile())
-                            {
-                                issues.Add(new Violation(issue.GetMessage(), rule, clause));
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            yieldError = e;
-                        }
-                        if (yieldError != null)
-                        {
-                            yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), yieldError.Message), rule, clause);
-                        }
-                        foreach (var issue in issues)
-                        {
-                            yield return issue;
-                        }
                     }
                 }
                 else
                 {
                     yield return new Violation(string.Format(Strings.Get("Err_ClauseUnsuppportedOperator_{0}{1}{2}{3}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), clause.Operation.ToString(), clause.CustomOperation), rule, clause);
+                }
+                if (clause.Script is ScriptData clauseScript && !string.IsNullOrEmpty(clauseScript.Code))
+                {
+                    if (!Options.RunScripts)
+                    {
+                        yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
+                    }
                 }
             }
 
@@ -414,30 +368,6 @@ namespace Microsoft.CST.OAT
                 {
                     yield return new Violation(string.Format(Strings.Get("Err_ClauseEndsWithOperator"), expression, rule.Name), rule);
                 }
-            }
-
-            // Were all the labels declared in clauses used?
-            foreach (var label in rule.Clauses.Select(x => x.Label))
-            {
-                if (label is string)
-                {
-                    if (!foundLabels.Contains(label))
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnusedLabel"), label, rule.Name), rule);
-                    }
-                }
-            }
-
-            var justTheLabels = clauseLabels.Select(x => x.Key);
-            // If any clause has a label they all must have labels
-            if (justTheLabels.Any(x => x is string) && justTheLabels.Any(x => x is null))
-            {
-                yield return new Violation(string.Format(Strings.Get("Err_ClauseMissingLabels"), rule.Name), rule);
-            }
-            // If the clause has an expression it may not have any null labels
-            if (rule.Expression != null && justTheLabels.Any(x => x is null))
-            {
-                yield return new Violation(string.Format(Strings.Get("Err_ClauseExpressionButMissingLabels"), rule.Name), rule);
             }
         }
 
@@ -582,7 +512,7 @@ namespace Microsoft.CST.OAT
                 var pathPortions = pathToProperty.Split('.');
 
                 // We first try to get the first value to get it started
-                var value = GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
+                var value = Helpers.GetValueByPropertyOrFieldName(targetObject, pathPortions[0]);
 
                 // For the rest of the path we walk each portion to get the next object
                 for (var pathPortionIndex = 1; pathPortionIndex < pathPortions.Length; pathPortionIndex++)
@@ -630,7 +560,7 @@ namespace Microsoft.CST.OAT
                             // If we couldn't do any custom parsing fall back to the default
                             if (!found)
                             {
-                                value = GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
+                                value = Helpers.GetValueByPropertyOrFieldName(value, pathPortions[pathPortionIndex]);
                             }
                             break;
                     }
@@ -732,8 +662,6 @@ namespace Microsoft.CST.OAT
         }
 
         private Dictionary<(Operation Operation, string CustomOperation), OatOperation> delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
-
-        private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
@@ -899,46 +827,6 @@ namespace Microsoft.CST.OAT
             if (delegates.ContainsKey(clause.Key))
             {
                 return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
-            }
-            else if (clause.Script is ScriptData clauseScript)
-            {
-                if (!Options.RunScripts)
-                {
-                    Log.Warning("Detected Script {0} but RunScripts is false.", clauseScript.Code);
-                    return new OperationResult(false, null);
-                }
-                if (!lambdas.ContainsKey(clauseScript))
-                {
-                    try
-                    {
-                        var options = ScriptOptions.Default.AddImports("Microsoft.CST.OAT");
-                        options = options.AddReferences(typeof(Analyzer).Assembly);
-                        options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
-                        options = options.AddImports(clauseScript.Imports);
-                        var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
-                        var issues = script.Compile();
-                        if (issues.Any())
-                        {
-                            Log.Debug($"Lambda {clauseScript.Code} could not be compiled. ({string.Join("\n", issues)})");
-                        }
-                        lambdas[clauseScript] = script;
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Debug(e, $"Lambda {clauseScript.Code} could not be compiled.");
-                        lambdas[clauseScript] = null;
-                    }
-                }
-                try
-                {
-                    var res = lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
-                    return lambdas[clauseScript]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
-                }
-                catch (Exception e)
-                {
-                    Log.Debug(e, "Found while attempting to execute lambda.");
-                    return new OperationResult(false, null);
-                }
             }
             else
             {

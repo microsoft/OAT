@@ -1,0 +1,37 @@
+﻿@page "/"
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="pb-1">Welcome to the Object Analysis Toolkit (OAT)!</h1> 
+            <p>OAT is a rules-driven metaprogramming engine for analyzing arbitrary C# objects.</p>
+            <p>Documentation is available on the <a href="https://www.github.com/microsoft/OAT/wiki" target="_blank">Github Wiki</a>.</p>
+            <p>Learn about creating rules and objects in the <a href="https://www.github.com/microsoft/OAT/wiki/Walkthrough" target="_blank">Walkthrough</a>.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="d-flex flex-column col-md-4">
+                <h2><img class="pr-2" src="images/box-seam.png"/>Demo</h2>
+                <p>Visit the Demo pages to test the rules and objects created in the walkthrough.</p>
+                <p class="mt-auto">
+                    <span><a class="btn btn-primary" href="/demoauthor" role="button">Demo Author</a></span>
+                    <span class="d-inline-block pt-2"><a class="btn btn-primary" href="/demosandbox" role="button">Demo Sandbox</a></span>
+                </p>
+            </div>
+            <div class="d-flex flex-column col-md-4">
+                <h2><img class="pr-2" src="images/pencil-square.png" />Author</h2>
+                <p>The Author page can be used to create rules referencing user-provided assemblies.</p>
+                <p class="mt-auto"><a class="btn btn-primary" href="/author" role="button">Try it!</a></p>
+            </div>
+            <div class="d-flex flex-column col-md-4">
+                <h2><img class="pr-2" src="images/card-checklist.png" />Sandbox</h2>
+                <p>The Sandbox page can be used to create objects from user-provided assemblies, and test authored rules against them.</p>
+                <p class="mt-auto"><a class="btn btn-primary" href="/sandbox" role="button">Try it!</a></p>
+            </div>
+        </div>
+    </div>
+
+@code{
+
+}

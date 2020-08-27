@@ -22,11 +22,11 @@ namespace Microsoft.CST.OAT
         /// <summary>
         ///     A list of strings passed to the operation
         /// </summary>
-        public List<string>? Data { get; set; }
+        public List<string> Data { get; set; } = new List<string>();
         /// <summary>
         ///     A dictionary of strings passed to the operation
         /// </summary>
-        public List<KeyValuePair<string, string>>? DictData { get; set; }
+        public List<KeyValuePair<string, string>> DictData { get; set; } = new List<KeyValuePair<string, string>>();
         /// <summary>
         ///     Which field or property of the Target should this Clause apply to?
         ///
@@ -72,14 +72,8 @@ namespace Microsoft.CST.OAT
         {
             get
             {
-                if (_key is (Operation.NoOperation, _))
-                {
-                    _key = (Operation, CustomOperation ?? "");
-                }
-                return _key;
+                return (Operation, CustomOperation ?? "");
             }
         }
-
-        private (Operation Operation, string CustomOperation) _key = (OAT.Operation.NoOperation, "");
     }
 }
