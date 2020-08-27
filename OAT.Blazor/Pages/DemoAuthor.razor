@@ -9,11 +9,14 @@
 @inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
-<br />
+<h3 class="pb-1">Demo: Author Rules</h3>
+<hr class="hr-th"/>
+<div>
 <button @onclick="AddRule">Add Rule</button>
 <button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
 <button @onclick="ValidateRules">Validate Rules</button>
-<br />
+</div>
+
 @foreach (var rule in AppState.DemoRules)
 {
     <div class="card">
