@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-dOlG8sLlCWh9wMvBncqvn3M6gaop9fpyKG0mNMnlP8A=",
+      "hash": "sha256-pBE6x5HUlQwznutoQjCbPpHT8GGBs156g7uMzkg99XE=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-NMcDPtMFQAqgRIQXV30NPDd++wqG+J0Haf7yjdFdt\/E=",
+      "hash": "sha256-M4ioblSvyzJ6v8rqHzfNU5x\/TUtAy245oLpqjuTelAc=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-SuZllr9KqE77qMec9UPyQswuyUc9T8rvCkMZRb7SGjs=",
+      "hash": "sha256-ICpbTsvmI45jrF3XyYP6584tLkarg9zXKGLJYeQbRZA=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-Jqvr\/jTYaUCab4GKCLu28IgP0l7WTewrapiOTb2UekM=",
+      "hash": "sha256-0gBfftFs9NrrzY\/VeSLwKCZihj60gIPyL566SBhtmvE=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-VSwl83Y1GKOcqDNC3t1744cBTsuZsgx0uF5B5ap2S6I=",
+      "hash": "sha256-F38RWGM6lF54XC+WAh95fbtUp7BoOiMYZ7BCn+THUhE=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-\/JXDooUtfdHmET80UDyRMfJZTCDdTg1AptMKoXlrvBM=",
+      "hash": "sha256-lsDJiNRRlNC9KxDgt+aqtwvBUXgOn109G6akjN4zMf4=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-7eRab7rWg1GLEToxewIJ+JNdwjVZGDT70o9x75QTh\/U=",
+      "hash": "sha256-YnKo23H6m8NhHUngnyOcdN2FUVM6EJPTmzOba6kUkQI=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "egzvvRMP"
+  "version": "WdKsKmz+"
 };
