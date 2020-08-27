@@ -123,11 +123,13 @@ else
     void ClearAssemblies()
     {
         AppState.Assemblies.Clear();
+        this.StateHasChanged();
     }
 
     void ClearSandbox()
     {
         AppState.TestObjects.Clear();
+        this.StateHasChanged();
     }
 
     void RefreshPage()
@@ -146,7 +148,7 @@ else
                 using var sr = new StreamReader(assemblyStream);
                 JObject sandboxState = JObject.Parse(await sr.ReadToEndAsync());
                 var failed = false;
-                foreach(var assembly in AppState.Assemblies)
+                foreach (var assembly in AppState.Assemblies)
                 {
                     Console.WriteLine(assembly.GetName().Name);
                 }
@@ -176,24 +178,62 @@ else
                                     types.AddRange(Helpers.GetTypesInNamespace(assembly, nameSpace));
                                 }
                             }
-                            var results = new List<Type>();
+                            var results = new List<(Type, ConstructorInfo)>();
                             foreach (var typed in types)
                             {
                                 var constructor = typed.GetConstructor(Type.EmptyTypes);
                                 if (constructor != null)
                                 {
-                                    results.Add(typed);
+                                    results.Add((typed, constructor));
+                                }
+                                else
+                                {
+                                    foreach (var ctor in typed.GetConstructors())
+                                    {
+                                        var ctorFailed = false;
+                                        foreach (var param in ctor.GetParameters())
+                                        {
+                                            if (!Helpers.IsBasicType(param.ParameterType))
+                                            {
+                                                ctorFailed = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!ctorFailed)
+                                        {
+                                            results.Add((typed, ctor));
+                                        }
+                                    }
                                 }
                             }
-                            var type = results.Where(x => x.FullName == objectType).FirstOrDefault();
-                            if (type != null)
+                            var selected = results.Select(x => $"{x.Item1.FullName}");
+                            Console.WriteLine(JsonConvert.SerializeObject(selected));
+                            Console.WriteLine(objectType);
+                            Console.WriteLine(results.Any(x => $"{x.Item1.FullName}" == objectType));
+                            var resultTypes = results.Where(x => $"{x.Item1.Namespace}.{x.Item1.Name}" == objectType);
+                            if (resultTypes.Any())
                             {
+                                var type = resultTypes.First();
                                 if (sandboxState["Objects"]?[objectType] is JArray jArray)
                                 {
                                     foreach (var objState in jArray)
                                     {
-                                        var empty = System.Activator.CreateInstance(type);
-                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type))
+                                        var ctor = type.Item2;
+                                        var inputs = new List<object?>();
+                                        foreach (var param in ctor.GetParameters())
+                                        {
+                                            var representation = objState?[param.Name]?.ToObject<string>();
+                                            if (representation != null && GetValueFromJObject(param.ParameterType, representation) is { } obj)
+                                            {
+                                                inputs.Add(obj);
+                                            }
+                                            else
+                                            {
+                                                inputs.Add(null);
+                                            }
+                                        }
+                                        var empty = ctor.Invoke(inputs.ToArray());
+                                        foreach (var prop in Helpers.GetAllNestedFieldsAndPropertiesMemberInfo(type.Item1))
                                         {
                                             var obj = objState;
                                             foreach (var split in prop.Path.Split('.'))
@@ -213,7 +253,6 @@ else
                                                     object? value = GetValueFromJObject(fieldInfo.FieldType, representation);
                                                     Helpers.SetValueByPropertyOrFieldName(empty, prop.Path, value);
                                                 }
-
                                             }
                                         }
                                         AppState.TestObjects.Add(empty);
@@ -227,7 +266,6 @@ else
                                 SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
                             }
                         }
-
                     }
                 }
             }
