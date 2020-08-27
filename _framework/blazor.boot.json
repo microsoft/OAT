@@ -6,7 +6,7 @@
   "linkerEnabled": false,
   "resources": {
     "assembly": {
-      "OAT.Blazor.dll": "sha256-Hkhy4JA0aPBleqib9xQOqaF\/HANUIo1a4G\/+kXEyM2E=",
+      "OAT.Blazor.dll": "sha256-coG41W6EDTyLl8\/13nNyeUMHu85lopX7CV\/AbxULsxs=",
       "Microsoft.Extensions.DependencyInjection.Abstractions.dll": "sha256-Bs1Wrmh4ex9dTEIT0yCRF52N\/wOmsBDt457BHr0\/ssM=",
       "netstandard.dll": "sha256-\/zcPVM75OAY+joGVM8yIC1gO1SFYWP1CFERgQ8PJkfA=",
       "System.Xml.Linq.dll": "sha256-IPbQMdJxZXdk8HTlaPyXdQ6Zb82iZLphnM74yO4EURQ=",
@@ -59,9 +59,9 @@
       "Microsoft.Extensions.Logging.dll": "sha256-+kkwUt5LUrFrnFcHiSvLP3Ps50UAimB6C5utgehqOo4=",
       "Microsoft.Extensions.Options.dll": "sha256-rvTW0d54uLW0iDMAX30lpmr9f8uHoS3YYkEU5zNGhyc=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-czNf3btAeBW\/vvID5LAfgcsNZ+GM3ssVuPaMflcg0rs=",
-      "VehicleDemo.dll": "sha256-xtfA7o6Ho2Yi8Bqr085U3UeM6Hnn9AWofAPr3o+eWeI=",
+      "VehicleDemo.dll": "sha256-UUalY7tW+IqyLIEMAZZhOcr1mrlhRQqvthIgNnsTRas=",
       "MoreLinq.dll": "sha256-CCcLoUROc5qeK\/1UNVb\/AC6\/au9JUZ6zZVNzyOnIa7I=",
-      "OAT.dll": "sha256-ygt96briWzVzjyCa+gou6\/pRKCpzNMvl8PecT3biA\/U=",
+      "OAT.dll": "sha256-Mup9jVkJNZ8JpKdk4UXqV764tjm\/lON34+xdluQf0m4=",
       "Serilog.Sinks.Console.dll": "sha256-+\/qSsVYPEn8+XwQGR9SC\/Y\/8Hmhfu0qrE1FAmAfvTLw=",
       "System.Globalization.dll": "sha256-4eZjhWp6rSxTu81oFjw5IocOeS7dQ0cijunLjlWelJA=",
       "System.Runtime.Extensions.dll": "sha256-1FBfAreOfbXDp0WA294BCrk0EIa5ZqlghOuvDlqFtk8=",
@@ -83,10 +83,10 @@
       "KellermanSoftware.Compare-NET-Objects.dll": "sha256-8ax9rQssoU22O7MGhydRG9Axawbio1w3OmTwY3zDjDY="
     },
     "pdb": {
-      "OAT.Blazor.pdb": "sha256-Ns4x87Ejk4yxGy66c49mgfw7LT4INA5FFPrQdwpXBaA=",
-      "VehicleDemo.pdb": "sha256-gDR7Tb2lxG1wWumABG7mGH3G2qTBs63oxm5kM1rKWOg=",
+      "OAT.Blazor.pdb": "sha256-RphEVAo3BHaNaEEr1SKrRAj\/f\/+teokGUuh6WtPCO8g=",
+      "VehicleDemo.pdb": "sha256-GLcM8fnVXWP\/6H2Kf9CrL9xBzI8nuoX37Of0l8Td5Io=",
       "MoreLinq.pdb": "sha256-XdXdgRpFq4GyCWpXzlfuR9TwOp8lrChW1Bo5A7Ftnww=",
-      "OAT.pdb": "sha256-mQ\/FV47NX9boVJ5OfImuEuqXY4O9O5GEDT5TfI9A6s8=",
+      "OAT.pdb": "sha256-ZmGIMgp3c7B28FZsD3aSJgNiQFGFMu2g2jD0R87wM+M=",
       "Microsoft.CodeAnalysis.CSharp.Scripting.pdb": "sha256-FG3cbTws3hcLLdUDuMsIvCqu\/tI4fyJi++jVjQANjRU=",
       "Microsoft.CodeAnalysis.pdb": "sha256-Bfcl2PqufYAPBNBUYSfcOVk22UPeOyBEEiAWbg8jcfw=",
       "Microsoft.CodeAnalysis.CSharp.pdb": "sha256-\/5vRDjXZQyk2wyGUE3EhhVvDgqr8FPMgejsle9bp5BI=",
