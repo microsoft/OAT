@@ -1,8 +1,8 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 <select id="@id" @bind="SubProperty">
-    @foreach (var e in Enum.GetValues(Helpers.GetValueByPropertyOrFieldName(Object, SubPath).GetType()))
+    @for (int i = 0; i < values.Count; i++)
     {
-        <option value="@e">@e</option>
+        <option value="@i">@values[i]</option>
     }
 </select>
 @code {
@@ -20,27 +20,31 @@
 
     Type? type;
 
+    List<Enum> values = new List<Enum>();
+
     protected override void OnInitialized()
     {
         type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
+        foreach(var value in Enum.GetValues(type))
+        {
+            values.Add((Enum)value);
+        }
         base.OnInitialized();
     }
 
-    public string SubProperty
+    public int SubProperty
     {
         get
         {
             if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Enum val){
-                return val.ToString();
+                var idx = values.IndexOf(val);
+                return idx >= 0 ? idx : 0;
             }
-            return string.Empty;
+            return 0;
         }
         set
         {
-            if (Enum.TryParse(type,value, out object enumVal))
-            {
-                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, enumVal);
-            }
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, values[value]);
             if (OnChange != null) {
                 OnChange();
             }

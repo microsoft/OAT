@@ -1,4 +1,5 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+@using Newtonsoft.Json;
 <br/>
 <tbody>
     <tr>
@@ -61,7 +62,7 @@
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="@RefreshThis" />
+            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="RefreshThis"/>
         </td>
     </tr>
     @if (Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -142,8 +143,12 @@
 
     string FieldProperty
     {
-        get { return Rule?.Clauses[Clause].Field ?? string.Empty; }
-        set {
+        get
+        {
+            return Rule?.Clauses[Clause].Field ?? string.Empty;
+        }
+        set
+        {
             if (Rule != null)
             {
                 Rule.Clauses[Clause].Field = value;

@@ -1,7 +1,8 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+@using Newtonsoft.Json;
 
 <select id="@id" @bind="SelectedType">
-    @for(int i = 0; i < Types.Length; i++)
+    @for (int i = 0; i < Types.Length; i++)
     {
         <option value="@i">@Types[i].FullName</option>
     }
@@ -40,11 +41,8 @@
 
     protected override void OnInitialized()
     {
-        _selectedType = Array.IndexOf(Types,Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
-        if (BindIndex != null)
-        {
-            BindIndex.Value = _selectedType;
-        }
+        var newIndex = Array.IndexOf(Types,Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
+        SelectedType = newIndex < 0 ? 0 : newIndex;
         base.OnInitialized();
     }
 

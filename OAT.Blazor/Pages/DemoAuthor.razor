@@ -4,6 +4,8 @@
 @using System.Reflection;
 @using Microsoft.CST.OAT.VehicleDemo;
 @using System.IO;
+@using Newtonsoft.Json;
+
 @inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
@@ -14,28 +16,28 @@
 <br />
 @foreach (var rule in AppState.DemoRules)
 {
-<div class="card">
-    @if (issues.ContainsKey(rule))
-    {
-        @foreach (var problem in issues[rule])
+    <div class="card">
+        @if (issues.ContainsKey(rule))
         {
-            <div class="problem">
-                <span class="oi oi-warning"></span>
-                @problem.Description
-            </div>
+            @foreach (var problem in issues[rule])
+            {
+                <div class="problem">
+                    <span class="oi oi-warning"></span>
+                    @problem.Description
+                </div>
+            }
+            @if (issues[rule].Count() > 0)
+            {
+                <br />
+            }
         }
-        @if (issues[rule].Count() > 0)
+        else
         {
-            <br />
+            <p>Processing Issues for Rule...</p>
         }
-    }
-    else
-    {
-        <p>Processing Issues for Rule...</p>
-    }
 
-    <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
-</div>
+        <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+    </div>
 }
 
 @code{
@@ -46,7 +48,7 @@
         return Helpers.GetTypesInNamespace(assembly, nameSpace);
     }
 
-    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+    Analyzer analyzer = new Analyzer();
 
     protected override void OnInitialized()
     {
@@ -60,10 +62,21 @@
 
     void ValidateRules()
     {
+        issues.Clear();
         foreach (var rule in AppState.DemoRules)
         {
+            if (rule.Clauses.Any())
+            {
+                Console.WriteLine(rule.Clauses[0].Operation);
+            }
             issues[rule] = analyzer.EnumerateRuleIssues(rule);
+            foreach(var issue in issues[rule])
+            {
+                Console.WriteLine(issue.Description);
+                Console.WriteLine(JsonConvert.SerializeObject(issue.Clauses));
+            }
         }
+        this.StateHasChanged();
     }
 
     void RemoveLastRule()

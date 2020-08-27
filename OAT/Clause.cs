@@ -72,14 +72,8 @@ namespace Microsoft.CST.OAT
         {
             get
             {
-                if (_key is (Operation.NoOperation, _))
-                {
-                    _key = (Operation, CustomOperation ?? "");
-                }
-                return _key;
+                return (Operation, CustomOperation ?? "");
             }
         }
-
-        private (Operation Operation, string CustomOperation) _key = (OAT.Operation.NoOperation, "");
     }
 }

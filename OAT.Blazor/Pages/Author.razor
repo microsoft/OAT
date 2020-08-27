@@ -282,7 +282,7 @@
         return AppState.Assemblies.SelectMany(x => Helpers.GetTypesInNamespace(x, nameSpace)).ToArray();
     }
 
-    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+    Analyzer analyzer = new Analyzer();
 
     protected override void OnInitialized()
     {
@@ -295,10 +295,12 @@
 
     void ValidateRules()
     {
+        issues.Clear();
         foreach (var rule in AppState.Rules)
         {
             issues[rule] = analyzer.EnumerateRuleIssues(rule);
         }
+        this.StateHasChanged();
     }
 
     void RemoveLastRule()
