@@ -1,5 +1,5 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<select id="@id" @bind="SubProperty">
+<select class="form-control" id="@id" @bind="SubProperty">
     @for (int i = 0; i < values.Count; i++)
     {
         <option value="@i">@values[i]</option>

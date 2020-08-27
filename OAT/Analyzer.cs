@@ -241,7 +241,6 @@ namespace Microsoft.CST.OAT
                 {
                     foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
                     {
-                        Console.WriteLine(clause.Key);
                         yield return violation;
                     }
                 }
