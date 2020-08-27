@@ -19,10 +19,10 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet publish OAT.Blazor --configuration Release --no-restore 
+      run: dotnet publish OAT.Blazor --no-restore 
     - name: GitHub Pages action
       uses: peaceiris/actions-gh-pages@v3.6.4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: OAT.Blazor/bin/Release/netstandard2.1/publish/wwwroot
+        publish_dir: OAT.Blazor/bin/Debug/netstandard2.1/publish/wwwroot
