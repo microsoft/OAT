@@ -6,27 +6,28 @@
 @inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
-<button @onclick="RefreshState">Re-Run Rules</button>
-<br />
-<br />
-<button @onclick="AddObject">Add Vehicle</button>
-<button @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Vehicle</button>
-<br />
+
+<h2 class="pb-1">Demo: Sandbox</h2>
+<hr class="hr-th" />
+<div class="pb-3">
+    <button class="btn btn-primary" @onclick="AddObject">Add Vehicle</button>
+    <button class="btn btn-primary" @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Vehicle</button>
+    <button class="btn btn-primary" @onclick="RefreshState">Re-Run Rules</button>
+</div>
+
 @for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
 {
     var results = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]);
     <div class="card">
         <span>@results.Count() rules applied.</span>
-        <br />
         @foreach (var result in results)
         {
-        <b>@result.Name</b>
-        <br />
+            <b>@result.Name</b>
         }
-        <br />
         <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]" Collapsable="true" />
     </div>
 }
+
 @code {
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
@@ -54,6 +55,7 @@
     {
         AppState.DemoTestObjects.Add(new Microsoft.CST.OAT.VehicleDemo.Vehicle());
     }
-        public bool removeDisabled => AppState.DemoTestObjects.Count == 0;
+    public bool removeDisabled => AppState.DemoTestObjects.Count == 0;
+
 
 }

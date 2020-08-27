@@ -1,68 +1,51 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using Newtonsoft.Json;
-<br/>
-<tbody>
-    <tr>
-        <td>
-            <label for="clauseLabel">Label:</label>
-        </td>
-        <td>
-            <StringInput id="clauseLabel" Object="Rule?.Clauses[Clause]" SubPath="Label" />
-        </td>
-    </tr>
-    @if (Types.Any())
-    {
-        <tr>
-            <td>
-                <label for="clauseField">Field:</label>
-            </td>
-            <td>
-                <select id="clauseField" @bind="FieldProperty">
-                    <option value="">Use full Target</option>
-                    @if (TypeIndex != null)
+
+<hr class="hr-th mt-3" />
+<div class="form-row">
+    <div class="form-group col-6">
+        <label for="clauseLabel">Label:</label>
+        <StringInput id="clauseLabel" Object="Rule?.Clauses[Clause]" SubPath="Label" placeholder="Label"/>
+    </div>
+    <div class="form-group col-6">
+        @if (Types.Any())
+        {
+            <label for="clauseField">Field:</label>
+            <select class="form-control" id="clauseField" @bind="FieldProperty">
+                <option value="">Use full Target</option>
+                @if (TypeIndex != null)
+                {
+                    @foreach (string path in Helpers.GetAllNestedFieldsAndProperties(Types[TypeIndex.Value]))
                     {
-                        @foreach (string path in Helpers.GetAllNestedFieldsAndProperties(Types[TypeIndex.Value]))
-                        {
-                            <option value="@path">@path</option>
-                        }
+                        <option value="@path">@path</option>
                     }
-                </select>
-            </td>
-        </tr>
-    }
-    else
-    {
-        <tr>
-            <td>
-                <label for="clauseField">Field:</label>
-            </td>
-            <td>
-                <StringInput id="clauseField" Object="Rule?.Clauses[Clause]" SubPath="Field" />
-            </td>
-        </tr>
-    }
-    <tr>
-        <td>
-            <label for="captureinput">Capture:</label>
-        </td>
-        <td>
-            <BoolInput id="captureinput" Object="Rule?.Clauses[Clause]" SubPath="Capture" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="invertinput">Invert:</label>
-        </td>
-        <td>
-            <BoolInput id="invertinput" Object="Rule?.Clauses[Clause]" SubPath="Invert" />
-        </td>
-    </tr>
+                }
+            </select>
+        }
+        else
+        {
+            <label for="clauseField">Field:</label>
+            <StringInput id="clauseField" Object="Rule?.Clauses[Clause]" SubPath="Field" placeholder="Field" />
+        }
+    </div>
+</div>
+<div class="form-check">
+    <BoolInput id="captureinput" Object="Rule?.Clauses[Clause]" SubPath="Capture" />
+    <label class="form-check-label" for="captureinput">Capture</label>
+</div>
+<div class="form-check">
+    <BoolInput id="invertinput" Object="Rule?.Clauses[Clause]" SubPath="Invert" />
+    <label class="form-check-label" for="invertinput">Invert</label>
+</div>
+
+
+<tbody>    
     <tr>
         <td>
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="RefreshThis"/>
+            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="RefreshThis" />
         </td>
     </tr>
     @if (Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -128,6 +111,7 @@
         </td>
     </tr>
 </tbody>
+
 @code {
     [Parameter]
     public Rule? Rule { get; set; }

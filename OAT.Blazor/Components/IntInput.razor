@@ -1,7 +1,8 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using System;
 
-<input id="@id" type="text" @bind="SubProperty"/>
+<input id="@id" type="text" class="form-control" @bind="SubProperty" placeholder="0"/>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
