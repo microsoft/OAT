@@ -11,8 +11,8 @@ html, body, .reset-font-fam {
 }
 
 .btn-tr {
+    color: black;
     background-color: transparent;
-    color: #243a5e;
     border: none;
 }
 
@@ -126,6 +126,9 @@ button {
                 font-family: inherit;
                 font-weight: bold;
             }
+                .sidebar .nav-item .nav-link .nav-icon {
+                    width: 32px;
+                }
 
         .sidebar .nav-item a {
             color: #d7d7d7;
@@ -164,23 +167,19 @@ button {
     border-radius: 7px;
     background-color: #d5d9e0;
 }
-    .card hr {
-        margin-top: auto;
-        border-top: 3px solid #243a5e;
-        border-radius: 7px;
-    }
 
-    .card .font-large {
-        font-size: large;
-        font-weight: bold;
-    }
+.hr-th {
+    margin-top: auto;
+    border-top: 3px solid black;
+    border-radius: 7px;
+}
 
-    .card .problem {
-        font-weight: bold;
-        font-size: medium;
-        font-style: italic;
-        color: #a6611a;
-    }
+.problem {
+    font-weight: bold;
+    font-size: medium;
+    font-style: italic;
+    color: #a6611a;
+}
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
