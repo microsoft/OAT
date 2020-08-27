@@ -1,7 +1,11 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-html, body, .reset-font-fam {
+html, body {
     font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+label {
+    font-weight: bold;
 }
 
 .btn-primary {
@@ -20,6 +24,35 @@ html, body, .reset-font-fam {
     border: none;
 }
 
+.card-top {
+    display: flex;
+    align-items: center;
+    background-color: #d8dadc;
+    border: 1px solid #d8dadc;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 3rem;
+    width: 100%;
+    font-size: large;
+    font-weight: bold;
+}
+
+.card-bottom {
+    border-top: 0px;
+    border-bottom: 1px;
+    border-left: 1px;
+    border-right: 1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-color: #adb5bd;
+    border-style: solid;
+    margin-bottom: 1rem;
+}
+
 app {
     position: relative;
     display: flex;
@@ -27,21 +60,7 @@ app {
 }
 
 button {
-    border-radius: 7px;
-}
-
-.glowBlue {
-    border-color: blue;
-    -webkit-box-shadow: 0 0 8px blue;
-    -moz-box-shadow: 0 0 8px blue;
-    box-shadow: 0 0 8px blue;
-}
-
-.glowRed {
-    border-color: red;
-    -webkit-box-shadow: 0 0 5px red;
-    -moz-box-shadow: 0 0 5px red;
-    box-shadow: 0 0 5px red;
+    border-radius: 5px;
 }
 
 .main {
@@ -157,25 +176,10 @@ button {
     padding-top: 1.1rem;
 }
 
-.card {
-    color: black;
-    padding-top: .5vw;
-    padding-bottom: .5vw;
-    padding-left: 1vw;
-    padding-right: 1vw;
-    margin-top: .5vw;
-    margin-right: 1vw;
-    min-width: 20vw;
-    max-width: 47vw;
-    display: block;
-    border-radius: 7px;
-    background-color: #d5d9e0;
-}
-
 .hr-th {
     margin-top: auto;
-    border-top: 3px solid black;
-    border-radius: 7px;
+    border-top: 2px solid darkgray;
+    border-radius: 5px;
 }
 
 .problem {

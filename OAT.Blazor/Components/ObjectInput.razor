@@ -3,51 +3,50 @@
 @switch (itemState)
 {
     case ItemState.Expanded:
-        if (Collapsable)
-        {
-            <div class="font-large">
-                @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
-                <button @onclick="Collapse">Collapse</button>
-            </div>
-            <hr />
-        }
-        @for (int i = 0; i < Properties.Length; i++)
-        {
-            if (Properties[i].CanWrite)
-            {
-                var type = Properties[i].PropertyType;
-                var appendedName = AppendNameToPath(Properties[i].Name);
-                var name = ToName(appendedName, i);
-                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+        <button class="card-top" type="button" @onclick="Collapse">
+            <span class="oi oi-chevron-top mx-3"></span>
+            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName</span>
+        </button>
+        <div class="card-bottom">
+            <form class="mx-3 pt-2" onsubmit="return false;">
+                @for (int i = 0; i < Properties.Length; i++)
                 {
-                    type = deNullabled;
+                    if (Properties[i].CanWrite)
+                    {
+                        var type = Properties[i].PropertyType;
+                        var appendedName = AppendNameToPath(Properties[i].Name);
+                        var name = ToName(appendedName, i);
+                        if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+                        {
+                            type = deNullabled;
+                        }
+                        <label for="@name">@Properties[i].Name</label>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+                    }
                 }
-                <label for="@name">@Properties[i].Name</label>
-                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
-            }
-        }
-        @for (int i = 0; i < Fields.Length; i++)
-        {
-            if (Fields[i].IsPublic)
-            {
-                var type = Fields[i].FieldType;
-                var appendedName = AppendNameToPath(Fields[i].Name);
-                var name = ToName(appendedName, i);
-                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+                @for (int i = 0; i < Fields.Length; i++)
                 {
-                    type = deNullabled;
+                    if (Fields[i].IsPublic)
+                    {
+                        var type = Fields[i].FieldType;
+                        var appendedName = AppendNameToPath(Fields[i].Name);
+                        var name = ToName(appendedName, i);
+                        if (Nullable.GetUnderlyingType(type) is Type deNullabled)
+                        {
+                            type = deNullabled;
+                        }
+                        <label for="@name">@Fields[i].Name</label>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+                    }
                 }
-                <label for="@name">@Fields[i].Name</label>
-                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
-            }
-        }
+            </form>
+        </div>   
         break;
     case ItemState.Collapsed:
-        <div class="font-large">
-            @Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName
-            <button @onclick="Expand">Expand</button>
-        </div>
-        <hr />
+        <button class="card-top mb-2" type="button" @onclick="Expand">
+            <span class="oi oi-chevron-bottom mx-3"></span>
+            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().FullName</span>
+        </button>
         break;
 }
 

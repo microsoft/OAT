@@ -1,7 +1,7 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using Newtonsoft.Json;
 
-<select id="@id" @bind="SelectedType">
+<select id="@id" class="form-control" @bind="SelectedType">
     @for (int i = 0; i < Types.Length; i++)
     {
         <option value="@i">@Types[i].FullName</option>

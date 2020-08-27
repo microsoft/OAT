@@ -9,12 +9,12 @@
 @inject NavigationManager NavigationManager;
 @inject Microsoft.CST.OAT.Blazor.AppState AppState;
 
-<h3 class="pb-1">Demo: Author Rules</h3>
+<h2 class="pb-1">Demo: Author Rules</h2>
 <hr class="hr-th"/>
 <div class="pb-3">
-    <button class="btn btn-secondary" @onclick="AddRule">Add Rule</button>
-    <button class="btn btn-secondary" @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
-    <button class="btn btn-secondary" @onclick="ValidateRules">Validate Rules</button>
+    <button class="btn btn-primary" @onclick="AddRule">Add Rule</button>
+    <button class="btn btn-primary" @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
+    <button class="btn btn-primary" @onclick="ValidateRules">Validate Rules</button>
 </div>
 
 <div class="">
@@ -29,16 +29,7 @@
                     @problem.Description
                 </div>
             }
-            @if (issues[rule].Count() > 0)
-            {
-                <br />
-            }
         }
-        else
-        {
-            <p>Processing Issues for Rule...</p>
-        }
-
         <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
     }
 </div>

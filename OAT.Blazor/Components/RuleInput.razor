@@ -4,87 +4,68 @@
 @switch (CollapsedState)
 {
     case ComponentCollapsedState.Expanded:
-        <div class="font-large">
-            <button class="btn-tr oi oi-minus" @onclick="Collapse">
-                <span class="reset-font-fam font-large">   @Rule?.Name</span>
-            </button>
-        </div>
-        <hr />
+        <button class="card-top" type="button" @onclick="Collapse">
+            <span class="oi oi-chevron-top mx-3"></span>
+            <span>@Rule?.Name</span>
+        </button>
+        <div class="card-bottom">
+            <form class="mx-3 pt-2" onsubmit="return false;">
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="ruleName">Name:</label>
+                        <StringInput id="ruleName" Object="Rule" SubPath="Name" placeholder="Name" />
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="ruleDescription">Description:</label>
+                        <StringInput id="ruleDescription" Object="Rule" SubPath="Description" placeholder="Description" />
+                    </div>
+                </div>
 
-        <tbody>
-            <tr>
-                <td>
-                    <label for="ruleName">Name:</label>
-                </td>
-                <td>
-                    <StringInput id="ruleName" Object="Rule" SubPath="Name" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ruleDescription">Description:</label>
-                </td>
-                <td>
-                    <StringInput id="ruleDescription" Object="Rule" SubPath="Description" />
-                </td>
-            </tr>
-            <tr>
-                <td>
+                <div class="form-group">
                     <label for="ruleExpression">Expression:</label>
-                </td>
-                <td>
-                    <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ruleTarget">Target:</label>
-                </td>
-                @if (Types.Any())
-                {
-                    <td>
-                        <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="Types" BindIndex="idx"/>
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        <StringInput id="ruleTarget" Object="Rule" SubPath="Target" />
-                    </td>
-                }
-            </tr>
-            <tr>
-                <td>
-                    <label for="ruleSeverity">Severity:</label>
-                </td>
-                <td>
-                    <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
-                </td>
-            </tr>
-        </tbody>
-        <br />
-        <button @onclick="AddClause">Add Clause</button>
-        <button @onclick="RemoveLastClause" disabled="@HasNoClauses()">Remove Last Clause</button>
-        <br />
-        @for (var i = 0; i < Rule?.Clauses.Count; i++)
-        {
+                    <StringInput id="ruleExpression" Object="Rule" SubPath="Expression" placeholder="Expression" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="ruleTarget">Target:</label>
+                        @if (Types.Any())
+                        {
+            <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="Types" BindIndex="idx" /> }
+                                else
+                                {
+            <StringInput id="ruleTarget" Object="Rule" SubPath="Target" placeholder="Target" />}
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="ruleSeverity">Severity:</label>
+                        <IntInput id="ruleSeverity" Object="Rule" SubPath="Severity" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-secondary" @onclick="AddClause">Add Clause</button>
+                    <button class="btn btn-secondary" @onclick="RemoveLastClause" disabled="@HasNoClauses()">Remove Last Clause</button>
+                </div>
+
+                <div class="form-group">
+                    @for (var i = 0; i < Rule?.Clauses.Count; i++)
+                    {
             @if (Types.Any())
             {
-                <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx"/>
-            }
-            else
-            {
-                <ClauseInput Rule="@Rule" Clause="@i" />
-            }
-        }
+            <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx" /> }
+        else
+        {
+            <ClauseInput Rule="@Rule" Clause="@i" />                        }                    }
+                </div>
+            </form>
+        </div>        
         break;
+
     case ComponentCollapsedState.Collapsed:
-        <div class="font-large">
-            <button class="btn-tr oi oi-plus" @onclick="Expand">
-                <span class="reset-font-fam font-large">   @Rule?.Name</span>
-            </button>
-        </div>
-        <hr />
+        <button class="card-top mb-2" type="button" @onclick="Expand">
+            <span class="oi oi-chevron-bottom mx-3"></span>
+            <span>@Rule?.Name</span>
+        </button>
         break;
 }
 
