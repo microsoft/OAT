@@ -12,15 +12,14 @@
 <div class="pb-3">
     <button class="btn btn-primary" @onclick="AddObject">Add Vehicle</button>
     <button class="btn btn-primary" @onclick="RemoveLastObject" disabled=@removeDisabled>Remove Last Vehicle</button>
-    <button class="btn btn-primary" @onclick="RefreshState">Re-Run Rules</button>
+    <button class="btn btn-primary" @onclick="RunRules">Re-Run Rules</button>
 </div>
 
 @for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
 {
-    var results = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]);
     <div class="card">
-        <span>@results.Count() rules applied.</span>
-        @foreach (var result in results)
+        <span>@results[i].Count() rules applied.</span>
+        @foreach (var result in results[i])
         {
             <b>@result.Name</b>
         }
@@ -29,32 +28,45 @@
 }
 
 @code {
-    Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
+    Analyzer analyzer = new Analyzer();
+
+    List<IEnumerable<Rule>> results = new List<IEnumerable<Rule>>();
 
     protected override async Task OnInitializedAsync()
     {
         analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
-        var results = analyzer.Analyze(AppState.DemoRules);
+        await RunRules();
         await base.OnInitializedAsync();
     }
 
-    void RefreshState()
+    async Task RunRules()
     {
-        this.StateHasChanged();
+        results.Clear();
+        foreach(var obj in AppState.DemoTestObjects)
+        {
+            results.Add(Array.Empty<Rule>());
+        }
+        for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
+        {
+            await Task.Run(() => results[i] = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]));
+        }
     }
 
-    void RemoveLastObject()
+    async Task RemoveLastObject()
     {
         if (AppState.DemoTestObjects.Count > 0)
         {
             AppState.DemoTestObjects.RemoveAt(AppState.DemoTestObjects.Count - 1);
         }
+        await RunRules();
     }
 
-    void AddObject()
+    async Task AddObject()
     {
         AppState.DemoTestObjects.Add(new Microsoft.CST.OAT.VehicleDemo.Vehicle());
+        await RunRules();
     }
+
     public bool removeDisabled => AppState.DemoTestObjects.Count == 0;
 
 
