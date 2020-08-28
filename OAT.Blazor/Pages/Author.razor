@@ -12,16 +12,18 @@
 @inject IFileReaderService fileReaderService;
 @inject IJSRuntime JSRuntime
 
-<h2>Assembly</h2>
-<p>Choose Assembly to use for file types (optional).</p>
-<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
 <h2>Rules</h2>
 <p>Load in JSON serialized rules.</p>
 <FileUpload ProcessFile="LoadRules" ReadLabel="Load Rules" ClearAction="ClearRules" ClearLabel="Clear Rules" />
+<h2>Assembly</h2>
+<p>Choose Assembly to use for file types.</p>
+<FileUpload ProcessFile="LoadAssembly" ReadLabel="Load Assembly" ClearAction="ClearAssemblies" ClearLabel="Clear Assemblies" />
+<LoadedAssemblies Assemblies="AppState.Assemblies" RefreshParent="this.StateHasChanged"/>
+<br/>
 @if (AppState.Assemblies.Any())
 {
     <label for="namespaceInput">Namespace To Search:</label>
-    <select id="namespaceInput" @bind="nameSpace">
+    <select class="form-control" id="namespaceInput" @bind="nameSpace">
         @foreach (var names in GetNamespaces())
         {
             <option value="@names">@names</option>
@@ -65,6 +67,7 @@
     void ClearAssemblies()
     {
         AppState.Assemblies.Clear();
+        RefreshPage();
     }
 
     void ClearRules()

@@ -1,0 +1,32 @@
+﻿@using System.Reflection;
+@inject Microsoft.CST.OAT.Blazor.AppState AppState;
+
+<h3>Loaded Assemblies</h3>
+<div class="row">
+    <div class="col">
+        <select class="form-control" @bind="SelectedAssembly">
+            @for (int i = 0; i < Assemblies.Count; i++)
+            {
+                <option value="@i">@Assemblies[i].GetName().Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-4">
+        <button @onclick="RemoveAssembly">Remove Assembly</button>
+    </div>
+</div>
+    @code {
+
+        [Parameter]
+        public List<Assembly> Assemblies { get; set; } = new List<Assembly>();
+
+        [Parameter]
+        public Action RefreshParent { get; set; } = () => { return; };
+        int SelectedAssembly { get; set; }
+
+        void RemoveAssembly()
+        {
+            AppState.Assemblies.RemoveAt(SelectedAssembly);
+            RefreshParent();
+        }
+    }

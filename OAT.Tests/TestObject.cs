@@ -13,5 +13,7 @@ namespace Microsoft.CST.OAT.Tests
         public TestObject? NestedObject { get; set; }
         public Dictionary<string, List<string>>? StringListDictField { get; set; }
         public DateTime DateTimeField { get; set; }
+        public Dictionary<string, object?>? ObjDictField { get; set; }
+        public List<object?>? ObjListField { get; set; }
     }
 }
