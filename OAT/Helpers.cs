@@ -132,9 +132,13 @@ namespace Microsoft.CST.OAT.Utils
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
-            if (obj is Dictionary<string,object> dict && propertyName != null)
+            if (obj is IDictionary<string,object> dict && propertyName != null)
             {
                 return dict[propertyName];
+            }
+            else if (obj is IList<object> list && int.TryParse(propertyName, out int propertyIndex) && list.Count > propertyIndex)
+            {
+                return list[propertyIndex];
             }
             else
             {
@@ -183,23 +187,26 @@ namespace Microsoft.CST.OAT.Utils
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
-            if (obj is Dictionary<string, object> dictionary)
+            if (obj is IDictionary<string, object> dictionary)
             {
-                if (value is { })
+                dictionary[propertyName] = value!;
+            }
+            else if (obj is IList<object> list && int.TryParse(propertyName,out int propertyIndex) && list.Count > propertyIndex)
+            {
+                list[propertyIndex] = value!;
+            }
+            else
+            {
+                var prop = obj?.GetType().GetProperty(propertyName);
+                if (prop != null)
                 {
-                    dictionary[propertyName] = value;
+                    prop.SetValue(obj, value);
                 }
-                return;
-            }
-            var prop = obj?.GetType().GetProperty(propertyName);
-            if (prop != null)
-            {
-                prop.SetValue(obj, value);
-            }
-            var field = obj?.GetType().GetField(propertyName);
-            if (field != null)
-            {
-                field.SetValue(obj, value);
+                var field = obj?.GetType().GetField(propertyName);
+                if (field != null)
+                {
+                    field.SetValue(obj, value);
+                }
             }
         }
 
