@@ -132,11 +132,14 @@ namespace Microsoft.CST.OAT.Utils
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
-            if (obj is IDictionary<string,object> dict && propertyName != null)
+            //Type? t = obj?.GetType();
+            //if (t is null) return obj;
+            //if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>) && t.GetGenericArguments()[0] == typeof(string))
+            if (obj is System.Collections.IDictionary dict)
             {
                 return dict[propertyName];
             }
-            else if (obj is IList<object> list && int.TryParse(propertyName, out int propertyIndex) && list.Count > propertyIndex)
+            else if (obj is System.Collections.IList list && int.TryParse(propertyName, out int propertyIndex) && list.Count > propertyIndex)
             {
                 return list[propertyIndex];
             }
