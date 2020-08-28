@@ -8,15 +8,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAT.Blazor", "OAT.Blazor\OAT.Blazor.csproj", "{279356E4-F42C-4213-B6FD-902765C16384}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Blazor", "OAT.Blazor\OAT.Blazor.csproj", "{279356E4-F42C-4213-B6FD-902765C16384}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAT.Tests", "OAT.Tests\OAT.Tests.csproj", "{1DF0F2B1-2F0A-4751-B4A1-7D06B1EA0780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Tests", "OAT.Tests\OAT.Tests.csproj", "{1DF0F2B1-2F0A-4751-B4A1-7D06B1EA0780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAT", "OAT\OAT.csproj", "{DBFB8F91-0364-4DCD-BE28-0A7CD20FE1F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT", "OAT\OAT.csproj", "{DBFB8F91-0364-4DCD-BE28-0A7CD20FE1F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAT.Benchmarks", "OAT.Benchmarks\OAT.Benchmarks.csproj", "{6A663C6A-B226-4EEE-82C6-68508BB94244}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Benchmarks", "OAT.Benchmarks\OAT.Benchmarks.csproj", "{6A663C6A-B226-4EEE-82C6-68508BB94244}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleDemo", "VehicleDemo\VehicleDemo.csproj", "{38ED2762-F731-44D0-AC8C-3CF928C8CE8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleDemo", "VehicleDemo\VehicleDemo.csproj", "{38ED2762-F731-44D0-AC8C-3CF928C8CE8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
