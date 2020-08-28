@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-pUabQ1UIWVaMwcc5JlIHHNQEfOzmizzXqmfbIFEANBo=",
+      "hash": "sha256-sVAO3gD4vz3OeMYegldJU\/tUzZK5N6oYkZmgl6RadZU=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-OZaZiH0h2ZqKDaRUzDGPbTfqEN6N20jNbNIylx3j1ZQ=",
+      "hash": "sha256-mI80SBzgVJRJ5r5GEISH2ecd1bG7mgthVZPmDf4mPvI=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-MQwrmKt0eUt\/AuFpWdsYM8i5zImRumzTSWSgAe4OLE4=",
+      "hash": "sha256-YBS3FzxgSEi\/AgphnNc6gJVADHoJVhAWC5Hl8PkTakY=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-4ktJL\/3iafe9vtGR8Y+FRPfHwWIrxW3hCdO0I7OdoTY=",
+      "hash": "sha256-0cLK+714iLOmAp00dXOsFI9Ioxd2LNaz2t1kRWpqVtk=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-XsmbREetEQ2NYDP8jyWcsHFUOlgdwtu2Y9uWPRm+HlY=",
+      "hash": "sha256-xx4WpdF0sZ3G9a\/y1IwcKCU9Ny981DCds8\/cGGtmN+M=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-FMh3bYXbJXxjncjhpYj\/NMK9CcKmXckt1nDKGUQCUJI=",
+      "hash": "sha256-nyFVdI2iRk7DVpJXRBNOPiT\/A5wER247Si\/ZFS\/ZztY=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-WsKOPAHLxsqofpKvzGbPZY8Z9hyXN\/7tp67KZDnxsMs=",
+      "hash": "sha256-3ylqCkxRu2piww36hXtt3fCGYamBC7tgVdSZpFnGscM=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "zgT4MGk+"
+  "version": "FLPWv8d0"
 };
