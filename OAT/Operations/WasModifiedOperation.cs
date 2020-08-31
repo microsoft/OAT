@@ -22,11 +22,11 @@ namespace Microsoft.CST.OAT.Operations
 
         private IEnumerable<Violation> WasModifiedValidationDelegate(Rule rule, Clause clause)
         {
-            if (!(clause.Data?.Count == null || clause.Data?.Count == 0))
+            if (clause.Data?.Count > 0)
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseRedundantData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
-            else if (!(clause.DictData?.Count == null && clause.DictData?.Count == 0))
+            else if (clause.DictData?.Count > 0)
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseRedundantDictData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
