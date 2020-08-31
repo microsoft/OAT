@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-sVAO3gD4vz3OeMYegldJU\/tUzZK5N6oYkZmgl6RadZU=",
+      "hash": "sha256-Ojr4l4HMNPCIkMToJK3Yre2JtyYAdH7O3H1O7pfTdSQ=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-mI80SBzgVJRJ5r5GEISH2ecd1bG7mgthVZPmDf4mPvI=",
+      "hash": "sha256-tKeCTutyOOkiq7wUZIDVN9rZiBH3blbwjEqvQO+3Ffw=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-YBS3FzxgSEi\/AgphnNc6gJVADHoJVhAWC5Hl8PkTakY=",
+      "hash": "sha256-gn4PlSb1o+C0JZH1a3oFAYtFNIk2lU5hQwJlrYFKEr8=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-0cLK+714iLOmAp00dXOsFI9Ioxd2LNaz2t1kRWpqVtk=",
+      "hash": "sha256-GSL853Ih\/rdbmSF46uGZailq\/xetIQ7Jb+S\/8MCUarU=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-xx4WpdF0sZ3G9a\/y1IwcKCU9Ny981DCds8\/cGGtmN+M=",
+      "hash": "sha256-K7R129x5w6Df7cLFbZjbCew0W2nfCP0hsZsPHQSxxxY=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-nyFVdI2iRk7DVpJXRBNOPiT\/A5wER247Si\/ZFS\/ZztY=",
+      "hash": "sha256-7u84vY1aogBzjptYskm2rmEAjBMny\/4axX3DyAsKa3U=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-3ylqCkxRu2piww36hXtt3fCGYamBC7tgVdSZpFnGscM=",
+      "hash": "sha256-V0y6GgPJUapinELVWR2QmKdbSOcDfsZe3MkcjioMprc=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "FLPWv8d0"
+  "version": "gpbjyJPK"
 };
