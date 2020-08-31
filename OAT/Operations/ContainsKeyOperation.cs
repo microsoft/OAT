@@ -22,7 +22,7 @@ namespace Microsoft.CST.OAT.Operations
 
         private IEnumerable<Violation> ContainsKeyValidationDelegate(Rule rule, Clause clause)
         {
-            if (clause.DictData != null)
+            if (clause.DictData?.Count > 0)
             {
                 yield return new Violation(string.Format(Strings.Get("Err_ClauseUnexpectedDictData"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
             }
