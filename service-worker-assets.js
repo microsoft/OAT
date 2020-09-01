@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-Ojr4l4HMNPCIkMToJK3Yre2JtyYAdH7O3H1O7pfTdSQ=",
+      "hash": "sha256-pHKHWDK02KbqTtbNRDR7G2SUg3T5xNjWq0sAs4SxajU=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -533,7 +533,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-tKeCTutyOOkiq7wUZIDVN9rZiBH3blbwjEqvQO+3Ffw=",
+      "hash": "sha256-ijPE7Lyx5tv7IPXRhOY49kWp3PbcDdCpKQjjKlK+cIM=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -541,7 +541,7 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-gn4PlSb1o+C0JZH1a3oFAYtFNIk2lU5hQwJlrYFKEr8=",
+      "hash": "sha256-lbb7pJUzSYWSx6G9WaufRZdEB7iavIGorstqZdtY9Wo=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -621,11 +621,11 @@
       "url": "_framework\/_bin\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
-      "hash": "sha256-GSL853Ih\/rdbmSF46uGZailq\/xetIQ7Jb+S\/8MCUarU=",
+      "hash": "sha256-1AxV+l2JRLlqHFja9TNkRVlcNOOjSEUB9lwDCV7YOHM=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-K7R129x5w6Df7cLFbZjbCew0W2nfCP0hsZsPHQSxxxY=",
+      "hash": "sha256-Ih601m7hi79GknksWtrkY5RHThzCrzwoWk6AB1tcUHU=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -633,7 +633,7 @@
       "url": "_framework\/_bin\/MoreLinq.pdb"
     },
     {
-      "hash": "sha256-7u84vY1aogBzjptYskm2rmEAjBMny\/4axX3DyAsKa3U=",
+      "hash": "sha256-qcNIrcwKCQu5etZJba4ra2TkLWAtZqLIUl4zlzKnQ2s=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -669,9 +669,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-V0y6GgPJUapinELVWR2QmKdbSOcDfsZe3MkcjioMprc=",
+      "hash": "sha256-s39CTIJ8W4vG6kCyROAGin05aCzciYD33aIRb3nmwYA=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "gpbjyJPK"
+  "version": "+N2ktrhd"
 };
