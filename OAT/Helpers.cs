@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -164,6 +165,70 @@ namespace Microsoft.CST.OAT.Utils
                 obj2 = GetValueByPropertyOrFieldNameInternal(obj2, split);
             }
             return obj2;
+        }
+
+        public static object? GetDefaultValueForType(Type type)
+        {
+            if (type.Equals(typeof(string)))
+            {
+                return string.Empty;
+            }
+            else if (type.Equals(typeof(int)))
+            {
+                return 0;
+            }
+            else if (type == typeof(char))
+            {
+                return ' ';
+            }
+            else if (type == typeof(long))
+            {
+                return (long)0;
+            }
+            else if (type == typeof(float))
+            {
+                return (float)0;
+            }
+            else if (type == typeof(double))
+            {
+                return (double)0;
+            }
+            else if (type == typeof(decimal))
+            {
+                return (decimal)0;
+            }
+            else if (type == typeof(bool))
+            {
+                return false;
+            }
+            else if (type == typeof(uint))
+            {
+                return (uint)0;
+            }
+            else if (type == typeof(ulong))
+            {
+                return (ulong)0;
+            }
+            else if (type == typeof(short))
+            {
+                return (short)0;
+            }
+            else if (type == typeof(ushort))
+            {
+                return (ushort)0;
+            }
+            else if (type == typeof(DateTime))
+            {
+                return DateTime.MinValue;
+            }
+            else if (type.IsEnum)
+            {
+                return GetDefaultValueForType(type.GetEnumUnderlyingType());
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
