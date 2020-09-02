@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace Microsoft.CST.OAT.Blazor
+namespace Microsoft.CST.OAT.Blazor.Components
 {
     public class Scaffold
     {
