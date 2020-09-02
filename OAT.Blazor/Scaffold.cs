@@ -29,13 +29,13 @@ namespace Microsoft.CST.OAT.Blazor
                 }
                 else
                 {
-                    if (Helpers.IsBasicType(parameter.GetType()))
+                    if (Helpers.IsBasicType(parameter.ParameterType))
                     {
-                        Parameters.Add(parameter.Name, Helpers.GetDefaultValueForType(parameter.GetType()));
+                        Parameters.Add(parameter.Name, Helpers.GetDefaultValueForType(parameter.ParameterType));
                     }
                     else
                     {
-                        if (parameter.GetType().GetConstructors().FirstOrDefault() is ConstructorInfo constructor)
+                        if (parameter.ParameterType.GetConstructors().FirstOrDefault() is ConstructorInfo constructor)
                         {
                             Parameters.Add(parameter.Name, new Scaffold(constructor));
                         }
