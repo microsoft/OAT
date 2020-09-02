@@ -6,6 +6,22 @@
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
     <RootNamespace>Microsoft.CST.OAT.Blazor.Components</RootNamespace>
+    <Version>0.0.0-placeholder</Version>
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryUrl>https://github.com/Microsoft/OAT</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>Blazor components used in Object Analysis Toolkit.</Description>
+    <PackageId>Microsoft.CST.OAT.Blazor.Components</PackageId>
+    <PackageTags>Object Analysis Toolkit</PackageTags>
+    <PackageVersion>0.0.0-placeholder</PackageVersion>
+    <PackageProjectUrl>https://github.com/microsoft/OAT</PackageProjectUrl>
+    <PackageIcon>icon-128.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
 
@@ -21,4 +37,12 @@
     <ProjectReference Include="..\OAT\OAT.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\icon-128.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>
+	  
+	  
+  
