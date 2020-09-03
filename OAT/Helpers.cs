@@ -131,11 +131,29 @@ namespace Microsoft.CST.OAT.Utils
             return results;
         }
 
+        /// <summary>
+        /// Determines if the ConstructorInfo given can be constructed entirely with basic types
+        /// </summary>
+        /// <param name="constructorInfo"></param>
+        /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
+        public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
+        {
+            foreach(var parameter in constructorInfo.GetParameters())
+            {
+                if (!IsBasicType(parameter.ParameterType))
+                {
+                    if (!parameter.ParameterType.GetConstructors().Any(x => ConstructedOfBasicTypes(x)))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
-            //Type? t = obj?.GetType();
-            //if (t is null) return obj;
-            //if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>) && t.GetGenericArguments()[0] == typeof(string))
             if (obj is System.Collections.IDictionary dict && dict.Keys.OfType<string>().Any(x => x == propertyName))
             {
                 return dict[propertyName];
