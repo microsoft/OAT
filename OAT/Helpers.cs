@@ -136,7 +136,7 @@ namespace Microsoft.CST.OAT.Utils
             //Type? t = obj?.GetType();
             //if (t is null) return obj;
             //if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>) && t.GetGenericArguments()[0] == typeof(string))
-            if (obj is System.Collections.IDictionary dict)
+            if (obj is System.Collections.IDictionary dict && dict.Keys.OfType<string>().Any(x => x == propertyName))
             {
                 return dict[propertyName];
             }

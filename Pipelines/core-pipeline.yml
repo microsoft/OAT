@@ -42,9 +42,16 @@ stages:
   jobs:
   - template: templates/nuget-build-job.yml
     parameters:
+      jobName: 'pack_lib'
       dotnetVersion: '3.1.x'
       projectPath: 'OAT/OAT.csproj'
       projectName: 'OAT'
+  - template: templates/nuget-build-job.yml
+    parameters:
+      jobName: 'pack_blazor'
+      dotnetVersion: '3.1.x'
+      projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
+      projectName: 'OAT_Blazor_Components'
 
 - stage: Release
   dependsOn:

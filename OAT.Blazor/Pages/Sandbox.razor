@@ -1,8 +1,6 @@
 ﻿@page "/sandbox"
-@using System.Reflection.Metadata;
 @using Microsoft.CodeAnalysis;
 @using System.Reflection;
-@using System.Diagnostics;
 @using System.IO;
 @using Tewr.Blazor.FileReader;
 @using Newtonsoft.Json;
@@ -51,6 +49,7 @@
             <option value="@type.FullName">@type.FullName</option>
         }
     </select>
+    <br/>
     <label for="constructorToUse">Constructor to Create:</label>
     <select id="constructorToUse" @bind="constructorToInvoke">
         @{
@@ -65,23 +64,11 @@
         }
     </select>
     <br />
-    @if (Parameters.Any())
-    {
-        Parameters.Clear();
-    }
-    @foreach(var parameter in constructors?[constructorToInvoke].GetParameters() ?? Array.Empty<ParameterInfo>())
-    {
-        if (parameter.HasDefaultValue){
-            Parameters.Add(parameter.Name, parameter.DefaultValue);
-         }
-        else{
-            Parameters.Add(parameter.Name, Helpers.GetDefaultValueForType(parameter.GetType()));
-        }
-        <label for="@parameter.Name">@parameter.Name</label>
-        <PropertyInput Id="@parameter.Name" Object="@Parameters" SubPath="@parameter.Name" Type="@parameter.ParameterType" />
+    @if (ScaffoldedObject != null){
+        <ScaffoldInput Scaffold="ScaffoldedObject"/>
+    <br />
     }
 
-    <br />
 
     @if (ParseErrors.Any())
     {
@@ -127,6 +114,8 @@ else
     <p>Load an Assembly to use the Sandbox.</p>
 }
 @code {
+    Scaffold ScaffoldedObject;
+
     Func<Stream, Task> LoadAssembly;
     Func<Stream, Task> LoadSandbox;
 
@@ -350,6 +339,10 @@ else
         set
         {
             _constructorToInvoke = value;
+            var constructors = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
+            if (constructors.Any()){
+                        ScaffoldedObject = new Scaffold(constructors[value]);
+            }
             RefreshState();
         }
     }
@@ -363,6 +356,12 @@ else
         set
         {
             _typeToInvoke = value;
+            var constructors = Types.Where(x => x.Key.FullName == value).FirstOrDefault().Value;
+            if (constructors.Any()){
+                var constructorToUse = constructors[constructorToInvoke];
+                ScaffoldedObject = new Scaffold(constructorToUse);
+            }
+
             RefreshState();
         }
     }
@@ -450,16 +449,10 @@ else
 
     void AddObject()
     {
-        var type = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault();
-        var constructor = type.Value[constructorToInvoke];
         try
         {
-            var inputs = new List<object>();
-            foreach(var parameter in constructor.GetParameters())
-            {
-                inputs.Add(Parameters[parameter.Name]);
-            }
-            AppState.TestObjects.Add(constructor.Invoke(inputs.ToArray()));
+            AppState.TestObjects.Add(ScaffoldedObject.Construct());
+
         }
         catch(Exception e)
         {
