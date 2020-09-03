@@ -5,6 +5,8 @@
 @using Tewr.Blazor.FileReader;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+@using Microsoft.CST.OAT.Utils;
+@using Serilog; 
 
 @inject NavigationManager NavigationManager;
 @inject AppState AppState;
@@ -26,7 +28,7 @@
     @if (SandBoxErrors.Any())
     {
         <div class="alert alert-warning" role="alert">
-        @foreach(var error in SandBoxErrors)
+        @foreach (var error in SandBoxErrors)
         {
             <p>@error</p>
         }
@@ -44,7 +46,7 @@
     <br />
     <label for="typeToCreate">Type to Create:</label>
     <select id="typeToCreate" @bind="typeToInvoke">
-        @foreach(var type in Types.Keys)
+        @foreach (var type in Types.Keys)
         {
             <option value="@type.FullName">@type.FullName</option>
         }
@@ -53,7 +55,6 @@
     <label for="constructorToUse">Constructor to Create:</label>
     <select id="constructorToUse" @bind="constructorToInvoke">
         @{
-            var constructors = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
             if (constructors != null)
             {
                 @for (int i = 0; i < constructors.Count; i++)
@@ -64,7 +65,7 @@
         }
     </select>
     <br />
-    @if (ScaffoldedObject != null){
+    @if (ScaffoldedObject != null) {
         <ScaffoldInput Scaffold="ScaffoldedObject"/>
     <br />
     }
@@ -73,7 +74,7 @@
     @if (ParseErrors.Any())
     {
         <div class="alert alert-warning" role="alert">
-        @foreach(var parseError in ParseErrors)
+        @foreach (var parseError in ParseErrors)
         {
             @parseError
         }
@@ -339,11 +340,18 @@ else
         set
         {
             _constructorToInvoke = value;
-            var constructors = Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
-            if (constructors.Any()){
-                        ScaffoldedObject = new Scaffold(constructors[value]);
+            if (constructors.Any()) {
+                ScaffoldedObject = new Scaffold(constructors[value]);
             }
             RefreshState();
+        }
+    }
+
+    List<ConstructorInfo> constructors
+    {
+        get
+        {
+            return Types.Where(x => x.Key.FullName == typeToInvoke).FirstOrDefault().Value;
         }
     }
 
@@ -356,7 +364,7 @@ else
         set
         {
             _typeToInvoke = value;
-            var constructors = Types.Where(x => x.Key.FullName == value).FirstOrDefault().Value;
+
             if (constructors.Any()){
                 var constructorToUse = constructors[constructorToInvoke];
                 ScaffoldedObject = new Scaffold(constructorToUse);
@@ -390,30 +398,37 @@ else
         var results = new Dictionary<Type, List<ConstructorInfo>>();
         foreach (var type in types)
         {
+            var allowedConstructors = new List<ConstructorInfo>();
             try
             {
-                var allowedConstructors = new List<ConstructorInfo>();
                 var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
                 foreach (var constructorItr in constructors)
                 {
-                    foreach (var parameter in constructorItr.GetParameters())
+                    try
                     {
-                        if (!Helpers.IsBasicType(parameter.ParameterType))
+                        if (Helpers.ConstructedOfBasicTypes(constructorItr))
                         {
-                            break;
+                            allowedConstructors.Add(constructorItr);
                         }
                     }
-                    allowedConstructors.Add(constructorItr);
-                }
-                if (allowedConstructors.Any())
-                {
-                    results.Add(type, allowedConstructors);
+
+                    catch (Exception e)
+                    {
+                        // Skip this constructor, we can't make it work.
+                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
+                    }
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                // Skip this constructor, we can't make it work.
-                //Console.WriteLine($"Failed to get constructor:{e.Message}");
+                Log.Debug($"Failed to parse type:{e.Message}. ({type.ToString()}");
+            }
+
+
+            if (allowedConstructors.Any())
+            {
+                results.Add(type, allowedConstructors);
             }
         }
         Types = results;
