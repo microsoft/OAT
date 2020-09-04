@@ -16,11 +16,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
         public Scaffold(ConstructorInfo constructorToUse)
         {
             Constructor = constructorToUse;
-            PopulateParameters();
-        }
 
-        public void PopulateParameters()
-        {
             foreach (var parameter in Constructor.GetParameters() ?? Array.Empty<ParameterInfo>())
             {
                 if (parameter.HasDefaultValue)
@@ -35,7 +31,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
                     }
                     else
                     {
-                        if (parameter.ParameterType.GetConstructors().FirstOrDefault() is ConstructorInfo constructor)
+                        if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfBasicTypes(x)).FirstOrDefault() is ConstructorInfo constructor)
                         {
                             Parameters.Add(parameter.Name, new Scaffold(constructor));
                         }
