@@ -10,6 +10,7 @@ trigger:
   paths:
     include:
     - OAT
+    - OAT.Blazor
     
 pr:
   branches:
@@ -19,6 +20,7 @@ pr:
     include:
     - Pipelines
     - OAT
+    - OAT.Blazor
     - OAT.Tests
     - OAT.sln
 
