@@ -10,8 +10,8 @@ namespace Microsoft.CST.OAT.Blazor.Components
 {
     public class Scaffold
     {
-        public Dictionary<string, object?> Parameters { get; set; } = new Dictionary<string, object?>();
-        public ConstructorInfo Constructor { get; set; }
+        public Dictionary<string, object?> Parameters { get; } = new Dictionary<string, object?>();
+        public ConstructorInfo Constructor { get; }
 
         public Scaffold(ConstructorInfo constructorToUse)
         {
