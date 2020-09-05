@@ -4,11 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [main]
   schedule:
     - cron: '0 18 * * 2'
-
     
 jobs:
   CodeQL-Build:
@@ -38,7 +36,7 @@ jobs:
     - name: Build OAT Blazor
       run: |
           dotnet restore
-          dotnet build OAT.Blazor.csproj -c Release
+          dotnet build OAT.Blazor.csproj
       working-directory: ./OAT.Blazor
     
     - name: Build OAT Blazor Components
