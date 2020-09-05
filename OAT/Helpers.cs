@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json;
-using Serilog;
+﻿using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,7 +136,7 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
         public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
         {
-            foreach(var parameter in constructorInfo.GetParameters())
+            foreach (var parameter in constructorInfo.GetParameters())
             {
                 if (!IsBasicType(parameter.ParameterType))
                 {
@@ -158,7 +156,7 @@ namespace Microsoft.CST.OAT.Utils
             {
                 return dict[propertyName];
             }
-            else if (obj is System.Collections.IList list && int.TryParse(propertyName, out int propertyIndex) && list.Count > propertyIndex)
+            else if (obj is System.Collections.IList list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
                 return list[propertyIndex];
             }
@@ -263,7 +261,7 @@ namespace Microsoft.CST.OAT.Utils
             var splits = propertyName?.Split('.');
             if (splits != null)
             {
-                for (int i = 0; i < splits.Length - 1; i++)
+                for (var i = 0; i < splits.Length - 1; i++)
                 {
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
@@ -277,7 +275,7 @@ namespace Microsoft.CST.OAT.Utils
             {
                 dictionary[propertyName] = value!;
             }
-            else if (obj is IList<object> list && int.TryParse(propertyName,out int propertyIndex) && list.Count > propertyIndex)
+            else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
                 list[propertyIndex] = value!;
             }
@@ -317,7 +315,7 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns></returns>
         public static Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
         {
-            
+
             var types = new List<Type>();
             try
             {

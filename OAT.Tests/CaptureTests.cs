@@ -20,7 +20,7 @@ namespace Microsoft.CST.OAT.Tests
 
         private const string CorrectString = "MagicWord";
 
-        private TestObject testObjectTrueFalse = new TestObject()
+        private readonly TestObject testObjectTrueFalse = new TestObject()
         {
             StringField = CorrectString,
             BoolField = false
