@@ -33,7 +33,7 @@ namespace Microsoft.CST.OAT.Operations
         {
             if (clause.Script is ScriptData clauseScript)
             {
-                List<Violation> issues = new List<Violation>();
+                var issues = new List<Violation>();
                 Exception? yieldError = null;
                 try
                 {

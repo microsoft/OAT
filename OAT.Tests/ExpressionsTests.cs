@@ -18,25 +18,25 @@ namespace Microsoft.CST.OAT.Tests
             Strings.Setup();
         }
 
-        private TestObject testObjectTrueFalse = new TestObject()
+        private readonly TestObject testObjectTrueFalse = new TestObject()
         {
             StringField = "MagicWord",
             BoolField = false
         };
 
-        private TestObject testObjectTrueTrue = new TestObject()
+        private readonly TestObject testObjectTrueTrue = new TestObject()
         {
             StringField = "MagicWord",
             BoolField = true
         };
 
-        private TestObject testObjectFalseTrue = new TestObject()
+        private readonly TestObject testObjectFalseTrue = new TestObject()
         {
             StringField = "NotTheMagicWord",
             BoolField = true
         };
 
-        private TestObject testObjectFalseFalse = new TestObject()
+        private readonly TestObject testObjectFalseFalse = new TestObject()
         {
             StringField = "NotTheMagicWord",
             BoolField = false

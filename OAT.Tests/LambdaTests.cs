@@ -1,11 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
-using Microsoft.CST.OAT.VehicleDemo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.CST.OAT.Tests
