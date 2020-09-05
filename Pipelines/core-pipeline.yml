@@ -11,6 +11,7 @@ trigger:
     include:
     - OAT
     - OAT.Blazor
+    - OAT.Blazor.Components
     
 pr:
   branches:
@@ -23,6 +24,7 @@ pr:
     - OAT.Blazor
     - OAT.Tests
     - OAT.sln
+    - OAT.Blazor.Components
 
 stages:
 - stage: Test
