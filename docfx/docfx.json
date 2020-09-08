@@ -4,11 +4,13 @@
       "src": [
         {
           "files": [
-            "../OAT/OAT.csproj"
-          ]
+            "OAT.csproj"
+          ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "src":"../OAT"
         }
       ],
-      "dest": "/api",
+      "dest": "api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
