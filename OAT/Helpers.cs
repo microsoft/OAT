@@ -101,7 +101,7 @@ namespace Microsoft.CST.OAT.Utils
         public static List<string> GetAllNestedFieldsAndProperties(Type type, string? currentPath = null)
         {
             var results = new List<string>();
-            if (!string.IsNullOrEmpty(currentPath))
+            if (!string.IsNullOrEmpty(currentPath) && currentPath != null)
             {
                 results.Add(currentPath);
             }
@@ -183,6 +183,11 @@ namespace Microsoft.CST.OAT.Utils
             return obj2;
         }
 
+        /// <summary>
+        /// Gets a sensible default value for the type.
+        /// </summary>
+        /// <param name="type">The type to get a default value for.</param>
+        /// <returns>The default value for the type.</returns>
         public static object? GetDefaultValueForType(Type type)
         {
             if (type.Equals(typeof(string)))

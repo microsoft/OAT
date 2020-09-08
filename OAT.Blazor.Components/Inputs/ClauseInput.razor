@@ -39,7 +39,7 @@
 </div>
 
 
-<tbody>    
+<tbody>
     <tr>
         <td>
             <label for="operationInput">Operation:</label>
@@ -48,7 +48,7 @@
             <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="RefreshThis" />
         </td>
     </tr>
-    @if (Rule.Clauses[Clause].Operation == Operation.Custom)
+    @if (Rule is Rule && Rule.Clauses[Clause].Operation == Operation.Custom)
     {
         <tr>
             <td>
@@ -59,7 +59,7 @@
             </td>
         </tr>
     }
-    @if (Rule.Clauses[Clause].Operation == Operation.Script)
+    @if (Rule is Rule && Rule.Clauses[Clause].Operation == Operation.Script)
     {
         <tr>
             <td>
@@ -86,30 +86,33 @@
             </td>
         </tr>
     }
-    <tr>
-        <td>
-            <label for="clauseArguments">Arguments:</label>
-        </td>
-        <td>
-            <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="clauseData">Data:</label>
-        </td>
-        <td>
-            <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="clauseDictData">Dictionary Data:</label>
-        </td>
-        <td>
-            <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
-        </td>
-    </tr>
+    @if (Rule is Rule)
+    {
+        <tr>
+            <td>
+                <label for="clauseArguments">Arguments:</label>
+            </td>
+            <td>
+                <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="clauseData">Data:</label>
+            </td>
+            <td>
+                <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="clauseDictData">Dictionary Data:</label>
+            </td>
+            <td>
+                <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
+            </td>
+        </tr>
+    }
 </tbody>
 
 @code {

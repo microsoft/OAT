@@ -75,33 +75,15 @@
         AppState.Rules.Clear();
     }
 
-    private static string nl = Environment.NewLine;
-    [Parameter]
-    public int BufferSize { get; set; } = 20480;
-    public long max;
-    public long value;
-    ElementReference inputElement;
+    bool removeDisabled => AppState.Rules.Count == 0;
 
-    public bool removeDisabled => AppState.Rules.Count == 0;
-
-    public long maxJson;
-    public long valueJson;
-    ElementReference jsonInput;
-
-    public System.Threading.CancellationTokenSource? cancellationTokenSource;
-    string Output { get; set; } = string.Empty;
-
-    public bool CanCancel { get; set; }
-    public bool IsCancelDisabled => !CanCancel;
-
-    Func<Stream, Task> LoadAssembly;
-    Func<Stream, Task> LoadRules;
+    Func<Stream, Task> LoadAssembly = async stream => { await Task.Delay(0); };
+    Func<Stream, Task> LoadRules = async stream => { await Task.Delay(0); };
 
     void RefreshPage()
     {
         this.StateHasChanged();
     }
-
 
     public async void DownloadRules()
     {

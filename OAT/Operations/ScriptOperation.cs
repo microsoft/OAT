@@ -20,7 +20,6 @@ namespace Microsoft.CST.OAT.Operations
         /// Create a script Operation that has the provided Assemblies added by reference.
         /// </summary>
         /// <param name="analyzer"></param>
-        /// <param name="assemblies"></param>
         public ScriptOperation(Analyzer analyzer) : base(Operation.Script, analyzer)
         {
             OperationDelegate = ScriptOperationDelegate;

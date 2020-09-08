@@ -51,22 +51,9 @@
             <option value="@type.FullName">@type.FullName</option>
         }
     </select>
-    <br/>
-    <label for="constructorToUse">Constructor to Create:</label>
-    <select id="constructorToUse" @bind="constructorToInvoke">
-        @{
-            if (constructors != null)
-            {
-                @for (int i = 0; i < constructors.Count; i++)
-                {
-                    <option value="@i">@constructors[i].ToString()</option>
-                }
-            }
-        }
-    </select>
     <br />
     @if (ScaffoldedObject != null) {
-        <ScaffoldInput Scaffold="ScaffoldedObject"/>
+        <ScaffoldInput Object="this" SubPath="ScaffoldedObject"/>
     <br />
     }
 
@@ -88,7 +75,6 @@
         if (types.Any())
         {
             var type = types.FirstOrDefault();
-            var constructor = type.Value[constructorToInvoke];
             <button @onclick="AddObject">Add @type.Key.FullName</button>
         }
     }
@@ -115,10 +101,10 @@ else
     <p>Load an Assembly to use the Sandbox.</p>
 }
 @code {
-    Scaffold ScaffoldedObject;
+    public Scaffold? ScaffoldedObject { get; set; }
 
-    Func<Stream, Task> LoadAssembly;
-    Func<Stream, Task> LoadSandbox;
+    Func<Stream, Task> LoadAssembly = async stream => { await Task.Delay(0); };
+    Func<Stream, Task> LoadSandbox = async stream => { await Task.Delay(0); };
 
     void ClearAssemblies()
     {
@@ -331,21 +317,6 @@ else
 
     Dictionary<string, object> values = new Dictionary<string, object>();
 
-    int constructorToInvoke
-    {
-        get
-        {
-            return _constructorToInvoke;
-        }
-        set
-        {
-            _constructorToInvoke = value;
-            if (constructors.Any()) {
-                ScaffoldedObject = new Scaffold(constructors[value]);
-            }
-            RefreshState();
-        }
-    }
 
     List<ConstructorInfo> constructors
     {
@@ -366,7 +337,7 @@ else
             _typeToInvoke = value;
 
             if (constructors.Any()){
-                var constructorToUse = constructors[constructorToInvoke];
+                var constructorToUse = constructors[0];
                 ScaffoldedObject = new Scaffold(constructorToUse);
             }
 
@@ -377,8 +348,6 @@ else
     string _typeToInvoke = string.Empty;
 
     public bool removeDisabled => AppState.TestObjects.Count == 0;
-
-    int _constructorToInvoke;
 
     string nameSpace
     {
@@ -466,8 +435,8 @@ else
     {
         try
         {
-            AppState.TestObjects.Add(ScaffoldedObject.Construct());
-
+            if (ScaffoldedObject?.Construct() is { } nonNull)
+                AppState.TestObjects.Add(nonNull);
         }
         catch(Exception e)
         {

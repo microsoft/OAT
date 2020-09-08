@@ -77,10 +77,7 @@
     }
     else if (type.Equals(typeof(Scaffold))){
         <br/>
-        var obj = Helpers.GetValueByPropertyOrFieldName(Object,SubPath);
-        if (obj is Scaffold scaffold){
-            <ScaffoldInput Scaffold="scaffold" />
-        }
+        <ScaffoldInput Object="Object" SubPath="@SubPath" />
     }
     else
     {
