@@ -26,6 +26,8 @@ jobs:
       run: mkdir toPublish
     - name: Move Blazor Output into Place
       run: mv OAT.Blazor/bin/Debug/netstandard2.1/publish/wwwroot toPublish/Blazor
+    - name: Update gitattributes
+      run: mv toPublish/Blazor/gitattributes toPublish/Blazor/.gitattributes
 
     - name: Install chocolatey
       run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
