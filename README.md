@@ -9,11 +9,13 @@ OAT is available on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packages/
 [OAT Blazor](https://microsoft.github.io/OAT/) runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly.
 
 ## Documentation
-The best documentation is on the [Wiki](https://github.com/microsoft/OAT/wiki).
+Docuemtnation for usage is on the [Wiki](https://github.com/microsoft/OAT/wiki).
+
+Documentation for the API is available on [GitHub Pages](https://microsoft.github.io/OAT/docs/api)
 
 ## Overview
-* [Rules](https://github.com/microsoft/OAT/blob/main/OAT/Rule.cs) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) which are applied to the targeted object.
-* [Clauses](https://github.com/microsoft/OAT/blob/main/OAT/Clause.cs) perform a specified [Operation](https://github.com/microsoft/OAT/blob/main/OAT/Operation.cs) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
+* [Rules](https://microsoft.github.io/OAT/docs/api/Microsoft.CST.OAT.Rule.html) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](https://microsoft.github.io/OAT/docs/api/Microsoft.CST.OAT.Clause.html) which are applied to the targeted object.
+* [Clauses](https://microsoft.github.io/OAT/docs/api/Microsoft.CST.OAT.Clause.html) perform a specified [Operation](https://microsoft.github.io/OAT/docs/api/Microsoft.CST.OAT.Operation.html) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
 * Clauses can also Capture the result of their operation, to be returned with the applied Rule.
 * The Operation set can be expanded with delegates.
 * The object types supported by existing operations can also be expanded with delegates.
