@@ -54,7 +54,7 @@ jobs:
     - name: Build OAT Tests
       run: |
           dotnet restore
-          dotnet build OAT.Tests.csproj
+          dotnet build OAT.Tests.csproj -f netcoreapp3.1
       working-directory: ./OAT.Tests
 
     - name: Perform CodeQL Analysis
