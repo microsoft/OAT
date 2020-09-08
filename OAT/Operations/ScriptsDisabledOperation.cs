@@ -13,7 +13,6 @@ namespace Microsoft.CST.OAT.Operations
         /// Create a ScriptsDisabledOperation
         /// </summary>
         /// <param name="analyzer"></param>
-        /// <param name="assemblies"></param>
         public ScriptsDisabledOperation(Analyzer analyzer) : base(Operation.Script, analyzer)
         {
             OperationDelegate = ScriptOperationDelegate;

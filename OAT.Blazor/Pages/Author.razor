@@ -75,14 +75,10 @@
         AppState.Rules.Clear();
     }
 
-    public bool removeDisabled => AppState.Rules.Count == 0;
+    bool removeDisabled { get => AppState.Rules.Count == 0; }
 
-
-    public System.Threading.CancellationTokenSource? cancellationTokenSource;
-    string Output { get; set; } = string.Empty;
-
-    Func<Stream, Task> LoadAssembly;
-    Func<Stream, Task> LoadRules;
+    Func<Stream, Task> LoadAssembly = async stream => { await Task.Delay(0); };
+    Func<Stream, Task> LoadRules = async stream => { await Task.Delay(0); };
 
     void RefreshPage()
     {

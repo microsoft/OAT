@@ -103,8 +103,8 @@ else
 @code {
     public Scaffold? ScaffoldedObject { get; set; }
 
-    Func<Stream, Task> LoadAssembly;
-    Func<Stream, Task> LoadSandbox;
+    Func<Stream, Task> LoadAssembly = async stream => { await Task.Delay(0); };
+    Func<Stream, Task> LoadSandbox = async stream => { await Task.Delay(0); };
 
     void ClearAssemblies()
     {
@@ -435,8 +435,8 @@ else
     {
         try
         {
-            AppState.TestObjects.Add(ScaffoldedObject.Construct());
-
+            if (ScaffoldedObject?.Construct() is { } nonNull)
+                AppState.TestObjects.Add(nonNull);
         }
         catch(Exception e)
         {
