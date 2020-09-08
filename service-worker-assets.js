@@ -321,7 +321,7 @@
       "url": "_framework\/_bin\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-\/u93jXoKaoxnM5S3VQiSxJ7+iEs9nTCPvEAFgc1KvpQ=",
+      "hash": "sha256-My6YMhxd3b+bByVbyqAyM7S76HTj5R+m7sFn4hgLM+M=",
       "url": "_framework\/_bin\/OAT.Blazor.dll"
     },
     {
@@ -453,7 +453,7 @@
       "url": "_framework\/_bin\/Newtonsoft.Json.dll"
     },
     {
-      "hash": "sha256-8s1noGZkc\/YdwDcJQ9\/XYpAq0pPUeweJgPRCFz3KPao=",
+      "hash": "sha256-+RHozio9m5iBx8xANVetvdCwBLj7FCZWc2p97ghbFLY=",
       "url": "_framework\/_bin\/OAT.Blazor.Components.dll"
     },
     {
@@ -489,7 +489,7 @@
       "url": "_framework\/_bin\/System.Numerics.Vectors.dll"
     },
     {
-      "hash": "sha256-Gz5gb1+k+ExUB790JAf5r4CRjo97K7QOT2ijThQNgvM=",
+      "hash": "sha256-b244q1vAjD6NhWLgSwBO5wXce7GV+5\/XeRTHFhHLrfM=",
       "url": "_framework\/_bin\/OAT.dll"
     },
     {
@@ -617,7 +617,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-\/s24WyZoMOwcr4H4hGbxXiWV360I4b1K\/nkBmLmW0lk=",
+      "hash": "sha256-4tMTwOGjyJWoITsop04MtF4RMkbIrUHJXjWjhIfyUXI=",
       "url": "_framework\/_bin\/VehicleDemo.dll"
     },
     {
@@ -625,15 +625,15 @@
       "url": "_framework\/_bin\/MoreLinq.dll"
     },
     {
-      "hash": "sha256-SVvwqewUe3R2YFNhUSl\/nDw16McqjC+rtXLziryTeJk=",
+      "hash": "sha256-Jzpr\/IlRcx1RRc08w\/bQmiErQIsdcl20dfbbBT26sZM=",
       "url": "_framework\/_bin\/OAT.Blazor.pdb"
     },
     {
-      "hash": "sha256-Gtey7Jw2irCaWzsQxgzDvRzqOqbM4xkhZ4AYohjBk0M=",
+      "hash": "sha256-StGMY1k3exAZxzVWcmkzVqHnIrvUh2x4LoY6TnZ3JAA=",
       "url": "_framework\/_bin\/OAT.Blazor.Components.pdb"
     },
     {
-      "hash": "sha256-t0U\/xn9AmyBRvyUp\/qq2qa+yI0moNNcx0C2DN3zwJKM=",
+      "hash": "sha256-gEjYL3RbzNWS8YGYFLfzQiO78RQVeeNUdwQuPHjGjk8=",
       "url": "_framework\/_bin\/OAT.pdb"
     },
     {
@@ -653,7 +653,7 @@
       "url": "_framework\/_bin\/Microsoft.CodeAnalysis.Scripting.pdb"
     },
     {
-      "hash": "sha256-Z\/9+Jgtk9II167G6\/FklRlcWJOiVJYj7kqvIBSv1xe4=",
+      "hash": "sha256-M3+UubPRzyB5ANcop6pzgtTN6iPDUX7839Z+EX+nbE4=",
       "url": "_framework\/_bin\/VehicleDemo.pdb"
     },
     {
@@ -677,9 +677,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-F4I9UJRS2+BemLzzIYKSQZq20RsNn0Sikj4d69Icy0A=",
+      "hash": "sha256-K395JX4yViYyJ86IC6pr0gYFw0szyC\/0bgRg8m6l9dg=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "ZcSfpJM3"
+  "version": "0XPpsYja"
 };
