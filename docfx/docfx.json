@@ -4,11 +4,11 @@
       "src": [
         {
           "files": [
-            "OAT/**.csproj"
+            "../OAT/OAT.csproj"
           ]
         }
       ],
-      "dest": "docfx/api",
+      "dest": "/api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -17,38 +17,38 @@
     "content": [
       {
         "files": [
-          "docfx/api/**.yml",
-          "docfx/api/index.md"
+          "api/**.yml",
+          "api/index.md"
         ]
       },
       {
         "files": [
-          "docfx/articles/**.md",
-          "docfx/articles/**/toc.yml",
-          "docfx/toc.yml",
-          "docfx/*.md"
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
         ]
       }
     ],
     "resource": [
       {
         "files": [
-          "docfx/images/**"
+          "images/**"
         ]
       }
     ],
     "overwrite": [
       {
         "files": [
-          "docfx/apidoc/**.md"
+          "apidoc/**.md"
         ],
         "exclude": [
-          "docfx/obj/**",
-          "docfx/_site/**"
+          "obj/**",
+          "_site/**"
         ]
       }
     ],
-    "dest": "docfx/_site",
+    "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
