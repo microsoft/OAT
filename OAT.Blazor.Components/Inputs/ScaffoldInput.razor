@@ -2,6 +2,7 @@
 
 @if (ShowConstructorSelect)
 {
+    string ConstructorSelectId = $"{SubPath}-Constructors";
     <label for="@ConstructorSelectId">Constructor to Create:</label>
     <select id="@ConstructorSelectId" @bind="constructorToInvoke">
         @{
@@ -85,10 +86,9 @@
     public string? SubPath { get; set; }
 
     [Parameter]
-    public bool ShowConstructorSelect { get; set; }
+    public bool ShowConstructorSelect { get; set; } = true;
 
     [Parameter]
-    public bool ShowSubConstructorSelect { get; set; }
+    public bool ShowSubConstructorSelect { get; set; } = true;
 
-    string ConstructorSelectId { get; set; } = $"{SubPath}-Constructors";
 }
