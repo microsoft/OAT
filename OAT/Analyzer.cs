@@ -1,5 +1,4 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Newtonsoft.Json;
