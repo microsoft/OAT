@@ -3,7 +3,7 @@
     /// <summary>
     /// The boolean operators supported by the Analyzer.
     /// </summary>
-    public enum BOOL_OPERATOR
+    public enum BoolOperator
     {
         /// <summary>
         /// Logical and
