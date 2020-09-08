@@ -34,7 +34,7 @@ jobs:
     - name: Run DocFx
       run: docfx docfx/docfx.json
     - name: Move DocFx Output Into Place
-      run: mv docfx/_site/ toPublish/
+      run: mv docfx/_site/* toPublish/
 
     - name: GitHub Pages action
       uses: peaceiris/actions-gh-pages@v3.6.4
