@@ -22,6 +22,8 @@ jobs:
       run: dotnet restore OAT.Blazor
     - name: Build
       run: dotnet publish OAT.Blazor --no-restore
+    - name: Mkdir toPublish
+      run: mkdir toPublish
     - name: Move Blazor Output into Place
       run: mv OAT.Blazor/bin/Debug/netstandard2.1/publish/wwwroot toPublish/Blazor
 
