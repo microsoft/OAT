@@ -1,22 +1,33 @@
 ﻿@using System.Reflection;
 
-<label for="constructorToUse">Constructor to Create:</label>
-<select id="constructorToUse" @bind="constructorToInvoke">
-    @{
-        if (constructors != null)
-        {
-            @for (int i = 0; i < constructors.Count; i++)
+@if (ShowConstructorSelect)
+{
+    <label for="@ConstructorSelectId">Constructor to Create:</label>
+    <select id="@ConstructorSelectId" @bind="constructorToInvoke">
+        @{
+            if (constructors != null)
             {
-                <option value="@i">@constructors[i].ToString()</option>
+                @for (int i = 0; i < constructors.Count; i++)
+                {
+                    <option value="@i">@constructors[i].ToString()</option>
+                }
             }
         }
-    }
-</select>
-<br/>
+    </select>
+    <br />
+}
+
 @foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, object?>())
 {
-    <label for="@parameter.Key">@parameter.Key</label>
-    <PropertyInput Id="@parameter.Key" Object="@Object" SubPath="@PathFromKey(parameter.Key)" Type="@parameter.Value?.GetType()" />
+    <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
+    if (parameter.Value is Scaffold)
+    {
+        <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" />
+    }
+    else
+    {
+        <PropertyInput Id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" Type="@parameter.Value?.GetType()" />
+    }
 }
 
 
@@ -72,4 +83,12 @@
 
     [Parameter]
     public string? SubPath { get; set; }
+
+    [Parameter]
+    public bool ShowConstructorSelect { get; set; }
+
+    [Parameter]
+    public bool ShowSubConstructorSelect { get; set; }
+
+    string ConstructorSelectId { get; set; } = $"{SubPath}-Constructors";
 }

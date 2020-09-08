@@ -75,7 +75,7 @@
         AppState.Rules.Clear();
     }
 
-    bool removeDisabled { get => AppState.Rules.Count == 0; }
+    bool removeDisabled => AppState.Rules.Count == 0;
 
     Func<Stream, Task> LoadAssembly = async stream => { await Task.Delay(0); };
     Func<Stream, Task> LoadRules = async stream => { await Task.Delay(0); };
@@ -84,7 +84,6 @@
     {
         this.StateHasChanged();
     }
-
 
     public async void DownloadRules()
     {
