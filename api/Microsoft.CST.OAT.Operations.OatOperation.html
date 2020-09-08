@@ -1,0 +1,582 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class OatOperation
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class OatOperation
+   ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Microsoft.CST.OAT.Operations.OatOperation">
+  
+  
+  <h1 id="Microsoft_CST_OAT_Operations_OatOperation" data-uid="Microsoft.CST.OAT.Operations.OatOperation" class="text-break">Class OatOperation
+  </h1>
+  <div class="markdown level0 summary"><p>A Class Representing a complete implemented operation including its Operation and Validation delegates</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">OatOperation</span></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.ContainsAnyOperation.html">ContainsAnyOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.ContainsKeyOperation.html">ContainsKeyOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.ContainsOperation.html">ContainsOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.EndsWithOperation.html">EndsWithOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.EqualsOperation.html">EqualsOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.GreaterThanOperation.html">GreaterThanOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.IsAfterOperation.html">IsAfterOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.IsBeforeOperation.html">IsBeforeOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.IsExpiredOperation.html">IsExpiredOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.IsNullOperation.html">IsNullOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.IsTrueOperation.html">IsTrueOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.LessThanOperation.html">LessThanOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.NoOperation.html">NoOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.RegexOperation.html">RegexOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.ScriptOperation.html">ScriptOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.ScriptsDisabledOperation.html">ScriptsDisabledOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.StartsWithOperation.html">StartsWithOperation</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.CST.OAT.Operations.WasModifiedOperation.html">WasModifiedOperation</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.CST.OAT.Operations.html">Microsoft.CST.OAT.Operations</a></h6>
+  <h6><strong>Assembly</strong>: OAT.dll</h6>
+  <h5 id="Microsoft_CST_OAT_Operations_OatOperation_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class OatOperation</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.%23ctor(Microsoft.CST.OAT.Operation)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L58">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation__ctor_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor(Microsoft.CST.OAT.Operation)">OatOperation(Operation)</h4>
+  <div class="markdown level1 summary"><p>Simplest constructor without analyzer context</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OatOperation(Operation operation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operation.html">Operation</a></td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>The Operation this implements</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_Microsoft_CST_OAT_Analyzer_.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.%23ctor(Microsoft.CST.OAT.Operation%2CMicrosoft.CST.OAT.Analyzer)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L49">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation__ctor_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_Microsoft_CST_OAT_Analyzer_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor(Microsoft.CST.OAT.Operation,Microsoft.CST.OAT.Analyzer)">OatOperation(Operation, Analyzer)</h4>
+  <div class="markdown level1 summary"><p>Simple constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OatOperation(Operation operation, Analyzer analyzer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operation.html">Operation</a></td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>The operation this implements</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Analyzer.html">Analyzer</a></td>
+        <td><span class="parametername">analyzer</span></td>
+        <td><p>The analyzer context</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_Microsoft_CST_OAT_Operations_OperationDelegate_Microsoft_CST_OAT_Operations_ValidationDelegate_Microsoft_CST_OAT_Analyzer_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.%23ctor(Microsoft.CST.OAT.Operation%2CMicrosoft.CST.OAT.Operations.OperationDelegate%2CMicrosoft.CST.OAT.Operations.ValidationDelegate%2CMicrosoft.CST.OAT.Analyzer%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L37">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation__ctor_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation__ctor_Microsoft_CST_OAT_Operation_Microsoft_CST_OAT_Operations_OperationDelegate_Microsoft_CST_OAT_Operations_ValidationDelegate_Microsoft_CST_OAT_Analyzer_System_String_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.#ctor(Microsoft.CST.OAT.Operation,Microsoft.CST.OAT.Operations.OperationDelegate,Microsoft.CST.OAT.Operations.ValidationDelegate,Microsoft.CST.OAT.Analyzer,System.String)">OatOperation(Operation, OperationDelegate, ValidationDelegate, Analyzer, String)</h4>
+  <div class="markdown level1 summary"><p>The fully specified constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OatOperation(Operation operation, OperationDelegate operationDelegate, ValidationDelegate validationDelegate, Analyzer analyzer, string customOperation = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operation.html">Operation</a></td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>The Operation this implements</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operations.OperationDelegate.html">OperationDelegate</a></td>
+        <td><span class="parametername">operationDelegate</span></td>
+        <td><p>The Operation Delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operations.ValidationDelegate.html">ValidationDelegate</a></td>
+        <td><span class="parametername">validationDelegate</span></td>
+        <td><p>The Validation Delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Analyzer.html">Analyzer</a></td>
+        <td><span class="parametername">analyzer</span></td>
+        <td><p>The Analyzer Context</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">customOperation</span></td>
+        <td><p>The CustomOperation to use if operation is Custom</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_Analyzer.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.Analyzer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L66">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_Analyzer_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.Analyzer*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_Analyzer" data-uid="Microsoft.CST.OAT.Operations.OatOperation.Analyzer">Analyzer</h4>
+  <div class="markdown level1 summary"><p>The analyzer context</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Analyzer Analyzer { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Analyzer.html">Analyzer</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_CustomOperation.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.CustomOperation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L82">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_CustomOperation_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.CustomOperation*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_CustomOperation" data-uid="Microsoft.CST.OAT.Operations.OatOperation.CustomOperation">CustomOperation</h4>
+  <div class="markdown level1 summary"><p>The CustomOperation name if Operation is Custom</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CustomOperation { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_Operation.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.Operation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L74">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_Operation_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.Operation*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_Operation" data-uid="Microsoft.CST.OAT.Operations.OatOperation.Operation">Operation</h4>
+  <div class="markdown level1 summary"><p>The Operation implemented</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Operation Operation { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operation.html">Operation</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_OperationDelegate.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.OperationDelegate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L78">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_OperationDelegate_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.OperationDelegate*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_OperationDelegate" data-uid="Microsoft.CST.OAT.Operations.OatOperation.OperationDelegate">OperationDelegate</h4>
+  <div class="markdown level1 summary"><p>The operation delegate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OperationDelegate OperationDelegate { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operations.OperationDelegate.html">OperationDelegate</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_ValidationDelegate.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.ValidationDelegate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L70">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_ValidationDelegate_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.ValidationDelegate*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_ValidationDelegate" data-uid="Microsoft.CST.OAT.Operations.OatOperation.ValidationDelegate">ValidationDelegate</h4>
+  <div class="markdown level1 summary"><p>The validation delegate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValidationDelegate ValidationDelegate { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Operations.ValidationDelegate.html">ValidationDelegate</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_NopOperation_Microsoft_CST_OAT_Clause_System_Object_System_Object_System_Collections_Generic_IEnumerable_Microsoft_CST_OAT_ClauseCapture__.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.NopOperation(Microsoft.CST.OAT.Clause%2CSystem.Object%2CSystem.Object%2CSystem.Collections.Generic.IEnumerable%7BMicrosoft.CST.OAT.ClauseCapture%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L116">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_NopOperation_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.NopOperation*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_NopOperation_Microsoft_CST_OAT_Clause_System_Object_System_Object_System_Collections_Generic_IEnumerable_Microsoft_CST_OAT_ClauseCapture__" data-uid="Microsoft.CST.OAT.Operations.OatOperation.NopOperation(Microsoft.CST.OAT.Clause,System.Object,System.Object,System.Collections.Generic.IEnumerable{Microsoft.CST.OAT.ClauseCapture})">NopOperation(Clause, Object, Object, IEnumerable&lt;ClauseCapture&gt;)</h4>
+  <div class="markdown level1 summary"><p>Returns false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OperationResult NopOperation(Clause clause, object state1, object state2, IEnumerable&lt;ClauseCapture&gt; captures)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Clause.html">Clause</a></td>
+        <td><span class="parametername">clause</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">state1</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">state2</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.CST.OAT.ClauseCapture.html">ClauseCapture</a>&gt;</td>
+        <td><span class="parametername">captures</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.OperationResult.html">OperationResult</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation_UndefinedValidation_Microsoft_CST_OAT_Rule_Microsoft_CST_OAT_Clause_.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation.UndefinedValidation(Microsoft.CST.OAT.Rule%2CMicrosoft.CST.OAT.Clause)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L103">View Source</a>
+  </span>
+  <a id="Microsoft_CST_OAT_Operations_OatOperation_UndefinedValidation_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.UndefinedValidation*"></a>
+  <h4 id="Microsoft_CST_OAT_Operations_OatOperation_UndefinedValidation_Microsoft_CST_OAT_Rule_Microsoft_CST_OAT_Clause_" data-uid="Microsoft.CST.OAT.Operations.OatOperation.UndefinedValidation(Microsoft.CST.OAT.Rule,Microsoft.CST.OAT.Clause)">UndefinedValidation(Rule, Clause)</h4>
+  <div class="markdown level1 summary"><p>Yields one violation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Violation&gt; UndefinedValidation(Rule rule, Clause clause)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Rule.html">Rule</a></td>
+        <td><span class="parametername">rule</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.CST.OAT.Clause.html">Clause</a></td>
+        <td><span class="parametername">clause</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.CST.OAT.Violation.html">Violation</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/microsoft/OAT/new/556be17b833714729e5e6abcc9491ddf827da8b7/apiSpec/new?filename=Microsoft_CST_OAT_Operations_OatOperation.md&amp;value=---%0Auid%3A%20Microsoft.CST.OAT.Operations.OatOperation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/microsoft/OAT/blob/556be17b833714729e5e6abcc9491ddf827da8b7/OAT/Operations/OatOperation.cs/#L27" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
