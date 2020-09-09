@@ -9,7 +9,7 @@ OAT is available on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packages/
 [OAT Blazor](https://microsoft.github.io/OAT/Blazor/) runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly.
 
 ## Documentation
-Documentation for usage is on the [Wiki](https://github.com/microsoft/OAT/wiki).
+Docuemtnation for usage is on the [Wiki](https://github.com/microsoft/OAT/wiki).
 
 Documentation for the API is available on [GitHub Pages](https://microsoft.github.io/OAT/api)
 

@@ -1,5 +1,4 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
-using Microsoft.CST.OAT.Captures;
 using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Newtonsoft.Json;
@@ -92,19 +91,19 @@ namespace Microsoft.CST.OAT
         /// <param name="current"> The current boolean state </param>
         /// <param name="operation"> The Operation </param>
         /// <returns> (If you can use a shortcut, the result of the shortcut) </returns>
-        public static (bool CanShortcut, bool Value) TryShortcut(bool current, BOOL_OPERATOR operation)
+        public static (bool CanShortcut, bool Value) TryShortcut(bool current, BoolOperator operation)
         {
             // If either argument of an AND statement is false, or either argument of a NOR statement is true,
             // the result is always false and we can optimize away evaluation of next
-            if ((operation == BOOL_OPERATOR.AND && !current) ||
-                (operation == BOOL_OPERATOR.NOR && current))
+            if ((operation == BoolOperator.AND && !current) ||
+                (operation == BoolOperator.NOR && current))
             {
                 return (true, false);
             }
             // If either argument of an NAND statement is false, or either argument of an OR statement is
             // true, the result is always true and we can optimize away evaluation of next
-            if ((operation == BOOL_OPERATOR.OR && current) ||
-                (operation == BOOL_OPERATOR.NAND && !current))
+            if ((operation == BoolOperator.OR && current) ||
+                (operation == BoolOperator.NAND && !current))
             {
                 return (true, true);
             }
@@ -346,14 +345,14 @@ namespace Microsoft.CST.OAT
                     else
                     {
                         // If we can't enum parse the operator
-                        if (!Enum.TryParse<BOOL_OPERATOR>(splits[i], out var op))
+                        if (!Enum.TryParse<BoolOperator>(splits[i], out var op))
                         {
                             yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidOperator"), expression, rule.Name, splits[i]), rule);
                         }
                         // We don't allow NOT operators to modify other Operators, so we can't allow NOT here
                         else
                         {
-                            if (op is BOOL_OPERATOR boolOp && boolOp == BOOL_OPERATOR.NOT)
+                            if (op is BoolOperator boolOp && boolOp == BoolOperator.NOT)
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidNotOperator"), expression, rule.Name), rule);
                             }
@@ -680,16 +679,16 @@ namespace Microsoft.CST.OAT
             return splits.Length - 1;
         }
 
-        private static bool Operate(BOOL_OPERATOR Operator, bool first, bool second)
+        private static bool Operate(BoolOperator Operator, bool first, bool second)
         {
             return Operator switch
             {
-                BOOL_OPERATOR.AND => first && second,
-                BOOL_OPERATOR.OR => first || second,
-                BOOL_OPERATOR.XOR => first ^ second,
-                BOOL_OPERATOR.NAND => !(first && second),
-                BOOL_OPERATOR.NOR => !(first || second),
-                BOOL_OPERATOR.NOT => !first,
+                BoolOperator.AND => first && second,
+                BoolOperator.OR => first || second,
+                BoolOperator.XOR => first ^ second,
+                BoolOperator.NAND => !(first && second),
+                BoolOperator.NOR => !(first || second),
+                BoolOperator.NOT => !first,
                 _ => false
             };
         }
@@ -703,7 +702,7 @@ namespace Microsoft.CST.OAT
             var invertNextStatement = false;
             var operatorExpected = false;
 
-            var Operator = BOOL_OPERATOR.OR;
+            var Operator = BoolOperator.OR;
 
             var updated_i = 0;
 
@@ -711,7 +710,7 @@ namespace Microsoft.CST.OAT
             {
                 if (operatorExpected)
                 {
-                    Operator = (BOOL_OPERATOR)Enum.Parse(typeof(BOOL_OPERATOR), splits[i]);
+                    Operator = (BoolOperator)Enum.Parse(typeof(BoolOperator), splits[i]);
                     operatorExpected = false;
                     updated_i = i + 1;
                 }
@@ -760,7 +759,7 @@ namespace Microsoft.CST.OAT
                 }
                 else
                 {
-                    if (splits[i].Equals(BOOL_OPERATOR.NOT.ToString()))
+                    if (splits[i].Equals(BoolOperator.NOT.ToString()))
                     {
                         invertNextStatement = !invertNextStatement;
                         operatorExpected = false;

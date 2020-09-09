@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft.CST.OAT.Captures
+namespace Microsoft.CST.OAT
 {
     /// <summary>
     /// The capture object that holds a rule and the clause captures
