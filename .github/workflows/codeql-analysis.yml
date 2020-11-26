@@ -1,4 +1,4 @@
-name: "CodeQL OAT"
+name: "CodeQL"
 
 on:
   push:
