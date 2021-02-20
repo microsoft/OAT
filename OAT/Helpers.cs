@@ -168,6 +168,11 @@ namespace Microsoft.CST.OAT.Utils
                 }
                 else
                 {
+                    if (constructorInfo.DeclaringType.Assembly.GetTypes().Contains(parameter.ParameterType))
+                    {
+                        continue;
+                    }
+                    
                     if (extraAssemblies != null)
                     {
                         var validAssembly = extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault();
