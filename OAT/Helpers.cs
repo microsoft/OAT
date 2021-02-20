@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Microsoft.CodeAnalysis.Diagnostics;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,24 +131,56 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Determines if the ConstructorInfo given can be constructed entirely with basic types
+        /// Recursively checks if the object Type given can be constructed of basic types or of those found in the extra assemblies provided.
         /// </summary>
-        /// <param name="constructorInfo"></param>
-        /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
-        public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
+        /// <param name="type">The Type to Check</param>
+        /// <param name="extraAssemblies">Any asesemblies to use other than basic types.</param>
+        /// <returns></returns>
+        public static bool ConstructedOfLoadedTypes(Type type, IEnumerable<Assembly>? extraAssemblies = null)
         {
-            foreach (var parameter in constructorInfo.GetParameters())
+            var failed = true;
+            
+            foreach(var ctor in type.GetConstructors())
             {
-                if (!IsBasicType(parameter.ParameterType))
+                if (ConstructedOfLoadedTypes(ctor))
                 {
-                    if (!parameter.ParameterType.GetConstructors().Any(x => ConstructedOfBasicTypes(x)))
-                    {
-                        return false;
-                    }
+                    failed = false;
+                    break;
                 }
             }
 
-            return true;
+            return failed;
+        }
+
+        /// <summary>
+        /// Determines if the ConstructorInfo given is constructable
+        /// </summary>
+        /// <param name="constructorInfo"></param>
+        /// <param name="extraAssemblies">A list of assemblies that will be available to construct with.</param>
+        /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
+        public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo, IEnumerable<Assembly>? extraAssemblies = null)
+        {
+            var failed = false;
+            foreach (var parameter in constructorInfo.GetParameters())
+            {
+                if (IsBasicType(parameter.ParameterType)){
+                    continue;
+                }
+                else
+                {
+                    var validAssembly = extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault();
+                    if (validAssembly != null)
+                    {
+                        if (ConstructedOfLoadedTypes(parameter.ParameterType, extraAssemblies))
+                        {
+                            continue;
+                        }
+                    }
+                    failed = true;
+                }
+            }
+
+            return failed;
         }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
