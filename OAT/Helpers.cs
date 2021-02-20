@@ -187,7 +187,6 @@ namespace Microsoft.CST.OAT.Utils
         /// Determines if the ConstructorInfo given is constructable from basic types
         /// </summary>
         /// <param name="constructorInfo"></param>
-        /// <param name="extraAssemblies">A list of assemblies that will be available to construct with.</param>
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
         public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
         {
