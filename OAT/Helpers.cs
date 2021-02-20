@@ -168,14 +168,18 @@ namespace Microsoft.CST.OAT.Utils
                 }
                 else
                 {
-                    var validAssembly = extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault();
-                    if (validAssembly != null)
+                    if (extraAssemblies != null)
                     {
-                        if (ConstructedOfLoadedTypes(parameter.ParameterType, extraAssemblies))
+                        var validAssembly = extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault();
+                        if (validAssembly != null)
                         {
-                            continue;
+                            if (ConstructedOfLoadedTypes(parameter.ParameterType, extraAssemblies))
+                            {
+                                continue;
+                            }
                         }
                     }
+                    
                     failed = true;
                 }
             }

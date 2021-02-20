@@ -1,6 +1,5 @@
 ﻿using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.CST.OAT.VehicleDemo;
 using System.Reflection;
 
 namespace Microsoft.CST.OAT.Tests
@@ -8,6 +7,22 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class HelpersTest
     {
+        public class TestClass
+        {
+            public TestClass(TestClass2 tc2)
+            {
+
+            }
+        }
+
+        public class TestClass2
+        {
+            public TestClass2()
+            {
+
+            }
+        }
+
         [ClassInitialize]
         public static void ClassSetup(TestContext _)
         {
@@ -16,10 +31,10 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [TestMethod]
-        public static void TestConstructedOfLoadedTypes()
+        public void TestConstructedOfLoadedTypes()
         {
-            Assert.IsFalse(Helpers.ConstructedOfLoadedTypes(typeof(Vehicle)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(Vehicle), new Assembly[] { typeof(Vehicle).Assembly }));
+            Assert.IsFalse(Helpers.ConstructedOfLoadedTypes(typeof(TestClass)));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass), new Assembly[] { typeof(TestClass).Assembly }));
         }
     }
 }
