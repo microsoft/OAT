@@ -142,7 +142,7 @@ namespace Microsoft.CST.OAT.Utils
             
             foreach(var ctor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (ConstructedOfLoadedTypes(ctor))
+                if (ConstructedOfLoadedTypes(ctor, extraAssemblies))
                 {
                     failed = false;
                     break;
@@ -181,6 +181,17 @@ namespace Microsoft.CST.OAT.Utils
             }
 
             return failed;
+        }
+
+        /// <summary>
+        /// Determines if the ConstructorInfo given is constructable from basic types
+        /// </summary>
+        /// <param name="constructorInfo"></param>
+        /// <param name="extraAssemblies">A list of assemblies that will be available to construct with.</param>
+        /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
+        public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
+        {
+            return ConstructedOfLoadedTypes(constructorInfo);
         }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
