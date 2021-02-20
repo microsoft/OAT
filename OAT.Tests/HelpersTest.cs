@@ -1,6 +1,7 @@
 ﻿using Microsoft.CST.OAT.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
+using Microsoft.CST.OAT.VehicleDemo;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -23,6 +24,30 @@ namespace Microsoft.CST.OAT.Tests
             }
         }
 
+        public class TestClass3
+        {
+            public TestClass3(string _)
+            {
+
+            }
+        }
+
+        public class TestClass4
+        {
+            public TestClass4(TestClass tc, TestClass3 tc3)
+            {
+
+            }
+        }
+
+        public class TestClass5
+        {
+            public TestClass5(Vehicle v)
+            {
+
+            }
+        }
+
         [ClassInitialize]
         public static void ClassSetup(TestContext _)
         {
@@ -33,8 +58,12 @@ namespace Microsoft.CST.OAT.Tests
         [TestMethod]
         public void TestConstructedOfLoadedTypes()
         {
-            Assert.IsFalse(Helpers.ConstructedOfLoadedTypes(typeof(TestClass)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass), new Assembly[] { typeof(TestClass).Assembly }));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass)));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass2)));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass3)));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass4)));
+            Assert.IsFalse(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5)));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5), new Assembly[] { typeof(Vehicle).Assembly }));
         }
     }
 }
