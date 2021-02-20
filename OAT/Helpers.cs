@@ -140,7 +140,7 @@ namespace Microsoft.CST.OAT.Utils
         {
             var failed = true;
             
-            foreach(var ctor in type.GetConstructors())
+            foreach(var ctor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
             {
                 if (ConstructedOfLoadedTypes(ctor))
                 {

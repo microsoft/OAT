@@ -338,7 +338,7 @@ else
 
             if (constructors.Any()){
                 var constructorToUse = constructors[0];
-                ScaffoldedObject = new Scaffold(constructorToUse);
+                ScaffoldedObject = new Scaffold(constructorToUse, AppState.Assemblies);
             }
 
             RefreshState();
@@ -376,7 +376,7 @@ else
                 {
                     try
                     {
-                        if (Helpers.ConstructedOfBasicTypes(constructorItr))
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppState.Assemblies))
                         {
                             allowedConstructors.Add(constructorItr);
                         }
