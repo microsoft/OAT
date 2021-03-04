@@ -94,6 +94,19 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
+        /// Determines if a type is nullable
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns></returns>
+        public static bool IsNullable(Type? type)
+        {
+            if (type == null) return true; // obvious
+            if (!type.IsValueType) return true; // ref-type
+            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+            return false; // value-type
+        }
+
+        /// <summary>
         /// Gets the Paths of all the Fields and Properties in the provided Type
         /// </summary>
         /// <param name="type"></param>
