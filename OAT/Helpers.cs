@@ -150,19 +150,16 @@ namespace Microsoft.CST.OAT.Utils
         /// <param name="extraAssemblies">Any asesemblies to use other than basic types.</param>
         /// <returns></returns>
         public static bool ConstructedOfLoadedTypes(Type type, IEnumerable<Assembly>? extraAssemblies = null)
-        {
-            var failed = true;
-            
+        {            
             foreach(var ctor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
             {
                 if (ConstructedOfLoadedTypes(ctor, extraAssemblies))
                 {
-                    failed = false;
-                    break;
+                    return true;
                 }
             }
 
-            return failed;
+            return false;
         }
 
         /// <summary>
@@ -173,7 +170,6 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
         public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo, IEnumerable<Assembly>? extraAssemblies = null)
         {
-            var failed = false;
             foreach (var parameter in constructorInfo.GetParameters())
             {
                 if (IsBasicType(parameter.ParameterType)){
@@ -188,8 +184,7 @@ namespace Microsoft.CST.OAT.Utils
                     
                     if (extraAssemblies != null)
                     {
-                        var validAssembly = extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault();
-                        if (validAssembly != null)
+                        if (extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault() != null)
                         {
                             if (ConstructedOfLoadedTypes(parameter.ParameterType, extraAssemblies))
                             {
@@ -197,12 +192,12 @@ namespace Microsoft.CST.OAT.Utils
                             }
                         }
                     }
-                    
-                    failed = true;
+
+                    return false;
                 }
             }
 
-            return failed;
+            return true;
         }
 
         /// <summary>
