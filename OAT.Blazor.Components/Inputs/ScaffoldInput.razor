@@ -69,7 +69,6 @@
     {
         get
         {
-            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(Scaffold?.Constructor.DeclaringType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, Assemblies)).ToList()));
             return Scaffold?.Constructor.DeclaringType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, Assemblies)).ToList() ?? new List<ConstructorInfo>();
         }
     }
