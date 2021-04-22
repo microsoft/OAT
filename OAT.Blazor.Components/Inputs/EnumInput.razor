@@ -1,10 +1,12 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+
 <select class="form-control" id="@id" @bind="SubProperty">
     @for (int i = 0; i < values.Count; i++)
     {
         <option value="@i">@values[i]</option>
     }
 </select>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
