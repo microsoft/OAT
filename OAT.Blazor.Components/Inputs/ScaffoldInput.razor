@@ -1,10 +1,11 @@
 ﻿@using System.Reflection;
 
+<div class="form-group">
 @if (ShowConstructorSelect)
 {
     string ConstructorSelectId = $"{SubPath}-Constructors";
     <label for="@ConstructorSelectId">Constructor to Create:</label>
-    <select id="@ConstructorSelectId" @bind="constructorToInvoke">
+    <select class="form-control" id="@ConstructorSelectId" @bind="constructorToInvoke">
         @{
             if (constructors != null)
             {
@@ -15,7 +16,6 @@
             }
         }
     </select>
-    <br />
 }
 
 @foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, object?>())
@@ -30,7 +30,7 @@
         <PropertyInput Id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" Type="@parameter.Value?.GetType()" />
     }
 }
-
+</div>
 
 @code {
     Scaffold? Scaffold
