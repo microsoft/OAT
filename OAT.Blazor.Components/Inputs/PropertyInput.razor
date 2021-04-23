@@ -3,8 +3,8 @@
     @if (Helpers.IsNullable(type))
     {
         <input type="checkbox" @bind="IsNull" /><label>Set to null</label>
-        <br/>
     }
+
     if (!IsNull)
     {
         @if (type.Equals(typeof(string)))
@@ -84,17 +84,15 @@
         }
         else if (type.Equals(typeof(Scaffold)))
         {
-            <br />
             <ScaffoldInput Object="Object" SubPath="@SubPath" />
         }
         else
         {
-            <br />
             <ObjectInput id="@id" Object="Object" SubPath="@SubPath" />
         }
     }
 }
-<br />
+
 @code {
     [Parameter]
     public object? Object { get; set; }
