@@ -45,6 +45,14 @@
         {
             <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
+        else if (type.Equals(typeof(Dictionary<string,string>)))
+        {
+            <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+        }
+        else if (type.Equals(typeof(Dictionary<string,List<string>>)))
+        {
+            <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" />
+        }
         else if (type.Equals(typeof(uint)))
         {
             <UintInput id="@id" Object="Object" SubPath="@SubPath" />
