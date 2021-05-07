@@ -121,15 +121,30 @@ namespace Microsoft.CST.OAT
         {
             var results = new ConcurrentStack<Rule>();
 
-            Parallel.ForEach(rules, rule =>
+            if (Options.Parallel)
+            {
+                Parallel.ForEach(rules, rule =>
+                {
+                    PushIfApplies(rule);
+                });
+            }
+            else
+            {
+                foreach(var rule in rules)
+                {
+                    PushIfApplies(rule);
+                }
+            }
+
+            return results;
+
+            void PushIfApplies(Rule rule)
             {
                 if (Applies(rule, state1, state2))
                 {
                     results.Push(rule);
                 }
-            });
-
-            return results;
+            }
         }
 
         /// <summary>
@@ -453,17 +468,31 @@ namespace Microsoft.CST.OAT
         public IEnumerable<RuleCapture> GetCaptures(IEnumerable<Rule> rules, object? state1 = null, object? state2 = null)
         {
             var results = new ConcurrentStack<RuleCapture>();
+            if (Options.Parallel)
+            {
+                Parallel.ForEach(rules, rule =>
+                {
+                    PushRuleCapturesIfApplies(rule);
+                });
+            }
+            else
+            {
+                foreach(var rule in rules)
+                {
+                    PushRuleCapturesIfApplies(rule);
+                }
+            }
 
-            Parallel.ForEach(rules, rule =>
+            return results;
+
+            void PushRuleCapturesIfApplies(Rule rule)
             {
                 var captured = GetCapture(rule, state1, state2);
                 if (captured.RuleMatches && captured.Result != null)
                 {
                     results.Push(captured.Result);
                 }
-            });
-
-            return results;
+            }
         }
 
         /// <summary>
@@ -477,7 +506,24 @@ namespace Microsoft.CST.OAT
         {
             var tags = new ConcurrentDictionary<string, byte>();
 
-            Parallel.ForEach(rules, rule =>
+            if (Options.Parallel)
+            {
+                Parallel.ForEach(rules, rule =>
+                {
+                    PushRuleTagsIfApplies(rule);
+                });
+            }
+            else
+            {
+                foreach(var rule in rules)
+                {
+                    PushRuleTagsIfApplies(rule);
+                }
+            }
+
+            return tags.Keys.ToArray();
+
+            void PushRuleTagsIfApplies(Rule rule)
             {
                 // If there are no tags, or all of the tags are already in the tags we've found skip otherwise apply.
                 if ((!rule.Tags.Any() || !rule.Tags.All(x => tags.Keys.Any(y => y == x))) && Applies(rule, state1, state2))
@@ -487,9 +533,7 @@ namespace Microsoft.CST.OAT
                         tags.TryAdd(tag, 0);
                     }
                 }
-            });
-
-            return tags.Keys.ToArray();
+            }
         }
 
         /// <summary>
