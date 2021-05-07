@@ -270,12 +270,12 @@ references:
   commentId: T:Microsoft.CST.OAT.AnalyzerOptions
   fullName: Microsoft.CST.OAT.AnalyzerOptions
   nameWithType: AnalyzerOptions
-- uid: Microsoft.CST.OAT.AnalyzerOptions.#ctor(System.Boolean)
-  name: AnalyzerOptions(Boolean)
-  href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions__ctor_System_Boolean_
-  commentId: M:Microsoft.CST.OAT.AnalyzerOptions.#ctor(System.Boolean)
-  fullName: Microsoft.CST.OAT.AnalyzerOptions.AnalyzerOptions(System.Boolean)
-  nameWithType: AnalyzerOptions.AnalyzerOptions(Boolean)
+- uid: Microsoft.CST.OAT.AnalyzerOptions.#ctor(System.Boolean,System.Boolean)
+  name: AnalyzerOptions(Boolean, Boolean)
+  href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions__ctor_System_Boolean_System_Boolean_
+  commentId: M:Microsoft.CST.OAT.AnalyzerOptions.#ctor(System.Boolean,System.Boolean)
+  fullName: Microsoft.CST.OAT.AnalyzerOptions.AnalyzerOptions(System.Boolean, System.Boolean)
+  nameWithType: AnalyzerOptions.AnalyzerOptions(Boolean, Boolean)
 - uid: Microsoft.CST.OAT.AnalyzerOptions.#ctor*
   name: AnalyzerOptions
   href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions__ctor_
@@ -283,6 +283,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.AnalyzerOptions.AnalyzerOptions
   nameWithType: AnalyzerOptions.AnalyzerOptions
+- uid: Microsoft.CST.OAT.AnalyzerOptions.Parallel
+  name: Parallel
+  href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions_Parallel
+  commentId: P:Microsoft.CST.OAT.AnalyzerOptions.Parallel
+  fullName: Microsoft.CST.OAT.AnalyzerOptions.Parallel
+  nameWithType: AnalyzerOptions.Parallel
+- uid: Microsoft.CST.OAT.AnalyzerOptions.Parallel*
+  name: Parallel
+  href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions_Parallel_
+  commentId: Overload:Microsoft.CST.OAT.AnalyzerOptions.Parallel
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.AnalyzerOptions.Parallel
+  nameWithType: AnalyzerOptions.Parallel
 - uid: Microsoft.CST.OAT.AnalyzerOptions.RunScripts
   name: RunScripts
   href: api/Microsoft.CST.OAT.AnalyzerOptions.html#Microsoft_CST_OAT_AnalyzerOptions_RunScripts
@@ -1705,6 +1718,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.IsBasicType
   nameWithType: Helpers.IsBasicType
+- uid: Microsoft.CST.OAT.Utils.Helpers.IsNullable(System.Type)
+  name: IsNullable(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_IsNullable_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.IsNullable(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.IsNullable(System.Type)
+  nameWithType: Helpers.IsNullable(Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.IsNullable*
+  name: IsNullable
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_IsNullable_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.IsNullable
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.IsNullable
+  nameWithType: Helpers.IsNullable
 - uid: Microsoft.CST.OAT.Utils.Helpers.IsValidRegex(System.String)
   name: IsValidRegex(String)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_IsValidRegex_System_String_
