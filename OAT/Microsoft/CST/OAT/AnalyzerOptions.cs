@@ -10,14 +10,17 @@ namespace Microsoft.CST.OAT
         /// The constructor
         /// </summary>
         /// <param name="runScripts">If running Scripts should be enabled</param>
-        public AnalyzerOptions(bool runScripts = false)
+        /// <param name="parallel">If the analyzer should parallelize analysis</param>
+        public AnalyzerOptions(bool runScripts = false, bool parallel = true)
         {
             RunScripts = runScripts;
+            Parallel = parallel;
         }
 
         /// <summary>
         /// If running Scripts is enabled
         /// </summary>
         public bool RunScripts { get; }
+        public bool Parallel { get; }
     }
 }
