@@ -5,7 +5,7 @@
         <input class="form-control" id="@id" type="text" @bind="CurrentInputKey" />
     </div>
     <div class="col">
-        <ListStringInput id="@CurrentInputKey" Object="this" SubPath="CurrentInputValue" />
+        <ListStringInput id="@SubPath" Object="@CurrentInputValue" SubPath="@string.Empty" />
     </div>
     <div class="col">
         <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>

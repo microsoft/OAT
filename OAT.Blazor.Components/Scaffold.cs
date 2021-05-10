@@ -17,6 +17,10 @@ namespace Microsoft.CST.OAT.Blazor.Components
 
             foreach (var parameter in Constructor.GetParameters() ?? Array.Empty<ParameterInfo>())
             {
+                if (parameter.Name is null)
+                {
+                    continue;
+                }
                 if (parameter.HasDefaultValue)
                 {
                     Parameters.Add(parameter.Name, parameter.DefaultValue);
@@ -47,6 +51,10 @@ namespace Microsoft.CST.OAT.Blazor.Components
             var inputs = new List<object?>();
             foreach (var parameter in Constructor?.GetParameters() ?? Array.Empty<ParameterInfo>())
             {
+                if (parameter.Name is null) 
+                { 
+                    continue; 
+                }
                 if (Parameters[parameter.Name] is Scaffold scaffoldedState)
                 {
                     inputs.Add(scaffoldedState.Construct());
