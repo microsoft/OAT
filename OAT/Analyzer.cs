@@ -125,24 +125,21 @@ namespace Microsoft.CST.OAT
             {
                 Parallel.ForEach(rules, rule =>
                 {
-                    PushIfApplies(rule);
+                    if (Applies(rule, state1, state2))
+                    {
+                        results.Push(rule);
+                    }
                 });
+                foreach(var result in results) { yield return result; }
             }
             else
             {
                 foreach(var rule in rules)
                 {
-                    PushIfApplies(rule);
-                }
-            }
-
-            return results;
-
-            void PushIfApplies(Rule rule)
-            {
-                if (Applies(rule, state1, state2))
-                {
-                    results.Push(rule);
+                    if (Applies(rule, state1, state2))
+                    {
+                        yield return rule;
+                    }
                 }
             }
         }
@@ -472,25 +469,23 @@ namespace Microsoft.CST.OAT
             {
                 Parallel.ForEach(rules, rule =>
                 {
-                    PushRuleCapturesIfApplies(rule);
+                    var (RuleMatches, Result) = GetCapture(rule, state1, state2);
+                    if (RuleMatches && Result != null)
+                    {
+                        results.Push(Result);
+                    }
                 });
+                foreach (var entry in results) { yield return entry; }
             }
             else
             {
                 foreach(var rule in rules)
                 {
-                    PushRuleCapturesIfApplies(rule);
-                }
-            }
-
-            return results;
-
-            void PushRuleCapturesIfApplies(Rule rule)
-            {
-                var captured = GetCapture(rule, state1, state2);
-                if (captured.RuleMatches && captured.Result != null)
-                {
-                    results.Push(captured.Result);
+                    var (RuleMatches, Result) = GetCapture(rule, state1, state2);
+                    if (RuleMatches && Result != null)
+                    {
+                        yield return Result;
+                    }
                 }
             }
         }
