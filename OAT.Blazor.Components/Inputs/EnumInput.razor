@@ -3,7 +3,7 @@
 <select class="form-control" id="@id" @bind="SubProperty" data-input-type="enum-input">
     @for (int i = 0; i < values.Count; i++)
     {
-        <option value="@i">@values[i]</option>
+        <option value="@i">@values[i].ToString()</option>
     }
 </select>
 
