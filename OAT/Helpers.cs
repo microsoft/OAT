@@ -177,7 +177,7 @@ namespace Microsoft.CST.OAT.Utils
                 }
                 else
                 {
-                    if (constructorInfo.DeclaringType.Assembly.GetTypes().Contains(parameter.ParameterType))
+                    if (constructorInfo.DeclaringType?.Assembly.GetTypes().Contains(parameter.ParameterType) ?? false)
                     {
                         continue;
                     }
@@ -212,6 +212,7 @@ namespace Microsoft.CST.OAT.Utils
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
+            if (propertyName is null) { return null; }
             if (obj is System.Collections.IDictionary dict)
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
@@ -223,13 +224,12 @@ namespace Microsoft.CST.OAT.Utils
             {
                 if (int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
                 {
-
                     return list[propertyIndex];
                 }
             }
             else
             {
-                return obj?.GetType().GetProperty(propertyName ?? string.Empty)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName ?? string.Empty)?.GetValue(obj);
+                return obj?.GetType().GetProperty(propertyName)?.GetValue(obj) ?? obj?.GetType().GetField(propertyName)?.GetValue(obj);
             }
             return null;
         }

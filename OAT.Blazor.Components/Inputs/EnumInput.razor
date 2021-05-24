@@ -27,9 +27,12 @@
     protected override void OnInitialized()
     {
         type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
-        foreach(var value in Enum.GetValues(type))
+        if (type is not null)
         {
-            values.Add((Enum)value);
+            foreach (var value in Enum.GetValues(type))
+            {
+                values.Add((Enum)value);
+            }
         }
         base.OnInitialized();
     }

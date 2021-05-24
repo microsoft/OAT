@@ -18,9 +18,9 @@
         get
         {
             var val = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
-            if (val != null)
+            if (val is not null && val.ToString() is string notNull)
             {
-                return val.ToString();
+                return notNull;
             }
             return string.Empty;
         }
