@@ -53,7 +53,7 @@ namespace Microsoft.CST.OAT
         /// </summary>
         /// <param name="obj">The object to compare</param>
         /// <returns>True if obj is a ScriptData and the Code, Imports and References match.  Imports and References are order sensitive.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is ScriptData scriptIn)
             {

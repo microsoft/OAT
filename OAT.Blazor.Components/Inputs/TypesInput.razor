@@ -1,12 +1,13 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using Newtonsoft.Json;
 
-<select id="@id" class="form-control" @bind="SelectedType">
+<select class="form-control" id="@id" @bind="SelectedType" data-input-type="types-input">
     @for (int i = 0; i < Types.Length; i++)
     {
         <option value="@i">@Types[i].FullName</option>
     }
 </select>
+
 @code {
     [Parameter]
     public object? Object { get; set; }

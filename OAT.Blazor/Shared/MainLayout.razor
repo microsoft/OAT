@@ -1,18 +1,19 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row">
-        <a href="https://www.github.com/microsoft/OAT" target="_blank">
-            <img src="images/github-32.png" />
-        </a>
-        <a href="https://www.github.com/microsoft/OAT/wiki" target="_blank">Docs</a>
+<div class ="page">
+    <div class="sidebar">
+        <NavMenu />
     </div>
 
-    <div class="content px-4">
-        @Body
+    <div class="main">
+        <div class="top-row">
+            <a href="https://www.github.com/microsoft/OAT" target="_blank">
+                <img src="images/github-32.png" />
+            </a>
+            <a href="https://www.github.com/microsoft/OAT/wiki" target="_blank">Docs</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
     </div>
 </div>

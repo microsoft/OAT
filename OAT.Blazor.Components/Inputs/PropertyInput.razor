@@ -2,9 +2,12 @@
 {
     @if (Helpers.IsNullable(type))
     {
-        <input type="checkbox" @bind="IsNull" /><label>Set to null</label>
-        <br/>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" />
+            <label class="form-check-label" for="@id">Set to Null</label>
+        </div>
     }
+
     if (!IsNull)
     {
         @if (type.Equals(typeof(string)))
@@ -41,6 +44,14 @@
         else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
         {
             <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+        }
+        else if (type.Equals(typeof(Dictionary<string,string>)))
+        {
+            <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+        }
+        else if (type.Equals(typeof(Dictionary<string,List<string>>)))
+        {
+            <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
         else if (type.Equals(typeof(uint)))
         {
@@ -84,17 +95,15 @@
         }
         else if (type.Equals(typeof(Scaffold)))
         {
-            <br />
             <ScaffoldInput Object="Object" SubPath="@SubPath" />
         }
         else
         {
-            <br />
             <ObjectInput id="@id" Object="Object" SubPath="@SubPath" />
         }
     }
 }
-<br />
+
 @code {
     [Parameter]
     public object? Object { get; set; }

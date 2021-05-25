@@ -1,7 +1,8 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using System;
 
-<input id="@id" type="text" @bind="SubProperty"/>
+<input class="form-control" id="@id" type="text" @bind="SubProperty" data-input-type="ushort-input"/>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
@@ -17,9 +18,9 @@
         get
         {
             var val = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
-            if (val != null)
+            if (val is not null && val.ToString() is string notNull)
             {
-                return val.ToString();
+                return notNull;
             }
             return string.Empty;
         }

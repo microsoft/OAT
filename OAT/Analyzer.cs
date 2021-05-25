@@ -446,7 +446,7 @@ namespace Microsoft.CST.OAT
                         (var ExpressionMatches, var Captures) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2, ruleCapture.Captures);
                         if (ExpressionMatches)
                         {
-                            ruleCapture.Captures.AddRange(Captures);
+                            ruleCapture.Captures.AddRange(Captures ?? new List<ClauseCapture>());
                             return (true, ruleCapture);
                         }
                     }

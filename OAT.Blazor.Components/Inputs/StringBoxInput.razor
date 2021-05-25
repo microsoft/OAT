@@ -1,6 +1,7 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
-<textarea id="@id" rows="5" cols="50" @bind="SubProperty"/>
+<textarea id="@id" rows="5" cols="50" @bind="SubProperty" data-input-type="stringbox-input"/>
+
 @code {
         [Parameter]
         public object? Object { get; set; }

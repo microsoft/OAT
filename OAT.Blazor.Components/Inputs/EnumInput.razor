@@ -1,10 +1,12 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<select class="form-control" id="@id" @bind="SubProperty">
+
+<select class="form-control" id="@id" @bind="SubProperty" data-input-type="enum-input">
     @for (int i = 0; i < values.Count; i++)
     {
-        <option value="@i">@values[i]</option>
+        <option value="@i">@values[i].ToString()</option>
     }
 </select>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
@@ -25,9 +27,12 @@
     protected override void OnInitialized()
     {
         type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
-        foreach(var value in Enum.GetValues(type))
+        if (type is not null)
         {
-            values.Add((Enum)value);
+            foreach (var value in Enum.GetValues(type))
+            {
+                values.Add((Enum)value);
+            }
         }
         base.OnInitialized();
     }

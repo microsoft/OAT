@@ -1,5 +1,9 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<input class="form-check-input" id="@id" type="checkbox" @bind="SubProperty"/>
+
+<div class="form-check">
+    <input type="checkbox" class="form-check-input" id="@id" @bind="SubProperty" data-input-type="bool-input"/>
+</div>
+
 @code {
     [Parameter]
     public object? Object { get; set; }

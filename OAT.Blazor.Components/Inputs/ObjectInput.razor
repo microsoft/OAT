@@ -22,7 +22,7 @@
                                     type = deNullabled;
                                 }
                                 <label for="@name">@Properties[i].Name</label>
-                                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+                                <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />
                             }
                         }
                         @for (int i = 0; i < Fields.Length; i++)
@@ -37,7 +37,7 @@
                                     type = deNullabled;
                                 }
                                 <label for="@name">@Fields[i].Name</label>
-                                <PropertyInput Object="@Object" SubPath="@appendedName" id="name" type="@type" />
+                                <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />
                             }
                         }
                     </form>
