@@ -21,7 +21,7 @@ jobs:
     - name: Mkdir toPublish
       run: mkdir toPublish
     - name: Move Blazor Output into Place
-      run: mv OAT.Blazor/bin/Release/netstandard2.1/publish/wwwroot toPublish/Blazor
+      run: mv OAT.Blazor/bin/Release/net5.0/publish/wwwroot toPublish/Blazor
     - name: Update gitattributes
       run: mv toPublish/Blazor/gitattributes toPublish/Blazor/.gitattributes
 
