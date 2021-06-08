@@ -38,6 +38,12 @@
         get
         {
             var obj = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+            if (obj is System.ValueTuple<object, Type>)
+            {
+                ValueTuple<object, Type> tuple = (ValueTuple<object, Type>)obj;
+                if (tuple.Item1 is Scaffold)
+                    return (Scaffold)tuple.Item1;
+            }
             return obj is Scaffold scaffold ? scaffold : null;
         }
         set
