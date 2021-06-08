@@ -1,7 +1,5 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<br />
 @{
-    var type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
     if (type != null)
     {
         var enums = Enum.GetValues(type);
@@ -20,10 +18,6 @@
                     {
                         <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" /><label for="@curEnum">@curEnum</label>
                     }
-                    if (i < enums.Length - 1)
-                    {
-                        <br />
-                    }
                 }
             }
         }
@@ -39,11 +33,11 @@
     [Parameter]
     public string id { get; set; } = string.Empty;
 
-    Type? type;
+    [Parameter]
+    public Type? type { get; set; }
 
     protected override void OnInitialized()
     {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
         base.OnInitialized();
     }
 
