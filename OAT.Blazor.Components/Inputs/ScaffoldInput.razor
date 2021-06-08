@@ -20,7 +20,6 @@
 
 @foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, (object?, Type)>())
 {
-    System.Console.WriteLine($"ScaffoldInput.cs: Processing parameter {parameter}");
     <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
     if (parameter.Value.obj is Scaffold)
     {
