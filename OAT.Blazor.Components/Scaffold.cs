@@ -61,7 +61,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
                 }
                 else
                 {
-                    inputs.Add(Parameters[parameter.Name]);
+                    inputs.Add(Parameters[parameter.Name].obj);
                 }
             }
             return Constructor?.Invoke(inputs.ToArray());
