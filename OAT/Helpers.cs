@@ -350,7 +350,8 @@ namespace Microsoft.CST.OAT.Utils
         {
             if (obj is IDictionary<string, (object, Type)> dictionary)
             {
-                dictionary[propertyName] = (value!, value.GetType());
+                var type = ((ValueTuple<object, Type>)dictionary[propertyName]).Item2;
+                dictionary[propertyName] = (value!, type);
             }
             else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
