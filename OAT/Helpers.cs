@@ -217,7 +217,12 @@ namespace Microsoft.CST.OAT.Utils
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
                 {
-                    return dict[propertyName];
+                    if (dict[propertyName] is System.ValueTuple<object, Type> tuple)
+                    {
+                        return tuple.Item1;
+                    }
+                    else
+                        return dict[propertyName];
                 }
             }
             else if (obj is System.Collections.IList list)
