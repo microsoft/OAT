@@ -217,9 +217,8 @@ namespace Microsoft.CST.OAT.Utils
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
                 {
-                    if (dict[propertyName] is System.ValueTuple<object, Type>)
+                    if (dict[propertyName] is System.ValueTuple<object, Type> tuple)
                     {
-                        ValueTuple<object, Type> tuple = (ValueTuple<object, Type>)dict[propertyName];
                         return tuple.Item1;
                     }
                     else
@@ -344,15 +343,14 @@ namespace Microsoft.CST.OAT.Utils
                 {
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
-
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
             }
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
-            if (obj is IDictionary<string, object> dictionary)
+            if (obj is IDictionary<string, (object, Type)> dictionary)
             {
-                dictionary[propertyName] = value!;
+                dictionary[propertyName] = (value!, value.GetType());
             }
             else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
