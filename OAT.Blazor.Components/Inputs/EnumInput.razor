@@ -20,13 +20,13 @@
     [Parameter]
     public Action? OnChange { get; set; }
 
-    Type? type;
+    [Parameter]
+    public Type? type { get; set; }
 
     List<Enum> values = new List<Enum>();
 
     protected override void OnInitialized()
     {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
         if (type is not null)
         {
             foreach (var value in Enum.GetValues(type))

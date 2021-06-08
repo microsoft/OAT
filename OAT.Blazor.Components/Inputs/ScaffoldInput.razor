@@ -18,16 +18,17 @@
     </select>
 }
 
-@foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, object?>())
+@foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, (object?, Type)>())
 {
+    System.Console.WriteLine($"ScaffoldInput.cs: Processing parameter {parameter}");
     <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
-    if (parameter.Value is Scaffold)
+    if (parameter.Value.obj is Scaffold)
     {
         <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" />
     }
     else
     {
-        <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value?.GetType()" />
+        <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value.type" />
     }
 }
 </div>
