@@ -1,4 +1,6 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+
+<div class="flags-input">
 @{
     if (type != null)
     {
@@ -12,17 +14,32 @@
                 {
                     if (val.HasFlag(curEnum))
                     {
-                        <input type="checkbox" checked="checked" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" /><label for="@curEnum">@curEnum</label>
+                        <div class="form-check form-check-inline mr-2">
+                            <input class="form-check-input" type="checkbox" checked="checked" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                            <label class="form-check-label" for="@curEnum">@curEnum</label>
+                        </div>
                     }
                     else
                     {
-                        <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" /><label for="@curEnum">@curEnum</label>
+                        <div class="form-check form-check-inline mr-2">
+                            <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                            <label class="form-check-label" for="@curEnum">@curEnum</label>
+                        </div>
                     }
+                }
+                else if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is null)
+                {
+                    <div class="form-check form-check-inline mr-2">
+                        <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                        <label class="form-check-label" for="@curEnum">@curEnum</label>
+                    </div>
                 }
             }
         }
     }
 }
+</div>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
