@@ -23,13 +23,14 @@
 @foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, (object?, Type)>())
 {
     <div class="form-group">
-        <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
         @if (parameter.Value.obj is Scaffold)
         {
+            <label class="font-weight-bold" for="@PathFromKey(parameter.Key)"><u>@parameter.Key</u></label>
             <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" />
         }
         else
         {
+            <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
             <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value.type" />
         }
     </div>
