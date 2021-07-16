@@ -119,18 +119,16 @@
 
     object? oldValue = null;
 
-    bool _IsNull = false;
 
     public bool IsNull
     {
         get
         {
-            return _IsNull;
+            return Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is null;
         }
         set
         {
-            _IsNull = value;
-            if (_IsNull || type == null)
+            if (value is true)
             {
                 oldValue = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, null);

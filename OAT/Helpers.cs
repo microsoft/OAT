@@ -261,9 +261,13 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type">The type to get a default value for.</param>
         /// <returns>The default value for the type.</returns>
-        public static object? GetDefaultValueForType(Type type)
+        public static object? GetDefaultValueForType(Type? type)
         {
-            if (type.Equals(typeof(string)))
+            if (type is null)
+            {
+                return null;
+            }
+            else if (type.Equals(typeof(string)))
             {
                 return string.Empty;
             }
@@ -318,6 +322,22 @@ namespace Microsoft.CST.OAT.Utils
             else if (type.IsEnum)
             {
                 return GetDefaultValueForType(type.GetEnumUnderlyingType());
+            }
+            else if (type == typeof(List<string>))
+            {
+                return new List<string>();
+            }
+            else if (type == typeof(List<KeyValuePair<string,string>>))
+            {
+                return new List<KeyValuePair<string, string>>();
+            }
+            else if (type == typeof(Dictionary<string, List<string>>))
+            {
+                return new Dictionary<string, List<string>>();
+            }
+            else if (type == typeof(Dictionary<string, string>))
+            {
+                return new Dictionary<string, string>();
             }
             else
             {
