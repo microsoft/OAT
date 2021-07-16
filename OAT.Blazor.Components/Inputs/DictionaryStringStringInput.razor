@@ -9,7 +9,7 @@
         <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
     </div>
 </div>
-    @if (SubProperty.Count > 0)
+    @if (SubProperty?.Count > 0)
     {
 <div class="row">
     <div class="col">
@@ -27,7 +27,7 @@
     }
 
     @code {
-        [Parameter]
+    [Parameter]
         public object? Object { get; set; }
 
         [Parameter]
@@ -47,19 +47,29 @@
 
         void RemoveEntry()
         {
-            SubProperty.Remove(SelectedKey);
+            SubProperty?.Remove(SelectedKey);
         }
 
         void AddEntry()
         {
+            if (SubProperty is null)
+            {
+                SubProperty = new Dictionary<string, string>();
+            }
             SubProperty[CurrentInputKey] = CurrentInputValue;
+            CurrentInputKey = string.Empty;
+            CurrentInputValue = string.Empty;
         }
 
-        public Dictionary<string, string> SubProperty
+        public Dictionary<string, string>? SubProperty
         {
             get
             {
-                return (Dictionary<string, string>)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? new Dictionary<string, string>());
+                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Dictionary<string, string> val)
+                {
+                    return val;
+                }
+                return null;
             }
             set
             {
