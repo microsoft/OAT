@@ -18,9 +18,6 @@
     public string id { get; set; } = string.Empty;
 
     [Parameter]
-    public Action? OnChange { get; set; }
-
-    [Parameter]
     public Type? type { get; set; }
 
     List<Enum> values = new List<Enum>();
@@ -50,9 +47,6 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, values[value]);
-            if (OnChange != null) {
-                OnChange();
-            }
         }
     }
 }

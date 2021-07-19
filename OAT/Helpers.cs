@@ -98,13 +98,7 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns></returns>
-        public static bool IsNullable(Type? type)
-        {
-            if (type == null) return true; // obvious
-            if (!type.IsValueType) return true; // ref-type
-            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
-            return false; // value-type
-        }
+        public static bool IsNullable(Type? type) => Nullable.GetUnderlyingType(type) != null;
 
         /// <summary>
         /// Gets the Paths of all the Fields and Properties in the provided Type
@@ -321,7 +315,7 @@ namespace Microsoft.CST.OAT.Utils
             }
             else if (type.IsEnum)
             {
-                return GetDefaultValueForType(type.GetEnumUnderlyingType());
+                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType()));
             }
             else if (type == typeof(List<string>))
             {

@@ -15,10 +15,6 @@
                 var type = Properties[i].PropertyType;
                 var appendedName = AppendNameToPath(Properties[i].Name);
                 var name = ToName(appendedName, i);
-                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
-                {
-                    type = deNullabled;
-                }
                 <div class="form-group">
                     <label for="@name">@Properties[i].Name</label>
                     <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />
@@ -32,10 +28,6 @@
                 var type = Fields[i].FieldType;
                 var appendedName = AppendNameToPath(Fields[i].Name);
                 var name = ToName(appendedName, i);
-                if (Nullable.GetUnderlyingType(type) is Type deNullabled)
-                {
-                    type = deNullabled;
-                }
                 <div class="form-group">
                     <label for="@name">@Fields[i].Name</label>
                     <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />

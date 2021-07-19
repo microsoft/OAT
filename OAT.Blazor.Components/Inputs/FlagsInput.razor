@@ -53,22 +53,17 @@
     [Parameter]
     public Type? type { get; set; }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
     void CheckboxClicked(Enum enumValue, object checkedValue)
     {
         if (type is not null)
         {
             if ((bool)checkedValue)
             {
-                if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                if (type?.IsDefined(typeof(FlagsAttribute), false) is true)
                 {
-                    if (!SubProperty.HasFlag(enumValue))
+                    if (!(SubProperty?.HasFlag(enumValue) ?? false))
                     {
-                        object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
+                        object val = SubProperty is null ? 0 : Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
                         object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
                         if (val is int)
                         {
@@ -107,9 +102,9 @@
             }
             else
             {
-                if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                if (type?.IsDefined(typeof(FlagsAttribute), false) is true)
                 {
-                    if (SubProperty.HasFlag(enumValue))
+                    if (SubProperty?.HasFlag(enumValue) ?? false)
                     {
                         object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
                         object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
