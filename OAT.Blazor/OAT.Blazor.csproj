@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Content Update="wwwroot\css\app.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
