@@ -125,7 +125,7 @@
     {
         if (Helpers.IsNullable(type))
         {
-            unwrappedType = Nullable.GetUnderlyingType(type);
+            unwrappedType = type is not null ? Nullable.GetUnderlyingType(type) : null;
         }
         else
         {

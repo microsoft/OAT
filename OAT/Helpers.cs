@@ -362,10 +362,14 @@ namespace Microsoft.CST.OAT.Utils
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
-            if (obj is IDictionary<string, (object, Type)> dictionary)
+            if (obj is IDictionary<string, object> dictionary)
             {
-                var type = ((ValueTuple<object, Type>)dictionary[propertyName]).Item2;
-                dictionary[propertyName] = (value!, type);
+                dictionary[propertyName] = value!;
+            }
+            else if (obj is IDictionary<string, (object, Type)> tupleDictionary)
+            {
+                var type = tupleDictionary[propertyName].Item2;
+                tupleDictionary[propertyName] = (value!, type);
             }
             else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
