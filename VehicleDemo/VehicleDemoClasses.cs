@@ -1,27 +1,7 @@
-﻿
-/* Unmerged change from project 'VehicleDemo (netstandard2.1)'
-Before:
-using System;
-using System.Collections.Generic;
-After:
-using Microsoft.CST.OAT;
-using Microsoft.Collections.Generic;
-*/
-using Microsoft.CST.OAT.Operations;
+﻿using Microsoft.CST.OAT.Operations;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
-
-/* Unmerged change from project 'VehicleDemo (netstandard2.1)'
-Before:
-using Microsoft.CST.OAT;
-using Microsoft.CST.OAT.Operations;
-using MoreLinq;
-After:
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-*/
 using System.Linq;
 
 namespace Microsoft.CST.OAT.VehicleDemo
