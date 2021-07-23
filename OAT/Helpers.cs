@@ -44,7 +44,13 @@ namespace Microsoft.CST.OAT.Utils
             if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                type == typeof(DateTime) || type.IsEnum)
+                type == typeof(DateTime) || type.IsEnum || 
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string) 
+                    && (type.GetGenericArguments()[1] == typeof(string) || 
+                    (type.GetGenericArguments()[1] is Type valueType && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>) && valueType.GetGenericArguments()[0] == typeof(string)))) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] == typeof(string)) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] is Type listType 
+                    && listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>) && listType.GetGenericArguments()[0] == typeof(string) && listType.GetGenericArguments()[1] == typeof(string)))
             {
                 // Only return basic types
                 return true;
@@ -216,7 +222,9 @@ namespace Microsoft.CST.OAT.Utils
                         return tuple.Item1;
                     }
                     else
+                    {
                         return dict[propertyName];
+                    }
                 }
             }
             else if (obj is System.Collections.IList list)
@@ -362,14 +370,18 @@ namespace Microsoft.CST.OAT.Utils
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
-            if (obj is IDictionary<string, object> dictionary)
-            {
-                dictionary[propertyName] = value!;
-            }
-            else if (obj is IDictionary<string, (object, Type)> tupleDictionary)
+            // For scaffolds
+            if (obj is IDictionary<string, (object, Type)> tupleDictionary)
             {
                 var type = tupleDictionary[propertyName].Item2;
                 tupleDictionary[propertyName] = (value!, type);
+            }
+            else if (obj is System.Collections.IDictionary dict)
+            {
+                if (dict.Keys.OfType<string>().Any())
+                {
+                    dict[propertyName] = value!;
+                }
             }
             else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
