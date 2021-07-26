@@ -1,6 +1,6 @@
-﻿@if (type != null)
+﻿@if (type != null && unwrappedType != null)
 {
-    @if (Helpers.IsNullable(type))
+    @if (Helpers.IsNullable(type) || IsNull)
     {
         <div class="form-check form-check-inline ml-2">
             <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" />
@@ -10,15 +10,15 @@
 
     @if (!IsNull)
     {
-        @if (type.Equals(typeof(string)))
+        @if (unwrappedType.Equals(typeof(string)))
         {
             <StringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(bool)))
+        else if (unwrappedType.Equals(typeof(bool)))
         {
             <BoolInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(int)))
+        else if (unwrappedType.Equals(typeof(int)))
         {
             <IntInput id="@id" Object="Object" SubPath="@SubPath" />
         }
@@ -33,67 +33,67 @@
                 <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" />
             }
         }
-        else if (type.Equals(typeof(DateTime)))
+        else if (unwrappedType.Equals(typeof(DateTime)))
         {
             <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(List<string>)))
+        else if (unwrappedType.Equals(typeof(List<string>)))
         {
             <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
+        else if (unwrappedType.Equals(typeof(List<KeyValuePair<string, string>>)))
         {
             <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Dictionary<string,string>)))
+        else if (unwrappedType.Equals(typeof(Dictionary<string,string>)))
         {
             <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Dictionary<string,List<string>>)))
+        else if (unwrappedType.Equals(typeof(Dictionary<string,List<string>>)))
         {
             <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(uint)))
+        else if (unwrappedType.Equals(typeof(uint)))
         {
             <UintInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(long)))
+        else if (unwrappedType.Equals(typeof(long)))
         {
             <LongInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(ulong)))
+        else if (unwrappedType.Equals(typeof(ulong)))
         {
             <UlongInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(short)))
+        else if (unwrappedType.Equals(typeof(short)))
         {
             <ShortInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(ushort)))
+        else if (unwrappedType.Equals(typeof(ushort)))
         {
             <UshortInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(byte)))
+        else if (unwrappedType.Equals(typeof(byte)))
         {
             <ByteInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(char)))
+        else if (unwrappedType.Equals(typeof(char)))
         {
             <CharInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(float)))
+        else if (unwrappedType.Equals(typeof(float)))
         {
             <FloatInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(double)))
+        else if (unwrappedType.Equals(typeof(double)))
         {
             <DoubleInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(decimal)))
+        else if (unwrappedType.Equals(typeof(decimal)))
         {
             <DecimalInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Scaffold)))
+        else if (unwrappedType.Equals(typeof(Scaffold)))
         {
             <ScaffoldInput Object="Object" SubPath="@SubPath" />
         }
