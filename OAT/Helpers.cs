@@ -343,7 +343,14 @@ namespace Microsoft.CST.OAT.Utils
             }
             else
             {
-                return null;
+                try
+                {
+                    return System.Activator.CreateInstance(type);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
         }
 
