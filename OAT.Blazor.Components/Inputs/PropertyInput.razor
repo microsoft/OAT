@@ -8,7 +8,7 @@
         </div>
     }
 
-    @if (!IsNull)
+    @if (!IsNull && unwrappedType != null)
     {
         @if (unwrappedType.Equals(typeof(string)))
         {
@@ -22,7 +22,7 @@
         {
             <IntInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (unwrappedType?.IsEnum ?? false)
+        else if (unwrappedType.IsEnum)
         {
             if (unwrappedType.IsDefined(typeof(FlagsAttribute), false))
             {
@@ -37,13 +37,38 @@
         {
             <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" />
         }
+        else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            var args = unwrappedType.GetGenericArguments();
+            if (args.Any())
+            {
+                var listType = args[0];
+                if (listType.Equals(typeof(string)))
+                {
+                    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else if (listType.Equals(typeof(List<KeyValuePair<string, string>>)))
+                {
+                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+}
+                else if (listType.IsEnum)
+                {
+                    if (listType.IsDefined(typeof(FlagsAttribute), false))
+                    {
+                        <ListFlagsInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" />
+                    }
+                    else
+                    {
+                        <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" />
+                    }
+                }
+            }            
+        }
         else if (unwrappedType.Equals(typeof(List<string>)))
         {
-            <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
         else if (unwrappedType.Equals(typeof(List<KeyValuePair<string, string>>)))
         {
-            <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
         else if (unwrappedType.Equals(typeof(Dictionary<string,string>)))
         {
