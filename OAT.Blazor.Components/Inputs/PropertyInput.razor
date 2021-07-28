@@ -1,99 +1,124 @@
-﻿@if (type != null)
+﻿@if (type != null && unwrappedType != null)
 {
-    @if (Helpers.IsNullable(type))
+    @if (Helpers.IsNullable(type) || IsNull)
     {
-        <div class="form-check form-check-inline">
+        <div class="form-check form-check-inline ml-2">
             <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" />
             <label class="form-check-label" for="@id">Set to Null</label>
         </div>
     }
 
-    if (!IsNull)
+    @if (!IsNull && unwrappedType != null)
     {
-        @if (type.Equals(typeof(string)))
+        @if (unwrappedType.Equals(typeof(string)))
         {
             <StringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(bool)))
+        else if (unwrappedType.Equals(typeof(bool)))
         {
             <BoolInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(int)))
+        else if (unwrappedType.Equals(typeof(int)))
         {
             <IntInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.IsEnum)
+        else if (unwrappedType.IsEnum)
         {
-            if (type.IsDefined(typeof(FlagsAttribute), false))
+            if (unwrappedType.IsDefined(typeof(FlagsAttribute), false))
             {
-                <FlagsInput id="@id" Object="Object" SubPath="@SubPath" />
+                <FlagsInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" />
             }
             else
             {
-                <EnumInput id="@id" Object="Object" SubPath="@SubPath" />
+                <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" />
             }
         }
-        else if (type.Equals(typeof(DateTime)))
+        else if (unwrappedType.Equals(typeof(DateTime)))
         {
             <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(List<string>)))
+        else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
         {
-            <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
+            var args = unwrappedType.GetGenericArguments();
+            if (args.Any())
+            {
+                var listType = args[0];
+                if (listType.Equals(typeof(string)))
+                {
+                    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" />
+                }
+                else if (listType.Equals(typeof(List<KeyValuePair<string, string>>)))
+                {
+                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
+}
+                else if (listType.IsEnum)
+                {
+                    if (listType.IsDefined(typeof(FlagsAttribute), false))
+                    {
+                        <ListFlagsInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" />
+                    }
+                    else
+                    {
+                        <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" />
+                    }
+                }
+            }            
         }
-        else if (type.Equals(typeof(List<KeyValuePair<string, string>>)))
+        else if (unwrappedType.Equals(typeof(List<string>)))
         {
-            <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Dictionary<string,string>)))
+        else if (unwrappedType.Equals(typeof(List<KeyValuePair<string, string>>)))
+        {
+        }
+        else if (unwrappedType.Equals(typeof(Dictionary<string,string>)))
         {
             <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Dictionary<string,List<string>>)))
+        else if (unwrappedType.Equals(typeof(Dictionary<string,List<string>>)))
         {
             <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(uint)))
+        else if (unwrappedType.Equals(typeof(uint)))
         {
             <UintInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(long)))
+        else if (unwrappedType.Equals(typeof(long)))
         {
             <LongInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(ulong)))
+        else if (unwrappedType.Equals(typeof(ulong)))
         {
             <UlongInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(short)))
+        else if (unwrappedType.Equals(typeof(short)))
         {
             <ShortInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(ushort)))
+        else if (unwrappedType.Equals(typeof(ushort)))
         {
             <UshortInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(byte)))
+        else if (unwrappedType.Equals(typeof(byte)))
         {
             <ByteInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(char)))
+        else if (unwrappedType.Equals(typeof(char)))
         {
             <CharInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(float)))
+        else if (unwrappedType.Equals(typeof(float)))
         {
             <FloatInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(double)))
+        else if (unwrappedType.Equals(typeof(double)))
         {
             <DoubleInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(decimal)))
+        else if (unwrappedType.Equals(typeof(decimal)))
         {
             <DecimalInput id="@id" Object="Object" SubPath="@SubPath" />
         }
-        else if (type.Equals(typeof(Scaffold)))
+        else if (unwrappedType.Equals(typeof(Scaffold)))
         {
             <ScaffoldInput Object="Object" SubPath="@SubPath" />
         }
@@ -117,20 +142,32 @@
     [Parameter]
     public Type? type { get; set; }
 
+    public Type? unwrappedType { get; set; }
+
     object? oldValue = null;
 
-    bool _IsNull = false;
+    protected override void OnInitialized()
+    {
+        if (Helpers.IsNullable(type))
+        {
+            unwrappedType = type is not null ? Nullable.GetUnderlyingType(type) : null;
+        }
+        else
+        {
+            unwrappedType = type;
+        }
+        base.OnInitialized();
+    }
 
     public bool IsNull
     {
         get
         {
-            return _IsNull;
+            return Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is null;
         }
         set
         {
-            _IsNull = value;
-            if (_IsNull || type == null)
+            if (value is true)
             {
                 oldValue = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, null);
@@ -143,7 +180,18 @@
                 }
                 else
                 {
-                    Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Helpers.GetDefaultValueForType(type));
+                    if (type is not null)
+                    {
+                        var denulled = Nullable.GetUnderlyingType(type);
+                        if (denulled is not null)
+                        {
+                            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Helpers.GetDefaultValueForType(denulled));
+                        }
+                        else
+                        {
+                            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Helpers.GetDefaultValueForType(type));
+                        }
+                    }
                 }
             }
         }

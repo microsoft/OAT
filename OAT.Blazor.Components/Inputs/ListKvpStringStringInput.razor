@@ -9,7 +9,7 @@
         <button class="btn-block" @onclick="AddKvp">Add @buttonText</button>
     </div>
 </div>
-    @if (SubProperty.Count > 0)
+    @if (SubProperty?.Count > 0)
     {
 <div class="row">
     <div class="col">
@@ -27,7 +27,7 @@
     }
 
     @code {
-        [Parameter]
+    [Parameter]
         public object? Object { get; set; }
 
         [Parameter]
@@ -47,21 +47,29 @@
 
         void RemoveKvp()
         {
-            SubProperty.RemoveAt(SelectedKey);
+            SubProperty?.RemoveAt(SelectedKey);
         }
 
         void AddKvp()
         {
+            if (SubProperty is null)
+            {
+                SubProperty = new List<KeyValuePair<string, string>>();
+            }
             SubProperty.Add(new KeyValuePair<string, string>(CurrentInputKey, CurrentInputValue));
             CurrentInputKey = string.Empty;
             CurrentInputValue = string.Empty;
         }
 
-        public List<KeyValuePair<string, string>> SubProperty
+        public List<KeyValuePair<string, string>>? SubProperty
         {
             get
             {
-                return (List<KeyValuePair<string, string>>)(Helpers.GetValueByPropertyOrFieldName(Object, SubPath) ?? new List<KeyValuePair<string, string>>());
+                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is List<KeyValuePair<string, string>> val)
+                {
+                    return val;
+                }
+                return null;
             }
             set
             {

@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.5" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.0.0.20340" />
+    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.2.0.21211" />
   </ItemGroup>
 
 
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Nerdbank.GitVersioning" Version="3.4.194" />
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.4.228" />
   </ItemGroup>
 
 </Project>

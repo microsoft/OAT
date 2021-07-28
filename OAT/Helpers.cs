@@ -44,7 +44,13 @@ namespace Microsoft.CST.OAT.Utils
             if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                type == typeof(DateTime) || type.IsEnum)
+                type == typeof(DateTime) || type.IsEnum || 
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string) 
+                    && (type.GetGenericArguments()[1] == typeof(string) || 
+                    (type.GetGenericArguments()[1] is Type valueType && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>) && valueType.GetGenericArguments()[0] == typeof(string)))) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] == typeof(string)) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] is Type listType 
+                    && listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>) && listType.GetGenericArguments()[0] == typeof(string) && listType.GetGenericArguments()[1] == typeof(string)))
             {
                 // Only return basic types
                 return true;
@@ -98,13 +104,7 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns></returns>
-        public static bool IsNullable(Type? type)
-        {
-            if (type == null) return true; // obvious
-            if (!type.IsValueType) return true; // ref-type
-            if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
-            return false; // value-type
-        }
+        public static bool IsNullable(Type? type) => Nullable.GetUnderlyingType(type) != null;
 
         /// <summary>
         /// Gets the Paths of all the Fields and Properties in the provided Type
@@ -217,7 +217,14 @@ namespace Microsoft.CST.OAT.Utils
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
                 {
-                    return dict[propertyName];
+                    if (dict[propertyName] is System.ValueTuple<object, Type> tuple)
+                    {
+                        return tuple.Item1;
+                    }
+                    else
+                    {
+                        return dict[propertyName];
+                    }
                 }
             }
             else if (obj is System.Collections.IList list)
@@ -256,9 +263,13 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type">The type to get a default value for.</param>
         /// <returns>The default value for the type.</returns>
-        public static object? GetDefaultValueForType(Type type)
+        public static object? GetDefaultValueForType(Type? type)
         {
-            if (type.Equals(typeof(string)))
+            if (type is null)
+            {
+                return null;
+            }
+            else if (type.Equals(typeof(string)))
             {
                 return string.Empty;
             }
@@ -312,11 +323,34 @@ namespace Microsoft.CST.OAT.Utils
             }
             else if (type.IsEnum)
             {
-                return GetDefaultValueForType(type.GetEnumUnderlyingType());
+                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType()));
+            }
+            else if (type == typeof(List<string>))
+            {
+                return new List<string>();
+            }
+            else if (type == typeof(List<KeyValuePair<string,string>>))
+            {
+                return new List<KeyValuePair<string, string>>();
+            }
+            else if (type == typeof(Dictionary<string, List<string>>))
+            {
+                return new Dictionary<string, List<string>>();
+            }
+            else if (type == typeof(Dictionary<string, string>))
+            {
+                return new Dictionary<string, string>();
             }
             else
             {
-                return null;
+                try
+                {
+                    return System.Activator.CreateInstance(type);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
         }
 
@@ -338,15 +372,23 @@ namespace Microsoft.CST.OAT.Utils
                 {
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
-
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
             }
         }
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
-            if (obj is IDictionary<string, object> dictionary)
+            // For scaffolds
+            if (obj is IDictionary<string, (object, Type)> tupleDictionary)
             {
-                dictionary[propertyName] = value!;
+                var type = tupleDictionary[propertyName].Item2;
+                tupleDictionary[propertyName] = (value!, type);
+            }
+            else if (obj is System.Collections.IDictionary dict)
+            {
+                if (dict.Keys.OfType<string>().Any())
+                {
+                    dict[propertyName] = value!;
+                }
             }
             else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {

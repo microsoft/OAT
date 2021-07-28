@@ -2,7 +2,12 @@
 
 <div class="row">
     <div class="col">
-        <input class="form-control" id="@id" type="text" @bind="CurrentInput" />
+        <select class="form-control" id="@id" @bind="AddEnumIndex" data-input-type="enum-input">
+            @for (int i = 0; i < values.Count; i++)
+            {
+                <option value="@i">@values[i].ToString()</option>
+            }
+        </select>  
     </div>
     <div class="col-4">
         <button @onclick="AddData">Add @buttonText</button>
@@ -33,14 +38,33 @@
     public string? SubPath { get; set; }
 
     [Parameter]
-    public string buttonText { get; set; } = "String";
+    public string buttonText { get; set; } = "Enum";
 
     [Parameter]
     public string id { get; set; } = string.Empty;
 
+    [Parameter]
+    public Type? enumType { get; set; }
+
+    int AddEnumIndex { get; set; }
+
     int SelectedIndex { get; set; }
 
     string CurrentInput { get; set; } = string.Empty;
+
+    List<Enum> values = new List<Enum>();
+
+    protected override void OnInitialized()
+    {
+        if (enumType is not null)
+        {
+            foreach (var value in Enum.GetValues(enumType))
+            {
+                values.Add((Enum)value);
+            }
+        }
+        base.OnInitialized();
+    }
 
     void AddData(EventArgs eventArgs)
     {
@@ -48,8 +72,7 @@
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, new List<string>());
         }
-        SubProperty?.Add(CurrentInput);
-        CurrentInput = string.Empty;
+        SubProperty?.Add(values[AddEnumIndex]);
     }
 
     void RemoveData(EventArgs eventArgs)
@@ -57,12 +80,11 @@
         SubProperty?.RemoveAt(SelectedIndex);
     }
 
-
-    public List<string>? SubProperty
+    public System.Collections.IList? SubProperty
     {
         get
         {
-            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is List<string> val)
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is System.Collections.IList val && val.GetType().GetGenericArguments()[0].IsEnum)
             {
                 return val;
             }

@@ -8,7 +8,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
 {
     public class Scaffold
     {
-        public Dictionary<string, object?> Parameters { get; } = new Dictionary<string, object?>();
+        public Dictionary<string, (object? obj, Type type)> Parameters { get; } = new Dictionary<string, (object?, Type)>();
         public ConstructorInfo Constructor { get; }
 
         public Scaffold(ConstructorInfo constructorToUse, IEnumerable<Assembly>? assemblies = null)
@@ -23,23 +23,23 @@ namespace Microsoft.CST.OAT.Blazor.Components
                 }
                 if (parameter.HasDefaultValue)
                 {
-                    Parameters.Add(parameter.Name, parameter.DefaultValue);
+                    Parameters.Add(parameter.Name, (parameter.DefaultValue, parameter.ParameterType));
                 }
                 else
                 {
                     if (Helpers.IsBasicType(parameter.ParameterType))
                     {
-                        Parameters.Add(parameter.Name, Helpers.GetDefaultValueForType(parameter.ParameterType));
+                        Parameters.Add(parameter.Name, (Helpers.GetDefaultValueForType(parameter.ParameterType), parameter.ParameterType));
                     }
                     else
                     {
                         if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, assemblies)).FirstOrDefault() is ConstructorInfo constructor)
                         {
-                            Parameters.Add(parameter.Name, new Scaffold(constructor, assemblies));
+                            Parameters.Add(parameter.Name, (new Scaffold(constructor, assemblies), parameter.ParameterType));
                         }
                         else
                         {
-                            Parameters.Add(parameter.Name, null);
+                            Parameters.Add(parameter.Name, (null, parameter.ParameterType));
                         }
                     }
                 }
@@ -55,13 +55,13 @@ namespace Microsoft.CST.OAT.Blazor.Components
                 { 
                     continue; 
                 }
-                if (Parameters[parameter.Name] is Scaffold scaffoldedState)
+                if (Parameters[parameter.Name].obj is Scaffold scaffoldedState)
                 {
                     inputs.Add(scaffoldedState.Construct());
                 }
                 else
                 {
-                    inputs.Add(Parameters[parameter.Name]);
+                    inputs.Add(Parameters[parameter.Name].obj);
                 }
             }
             return Constructor?.Invoke(inputs.ToArray());

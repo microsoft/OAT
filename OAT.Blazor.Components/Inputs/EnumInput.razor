@@ -18,15 +18,12 @@
     public string id { get; set; } = string.Empty;
 
     [Parameter]
-    public Action? OnChange { get; set; }
-
-    Type? type;
+    public Type? type { get; set; }
 
     List<Enum> values = new List<Enum>();
 
     protected override void OnInitialized()
     {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
         if (type is not null)
         {
             foreach (var value in Enum.GetValues(type))
@@ -50,9 +47,6 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, values[value]);
-            if (OnChange != null) {
-                OnChange();
-            }
         }
     }
 }

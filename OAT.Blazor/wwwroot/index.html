@@ -1,28 +1,20 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Object Analysis Toolkit</title>
-    <base href="/OAT/Blazor/" />
-    <link href="Microsoft.CST.OAT.Blazor.styles.css" rel="stylesheet" />
+    <title>OAT.Blazor</title>
+    <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+    <link href="OAT.Blazor.styles.css" rel="stylesheet" />
     <link href="manifest.json" rel="manifest" />
-    <link rel="apple-touch-icon" sizes="128x128" href="images/icon-128.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
 </head>
 
 <body>
-    <div id = "app">
-        <div class="container">
-            <div class="row h-100">
-                <div class="col d-flex justify-content-center align-content-center">
-                    <img src="images/icon-128.png" />
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="app">Loading...</div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -31,7 +23,6 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
-    <script src="js/SaveFile.js"></script>
 </body>
 
 </html>

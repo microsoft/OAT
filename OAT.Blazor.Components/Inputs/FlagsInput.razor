@@ -1,7 +1,7 @@
 ﻿@using Microsoft.CST.OAT.Utils;
-<br />
+
+<div class="flags-input">
 @{
-    var type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
     if (type != null)
     {
         var enums = Enum.GetValues(type);
@@ -14,21 +14,32 @@
                 {
                     if (val.HasFlag(curEnum))
                     {
-                        <input type="checkbox" checked="checked" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" /><label for="@curEnum">@curEnum</label>
+                        <div class="form-check form-check-inline mr-2">
+                            <input class="form-check-input" type="checkbox" checked="checked" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                            <label class="form-check-label" for="@curEnum">@curEnum</label>
+                        </div>
                     }
                     else
                     {
-                        <input type="checkbox" value="@curEnum" id="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" /><label for="@curEnum">@curEnum</label>
+                        <div class="form-check form-check-inline mr-2">
+                            <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                            <label class="form-check-label" for="@curEnum">@curEnum</label>
+                        </div>
                     }
-                    if (i < enums.Length - 1)
-                    {
-                        <br />
-                    }
+                }
+                else if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is null)
+                {
+                    <div class="form-check form-check-inline mr-2">
+                        <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                        <label class="form-check-label" for="@curEnum">@curEnum</label>
+                    </div>
                 }
             }
         }
     }
 }
+</div>
+
 @code {
     [Parameter]
     public object? Object { get; set; }
@@ -39,13 +50,8 @@
     [Parameter]
     public string id { get; set; } = string.Empty;
 
-    Type? type;
-
-    protected override void OnInitialized()
-    {
-        type = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType();
-        base.OnInitialized();
-    }
+    [Parameter]
+    public Type? type { get; set; }
 
     void CheckboxClicked(Enum enumValue, object checkedValue)
     {
@@ -53,11 +59,11 @@
         {
             if ((bool)checkedValue)
             {
-                if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                if (type?.IsDefined(typeof(FlagsAttribute), false) is true)
                 {
-                    if (!SubProperty.HasFlag(enumValue))
+                    if (!(SubProperty?.HasFlag(enumValue) ?? false))
                     {
-                        object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
+                        object val = SubProperty is null ? 0 : Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
                         object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
                         if (val is int)
                         {
@@ -96,9 +102,9 @@
             }
             else
             {
-                if (SubProperty?.GetType().IsDefined(typeof(FlagsAttribute), false) is true)
+                if (type?.IsDefined(typeof(FlagsAttribute), false) is true)
                 {
-                    if (SubProperty.HasFlag(enumValue))
+                    if (SubProperty?.HasFlag(enumValue) ?? false)
                     {
                         object val = Convert.ChangeType(SubProperty, SubProperty.GetTypeCode());
                         object val2 = Convert.ChangeType(enumValue, enumValue.GetTypeCode());
