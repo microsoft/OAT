@@ -10,27 +10,10 @@
         {
             if (enums.GetValue(i) is Enum curEnum)
             {
-                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Enum val)
-                {
-                    if (val.HasFlag(curEnum))
-                    {
-                        <div class="form-check form-check-inline mr-2">
-                            <input class="form-check-input" type="checkbox" checked="checked" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
-                            <label class="form-check-label" for="@curEnum">@curEnum</label>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="form-check form-check-inline mr-2">
-                            <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
-                            <label class="form-check-label" for="@curEnum">@curEnum</label>
-                        </div>
-                    }
-                }
-                else if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is null)
+                if (SubProperty is Enum val)
                 {
                     <div class="form-check form-check-inline mr-2">
-                        <input class="form-check-input" type="checkbox" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
+                        <input class="form-check-input" type="checkbox" disabled="@isDisabled" checked="@val.HasFlag(curEnum)" id="@curEnum" value="@curEnum" @onchange="eventArgs => { CheckboxClicked(curEnum, eventArgs.Value ?? false); }" data-input-type="flags-input"/>
                         <label class="form-check-label" for="@curEnum">@curEnum</label>
                     </div>
                 }
@@ -52,6 +35,9 @@
 
     [Parameter]
     public Type? type { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     void CheckboxClicked(Enum enumValue, object checkedValue)
     {

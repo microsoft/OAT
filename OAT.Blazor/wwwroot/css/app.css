@@ -14,6 +14,10 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
+.object-properties{
+    padding-left:20px;
+}
+
 .content {
     padding-top: 1.1rem;
 }

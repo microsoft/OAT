@@ -8,19 +8,21 @@
             <span class="oi oi-chevron-top mx-3"></span>
             <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().Name</span>
         </button>
-        @for (int i = 0; i < Properties.Length; i++)
-        {
-            if (Properties[i].CanWrite)
+        <div class="object-properties">
+            @for (int i = 0; i < Properties.Length; i++)
             {
-                var type = Properties[i].PropertyType;
-                var appendedName = AppendNameToPath(Properties[i].Name);
-                var name = ToName(appendedName, i);
-                <div class="form-group">
-                    <label for="@name">@Properties[i].Name</label>
-                    <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />
-                </div>
+                if (Properties[i].CanRead)
+                {
+                    var type = Properties[i].PropertyType;
+                    var appendedName = AppendNameToPath(Properties[i].Name);
+                    var name = ToName(appendedName, i);
+                    <div class="form-group">
+                        <label for="@name">@Properties[i].Name</label>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" />
+                    </div>
+                }
             }
-        }
+        </div>
         @for (int i = 0; i < Fields.Length; i++)
         {
             if (Fields[i].IsPublic)
@@ -30,7 +32,7 @@
                 var name = ToName(appendedName, i);
                 <div class="form-group">
                     <label for="@name">@Fields[i].Name</label>
-                    <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" />
+                    <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" />
                 </div>
             }
         }

@@ -1,6 +1,6 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
-<select class="form-control" id="@id" @bind="SubProperty" data-input-type="enum-input">
+<select class="form-control" id="@id" @bind="SubProperty" data-input-type="enum-input" disabled="@isDisabled">
     @for (int i = 0; i < values.Count; i++)
     {
         <option value="@i">@values[i].ToString()</option>
@@ -19,6 +19,9 @@
 
     [Parameter]
     public Type? type { get; set; }
+                        
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     List<Enum> values = new List<Enum>();
 

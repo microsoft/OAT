@@ -1,17 +1,20 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using System;
 
-<input class="form-control" id="@id" type="text" @bind="SubProperty" data-input-type="double-input"/>
+<input class="form-control" id="@id" type="text" @bind="SubProperty" data-input-type="double-input" disabled="@isDisabled"/>
 
 @code {
-        [Parameter]
-        public object? Object { get; set; }
+    [Parameter]
+    public object? Object { get; set; }
 
-        [Parameter]
-        public string? SubPath { get; set; }
+    [Parameter]
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string id { get; set; } = string.Empty;
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+                    
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     public string SubProperty
     {
@@ -22,13 +25,13 @@
                     return val.ToString();
                 }
                 return new double().ToString();
-            }
-            set
+        }
+        set
         {
-                if (double.TryParse(value, out double val))
-                {
-                    Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
-                }
+            if (double.TryParse(value, out double val))
+            {
+                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
             }
         }
     }
+}
