@@ -1,7 +1,7 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using Newtonsoft.Json;
 
-<input class="form-control" id="@id" type="text" @bind="SubProperty" placeholder="@placeholder" data-input-type="string-input"/>
+<input class="form-control" id="@id" type="text" @bind="SubProperty" placeholder="@placeholder" data-input-type="string-input" disabled="@isDisabled"/>
 
 @code {
     [Parameter]
@@ -15,7 +15,10 @@
 
     [Parameter]
     public string placeholder { get; set; } = string.Empty;
-
+    
+    [Parameter]
+    public bool isDisabled { get; set; }
+    
     public string SubProperty
     {
         get

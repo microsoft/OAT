@@ -1,6 +1,6 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 
-<input class="form-control" id="@id" type="text" @bind="SubProperty" data-input-type="datetime-input"/>
+<input class="form-control" id="@id" type="text" @bind="SubProperty" data-input-type="datetime-input" disabled="@isDisabled"/>    
 
 @code {
     [Parameter]
@@ -11,6 +11,9 @@
 
     [Parameter]
     public string id { get; set; } = string.Empty;
+        
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     public string SubProperty
     {
