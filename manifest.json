@@ -4,12 +4,528 @@
   "xrefmap": "xrefmap.yml",
   "files": [
     {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Analyzer.ObjectToValuesDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Analyzer.ObjectToValuesDelegate.html",
+          "hash": "bSlZKRtQ/niJH9wCDwJ077UXBZzeBzBzDqDGlmi+Y/w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Analyzer.PropertyExtractionDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Analyzer.PropertyExtractionDelegate.html",
+          "hash": "8hppzpmGHiXFQSp0/EKS4tLoShHKx8KqiyYLdgSGY2w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Analyzer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Analyzer.html",
+          "hash": "Fnx421sP3aQG8oWd+x17dsudsAh0WVbrzOoM1CN3Rm4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.AnalyzerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.AnalyzerOptions.html",
+          "hash": "Kwv0ROzY3pfKboBHUeWCnDPql8YUL/GkJlFtzs++Uyg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.BoolOperator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.BoolOperator.html",
+          "hash": "GyYLUZ5H7G5BF2/pGBTvQh/XPIaZkj5E4psOYIXXN/8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Clause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Clause.html",
+          "hash": "RVhWjFtFWvT/htjoZPaXliiyn7370GP+2Ui16fS+6EE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.ClauseCapture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.ClauseCapture.html",
+          "hash": "/3JAVQzp054yQDrgN27JLxTZo3j74ntY66UXov//aGw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operation.html",
+          "hash": "k1Bai66ALcM6lbIplIyQApZxf3fHCziFXNdnne5ydE4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.OperationArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.OperationArguments.html",
+          "hash": "EEQWuerjaiqOylVvGB5puW5KGaf4SuGjVW5g4d/yEE8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.OperationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.OperationResult.html",
+          "hash": "QH9JJS7RwGRcpxMsOjoJf7gNyUSzjoZcH8upGStG7PA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ContainsAnyOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ContainsAnyOperation.html",
+          "hash": "OgrUvrMsG50M7jTx2zbvG+HXOJHEee6H9P5qZllwxCk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ContainsKeyOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ContainsKeyOperation.html",
+          "hash": "1pRoi+tBajCrueRoDvKs6JE3zR6A5hn3eiW/rjHpyLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ContainsOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ContainsOperation.html",
+          "hash": "GT+9Ix//535QTgOlF0kk24laui9p5eF8GjHo2zQDx20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.EndsWithOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.EndsWithOperation.html",
+          "hash": "v1BW1sTsUlp0oZsa9wPQUVTutvO6V+3Q5dO5Lutv1os="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.EqualsOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.EqualsOperation.html",
+          "hash": "YAX2+xLYzZrL7xZ+9uCfiIyfDPRN2nvY0NSpIeh8w1I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.GreaterThanOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.GreaterThanOperation.html",
+          "hash": "D2WS+WFx+02rBgdj0Fo6CDMVG3AoBHOTUwJbS+yv5qE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.IsAfterOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.IsAfterOperation.html",
+          "hash": "9fX8cqcvjh9jv/4kL3z/i56axAKsD7zsU1M26LYET54="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.IsBeforeOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.IsBeforeOperation.html",
+          "hash": "n6rJX8VCWuqTlIzK85qBo3BPrxx6Jyf/XthdbUh72Dc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.IsExpiredOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.IsExpiredOperation.html",
+          "hash": "pmNISJ+m2+pfAArlr1bcWPBfW5TC9ynrPmdJGdK9RYk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.IsNullOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.IsNullOperation.html",
+          "hash": "OL0A03qiseu+K5IjSAPGAk7odHy2muyr5wfuLlLlA8k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.IsTrueOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.IsTrueOperation.html",
+          "hash": "IO7hq1qji7kCdjD9P1qWdaw/QjKWD5H+XCCbsyhJFPo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.LessThanOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.LessThanOperation.html",
+          "hash": "7mg7I9jG/oMkzKSqQgT+B+TsxxJ5caDVHfWatYTw0Qo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.NoOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.NoOperation.html",
+          "hash": "HRIolArWYONDUy/H6/iIYxLr4q/jBltM5wD1LnvsKOU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.OatOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.OatOperation.html",
+          "hash": "/L5DJuyDG/9QyD9vVAmSPKZMFb3lXoYUOmcXhuzLPNU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.OperationDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.OperationDelegate.html",
+          "hash": "BstDjYTi0Gwp9KnjULQ9mw2LTZ2Nrqv9Ld2xoUqBW+0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.RegexOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.RegexOperation.html",
+          "hash": "FCq9xT3LbAUQrGWdZZTUgLtZsnAgwz1I/ZjnqkdaDLg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ScriptOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ScriptOperation.html",
+          "hash": "xKPuKumAaWyYVsxe7DV5tQ5zzuA2GLIZ9Vo6MqZYUhg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ScriptsDisabledOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ScriptsDisabledOperation.html",
+          "hash": "rC7G36O48VLzHPW8rVxzmv/ThHfeGesQG4Xdqk2ok3Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.StartsWithOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.StartsWithOperation.html",
+          "hash": "wf99SVqzejKY5Vz4KL4lirDjb4QwyVjtw5tFARkbZKE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ValidationDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.ValidationDelegate.html",
+          "hash": "wJ+/pQGKz4GZ/ZnHSg8hAfxrXVIdsTI8KlnoyoQHulM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.WasModifiedOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.WasModifiedOperation.html",
+          "hash": "plcbYq1JGbSIh7izQF80PDB25YimVfBLQ5VMTv6DvKA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Operations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Operations.html",
+          "hash": "hqW9fWwyKhGDpXBR/yRASpYdzyNcBkY5tUigAIeRMhg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Rule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Rule.html",
+          "hash": "uUfDxtCR9BUGgHgr4RhBHvmEJAQxy/qPUuXoA5QadDU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.RuleCapture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.RuleCapture.html",
+          "hash": "hkakeyMAdbzQ2tjqDq8DRzYwhwPKJM61HeUrtjyR7Qw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.ScriptData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.ScriptData.html",
+          "hash": "0AHUfwdchZf02iYB2+exdHrBgp+73lpcB5QmF55PKMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.TypedClauseCapture-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.TypedClauseCapture-1.html",
+          "hash": "ztwJY4RjlKe8g+Y/Dr9Zyr/C0X5wlpb7aicmq4QaA1U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Utils.Helpers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Utils.Helpers.html",
+          "hash": "VABeTuMNXB/4gwvzm7YJr5zBOhVtDe+r/skkKuDC59Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Utils.Logger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Utils.Logger.html",
+          "hash": "8mIpPi5BvJ91jzSXlvba2m9w2NoVdOXOQHMDDBAqN7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Utils.Strings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Utils.Strings.html",
+          "hash": "6sYm9Upq7IV5yOYOTPMcSw1jIShil9zLC9Nq+k3fYbk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Utils.html",
+          "hash": "OXr5aknK730+lnsqWUE71PoJRdR//N5eoLsWUkSASfE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.Violation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.Violation.html",
+          "hash": "qqPyRBF4VWzf5gm1EHDzmVbIvM5bHCAV0/rPKvnbxw0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.CST.OAT.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.CST.OAT.html",
+          "hash": "ds/kV5GGD9hbVxPVu3q1PbOFD7apQY2lk0O3JTrh/gk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "api/index.md",
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "21jhcQnL5scsvmmCE/Xxg94kVJQOkFuhoVdz7Wt/KN4="
+          "hash": "NB1+jrXQPyuyucDEW8jx/ZYgx9XbBx6tgfaKj6JhiHE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "oB9R8o/F6NhFtJY23Gf4dMpZkHG26mxzPACKKJqC244="
         }
       },
       "is_incremental": false,
@@ -21,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "/k9PTUoVKs/GNAtw/q6z6gxcOaDuqgf6GY68evMJ6WM="
+          "hash": "m6vpV2k32N56e4Ur7X8oPhTcfb4xeaOxKrhdE+wfLlk="
         }
       },
       "is_incremental": false,
@@ -33,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "DBBlSijY99IBlIcvkRzh2qYRWvZ1x1MnlNh51jcNF20="
+          "hash": "RhnCqEMxFQwOKtll2JL4TovQRhNeBrqGHfbARxCbkJ0="
         }
       },
       "is_incremental": false,
@@ -55,6 +571,12 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 2,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 42,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
