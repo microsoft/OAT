@@ -141,9 +141,8 @@ else
                     Console.WriteLine(assembly.GetName().Name);
                 }
                 Console.WriteLine($"{AppState.Assemblies.Count} assemblies are loaded.");
-                foreach (var assembly in sandboxState["AssemblyNames"].Select(x => (string?)x ?? string.Empty))
+                foreach (var assembly in sandboxState["AssemblyNames"]?.Select(x => (string?)x ?? string.Empty).Where(x => !string.IsNullOrEmpty(x)) ?? Array.Empty<string>())
                 {
-
                     if (!AppState.Assemblies.Any(x => x.GetName().Name == assembly))
                     {
                         failed = true;
@@ -210,14 +209,17 @@ else
                                         var inputs = new List<object?>();
                                         foreach (var param in ctor.GetParameters())
                                         {
-                                            var representation = objState?[param.Name]?.ToObject<string>();
-                                            if (representation != null && GetValueFromJObject(param.ParameterType, representation) is { } obj)
+                                            if (param.Name is not null)
                                             {
-                                                inputs.Add(obj);
-                                            }
-                                            else
-                                            {
-                                                inputs.Add(null);
+                                                var representation = objState?[param.Name]?.ToObject<string>();
+                                                if (representation != null && GetValueFromJObject(param.ParameterType, representation) is { } obj)
+                                                {
+                                                    inputs.Add(obj);
+                                                }
+                                                else
+                                                {
+                                                    inputs.Add(null);
+                                                }
                                             }
                                         }
                                         var empty = ctor.Invoke(inputs.ToArray());
@@ -457,14 +459,17 @@ else
                 }
                 catch(ReflectionTypeLoadException e)
                 {
-                    types.AddRange(e.Types.Where(x => x is Type));
+                    types.AddRange(e.Types.Where(x => x is Type)!);
                     foreach(var ex in e.LoaderExceptions)
                     {
-                        SandBoxErrors.Add(ex.Message);
+                        if (ex is not null)
+                        {
+                            SandBoxErrors.Add(ex.Message);
+                        }
                     }
                 }
             }
-            return types.Select(x => x.Namespace).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is string).Distinct()!;
         }
         else
         {
@@ -475,13 +480,16 @@ else
             }
             catch (ReflectionTypeLoadException e)
             {
-                types.AddRange(e.Types.Where(x => x is Type));
+                types.AddRange(e.Types.Where(x => x is Type)!);
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    SandBoxErrors.Add(ex.Message);
+                    if (ex is not null)
+                    {
+                        SandBoxErrors.Add(ex.Message);
+                    }
                 }
             }
-            return types.Select(x => x.Namespace).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is string).Distinct()!;
         }
     }
 
@@ -574,7 +582,7 @@ else
         }
         else if (type.IsEnum)
         {
-            if (Enum.TryParse(type, objectState, out object result))
+            if (Enum.TryParse(type, objectState, out object? result))
             {
                 return Convert.ChangeType(result,type);
             }
@@ -588,13 +596,16 @@ else
         foreach(var obj in AppState.TestObjects)
         {
             var t = obj.GetType();
-            if (!objects.ContainsKey(t.FullName))
+            if (t.FullName is string)
             {
-                objects.Add(t.FullName, new List<object>());
+                if (!objects.ContainsKey(t.FullName))
+                {
+                    objects.Add(t.FullName, new List<object>());
+                }
+                objects[t.FullName].Add(obj); 
             }
-            objects[t.FullName].Add(obj);
         }
-        var state = new SandboxState(AppState.Assemblies.Select(x => x.GetName().Name).ToList(), objects);
+        var state = new SandboxState(AppState.Assemblies.Select(x => x.GetName().Name ?? string.Empty).Where(x => !string.IsNullOrEmpty(x)).ToList(), objects);
         await JSRuntime.InvokeAsync<object>(
             "FileSaveAs",
             "SandboxState.json",

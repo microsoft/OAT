@@ -21,6 +21,9 @@ namespace Microsoft.CST.OAT
         /// If running Scripts is enabled
         /// </summary>
         public bool RunScripts { get; }
+        /// <summary>
+        /// Should analysis be done using parallelization
+        /// </summary>
         public bool Parallel { get; }
     }
 }

@@ -214,14 +214,14 @@
                 }
                 catch (ReflectionTypeLoadException e)
                 {
-                    types.AddRange(e.Types.Where(x => x is Type));
+                    types.AddRange(e.Types.Where(x => x is Type)!);
                     foreach (var ex in e.LoaderExceptions)
                     {
                         Console.WriteLine(e.Message);
                     }
                 }
             }
-            return types.Select(x => x.Namespace).Where(x => x is not null).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is string).Distinct()!;
         }
         else
         {
@@ -232,13 +232,13 @@
             }
             catch (ReflectionTypeLoadException e)
             {
-                types.AddRange(e.Types.Where(x => x is Type));
+                types.AddRange(e.Types.Where(x => x is Type)!);
                 foreach (var ex in e.LoaderExceptions)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
-            return types.Select(x => x.Namespace).Where(x => x is not null).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is string).Distinct()!;
         }
     }
 }
