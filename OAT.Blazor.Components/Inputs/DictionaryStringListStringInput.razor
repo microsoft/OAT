@@ -30,54 +30,60 @@
 
     @code {
     [Parameter]
-        public object? Object { get; set; }
+    public object? Object { get; set; }
 
-        [Parameter]
-        public string? SubPath { get; set; }
+    [Parameter]
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string buttonText { get; set; } = "Dictionary Key And Value";
+    [Parameter]
+    public string buttonText { get; set; } = "Dictionary Key And Value";
 
-        [Parameter]
-        public string id { get; set; } = string.Empty;
+    [Parameter]
+    public string id { get; set; } = string.Empty;
 
-        string? SelectedKey { get; set; } = null;
+    [Parameter]
+    public Action? onChangeAction { get; set; }
 
-        string CurrentInputKey { get; set; } = string.Empty;
+    string? SelectedKey { get; set; } = null;
 
-        List<string> CurrentInputValue { get; set; } = new List<string>();
+    string CurrentInputKey { get; set; } = string.Empty;
 
-        void RemoveEntry()
-        {
-            if (SelectedKey is not null){
-                SubProperty?.Remove(SelectedKey);
-            }
+    List<string> CurrentInputValue { get; set; } = new List<string>();
+
+    void RemoveEntry()
+    {
+        if (SelectedKey is not null){
+            SubProperty?.Remove(SelectedKey);
         }
+        onChangeAction?.Invoke();
+    }
 
-        void AddEntry()
+    void AddEntry()
+    {
+        if (SubProperty is null)
         {
-            if (SubProperty is null)
-            {
-                SubProperty = new Dictionary<string, List<string>>();
-            }
-            SubProperty[CurrentInputKey] = CurrentInputValue;
-            CurrentInputKey = string.Empty;
-            CurrentInputValue = new List<string>();
+            SubProperty = new Dictionary<string, List<string>>();
         }
+        SubProperty[CurrentInputKey] = CurrentInputValue;
+        CurrentInputKey = string.Empty;
+        CurrentInputValue = new List<string>();
+        onChangeAction?.Invoke();
+    }
 
-        public Dictionary<string, List<String>>? SubProperty
+    public Dictionary<string, List<String>>? SubProperty
+    {
+        get
         {
-            get
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Dictionary<string, List<string>> val)
             {
-                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Dictionary<string, List<string>> val)
-                {
-                    return val;
-                }
-                return null;
+                return val;
             }
-            set
-            {
-                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction?.Invoke();
         }
     }
+}

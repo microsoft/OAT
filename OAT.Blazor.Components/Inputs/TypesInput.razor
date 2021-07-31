@@ -24,6 +24,9 @@
     [Parameter]
     public IntHolder? BindIndex { get; set; }
 
+    [Parameter]
+    public Action? onChangeAction { get; set; }
+
     int SelectedType
     {
         get
@@ -36,7 +39,8 @@
             {
                 BindIndex.Value = _selectedType;
             }
-            UpdateProperty();
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Types[SelectedType].Name);
+            onChangeAction?.Invoke();
         }
     }
 
@@ -48,9 +52,4 @@
     }
 
     int _selectedType;
-
-    public void UpdateProperty()
-    {
-        Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Types[SelectedType].Name);
-    }
 }

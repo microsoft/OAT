@@ -26,12 +26,12 @@
         @if (parameter.Value.obj is Scaffold)
         {
             <label class="font-weight-bold" for="@PathFromKey(parameter.Key)"><u>@parameter.Key</u></label>
-            <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" />
+            <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" onChangeAction="onChangeAction"/>
         }
         else
         {
             <label for="@PathFromKey(parameter.Key)">@parameter.Key</label>
-            <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value.type" />
+            <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value.type" onChangeAction="onChangeAction"/>
         }
     </div>
 }
@@ -48,6 +48,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction?.Invoke();
         }
     }
 
@@ -64,7 +65,7 @@
             {
                 Scaffold = new Scaffold(constructors[value], Assemblies);
             }
-
+            onChangeAction?.Invoke();
         }
     }
 
@@ -98,4 +99,6 @@
     [Parameter]
     public IEnumerable<Assembly>? Assemblies { get; set; } = null;
 
+    [Parameter]
+    public Action? onChangeAction { get; set; }
 }

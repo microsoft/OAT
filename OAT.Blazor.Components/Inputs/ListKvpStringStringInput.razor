@@ -26,54 +26,60 @@
 </div>        
     }
 
-    @code {
+@code {
+[Parameter]
+    public object? Object { get; set; }
+
     [Parameter]
-        public object? Object { get; set; }
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string? SubPath { get; set; }
+    [Parameter]
+    public string buttonText { get; set; } = "KVP";
 
-        [Parameter]
-        public string buttonText { get; set; } = "KVP";
+    [Parameter]
+    public string id { get; set; } = string.Empty;
 
-        [Parameter]
-        public string id { get; set; } = string.Empty;
+    [Parameter]
+    public Action? onChangeAction { get; set; }
 
-        int SelectedKey { get; set; }
+    int SelectedKey { get; set; }
 
-        string CurrentInputKey { get; set; } = string.Empty;
+    string CurrentInputKey { get; set; } = string.Empty;
 
-        string CurrentInputValue { get; set; } = string.Empty;
+    string CurrentInputValue { get; set; } = string.Empty;
 
-        void RemoveKvp()
+    void RemoveKvp()
+    {
+        SubProperty?.RemoveAt(SelectedKey);
+        onChangeAction?.Invoke();
+    }
+
+    void AddKvp()
+    {
+        if (SubProperty is null)
         {
-            SubProperty?.RemoveAt(SelectedKey);
+            SubProperty = new List<KeyValuePair<string, string>>();
         }
+        SubProperty.Add(new KeyValuePair<string, string>(CurrentInputKey, CurrentInputValue));
+        CurrentInputKey = string.Empty;
+        CurrentInputValue = string.Empty;
+        onChangeAction?.Invoke();
+    }
 
-        void AddKvp()
+    public List<KeyValuePair<string, string>>? SubProperty
+    {
+        get
         {
-            if (SubProperty is null)
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is List<KeyValuePair<string, string>> val)
             {
-                SubProperty = new List<KeyValuePair<string, string>>();
+                return val;
             }
-            SubProperty.Add(new KeyValuePair<string, string>(CurrentInputKey, CurrentInputValue));
-            CurrentInputKey = string.Empty;
-            CurrentInputValue = string.Empty;
+            return null;
         }
-
-        public List<KeyValuePair<string, string>>? SubProperty
+        set
         {
-            get
-            {
-                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is List<KeyValuePair<string, string>> val)
-                {
-                    return val;
-                }
-                return null;
-            }
-            set
-            {
-                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            }
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction?.Invoke();
         }
     }
+}

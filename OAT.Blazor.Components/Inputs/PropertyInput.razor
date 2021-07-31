@@ -12,30 +12,30 @@
     {
         @if (unwrappedType.Equals(typeof(string)))
         {
-            <StringInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <StringInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(bool)))
         {
-            <BoolInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <BoolInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
         }
         else if (unwrappedType.Equals(typeof(int)))
         {
-            <IntInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <IntInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.IsEnum)
         {
             if (unwrappedType.IsDefined(typeof(FlagsAttribute), false))
             {
-                <FlagsInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled"/>
+                <FlagsInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
             else
             {
-                <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled"/>
+                <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
         }
         else if (unwrappedType.Equals(typeof(DateTime)))
         {
-            <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
         {
@@ -45,84 +45,76 @@
                 var listType = args[0];
                 if (listType.Equals(typeof(string)))
                 {
-                    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+                    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
                 }
                 else if (listType.Equals(typeof(List<KeyValuePair<string, string>>)))
                 {
-                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
-}
+                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
+                }
                 else if (listType.IsEnum)
                 {
                     if (!listType.IsDefined(typeof(FlagsAttribute), false))
                     {
-                        <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" isDisabled="@isDisabled"/>
-}
+                        <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" onChangeAction="@onChangeAction"/>
+                    }
                 }
             }            
         }
-        else if (unwrappedType.Equals(typeof(List<string>)))
-        {
-            <ListStringInput id="@id" Object="Object" SubPath="@SubPath"/>
-}
-        else if (unwrappedType.Equals(typeof(List<KeyValuePair<string, string>>)))
-        {
-            <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath"/>
-        }
         else if (unwrappedType.Equals(typeof(Dictionary<string,string>)))
         {
-            <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath"/>
+            <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(Dictionary<string,List<string>>)))
         {
-            <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath"/>
+            <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(uint)))
         {
-            <UintInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <UintInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(long)))
         {
-            <LongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <LongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(ulong)))
         {
-            <UlongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <UlongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(short)))
         {
-            <ShortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <ShortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(ushort)))
         {
-            <UshortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <UshortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(byte)))
         {
-            <ByteInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <ByteInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(char)))
         {
-            <CharInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <CharInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(float)))
         {
-            <FloatInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <FloatInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(double)))
         {
-            <DoubleInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <DoubleInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(decimal)))
         {
-            <DecimalInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled"/>
+            <DecimalInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(Scaffold)))
         {
-            <ScaffoldInput Object="Object" SubPath="@SubPath"/>
+            <ScaffoldInput Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
         }
         else
         {
-            <ObjectInput id="@id" Object="Object" SubPath="@SubPath"/>
+            <ObjectInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
         }
     }
 }
@@ -142,6 +134,9 @@
 
     [Parameter]
     public bool isDisabled { get; set; }
+
+    [Parameter]
+    public Action? onChangeAction { get; set; }
 
     public Type? unwrappedType { get; set; }
 

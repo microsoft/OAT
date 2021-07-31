@@ -30,10 +30,12 @@
                         <label for="ruleTarget">Target:</label>
                         @if (Types.Any())
                         {
-            <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="Types" BindIndex="idx" /> }
-                                else
-                                {
-            <StringInput id="ruleTarget" Object="Rule" SubPath="Target" placeholder="Target" />}
+                            <TypesInput id="ruleTarget" Object="Rule" SubPath="Target" Types="Types" BindIndex="idx" /> 
+                        }
+                        else
+                        {
+                            <StringInput id="ruleTarget" Object="Rule" SubPath="Target" placeholder="Target" />
+                        }
                     </div>
                     <div class="form-group col-6">
                         <label for="ruleSeverity">Severity:</label>
@@ -49,12 +51,15 @@
                 <div class="form-group">
                     @for (var i = 0; i < Rule?.Clauses.Count; i++)
                     {
-            @if (Types.Any())
-            {
-            <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx" /> }
-        else
-        {
-            <ClauseInput Rule="@Rule" Clause="@i" />                        }                    }
+                        @if (Types.Any())
+                        {
+                            <ClauseInput Rule="@Rule" Clause="@i" Types="@Types" TypeIndex="@idx" /> 
+                        }
+                        else
+                        {
+                            <ClauseInput Rule="@Rule" Clause="@i" />                        
+                        }                    
+                    }
                 </div>
             </form>
         </div>        

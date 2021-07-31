@@ -16,6 +16,9 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
+    [Parameter]
+    public Action? onChangeAction { get; set; }
+
     public string SubProperty
     {
         get
@@ -32,6 +35,7 @@
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, intVal);
             }
+            onChangeAction?.Invoke();
         }
     }
 }

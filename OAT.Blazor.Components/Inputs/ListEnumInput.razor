@@ -46,6 +46,9 @@
     [Parameter]
     public Type? enumType { get; set; }
 
+    [Parameter]
+    public Action? onChangeAction { get; set; }
+
     int AddEnumIndex { get; set; }
 
     int SelectedIndex { get; set; }
@@ -93,6 +96,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction?.Invoke();
         }
     }
 }
