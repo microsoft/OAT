@@ -35,8 +35,8 @@
             if (byte.TryParse(value, out byte val))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

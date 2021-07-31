@@ -55,7 +55,7 @@
         if (SelectedKey is not null){
             SubProperty?.Remove(SelectedKey);
         }
-        onChangeAction?.Invoke();
+        onChangeAction.Invoke();
     }
 
     void AddEntry()
@@ -67,7 +67,7 @@
         SubProperty[CurrentInputKey] = CurrentInputValue;
         CurrentInputKey = string.Empty;
         CurrentInputValue = new List<string>();
-        onChangeAction?.Invoke();
+        onChangeAction.Invoke();
     }
 
     public Dictionary<string, List<String>>? SubProperty
@@ -83,7 +83,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            onChangeAction?.Invoke();
+            onChangeAction.Invoke();
         }
     }
 }

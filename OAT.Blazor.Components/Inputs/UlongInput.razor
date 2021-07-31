@@ -34,8 +34,8 @@
             if (ushort.TryParse(value, out ushort val))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

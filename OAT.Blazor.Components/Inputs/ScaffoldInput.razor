@@ -48,7 +48,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            onChangeAction?.Invoke();
+            onChangeAction.Invoke();
         }
     }
 
@@ -65,7 +65,7 @@
             {
                 Scaffold = new Scaffold(constructors[value], Assemblies);
             }
-            onChangeAction?.Invoke();
+            onChangeAction.Invoke();
         }
     }
 

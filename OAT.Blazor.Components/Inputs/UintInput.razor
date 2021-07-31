@@ -34,8 +34,8 @@
             if (uint.TryParse(value, out uint intVal))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, intVal);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

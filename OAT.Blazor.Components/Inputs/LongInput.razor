@@ -34,8 +34,8 @@
             if (long.TryParse(value, out long longVal))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, longVal);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

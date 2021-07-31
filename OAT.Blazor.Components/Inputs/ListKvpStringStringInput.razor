@@ -51,7 +51,7 @@
     void RemoveKvp()
     {
         SubProperty?.RemoveAt(SelectedKey);
-        onChangeAction?.Invoke();
+        onChangeAction.Invoke();
     }
 
     void AddKvp()
@@ -63,7 +63,7 @@
         SubProperty.Add(new KeyValuePair<string, string>(CurrentInputKey, CurrentInputValue));
         CurrentInputKey = string.Empty;
         CurrentInputValue = string.Empty;
-        onChangeAction?.Invoke();
+        onChangeAction.Invoke();
     }
 
     public List<KeyValuePair<string, string>>? SubProperty
@@ -79,7 +79,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            onChangeAction?.Invoke();
+            onChangeAction.Invoke();
         }
     }
 }

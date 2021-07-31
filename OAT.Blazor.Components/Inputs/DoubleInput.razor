@@ -34,8 +34,8 @@
             if (double.TryParse(value, out double val))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

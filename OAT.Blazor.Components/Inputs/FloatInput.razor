@@ -34,7 +34,7 @@
             if (float.TryParse(value, out float val))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
-                onChangeAction?.Invoke();
+                onChangeAction.Invoke();
             }
         }
     }

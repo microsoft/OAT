@@ -34,8 +34,8 @@
             if (decimal.TryParse(value, out decimal val))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, val);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

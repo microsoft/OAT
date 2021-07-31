@@ -37,8 +37,8 @@
             if (DateTime.TryParse(value, out DateTime res))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, res);
+                onChangeAction.Invoke();
             }
-            onChangeAction?.Invoke();
         }
     }
 }

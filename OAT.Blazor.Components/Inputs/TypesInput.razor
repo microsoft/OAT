@@ -40,7 +40,7 @@
                 BindIndex.Value = _selectedType;
             }
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Types[SelectedType].Name);
-            onChangeAction?.Invoke();
+            onChangeAction.Invoke();
         }
     }
 
