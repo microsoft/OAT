@@ -104,7 +104,7 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type">The type</param>
         /// <returns></returns>
-        public static bool IsNullable(Type? type) => Nullable.GetUnderlyingType(type) != null;
+        public static bool IsNullable(Type? type) => !(type is null) && Nullable.GetUnderlyingType(type) != null;
 
         /// <summary>
         /// Gets the Paths of all the Fields and Properties in the provided Type
@@ -323,7 +323,7 @@ namespace Microsoft.CST.OAT.Utils
             }
             else if (type.IsEnum)
             {
-                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType()));
+                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType())!);
             }
             else if (type == typeof(List<string>))
             {
@@ -438,7 +438,7 @@ namespace Microsoft.CST.OAT.Utils
             }
             catch (ReflectionTypeLoadException e)
             {
-                types.AddRange(e.Types.Where(x => x is Type));
+                types.AddRange(e.Types.Where(x => x is Type)!);
                 foreach (var ex in e.LoaderExceptions)
                 {
                     Console.WriteLine($"Failed to load Type: {e.Message}");
