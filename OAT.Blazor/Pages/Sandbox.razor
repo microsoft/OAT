@@ -92,7 +92,7 @@
                 <br />
             }
             <br />
-            <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" />
+            <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" onChangeAction="RefreshPage"/>
         </div>
     }
 }

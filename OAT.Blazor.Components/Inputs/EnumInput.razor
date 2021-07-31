@@ -23,6 +23,9 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
     List<Enum> values = new List<Enum>();
 
     protected override void OnInitialized()
@@ -50,6 +53,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, values[value]);
+            onChangeAction.Invoke();
         }
     }
 }

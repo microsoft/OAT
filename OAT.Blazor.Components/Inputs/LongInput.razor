@@ -16,6 +16,9 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
     public string SubProperty
     {
         get
@@ -31,6 +34,7 @@
             if (long.TryParse(value, out long longVal))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, longVal);
+                onChangeAction.Invoke();
             }
         }
     }

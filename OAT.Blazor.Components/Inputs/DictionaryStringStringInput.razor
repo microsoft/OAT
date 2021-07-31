@@ -28,52 +28,58 @@
 
     @code {
     [Parameter]
-        public object? Object { get; set; }
+    public object? Object { get; set; }
 
-        [Parameter]
-        public string? SubPath { get; set; }
+    [Parameter]
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string buttonText { get; set; } = "KVP";
+    [Parameter]
+    public string buttonText { get; set; } = "KVP";
 
-        [Parameter]
-        public string id { get; set; } = string.Empty;
+    [Parameter]
+    public string id { get; set; } = string.Empty;
 
-        string SelectedKey { get; set; } = string.Empty;
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
 
-        string CurrentInputKey { get; set; } = string.Empty;
+    string SelectedKey { get; set; } = string.Empty;
 
-        string CurrentInputValue { get; set; } = string.Empty;
+    string CurrentInputKey { get; set; } = string.Empty;
 
-        void RemoveEntry()
+    string CurrentInputValue { get; set; } = string.Empty;
+
+    void RemoveEntry()
+    {
+        SubProperty?.Remove(SelectedKey);
+        onChangeAction.Invoke();
+    }
+
+    void AddEntry()
+    {
+        if (SubProperty is null)
         {
-            SubProperty?.Remove(SelectedKey);
+            SubProperty = new Dictionary<string, string>();
         }
+        SubProperty[CurrentInputKey] = CurrentInputValue;
+        CurrentInputKey = string.Empty;
+        CurrentInputValue = string.Empty;
+        onChangeAction.Invoke();
+    }
 
-        void AddEntry()
+    public Dictionary<string, string>? SubProperty
+    {
+        get
         {
-            if (SubProperty is null)
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Dictionary<string, string> val)
             {
-                SubProperty = new Dictionary<string, string>();
+                return val;
             }
-            SubProperty[CurrentInputKey] = CurrentInputValue;
-            CurrentInputKey = string.Empty;
-            CurrentInputValue = string.Empty;
+            return null;
         }
-
-        public Dictionary<string, string>? SubProperty
+        set
         {
-            get
-            {
-                if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is Dictionary<string, string> val)
-                {
-                    return val;
-                }
-                return null;
-            }
-            set
-            {
-                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
-            }
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
         }
     }
+}

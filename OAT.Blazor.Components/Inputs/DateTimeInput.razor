@@ -15,6 +15,9 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
     public string SubProperty
     {
         get
@@ -34,6 +37,7 @@
             if (DateTime.TryParse(value, out DateTime res))
             {
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, res);
+                onChangeAction.Invoke();
             }
         }
     }

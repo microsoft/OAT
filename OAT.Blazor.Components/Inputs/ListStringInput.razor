@@ -38,6 +38,9 @@
     [Parameter]
     public string id { get; set; } = string.Empty;
 
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
     int SelectedIndex { get; set; }
 
     string CurrentInput { get; set; } = string.Empty;
@@ -71,6 +74,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
         }
     }
 }

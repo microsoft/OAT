@@ -3,19 +3,22 @@
 <textarea id="@id" rows="5" cols="50" @bind="SubProperty" data-input-type="stringbox-input" disabled="@isDisabled"/>
 
 @code {
-        [Parameter]
-        public object? Object { get; set; }
+    [Parameter]
+    public object? Object { get; set; }
 
-        [Parameter]
-        public string? SubPath { get; set; }
+    [Parameter]
+    public string? SubPath { get; set; }
 
-        [Parameter]
-        public string id { get; set; } = string.Empty;
+    [Parameter]
+    public string id { get; set; } = string.Empty;
         
-        [Parameter]
-        public bool isDisabled { get; set; }
+    [Parameter]
+    public bool isDisabled { get; set; }
     
-        public string SubProperty
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    public string SubProperty
     {
         get
         {
@@ -28,6 +31,7 @@
         set
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
         }
     }
 }

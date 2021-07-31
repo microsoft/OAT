@@ -5,7 +5,7 @@
 <div class="form-row">
     <div class="form-group col-6">
         <label for="clauseLabel">Label:</label>
-        <StringInput id="clauseLabel" Object="Rule?.Clauses[Clause]" SubPath="Label" placeholder="Label"/>
+        <StringInput id="clauseLabel" Object="Rule?.Clauses[Clause]" SubPath="Label" placeholder="Label" onChangeAction="onChangeAction"/>
     </div>
     <div class="form-group col-6">
         @if (Types.Any())
@@ -25,16 +25,16 @@
         else
         {
             <label for="clauseField">Field:</label>
-            <StringInput id="clauseField" Object="Rule?.Clauses[Clause]" SubPath="Field" placeholder="Field" />
+            <StringInput id="clauseField" Object="Rule?.Clauses[Clause]" SubPath="Field" placeholder="Field" onChangeAction="onChangeAction" />
         }
     </div>
 </div>
 <div class="form-check">
-    <BoolInput id="captureinput" Object="Rule?.Clauses[Clause]" SubPath="Capture" />
+    <BoolInput id="captureinput" Object="Rule?.Clauses[Clause]" SubPath="Capture" onChangeAction="onChangeAction" />
     <label class="form-check-label" for="captureinput">Capture</label>
 </div>
 <div class="form-check">
-    <BoolInput id="invertinput" Object="Rule?.Clauses[Clause]" SubPath="Invert" />
+    <BoolInput id="invertinput" Object="Rule?.Clauses[Clause]" SubPath="Invert" onChangeAction="onChangeAction" />
     <label class="form-check-label" for="invertinput">Invert</label>
 </div>
 
@@ -45,7 +45,7 @@
             <label for="operationInput">Operation:</label>
         </td>
         <td>
-            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" OnChange="RefreshThis" />
+            <EnumInput id="operationInput" Object="Rule?.Clauses[Clause]" SubPath="Operation" onChangeAction="RefreshThis" />
         </td>
     </tr>
     @if (Rule is Rule && Rule.Clauses[Clause].Operation == Operation.Custom)
@@ -55,7 +55,7 @@
                 <label for="customOperationInput">CustomOperation:</label>
             </td>
             <td>
-                <StringInput id="customOperationInput" Object="Rule.Clauses[Clause]" SubPath="CustomOperation" />
+                <StringInput id="customOperationInput" Object="Rule.Clauses[Clause]" SubPath="CustomOperation" onChangeAction="onChangeAction" />
             </td>
         </tr>
     }
@@ -66,7 +66,7 @@
                 <label for="customScriptInput">Script:</label>
             </td>
             <td>
-                <StringBoxInput id="customScriptInput" Object="Rule.Clauses[Clause]" SubPath="Script.Code" />
+                <StringBoxInput id="customScriptInput" Object="Rule.Clauses[Clause]" SubPath="Script.Code" onChangeAction="onChangeAction" />
             </td>
         </tr>
         <tr>
@@ -74,7 +74,7 @@
                 <label for="customOperationImports">Imports:</label>
             </td>
             <td>
-                <ListStringInput id="customOperationImports" Object="Rule.Clauses[Clause]" SubPath="Script.Imports" />
+                <ListStringInput id="customOperationImports" Object="Rule.Clauses[Clause]" SubPath="Script.Imports" onChangeAction="onChangeAction" />
             </td>
         </tr>
         <tr>
@@ -82,7 +82,7 @@
                 <label for="customOperationReferences">References:</label>
             </td>
             <td>
-                <ListStringInput id="customOperationReferences" Object="Rule.Clauses[Clause]" SubPath="Script.References" />
+                <ListStringInput id="customOperationReferences" Object="Rule.Clauses[Clause]" SubPath="Script.References" onChangeAction="onChangeAction" />
             </td>
         </tr>
     }
@@ -93,7 +93,7 @@
                 <label for="clauseArguments">Arguments:</label>
             </td>
             <td>
-                <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" />
+                <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" onChangeAction="onChangeAction" />
             </td>
         </tr>
         <tr>
@@ -101,7 +101,7 @@
                 <label for="clauseData">Data:</label>
             </td>
             <td>
-                <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" />
+                <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" onChangeAction="onChangeAction" />
             </td>
         </tr>
         <tr>
@@ -109,7 +109,7 @@
                 <label for="clauseDictData">Dictionary Data:</label>
             </td>
             <td>
-                <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" />
+                <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" onChangeAction="onChangeAction" />
             </td>
         </tr>
     }
@@ -127,6 +127,9 @@
 
     [Parameter]
     public IntHolder? TypeIndex { get; set; }
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
 
     string FieldProperty
     {
@@ -146,5 +149,6 @@
     public void RefreshThis()
     {
         this.StateHasChanged();
+        onChangeAction.Invoke();
     }
 }
