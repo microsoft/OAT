@@ -221,7 +221,7 @@
                     }
                 }
             }
-            return types.Select(x => x.Namespace).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is not null).Distinct();
         }
         else
         {
@@ -238,7 +238,7 @@
                     Console.WriteLine(e.Message);
                 }
             }
-            return types.Select(x => x.Namespace).Distinct();
+            return types.Select(x => x.Namespace).Where(x => x is not null).Distinct();
         }
     }
 }
