@@ -40,7 +40,7 @@
     public string id { get; set; } = string.Empty;
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 
     string SelectedKey { get; set; } = string.Empty;
 

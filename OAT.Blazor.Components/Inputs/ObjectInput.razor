@@ -58,9 +58,9 @@
 
     [Parameter]
     public bool Collapsable { get; set; }
-    
+
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
     
     enum ItemState
     {

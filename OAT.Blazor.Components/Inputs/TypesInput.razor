@@ -25,7 +25,7 @@
     public IntHolder? BindIndex { get; set; }
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 
     int SelectedType
     {

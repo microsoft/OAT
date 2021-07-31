@@ -40,7 +40,7 @@
     public bool isDisabled { get; set; }
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 
     void CheckboxClicked(Enum enumValue, object checkedValue)
     {

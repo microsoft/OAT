@@ -129,7 +129,7 @@
     public IntHolder? TypeIndex { get; set; }
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 
     string FieldProperty
     {

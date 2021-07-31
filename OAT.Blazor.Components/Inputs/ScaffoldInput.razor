@@ -100,5 +100,5 @@
     public IEnumerable<Assembly>? Assemblies { get; set; } = null;
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 }

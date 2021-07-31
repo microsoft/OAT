@@ -18,7 +18,7 @@
     public bool isDisabled { get; set; }
 
     [Parameter]
-    public Action? onChangeAction { get; set; }
+    public Action onChangeAction { get; set; } = () => { };
 
     public bool SubProperty
     {
