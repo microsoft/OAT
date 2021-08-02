@@ -1627,6 +1627,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes
   nameWithType: Helpers.ConstructedOfLoadedTypes
+- uid: Microsoft.CST.OAT.Utils.Helpers.CreateDictionary(System.Type,System.Type)
+  name: CreateDictionary(Type, Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_CreateDictionary_System_Type_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.CreateDictionary(System.Type,System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.CreateDictionary(System.Type, System.Type)
+  nameWithType: Helpers.CreateDictionary(Type, Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.CreateDictionary*
+  name: CreateDictionary
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_CreateDictionary_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.CreateDictionary
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.CreateDictionary
+  nameWithType: Helpers.CreateDictionary
 - uid: Microsoft.CST.OAT.Utils.Helpers.CreateList(System.Type)
   name: CreateList(Type)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_CreateList_System_Type_
