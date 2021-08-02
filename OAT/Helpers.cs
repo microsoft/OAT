@@ -52,6 +52,22 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
+        /// Create a Dictionary to hold the given types
+        /// </summary>
+        /// <param name="keyType">The Type of the Key</param>
+        /// <param name="valueType">The Type of the Value</param>
+        /// <returns>A Dictionary of the given types or null.</returns>
+        public static IDictionary? CreateDictionary(Type? keyType, Type? valueType)
+        {
+            if (keyType is null || valueType is null)
+            {
+                return null;
+            }
+            Type genericListType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
+            return (IDictionary?)Activator.CreateInstance(genericListType);
+        }
+
+        /// <summary>
         /// Create a list to hold the given type
         /// </summary>
         /// <param name="type"></param>
@@ -245,7 +261,7 @@ namespace Microsoft.CST.OAT.Utils
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
             if (propertyName is null) { return null; }
-            if (obj is System.Collections.IDictionary dict)
+            if (obj is IDictionary dict)
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
                 {
@@ -259,7 +275,7 @@ namespace Microsoft.CST.OAT.Utils
                     }
                 }
             }
-            else if (obj is System.Collections.IList list)
+            else if (obj is IList list)
             {
                 if (int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
                 {
@@ -283,7 +299,8 @@ namespace Microsoft.CST.OAT.Utils
         public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName)
         {
             var obj2 = obj;
-            foreach (var split in propertyName?.Split('.') ?? Array.Empty<string>())
+            var splits = propertyName?.Split('.') ?? Array.Empty<string>();
+            foreach (var split in splits)
             {
                 obj2 = GetValueByPropertyOrFieldNameInternal(obj2, split);
             }

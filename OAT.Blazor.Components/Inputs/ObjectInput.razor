@@ -91,7 +91,7 @@
 
     public string AppendNameToPath(string Name)
     {
-        if (string.IsNullOrEmpty(SubPath))
+        if (SubPath is null)
         {
             return Name;
         }
