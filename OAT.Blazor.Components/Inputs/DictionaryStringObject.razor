@@ -1,0 +1,156 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using Serilog;
+@using System.Reflection
+
+<div class="row">
+    <div class="col">
+        <input class="form-control" id="@id" type="text" @bind="CurrentInputKey" />
+    </div>
+    <div class="col">
+        <ScaffoldInput Object="@this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
+    </div>
+    <div class="col">
+        <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
+    </div>
+</div>
+@if (SubProperty?.Count > 0)
+{
+    <div class="row">
+        <div class="col">
+            <select class="form-control" @bind="SelectedKey">
+                @for (int i = 0; i < Keys.Count; i++)
+                {
+                    <option value="@i">@Keys[i]</option>
+                }
+            </select>
+            @if (Keys.Count > 0)
+            {
+                <PropertyInput id="@SelectedObjectId" Object="@SubProperty" SubPath="@Keys[SelectedKey]" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" /> 
+            }
+        </div>
+        <div class="col-4">
+            <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
+        </div>
+    </div>        
+}
+
+    @code {
+    public Scaffold? ScaffoldedObject { get; set; }
+
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; } = "Dictionary Key And Value";
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    [Parameter]
+    public Type? dictionaryValueType { get; set; }
+
+    string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryStringObject"; } }
+
+    bool NoKeys => Keys.Count == 0;
+
+    int SelectedKey 
+    { 
+        get; 
+        set; 
+    }
+
+    string CurrentInputKey { get; set; } = string.Empty;
+
+    List<string> Keys { get; set; } = new List<string>();
+
+    void RemoveEntry()
+    {
+        if (SelectedKey < Keys.Count)
+        {
+            SubProperty?.Remove(Keys[SelectedKey]);
+        }
+        Keys = SubProperty?.Keys.OfType<string>().ToList() ?? new List<string>();
+        onChangeAction.Invoke();
+    }
+
+    void AddEntry()
+    {
+        if (SubProperty is null)
+        {
+            SubProperty = Helpers.CreateDictionary(typeof(string), dictionaryValueType);
+        }
+
+        var obj = ScaffoldedObject?.Construct();
+        if (SubProperty is { }  && obj?.GetType() == dictionaryValueType)
+        {
+            SubProperty[CurrentInputKey] = obj;
+        }
+
+        CurrentInputKey = string.Empty;
+        Keys = SubProperty?.Keys.OfType<string>().ToList() ?? new List<string>();
+        OnInitialized();
+        onChangeAction.Invoke();
+    }
+
+    protected override void OnInitialized()
+    {
+        var allowedConstructors = new List<ConstructorInfo>();
+        if (dictionaryValueType is null)
+        {
+            return;
+        }
+        try
+        {
+            var constructors = dictionaryValueType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var constructorItr in constructors)
+            {
+                try
+                {
+                    if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                    {
+                        allowedConstructors.Add(constructorItr);
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    // Skip this constructor, we can't make it work.
+                    Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            Log.Debug($"Failed to parse type:{e.Message}. ({dictionaryValueType.Name}");
+        }
+        if (allowedConstructors.Any()){
+            var constructorToUse = allowedConstructors[0];
+            ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+        }
+        base.OnInitialized();
+    }
+
+    public System.Collections.IDictionary? SubProperty
+    {
+        get
+        {
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is System.Collections.IDictionary idict)
+            {
+                return idict;
+            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
+        }
+    }
+}

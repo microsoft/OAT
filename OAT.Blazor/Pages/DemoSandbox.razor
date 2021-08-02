@@ -18,11 +18,8 @@
 @for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
 {
     <div class="card">
-        <span>@results[i].Count() rules applied.</span>
-        @foreach (var result in results[i])
-        {
-            <b>@result.Name</b>
-        }
+        <span>@results[i].Count() rules applied.</span><b>@string.Join(',',results[i].Select(x => x.Name))</b>
+        
         <ObjectInput id="@i.ToString()" Object="@AppState.DemoTestObjects[i]" Collapsable="true" onChangeAction="RunRulesSync"/>
     </div>
 }

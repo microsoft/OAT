@@ -52,6 +52,22 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
+        /// Create a Dictionary to hold the given types
+        /// </summary>
+        /// <param name="keyType">The Type of the Key</param>
+        /// <param name="valueType">The Type of the Value</param>
+        /// <returns>A Dictionary of the given types or null.</returns>
+        public static IDictionary? CreateDictionary(Type? keyType, Type? valueType)
+        {
+            if (keyType is null || valueType is null)
+            {
+                return null;
+            }
+            Type genericListType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
+            return (IDictionary?)Activator.CreateInstance(genericListType);
+        }
+
+        /// <summary>
         /// Create a list to hold the given type
         /// </summary>
         /// <param name="type"></param>
@@ -77,12 +93,8 @@ namespace Microsoft.CST.OAT.Utils
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
                 type == typeof(DateTime) || type.IsEnum || 
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string) 
-                    && (type.GetGenericArguments()[1] == typeof(string) || 
-                    (type.GetGenericArguments()[1] is Type valueType && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>) && valueType.GetGenericArguments()[0] == typeof(string)))) ||
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] == typeof(string)) ||
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && type.GetGenericArguments()[0] is Type listType 
-                    && listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>) && listType.GetGenericArguments()[0] == typeof(string) && listType.GetGenericArguments()[1] == typeof(string)))
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string)) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)))
             {
                 // Only return basic types
                 return true;
@@ -245,7 +257,7 @@ namespace Microsoft.CST.OAT.Utils
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
         {
             if (propertyName is null) { return null; }
-            if (obj is System.Collections.IDictionary dict)
+            if (obj is IDictionary dict)
             {
                 if (dict.Keys.OfType<string>().Any(x => x == propertyName))
                 {
@@ -259,7 +271,7 @@ namespace Microsoft.CST.OAT.Utils
                     }
                 }
             }
-            else if (obj is System.Collections.IList list)
+            else if (obj is IList list)
             {
                 if (int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
                 {
@@ -283,7 +295,8 @@ namespace Microsoft.CST.OAT.Utils
         public static object? GetValueByPropertyOrFieldName(object? obj, string? propertyName)
         {
             var obj2 = obj;
-            foreach (var split in propertyName?.Split('.') ?? Array.Empty<string>())
+            var splits = propertyName?.Split('.') ?? Array.Empty<string>();
+            foreach (var split in splits)
             {
                 obj2 = GetValueByPropertyOrFieldNameInternal(obj2, split);
             }
@@ -297,92 +310,13 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns>The default value for the type.</returns>
         public static object? GetDefaultValueForType(Type? type)
         {
-            if (type is null)
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch (Exception)
             {
                 return null;
-            }
-            else if (type.Equals(typeof(string)))
-            {
-                return string.Empty;
-            }
-            else if (type.Equals(typeof(int)))
-            {
-                return 0;
-            }
-            else if (type == typeof(char))
-            {
-                return ' ';
-            }
-            else if (type == typeof(long))
-            {
-                return (long)0;
-            }
-            else if (type == typeof(float))
-            {
-                return (float)0;
-            }
-            else if (type == typeof(double))
-            {
-                return (double)0;
-            }
-            else if (type == typeof(decimal))
-            {
-                return (decimal)0;
-            }
-            else if (type == typeof(bool))
-            {
-                return false;
-            }
-            else if (type == typeof(uint))
-            {
-                return (uint)0;
-            }
-            else if (type == typeof(ulong))
-            {
-                return (ulong)0;
-            }
-            else if (type == typeof(short))
-            {
-                return (short)0;
-            }
-            else if (type == typeof(ushort))
-            {
-                return (ushort)0;
-            }
-            else if (type == typeof(DateTime))
-            {
-                return DateTime.MinValue;
-            }
-            else if (type.IsEnum)
-            {
-                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType())!);
-            }
-            else if (type == typeof(List<string>))
-            {
-                return new List<string>();
-            }
-            else if (type == typeof(List<KeyValuePair<string,string>>))
-            {
-                return new List<KeyValuePair<string, string>>();
-            }
-            else if (type == typeof(Dictionary<string, List<string>>))
-            {
-                return new Dictionary<string, List<string>>();
-            }
-            else if (type == typeof(Dictionary<string, string>))
-            {
-                return new Dictionary<string, string>();
-            }
-            else
-            {
-                try
-                {
-                    return System.Activator.CreateInstance(type);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
             }
         }
 

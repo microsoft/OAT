@@ -21,7 +21,7 @@
                     <option value="@i">@SubProperty[i]</option>
                 }
             </select>
-            <ObjectInput Object="@SubProperty" SubPath="@SelectedIndex.ToString()" onChangeAction="onChangeAction" />
+            <PropertyInput Object="@SubProperty" SubPath="@SelectedIndex.ToString()" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" />
         </div>
         <div class="col-4">
             <button @onclick="RemoveData">Remove @buttonText</button>
@@ -39,7 +39,7 @@
     public string? SubPath { get; set; }
 
     [Parameter]
-    public string buttonText { get; set; } = "String";
+    public string buttonText { get; set; } = "Object";
 
     [Parameter]
     public Type? listType { get; set; }
@@ -50,7 +50,17 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
 
-    int SelectedIndex { get; set; }
+    int _selectedIndex = 0;
+
+    int SelectedIndex
+    {
+        get => _selectedIndex;
+        set
+        {
+            _selectedIndex = value;
+            this.StateHasChanged();
+        }
+    }
 
     void AddData(EventArgs eventArgs)
     {
@@ -63,10 +73,10 @@
         {
             SubProperty?.Add(constructed);
         }
-        OnInitialized();
+        Reset();
     }
 
-    protected override void OnInitialized()
+    private void Reset()
     {
         var allowedConstructors = new List<ConstructorInfo>();
         if (listType is null)
@@ -102,6 +112,11 @@
             var constructorToUse = allowedConstructors[0];
             ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        Reset();
         base.OnInitialized();
     }
 
