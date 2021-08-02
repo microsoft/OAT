@@ -56,7 +56,11 @@
                     if (!listType.IsDefined(typeof(FlagsAttribute), false))
                     {
                         <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" onChangeAction="@onChangeAction"/>
-                    }
+                    }                   
+                }
+                else
+                {
+                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
                 }
             }            
         }

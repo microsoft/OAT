@@ -1,0 +1,129 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using System.Reflection
+@using Serilog
+@using System.Collections
+
+<div class="row">
+    <div class="col">
+        <ScaffoldInput Object="this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
+    </div>
+    <div class="col-4">
+        <button @onclick="AddData">Add @listType</button>
+    </div>
+</div>
+@if (SubProperty?.Count > 0)
+{
+    <div class="row">
+        <div class="col">
+            <select class="form-control" @bind="SelectedIndex">
+                @for (int i = 0; i < SubProperty.Count; i++)
+                {
+                    <option value="@i">@SubProperty[i]</option>
+                }
+            </select>
+            <ObjectInput Object="@SubProperty" SubPath="@SelectedIndex.ToString()" onChangeAction="onChangeAction" />
+        </div>
+        <div class="col-4">
+            <button @onclick="RemoveData">Remove @buttonText</button>
+        </div>
+    </div>
+}
+
+@code {
+    public Scaffold? ScaffoldedObject { get; set; }
+
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; } = "String";
+
+    [Parameter]
+    public Type? listType { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    int SelectedIndex { get; set; }
+
+    void AddData(EventArgs eventArgs)
+    {
+        if (SubProperty == null)
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Helpers.CreateList(listType));
+        }
+        var constructed = ScaffoldedObject?.Construct();
+        if (constructed is not null)
+        {
+            SubProperty?.Add(constructed);
+        }
+        OnInitialized();
+    }
+
+    protected override void OnInitialized()
+    {
+        var allowedConstructors = new List<ConstructorInfo>();
+        if (listType is null)
+        {
+            return;
+        }
+        try
+        {
+            var constructors = listType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var constructorItr in constructors)
+            {
+                try
+                {
+                    if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                    {
+                        allowedConstructors.Add(constructorItr);
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    // Skip this constructor, we can't make it work.
+                    Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            Log.Debug($"Failed to parse type:{e.Message}. ({listType.ToString()}");
+        }
+        if (allowedConstructors.Any()){
+            var constructorToUse = allowedConstructors[0];
+            ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+        }
+        base.OnInitialized();
+    }
+
+    void RemoveData(EventArgs eventArgs)
+    {
+        SubProperty?.RemoveAt(SelectedIndex);
+    }
+
+    public System.Collections.IList? SubProperty
+    {
+        get
+        {
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is System.Collections.IList val)
+            {
+                return val;
+            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
+        }
+    }
+}

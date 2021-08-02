@@ -5,7 +5,7 @@
         <input class="form-control" id="@id" type="text" @bind="CurrentInputKey" />
     </div>
     <div class="col">
-        <ListStringInput id="@SubPath" Object="@CurrentInputValue" SubPath="@string.Empty" />
+        <ListStringInput id="@SubPath" Object="@this" SubPath="CurrentInputValue" />
     </div>
     <div class="col">
         <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
@@ -18,9 +18,13 @@
             <select class="form-control" @bind="SelectedKey">
                 @foreach (var key in SubProperty.Keys)
                 {
-                    <option value="@key">@key : @SubProperty[key]</option>
+                    <option value="@key">@key : @SubProperty[key].Count items</option>
                 }
             </select>
+            @if (SubProperty.ContainsKey(SelectedKey))
+            {
+                <ListStringInput id="@SelectedListId" Object="@SubProperty" SubPath="@SelectedKey" /> 
+            }
         </div>
         <div class="col-4">
             <button @onclick="RemoveEntry">Remove @buttonText</button>
@@ -44,17 +48,17 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
 
-    string? SelectedKey { get; set; } = null;
+    string SelectedListId { get { return SubPath is null ? SubPath : $"{SubPath}.SelectedKeyStringListInput"; } }
+
+    string SelectedKey { get; set; } = string.Empty;
 
     string CurrentInputKey { get; set; } = string.Empty;
 
-    List<string> CurrentInputValue { get; set; } = new List<string>();
+    public List<string> CurrentInputValue { get; set; } = new List<string>();
 
     void RemoveEntry()
     {
-        if (SelectedKey is not null){
-            SubProperty?.Remove(SelectedKey);
-        }
+        SubProperty?.Remove(SelectedKey);
         onChangeAction.Invoke();
     }
 
