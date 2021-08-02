@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Benchmarks", "OAT.Bench
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleDemo", "VehicleDemo\VehicleDemo.csproj", "{38ED2762-F731-44D0-AC8C-3CF928C8CE8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAT.Blazor.Components", "OAT.Blazor.Components\OAT.Blazor.Components.csproj", "{3FF4EDFC-8E47-483F-B7C4-D40B91786641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAT.Blazor.Components", "OAT.Blazor.Components\OAT.Blazor.Components.csproj", "{3FF4EDFC-8E47-483F-B7C4-D40B91786641}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

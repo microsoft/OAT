@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Diagnostics;
 using Serilog;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,6 +33,37 @@ namespace Microsoft.CST.OAT.Utils
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// Create a list to hold the given type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>A List of the given type or null.</returns>
+        public static IList? CreateList(Type? type)
+        {
+            if (type is null)
+            {
+                return null;
+            }
+            Type genericListType = typeof(List<>).MakeGenericType(type);
+            return (IList?)Activator.CreateInstance(genericListType);
+        }
+
+        /// <summary>
+        /// Create a list to hold the given type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>A List of the given type or null.</returns>
+        public static IList? GetListType(Type? type)
+        {
+            if (type is null)
+            {
+                return null;
+            }
+            Type genericListType = typeof(List<>).MakeGenericType(type);
+            return (IList?)Activator.CreateInstance(genericListType);
         }
 
         /// <summary>
