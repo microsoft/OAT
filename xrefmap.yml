@@ -1627,6 +1627,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes
   nameWithType: Helpers.ConstructedOfLoadedTypes
+- uid: Microsoft.CST.OAT.Utils.Helpers.CreateList(System.Type)
+  name: CreateList(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_CreateList_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.CreateList(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.CreateList(System.Type)
+  nameWithType: Helpers.CreateList(Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.CreateList*
+  name: CreateList
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_CreateList_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.CreateList
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.CreateList
+  nameWithType: Helpers.CreateList
 - uid: Microsoft.CST.OAT.Utils.Helpers.GetAllNestedFieldsAndProperties(System.Type,System.String)
   name: GetAllNestedFieldsAndProperties(Type, String)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetAllNestedFieldsAndProperties_System_Type_System_String_
@@ -1666,6 +1679,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.GetDefaultValueForType
   nameWithType: Helpers.GetDefaultValueForType
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetListType(System.Type)
+  name: GetListType(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetListType_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.GetListType(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetListType(System.Type)
+  nameWithType: Helpers.GetListType(Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetListType*
+  name: GetListType
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetListType_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.GetListType
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetListType
+  nameWithType: Helpers.GetListType
 - uid: Microsoft.CST.OAT.Utils.Helpers.GetTypesInNamespace(System.Reflection.Assembly,System.String)
   name: GetTypesInNamespace(Assembly, String)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetTypesInNamespace_System_Reflection_Assembly_System_String_
