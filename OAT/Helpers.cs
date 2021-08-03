@@ -310,13 +310,92 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns>The default value for the type.</returns>
         public static object? GetDefaultValueForType(Type? type)
         {
-            try
-            {
-                return Activator.CreateInstance(type);
-            }
-            catch (Exception)
+            if (type is null)
             {
                 return null;
+            }
+            else if (type.Equals(typeof(string)))
+            {
+                return string.Empty;
+            }
+            else if (type.Equals(typeof(int)))
+            {
+                return 0;
+            }
+            else if (type == typeof(char))
+            {
+                return ' ';
+            }
+            else if (type == typeof(long))
+            {
+                return (long)0;
+            }
+            else if (type == typeof(float))
+            {
+                return (float)0;
+            }
+            else if (type == typeof(double))
+            {
+                return (double)0;
+            }
+            else if (type == typeof(decimal))
+            {
+                return (decimal)0;
+            }
+            else if (type == typeof(bool))
+            {
+                return false;
+            }
+            else if (type == typeof(uint))
+            {
+                return (uint)0;
+            }
+            else if (type == typeof(ulong))
+            {
+                return (ulong)0;
+            }
+            else if (type == typeof(short))
+            {
+                return (short)0;
+            }
+            else if (type == typeof(ushort))
+            {
+                return (ushort)0;
+            }
+            else if (type == typeof(DateTime))
+            {
+                return DateTime.MinValue;
+            }
+            else if (type.IsEnum)
+            {
+                return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType())!);
+            }
+            else if (type == typeof(List<string>))
+            {
+                return new List<string>();
+            }
+            else if (type == typeof(List<KeyValuePair<string, string>>))
+            {
+                return new List<KeyValuePair<string, string>>();
+            }
+            else if (type == typeof(Dictionary<string, List<string>>))
+            {
+                return new Dictionary<string, List<string>>();
+            }
+            else if (type == typeof(Dictionary<string, string>))
+            {
+                return new Dictionary<string, string>();
+            }
+            else
+            {
+                try
+                {
+                    return System.Activator.CreateInstance(type);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
         }
 
