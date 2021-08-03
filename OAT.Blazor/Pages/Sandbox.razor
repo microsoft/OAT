@@ -84,14 +84,7 @@
     {
         var results = analyzer.Analyze(AppState.Rules, AppState.TestObjects[i]);
         <div class="card">
-            <span>@results.Count() rules applied.</span>
-            <br />
-            @foreach (var result in results)
-            {
-                <b>@result.Name</b>
-                <br />
-            }
-            <br />
+            <span>@results.Count() rules applied.</span><b>@string.Join(',',results.Select(x => x.Name))</b>
             <ObjectInput id="@i.ToString()" Object="@AppState.TestObjects[i]" Collapsable="true" onChangeAction="RefreshPage"/>
         </div>
     }

@@ -17,25 +17,27 @@
                     var appendedName = AppendNameToPath(Properties[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name">@Properties[i].Name</label>
+                        <label for="@name" class="prop-name">@Properties[i].Name</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
             }
         </div>
-        @for (int i = 0; i < Fields.Length; i++)
-        {
-            if (Fields[i].IsPublic)
+        <div class ="object-fields">
+            @for (int i = 0; i < Fields.Length; i++)
             {
-                var type = Fields[i].FieldType;
-                var appendedName = AppendNameToPath(Fields[i].Name);
-                var name = ToName(appendedName, i);
-                <div class="form-group">
-                    <label for="@name">@Fields[i].Name</label>
-                    <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
-                </div>
+                if (Fields[i].IsPublic)
+                {
+                    var type = Fields[i].FieldType;
+                    var appendedName = AppendNameToPath(Fields[i].Name);
+                    var name = ToName(appendedName, i);
+                    <div class="form-group">
+                        <label for="@name" class="field-name">@Fields[i].Name</label>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
+                    </div>
+                }
             }
-        }
+        </div>
         break;
     case ItemState.Collapsed:
         <button class="btn btn-primary" type="button" @onclick="Expand">
