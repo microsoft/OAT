@@ -33,7 +33,7 @@
                     var name = ToName(appendedName, i);
                     <div class="form-group">
                         <label for="@name" class="field-name">@Fields[i].Name</label>
-                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="false" onChangeAction="@onChangeAction"/>
                     </div>
                 }
             }
