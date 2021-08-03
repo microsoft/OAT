@@ -18,6 +18,18 @@ a, .btn-link {
     padding-left:20px;
 }
 
+.object-fields {
+    padding-left: 20px;
+}
+
+label.prop-name {
+    font-weight:600;
+}
+
+label.field-name {
+    font-weight: 600;
+}
+
 .content {
     padding-top: 1.1rem;
 }

@@ -1,7 +1,7 @@
 ﻿self.assetsManifest = {
   "assets": [
     {
-      "hash": "sha256-xdBxzlPvoYdAh174kQdrCfEXen1aOmA3P\/esdSEHEM4=",
+      "hash": "sha256-oFx859TODH\/rKeAZEzPToTK7jTG6N9mfqqca\/QsXkeA=",
       "url": "css\/app.css"
     },
     {
@@ -257,19 +257,19 @@
       "url": "_framework\/Tewr.Blazor.FileReader.dll"
     },
     {
-      "hash": "sha256-\/2oY0GCziCtNRHdA0HAoDA04hL4HMq8vNj7LxM6eV48=",
+      "hash": "sha256-cu+2iJE0e5HpdabI+vEWDw53ilDq7WtMWTbu0ha5Nps=",
       "url": "_framework\/OAT.Blazor.Components.dll"
     },
     {
-      "hash": "sha256-rnNZSrnk0+DOFr5w1qNyWMyCXGpJNbzvTrQH5aYatDw=",
+      "hash": "sha256-4MrM6HAaC93rlArXaRUhEsCyKejauKU5Oa8PcifKXyQ=",
       "url": "_framework\/OAT.dll"
     },
     {
-      "hash": "sha256-9KUP5gWy6RDPS3BHEw78F6lcDzZn9wh14NW9h+doihk=",
+      "hash": "sha256-A1HTEvFw\/KBQWHAkbfmWDY0+5Er5sTxDka75nUP+KVc=",
       "url": "_framework\/VehicleDemo.dll"
     },
     {
-      "hash": "sha256-R4\/JG2nx4zm98I0Zwqto4RGRBGAmc61D+TJzJwcTZ44=",
+      "hash": "sha256-BWpgQU\/OOcDpvnjJANuIhHBI4YXmNBvt2u\/3WdHHvUs=",
       "url": "_framework\/OAT.Blazor.dll"
     },
     {
@@ -641,7 +641,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-cwSfII+1YueqiJQ8tT09FoNPXih+4uF5WpqZHZ4\/6pQ=",
+      "hash": "sha256-vbHyNKLNY5XwtssgNtpnWbwo5pO18SaR\/XN8fJZja48=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -649,5 +649,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "Iua876fB"
+  "version": "7aSMRahf"
 };
