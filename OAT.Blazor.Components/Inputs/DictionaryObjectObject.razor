@@ -43,7 +43,7 @@
                 if (Keys[SelectedKey] is { } key)
                 {
                     SelectedValueObject = SubProperty[key];
-                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="ScaffoldedValueObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" />
+                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
                 }
                 else
                 {
