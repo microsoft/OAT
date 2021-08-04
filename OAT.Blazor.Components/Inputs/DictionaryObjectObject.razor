@@ -84,9 +84,9 @@
         set
         {
             selectedValueObject = value;
-            if (SubProperty is { })
+            if (SubProperty is { } && Keys[SelectedKey] is { } NotNullKey)
             {
-                SubProperty[Keys[SelectedKey]] = selectedValueObject;
+                SubProperty[NotNullKey] = selectedValueObject;
             }
         } 
     }

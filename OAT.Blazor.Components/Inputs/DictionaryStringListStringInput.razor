@@ -48,7 +48,7 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
 
-    string SelectedListId { get { return SubPath is null ? SubPath : $"{SubPath}.SelectedKeyStringListInput"; } }
+    string SelectedListId { get { return $"{SubPath}.SelectedKeyStringListInput"; } }
 
     string SelectedKey { get; set; } = string.Empty;
 

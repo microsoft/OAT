@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
-using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Concurrent;
@@ -165,7 +164,7 @@ namespace Microsoft.CST.OAT
             }
             catch (Exception e)
             {
-                Log.Debug(e, $"Hit while parsing {JsonConvert.SerializeObject(clause)} onto ({JsonConvert.SerializeObject(state1)},{JsonConvert.SerializeObject(state2)})");
+                Log.Debug(e, $"Hit while parsing {clause.Label} onto ({state1},{state2})");
             }
             return false;
         }

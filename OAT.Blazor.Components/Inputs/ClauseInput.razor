@@ -2,7 +2,9 @@
 @using Newtonsoft.Json;
 
 <hr class="hr-th mt-3" />
-<div class="form-row">
+@if (Rule is Rule)
+{
+    <div class="form-row">
     <div class="form-group col-6">
         <label for="clauseLabel">Label:</label>
         <StringInput id="clauseLabel" Object="Rule.Clauses[Clause]" SubPath="Label" placeholder="Label" onChangeAction="RefreshThis"/>
@@ -48,7 +50,7 @@
             <EnumInput id="operationInput" Object="Rule.Clauses[Clause]" SubPath="Operation" type="typeof(Operation)" onChangeAction="RefreshThis" />
         </td>
     </tr>
-    @if (Rule is Rule && Rule.Clauses[Clause].Operation == Operation.Custom)
+    @if (Rule.Clauses[Clause].Operation == Operation.Custom)
     {
         <tr>
             <td>
@@ -59,7 +61,7 @@
             </td>
         </tr>
     }
-    @if (Rule is Rule && Rule.Clauses[Clause].Operation == Operation.Script)
+    @if (Rule.Clauses[Clause].Operation == Operation.Script)
     {
         <tr>
             <td>
@@ -86,38 +88,40 @@
             </td>
         </tr>
     }
-    @if (Rule is Rule)
-    {
-        <tr>
-            <td>
-                <label for="clauseArguments">Arguments:</label>
-            </td>
-            <td>
-                <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" onChangeAction="RefreshThis" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="clauseData">Data:</label>
-            </td>
-            <td>
-                <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" onChangeAction="RefreshThis" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="clauseDictData">Dictionary Data:</label>
-            </td>
-            <td>
-                <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" onChangeAction="RefreshThis" />
-            </td>
-        </tr>
-    }
+    <tr>
+        <td>
+            <label for="clauseArguments">Arguments:</label>
+        </td>
+        <td>
+            <ListStringInput buttonText="Argument" id="clauseArguments" Object="Rule.Clauses[Clause]" SubPath="Arguments" onChangeAction="RefreshThis" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="clauseData">Data:</label>
+        </td>
+        <td>
+            <ListStringInput buttonText="Data" id="clauseData" Object="Rule.Clauses[Clause]" SubPath="Data" onChangeAction="RefreshThis" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="clauseDictData">Dictionary Data:</label>
+        </td>
+        <td>
+            <ListKvpStringStringInput buttonText="KeyValuePair" id="clauseDictData" Object="Rule.Clauses[Clause]" SubPath="DictData" onChangeAction="RefreshThis" />
+        </td>
+    </tr>
 </tbody>
+}
+else
+{
+    <span>Rule is null.</span>
+}
 
 @code {
     [Parameter]
-    public Rule Rule { get; set; }
+    public Rule? Rule { get; set; }
 
     [Parameter]
     public int Clause { get; set; }
