@@ -1,7 +1,7 @@
 ﻿self.assetsManifest = {
   "assets": [
     {
-      "hash": "sha256-oFx859TODH\/rKeAZEzPToTK7jTG6N9mfqqca\/QsXkeA=",
+      "hash": "sha256-3NqEgrFPqzOgfPEQ6NPOjlP2yrVG+bvYaAGRrwwWW5A=",
       "url": "css\/app.css"
     },
     {
@@ -257,20 +257,24 @@
       "url": "_framework\/Tewr.Blazor.FileReader.dll"
     },
     {
-      "hash": "sha256-BLdwSnNv0h68SBRxpK0seYWGe0U2fO8dFwlfbIMV5QU=",
+      "hash": "sha256-KMAuBzb6c1C4Ckc9cPnDH3Kgucg+7FWVnk\/dKY7Kks8=",
       "url": "_framework\/OAT.Blazor.Components.dll"
     },
     {
-      "hash": "sha256-0UHp+ABHmEH175+Y8Y0p405jikY3m8w65npWyvvojcU=",
+      "hash": "sha256-zbKMvu3oaDhYrNMr7v8blKxZzFWckRK7fDODpp80iCY=",
       "url": "_framework\/OAT.dll"
     },
     {
-      "hash": "sha256-1lxNvmLeJz+O+uacOjC48Y\/IX7lTZ13YcZM8XvIXB7Q=",
+      "hash": "sha256-AAYCQdqHEc9mCqYXob+bB+h16Gp4ZMT8sDmt9A6l9qk=",
       "url": "_framework\/VehicleDemo.dll"
     },
     {
-      "hash": "sha256-KSQ9VtculNdir5nwJl5U0qZJTdrz+5pSSHpJcgWt8hE=",
+      "hash": "sha256-UW\/PAMW\/SxibYY3BTHpWVLYNqIINbKPBMjfUba2Z3kc=",
       "url": "_framework\/OAT.Blazor.dll"
+    },
+    {
+      "hash": "sha256-ip7AUEf2JA9t24OOrnfrKLrlm26TY457IfEgk4zHn9Q=",
+      "url": "_framework\/Microsoft.CSharp.dll"
     },
     {
       "hash": "sha256-+j6ZrLmO5x8ZhrAKpqt3qSisSYLvMCh6Cj2skyZ1snI=",
@@ -337,7 +341,7 @@
       "url": "_framework\/System.IO.MemoryMappedFiles.dll"
     },
     {
-      "hash": "sha256-OURz7MeqIrJlOkAG7JW3DED9Ne7Nit194xl\/n3oohXU=",
+      "hash": "sha256-nK0IjL4HrycbqCdigxrGj8Vc\/23GYem6KSdzxnbchk4=",
       "url": "_framework\/System.Linq.Expressions.dll"
     },
     {
@@ -429,7 +433,7 @@
       "url": "_framework\/System.Threading.Tasks.Parallel.dll"
     },
     {
-      "hash": "sha256-ljEksSvLgg\/Pwd1sPXBRfz0bnoQ8LVwQCQqibu5AMms=",
+      "hash": "sha256-8dJHulRR2Kbcd6M1AH7k\/RqQfPZh0qiNC14VjBqIOJA=",
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
@@ -641,7 +645,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.CodeAnalysis.Scripting.resources.dll"
     },
     {
-      "hash": "sha256-swvk+rAgI4AvxlAEH1ZlS+5sDU5eFXfVp0ixZ99Flqs=",
+      "hash": "sha256-b4INyJqCDYnpfXfxKFUOGsx2K4WC\/VXYsKOxZ\/k\/pvQ=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -649,5 +653,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "xOSi8SXF"
+  "version": "kNlNIH+1"
 };
