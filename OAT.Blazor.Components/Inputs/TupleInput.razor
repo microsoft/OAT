@@ -1,12 +1,13 @@
 ﻿@using Microsoft.CST.OAT.Utils;
 @using System.Reflection
 
-<div class="row object-fields">
+<div class="object-fields">
     @foreach(var field in tupleFields)
     {
         var path = !string.IsNullOrEmpty(SubPath) ? $"{SubPath}.{field.Name}" : field.Name;
         var propId = $"{id}.{field.Name}";
         <div class="form-group">
+            <label for="@propId" class="prop-name">@field.Name : @field.FieldType.Name</label>
             <PropertyInput id="@propId" Object="Object" SubPath="@path" type="field.FieldType" onChangeAction="onChangeAction" />
         </div>
     }

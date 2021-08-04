@@ -17,7 +17,7 @@
                     var appendedName = AppendNameToPath(Properties[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name" class="prop-name">@Properties[i].Name</label>
+                        <label for="@name" class="prop-name">@Properties[i].Name : @Properties[i].PropertyType.Name</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
@@ -32,7 +32,7 @@
                     var appendedName = AppendNameToPath(Fields[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name" class="field-name">@Fields[i].Name</label>
+                        <label for="@name" class="field-name">@Fields[i].Name : @Fields[i].FieldType.Name</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="false" onChangeAction="@onChangeAction"/>
                     </div>
                 }
