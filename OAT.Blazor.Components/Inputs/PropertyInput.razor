@@ -39,54 +39,15 @@
         }
         else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
         {
-            var args = unwrappedType.GetGenericArguments();
-            if (args.Any())
-            {
-                var listType = args[0];
-
-                if (listType.Equals(typeof(string)))
-                {
-                    <ListStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
-                }
-                else if (listType.Equals(typeof(List<KeyValuePair<string, string>>)))
-                {
-                    <ListKvpStringStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
-                }
-                else if (listType.IsEnum)
-                {
-                    if (!listType.IsDefined(typeof(FlagsAttribute), false))
-                    {
-                        <ListEnumInput id="@id" Object="Object" SubPath="@SubPath" enumType="@listType" onChangeAction="@onChangeAction"/>
-                    }                   
-                }
-                else
-                {
-                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
-                }
-            }            
+            var listType = unwrappedType.GetGenericArguments()[0];            
+            <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
         }
         else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
-            if (unwrappedType.Equals(typeof(Dictionary<string,string>)))
-            {
-                <DictionaryStringStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
-            }
-            else if (unwrappedType.Equals(typeof(Dictionary<string,List<string>>)))
-            {
-                <DictionaryStringListStringInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
-}
-            else if (unwrappedType.GetGenericArguments()[0].Equals(typeof(string)))
-            {
-                var dvt = unwrappedType.GetGenericArguments()[1];
-                <DictionaryStringObject id="@id" Object="Object" SubPath="@SubPath" dictionaryValueType="@dvt" buttonText="@dvt.Name" onChangeAction="@onChangeAction"/>
-}
-            else
-            {
-                var dkt = unwrappedType.GetGenericArguments()[0];
-                var dvt = unwrappedType.GetGenericArguments()[1];
-                var buttonText = $"{dkt.Name} and {dvt.Name} pair.";
-                <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryKeyType="@dkt" dictionaryValueType="@dvt" buttonText="@buttonText" onChangeAction="@onChangeAction"/>
-            }
+            var dkt = unwrappedType.GetGenericArguments()[0];
+            var dvt = unwrappedType.GetGenericArguments()[1];
+            var buttonText = $"{dkt.Name} and {dvt.Name} pair.";
+            <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryKeyType="@dkt" dictionaryValueType="@dvt" buttonText="@buttonText" onChangeAction="@onChangeAction"/>
         }
         else if (unwrappedType.Equals(typeof(uint)))
         {
