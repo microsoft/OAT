@@ -32,6 +32,7 @@
             </select>
             @if (Keys.Count > 0)
             {
+                SelectedKey = Math.Min(SelectedKey, Keys.Count - 1);
                 <PropertyInput id="@SelectedObjectId" Object="@SubProperty" SubPath="@Keys[SelectedKey]" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" /> 
             }
         </div>

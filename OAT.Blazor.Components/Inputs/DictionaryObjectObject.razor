@@ -39,6 +39,7 @@
             </select>
             @if (Keys.Count > 0)
             {
+                SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
                 if (Keys[SelectedKey] is { } key)
                 {
                     SelectedValueObject = SubProperty[key];
