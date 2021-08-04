@@ -7,7 +7,14 @@
         <input class="form-control" id="@id" type="text" @bind="CurrentInputKey" />
     </div>
     <div class="col">
-        <ScaffoldInput Object="@this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
+        @if (!Helpers.IsBasicType(dictionaryValueType))
+        {
+            <ScaffoldInput Object="@this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
+        }
+        else
+        {
+            <PropertyInput Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+        }
     </div>
     <div class="col">
         <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
@@ -25,6 +32,7 @@
             </select>
             @if (Keys.Count > 0)
             {
+                SelectedKey = Math.Min(SelectedKey, Keys.Count - 1);
                 <PropertyInput id="@SelectedObjectId" Object="@SubProperty" SubPath="@Keys[SelectedKey]" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" /> 
             }
         </div>
@@ -36,6 +44,8 @@
 
     @code {
     public Scaffold? ScaffoldedObject { get; set; }
+
+    public dynamic? ValueObject { get; set; }
 
     [Parameter]
     public object? Object { get; set; }
@@ -86,54 +96,71 @@
             SubProperty = Helpers.CreateDictionary(typeof(string), dictionaryValueType);
         }
 
-        var obj = ScaffoldedObject?.Construct();
-        if (SubProperty is { }  && obj?.GetType() == dictionaryValueType)
+        if (SubProperty is { } && Helpers.IsBasicType(dictionaryValueType))
         {
-            SubProperty[CurrentInputKey] = obj;
+            SubProperty[CurrentInputKey] = ValueObject;
         }
+        else
+        {
+            var obj = ScaffoldedObject?.Construct();
+            if (SubProperty is { }  && obj?.GetType() == dictionaryValueType)
+            {
+                SubProperty[CurrentInputKey] = obj;
+            }
 
-        CurrentInputKey = string.Empty;
-        Keys = SubProperty?.Keys.OfType<string>().ToList() ?? new List<string>();
+            CurrentInputKey = string.Empty;
+            Keys = SubProperty?.Keys.OfType<string>().ToList() ?? new List<string>();
+        }
+        
         OnInitialized();
         onChangeAction.Invoke();
     }
 
     protected override void OnInitialized()
     {
-        var allowedConstructors = new List<ConstructorInfo>();
         if (dictionaryValueType is null)
         {
             return;
         }
-        try
+        else if (Helpers.IsBasicType(dictionaryValueType))
         {
-            var constructors = dictionaryValueType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
-
-            foreach (var constructorItr in constructors)
+            ValueObject = Helpers.GetDefaultValueForType(dictionaryValueType);
+        }
+        else
+        {
+            var allowedConstructors = new List<ConstructorInfo>();
+        
+            try
             {
-                try
+                var constructors = dictionaryValueType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+                foreach (var constructorItr in constructors)
                 {
-                    if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                    try
                     {
-                        allowedConstructors.Add(constructorItr);
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        {
+                            allowedConstructors.Add(constructorItr);
+                        }
+                    }
+
+                    catch (Exception e)
+                    {
+                        // Skip this constructor, we can't make it work.
+                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
                     }
                 }
-
-                catch (Exception e)
-                {
-                    // Skip this constructor, we can't make it work.
-                    Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
-                }
+            }
+            catch(Exception e)
+            {
+                Log.Debug($"Failed to parse type:{e.Message}. ({dictionaryValueType.Name}");
+            }
+            if (allowedConstructors.Any()){
+                var constructorToUse = allowedConstructors[0];
+                ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
             }
         }
-        catch(Exception e)
-        {
-            Log.Debug($"Failed to parse type:{e.Message}. ({dictionaryValueType.Name}");
-        }
-        if (allowedConstructors.Any()){
-            var constructorToUse = allowedConstructors[0];
-            ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
-        }
+        
         base.OnInitialized();
     }
 

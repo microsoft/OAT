@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Diagnostics;
-using Serilog;
+﻿using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -87,14 +86,22 @@ namespace Microsoft.CST.OAT.Utils
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsBasicType(Type type)
+        public static bool IsBasicType(Type? type)
         {
-            if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
+            if (type is null)
+            {
+                return false;
+            }
+            else if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
                 type == typeof(DateTime) || type.IsEnum || 
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string)) ||
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)))
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+#if NET5_0_OR_GREATER
+                || (type.IsGenericType && type.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
+#endif
+                )
             {
                 // Only return basic types
                 return true;
@@ -410,16 +417,25 @@ namespace Microsoft.CST.OAT.Utils
         public static void SetValueByPropertyOrFieldName(object? obj, string? propertyName, object? value)
         {
             var obj2 = obj;
+            var objs = new List<(object? obj, string path)>();
+
             var splits = propertyName?.Split('.');
             if (splits != null)
             {
                 for (var i = 0; i < splits.Length - 1; i++)
                 {
+                    objs.Add((obj2, splits[i]));
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
+                objs.Add((obj2, string.Empty));
+                for(int i = objs.Count - 2; i >= 0; i--)
+                {
+                    SetValueByPropertyOrFieldNameInternal(objs[i].obj, objs[i].path, objs[i + 1].obj);
+                }
             }
         }
+
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
             // For scaffolds

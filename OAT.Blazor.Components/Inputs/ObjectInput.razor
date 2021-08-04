@@ -17,13 +17,13 @@
                     var appendedName = AppendNameToPath(Properties[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name" class="prop-name">@Properties[i].Name</label>
+                        <label for="@name"><b>@Properties[i].Name</b> : @Properties[i].PropertyType.Name</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
             }
         </div>
-        <div class="object-fields">
+        <div class="object-properties">
             @for (int i = 0; i < Fields.Length; i++)
             {
                 if (Fields[i].IsPublic)
@@ -32,7 +32,7 @@
                     var appendedName = AppendNameToPath(Fields[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name" class="field-name">@Fields[i].Name</label>
+                        <label for="@name"><b>@Fields[i].Name</b> : @Fields[i].FieldType.Name</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="false" onChangeAction="@onChangeAction"/>
                     </div>
                 }

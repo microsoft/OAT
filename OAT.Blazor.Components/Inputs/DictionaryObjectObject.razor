@@ -1,0 +1,297 @@
+﻿@using Microsoft.CST.OAT.Utils;
+@using Serilog;
+@using System.Reflection
+
+<div class="row">
+    <div class="col underline">Key</div>
+    <div class="col underline">Value</div>
+    <div class="col"></div>
+</div>
+<div class="row">
+    <div class="col">
+        @if (!Helpers.IsBasicType(dictionaryKeyType))
+        {
+            <ScaffoldInput Object="@this" SubPath="ScaffoldedKeyObject" onChangeAction="onChangeAction" />
+        }
+        else
+        {
+            <PropertyInput Object="@this" SubPath="KeyObject" type="dictionaryKeyType" onChangeAction="onChangeAction" />
+        }
+    </div>
+    <div class="col">
+        @if (!Helpers.IsBasicType(dictionaryValueType))
+        {
+            <ScaffoldInput Object="@this" SubPath="ScaffoldedValueObject" onChangeAction="onChangeAction" />
+        }
+        else
+        {
+            <PropertyInput Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+        }
+    </div>
+    <div class="col">
+        <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
+    </div>
+</div>
+@if (SubProperty?.Count > 0)
+{
+    <div class="row">
+        <div class="col-2 underline">
+            <span>Key</span>
+        </div>
+        <div class="col">
+            <select class="form-control" @bind="SelectedKey">
+                @for (int i = 0; i < Keys.Count; i++)
+                {
+                    <option value="@i">@Keys[i]</option>
+                }
+            </select>
+        </div>
+        <div class="col-4">
+            <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2 underline">
+            <span>Value</span>
+        </div>
+        <div class="col">
+        @if (Keys.Count > 0)
+        {
+            SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
+            if (Keys[SelectedKey] is { } key)
+            {
+                SelectedValueObject = SubProperty[key];
+                <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+            }
+            else
+            {
+                SelectedValueObject = null;
+            }
+        }
+        </div>
+    </div>        
+}
+
+@code {
+    dynamic? selectedValueObject;
+
+    public object? SelectedValueObject 
+    {
+        get
+        {
+            return selectedValueObject;
+        }
+        set
+        {
+            selectedValueObject = value;
+            if (SubProperty is { })
+            {
+                SubProperty[Keys[SelectedKey]] = selectedValueObject;
+            }
+        } 
+    }
+
+    public Scaffold? ScaffoldedValueObject { get; set; }
+
+    public object? ValueObject { get; set; }
+
+    public Scaffold? ScaffoldedKeyObject { get; set; }
+
+    public object? KeyObject { get; set; }
+
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string buttonText { get; set; } = "Dictionary Key And Value";
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    [Parameter]
+    public Type? dictionaryValueType { get; set; }
+
+    [Parameter]
+    public Type? dictionaryKeyType { get; set; }
+
+    string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryStringObject"; } }
+
+    bool NoKeys => Keys.Count == 0;
+
+    int SelectedKey 
+    { 
+        get; 
+        set; 
+    }
+
+    System.Collections.IList Keys { get; set; } = new List<object>();
+
+    void RemoveEntry()
+    {
+        if (SelectedKey < Keys.Count)
+        {
+            if (Keys[SelectedKey] is { } obj)
+            {
+                SubProperty?.Remove(obj);
+            }
+        }
+        OnInitialized();    
+        onChangeAction.Invoke();
+    }
+
+    void AddEntry()
+    {
+        if (SubProperty is null)
+        {
+            SubProperty = Helpers.CreateDictionary(dictionaryKeyType, dictionaryValueType);
+        }
+        if (SubProperty is not null)
+        {
+            dynamic? KeyValue = null;
+            dynamic? ValueValue = null;
+
+            if (Helpers.IsBasicType(dictionaryKeyType))
+            {
+                KeyValue = KeyObject;
+            }
+            else
+            {
+                KeyValue = ScaffoldedKeyObject?.Construct();
+            }
+
+            if (Helpers.IsBasicType(dictionaryValueType))
+            {
+                ValueValue = ValueObject;
+            }
+            else
+            {
+                ValueValue = ScaffoldedValueObject?.Construct();
+            }
+
+            if (KeyValue is not null)
+            {
+                SubProperty[KeyValue] = ValueValue;
+            }
+        }
+        
+        OnInitialized();
+        onChangeAction.Invoke();
+    }
+
+    protected override void OnInitialized()
+    {
+        if (dictionaryValueType is null || dictionaryKeyType is null)
+        {
+            return;
+        }
+
+        if (Helpers.IsBasicType(dictionaryValueType))
+        {
+            ValueObject = Helpers.GetDefaultValueForType(dictionaryValueType);
+        }
+        else
+        {
+            var allowedConstructors = new List<ConstructorInfo>();
+        
+            try
+            {
+                var constructors = dictionaryValueType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+                foreach (var constructorItr in constructors)
+                {
+                    try
+                    {
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        {
+                            allowedConstructors.Add(constructorItr);
+                        }
+                    }
+
+                    catch (Exception e)
+                    {
+                        // Skip this constructor, we can't make it work.
+                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Log.Debug($"Failed to parse type:{e.Message}. ({dictionaryValueType.Name}");
+            }
+            if (allowedConstructors.Any()){
+                var constructorToUse = allowedConstructors[0];
+                ScaffoldedValueObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+            }
+        }
+        
+        if (Helpers.IsBasicType(dictionaryKeyType))
+        {
+            KeyObject = Helpers.GetDefaultValueForType(dictionaryKeyType);
+        }
+        else
+        {
+            var allowedConstructors = new List<ConstructorInfo>();
+        
+            try
+            {
+                var constructors = dictionaryKeyType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+                foreach (var constructorItr in constructors)
+                {
+                    try
+                    {
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        {
+                            allowedConstructors.Add(constructorItr);
+                        }
+                    }
+
+                    catch (Exception e)
+                    {
+                        // Skip this constructor, we can't make it work.
+                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Log.Debug($"Failed to parse type:{e.Message}. ({dictionaryKeyType.Name}");
+            }
+            if (allowedConstructors.Any()){
+                var constructorToUse = allowedConstructors[0];
+                ScaffoldedKeyObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+            }
+        }
+
+        Keys.Clear();
+        foreach(var key in SubProperty?.Keys ?? Array.Empty<object>())
+        {
+            Keys.Add(key);
+        }
+        
+        base.OnInitialized();
+    }
+
+    public System.Collections.IDictionary? SubProperty
+    {
+        get
+        {
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is System.Collections.IDictionary idict)
+            {
+                return idict;
+            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
+        }
+    }
+}
