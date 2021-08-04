@@ -136,6 +136,10 @@
         {
             <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="type" onChangeAction="@onChangeAction" />
         }
+        else if (unwrappedType.Equals(typeof(byte[])))
+        {
+            <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction" />
+        }
         else
         {
             <ObjectInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>

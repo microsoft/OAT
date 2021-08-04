@@ -5,7 +5,7 @@
 {
     string ConstructorSelectId = $"{SubPath}-Constructors";
     <div class="form-group">
-        <label for="@ConstructorSelectId">Constructor to Create:</label>
+        <label for="@ConstructorSelectId">Constructor to use:</label>
         <select class="form-control" id="@ConstructorSelectId" @bind="constructorToInvoke">
             @{
                 if (constructors != null)
