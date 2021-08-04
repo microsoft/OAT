@@ -1,0 +1,57 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+<div class="row">
+    @for(int i = 1; i <= tupleLength; i++)
+    {
+        var path = !string.IsNullOrEmpty(SubPath) ? $"{SubPath}.Item{i}" : $"Item{i}";
+        var propId = $"{id}.Item{i}";
+        <PropertyInput id="@propId" Object="Object" SubPath="@path" type="tupleTypes[i-1]" onChangeAction="onChangeAction" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    [Parameter]
+    public Type? tupleType { get; set; }
+
+    Type[] tupleTypes = Array.Empty<Type>();
+    int tupleLength { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (tupleType is not null && tupleType.IsGenericType && tupleType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
+        {
+            tupleTypes = tupleType.GetGenericArguments();
+            tupleLength = tupleTypes.Length;
+        }
+        base.OnInitialized();
+    }
+
+    public System.Runtime.CompilerServices.ITuple? SubProperty
+    {
+        get
+        {
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is System.Runtime.CompilerServices.ITuple val)
+            {
+                return val;
+            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
+        }
+    }
+}
