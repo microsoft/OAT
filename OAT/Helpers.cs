@@ -82,7 +82,7 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Checks if this is a basic type that OAT Blazor Supports
+        /// Checks if this is a type that OAT Blazor has a component for
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -95,9 +95,10 @@ namespace Microsoft.CST.OAT.Utils
             else if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                type == typeof(DateTime) || type.IsEnum || 
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string)) ||
+                type == typeof(DateTime) || type.IsEnum || type == typeof(byte[]) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                
 #if NET5_0_OR_GREATER
                 || (type.IsGenericType && type.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
 #endif
