@@ -3,6 +3,11 @@
 @using System.Reflection
 
 <div class="row">
+    <div class="col">Key</div>
+    <div class="col">Value</div>
+    <div class="col"></div>
+</div>
+<div class="row">
     <div class="col">
         @if (!Helpers.IsBasicType(dictionaryKeyType))
         {
@@ -30,6 +35,9 @@
 @if (SubProperty?.Count > 0)
 {
     <div class="row">
+        <div class="col-2">
+            <span>Key</span>
+        </div>
         <div class="col">
             <select class="form-control" @bind="SelectedKey">
                 @for (int i = 0; i < Keys.Count; i++)
@@ -37,22 +45,29 @@
                     <option value="@i">@Keys[i]</option>
                 }
             </select>
-            @if (Keys.Count > 0)
-            {
-                SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
-                if (Keys[SelectedKey] is { } key)
-                {
-                    SelectedValueObject = SubProperty[key];
-                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
-                }
-                else
-                {
-                    SelectedValueObject = null;
-                }
-            }
         </div>
         <div class="col-4">
             <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <span>Value</span>
+        </div>
+        <div class="col">
+        @if (Keys.Count > 0)
+        {
+            SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
+            if (Keys[SelectedKey] is { } key)
+            {
+                SelectedValueObject = SubProperty[key];
+                <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+            }
+            else
+            {
+                SelectedValueObject = null;
+            }
+        }
         </div>
     </div>        
 }
