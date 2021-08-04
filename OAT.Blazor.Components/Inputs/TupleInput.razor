@@ -1,11 +1,14 @@
 ﻿@using Microsoft.CST.OAT.Utils;
+@using System.Reflection
 
-<div class="row">
-    @for(int i = 1; i <= tupleLength; i++)
+<div class="row object-fields">
+    @foreach(var field in tupleFields)
     {
-        var path = !string.IsNullOrEmpty(SubPath) ? $"{SubPath}.Item{i}" : $"Item{i}";
-        var propId = $"{id}.Item{i}";
-        <PropertyInput id="@propId" Object="Object" SubPath="@path" type="tupleTypes[i-1]" onChangeAction="onChangeAction" />
+        var path = !string.IsNullOrEmpty(SubPath) ? $"{SubPath}.{field.Name}" : field.Name;
+        var propId = $"{id}.{field.Name}";
+        <div class="form-group">
+            <PropertyInput id="@propId" Object="Object" SubPath="@path" type="field.FieldType" onChangeAction="onChangeAction" />
+        </div>
     }
 </div>
 
@@ -25,6 +28,7 @@
     [Parameter]
     public Type? tupleType { get; set; }
 
+    FieldInfo[] tupleFields = Array.Empty<FieldInfo>();
     Type[] tupleTypes = Array.Empty<Type>();
     int tupleLength { get; set; }
 
@@ -32,8 +36,7 @@
     {
         if (tupleType is not null && tupleType.IsGenericType && tupleType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
         {
-            tupleTypes = tupleType.GetGenericArguments();
-            tupleLength = tupleTypes.Length;
+            tupleFields = tupleType.GetFields();
         }
         base.OnInitialized();
     }
