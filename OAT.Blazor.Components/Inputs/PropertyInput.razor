@@ -2,7 +2,7 @@
 {
     @if (Helpers.IsNullable(type) || IsNull)
     {
-        <div class="form-check form-check-inline ml-2">
+        <div class="form-check ml-2">
             <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" disabled="@isDisabled" />
             <label class="form-check-label" for="@id">Set to Null</label>
         </div>
