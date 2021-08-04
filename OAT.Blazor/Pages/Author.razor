@@ -145,7 +145,7 @@
             try
             {
                 using var sr = new StreamReader(stream);
-                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync());
+                AppState.Rules = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rule>>(await sr.ReadToEndAsync()) ?? new List<Rule>();
             }
             catch (OperationCanceledException)
             {
