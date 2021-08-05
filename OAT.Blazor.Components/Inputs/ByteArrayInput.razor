@@ -25,15 +25,15 @@
     {
         get
         {
-            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is string val)
+            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is byte[] val)
             {
-                return val;
+                return Convert.ToBase64String(val);
             }
             return string.Empty;
         }
         set
         {
-            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Convert.FromBase64String(value));
             onChangeAction.Invoke();
         }
     }

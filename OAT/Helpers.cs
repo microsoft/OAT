@@ -82,7 +82,7 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Checks if this is a basic type that OAT Blazor Supports
+        /// Checks if this is a type that OAT Blazor has a component for
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -95,8 +95,8 @@ namespace Microsoft.CST.OAT.Utils
             else if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                type == typeof(DateTime) || type.IsEnum || 
-                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string)) ||
+                type == typeof(DateTime) || type.IsEnum ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
 #if NET5_0_OR_GREATER
                 || (type.IsGenericType && type.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
@@ -195,70 +195,32 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Recursively checks if the object Type given can be constructed of basic types or of those found in the extra assemblies provided.
+        /// Recursively checks if the object Type given can be constructed given what is loaded into the AppDomain.
         /// </summary>
         /// <param name="type">The Type to Check</param>
-        /// <param name="extraAssemblies">Any asesemblies to use other than basic types.</param>
         /// <returns></returns>
-        public static bool ConstructedOfLoadedTypes(Type type, IEnumerable<Assembly>? extraAssemblies = null)
-        {            
-            foreach(var ctor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
-            {
-                if (ConstructedOfLoadedTypes(ctor, extraAssemblies))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+        public static bool ConstructedOfLoadedTypes(Type type)
+        {
+            return type?.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Any(x => ConstructedOfLoadedTypes(x)) ?? false;
         }
 
         /// <summary>
-        /// Determines if the ConstructorInfo given is constructable
+        /// Determines if the ConstructorInfo given is constructable given what is loaded into the AppDomain.
         /// </summary>
         /// <param name="constructorInfo"></param>
-        /// <param name="extraAssemblies">A list of assemblies that will be available to construct with.</param>
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
-        public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo, IEnumerable<Assembly>? extraAssemblies = null)
+        public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo)
         {
-            foreach (var parameter in constructorInfo.GetParameters())
+            var parameters = constructorInfo.GetParameters();
+            if (parameters.Length > 0)
             {
-                if (IsBasicType(parameter.ParameterType)){
-                    continue;
-                }
-                else
-                {
-                    if (constructorInfo.DeclaringType?.Assembly.GetTypes().Contains(parameter.ParameterType) ?? false)
-                    {
-                        continue;
-                    }
-                    
-                    if (extraAssemblies != null)
-                    {
-                        if (extraAssemblies.Where(x => x.GetTypes().Contains(parameter.ParameterType)).FirstOrDefault() != null)
-                        {
-                            if (ConstructedOfLoadedTypes(parameter.ParameterType, extraAssemblies))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
+                var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
+                return constructorInfo?.GetParameters().Any(x => loadedTypes.Contains(x.ParameterType)) ?? false;
             }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Determines if the ConstructorInfo given is constructable from basic types
-        /// </summary>
-        /// <param name="constructorInfo"></param>
-        /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
-        public static bool ConstructedOfBasicTypes(ConstructorInfo constructorInfo)
-        {
-            return ConstructedOfLoadedTypes(constructorInfo);
+            else
+            {
+                return true;
+            }
         }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
@@ -266,17 +228,7 @@ namespace Microsoft.CST.OAT.Utils
             if (propertyName is null) { return null; }
             if (obj is IDictionary dict)
             {
-                if (dict.Keys.OfType<string>().Any(x => x == propertyName))
-                {
-                    if (dict[propertyName] is System.ValueTuple<object, Type> tuple)
-                    {
-                        return tuple.Item1;
-                    }
-                    else
-                    {
-                        return dict[propertyName];
-                    }
-                }
+                return dict[propertyName];
             }
             else if (obj is IList list)
             {
@@ -427,6 +379,10 @@ namespace Microsoft.CST.OAT.Utils
                     objs.Add((obj2, splits[i]));
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
+                if (splits.Any(x => x.Contains("Item")))
+                {
+                    Console.WriteLine("");
+                }
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
                 objs.Add((obj2, string.Empty));
                 for(int i = objs.Count - 2; i >= 0; i--)
@@ -439,28 +395,27 @@ namespace Microsoft.CST.OAT.Utils
         internal static void SetValueByPropertyOrFieldNameInternal(object? obj, string propertyName, object? value)
         {
             // For scaffolds
-            if (obj is IDictionary<string, (object, Type)> tupleDictionary)
-            {
-                var type = tupleDictionary[propertyName].Item2;
-                tupleDictionary[propertyName] = (value!, type);
-            }
-            else if (obj is System.Collections.IDictionary dict)
+            if (obj is IDictionary dict)
             {
                 if (dict.Keys.OfType<string>().Any())
                 {
                     dict[propertyName] = value!;
                 }
             }
-            else if (obj is IList<object> list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
+            else if (obj is IList list && int.TryParse(propertyName, out var propertyIndex) && list.Count > propertyIndex)
             {
                 list[propertyIndex] = value!;
             }
             else
             {
                 var prop = obj?.GetType().GetProperty(propertyName);
+
                 if (prop != null)
                 {
-                    prop.SetValue(obj, value);
+                    if (prop.CanWrite)
+                    {
+                        prop.SetValue(obj, value);
+                    }
                 }
                 var field = obj?.GetType().GetField(propertyName);
                 if (field != null)

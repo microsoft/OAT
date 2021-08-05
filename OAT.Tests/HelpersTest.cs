@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
 using Microsoft.CST.OAT.VehicleDemo;
+using System;
 
 namespace Microsoft.CST.OAT.Tests
 {
@@ -62,8 +63,7 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass2)));
             Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass3)));
             Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass4)));
-            Assert.IsFalse(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5), new Assembly[] { typeof(Vehicle).Assembly }));
+            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5)));
         }
     }
 }

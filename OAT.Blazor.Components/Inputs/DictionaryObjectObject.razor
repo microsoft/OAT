@@ -3,8 +3,8 @@
 @using System.Reflection
 
 <div class="row">
-    <div class="col underline">Key</div>
-    <div class="col underline">Value</div>
+    <div class="col underline">Key : @dictionaryKeyType.Name</div>
+    <div class="col underline">Value : @dictionaryValueType.Name</div>
     <div class="col"></div>
 </div>
 <div class="row">
@@ -36,7 +36,7 @@
 {
     <div class="row">
         <div class="col-2 underline">
-            <span>Key</span>
+            <span>Key : @dictionaryKeyType.Name</span>
         </div>
         <div class="col">
             <select class="form-control" @bind="SelectedKey">
@@ -52,7 +52,7 @@
     </div>
     <div class="row">
         <div class="col-2 underline">
-            <span>Value</span>
+            <span>Value : @dictionaryValueType.Name</span>
         </div>
         <div class="col">
         @if (Keys.Count > 0)
@@ -207,7 +207,7 @@
                 {
                     try
                     {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
                         {
                             allowedConstructors.Add(constructorItr);
                         }
@@ -226,7 +226,7 @@
             }
             if (allowedConstructors.Any()){
                 var constructorToUse = allowedConstructors[0];
-                ScaffoldedValueObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+                ScaffoldedValueObject = new Scaffold(constructorToUse);
             }
         }
         
@@ -246,7 +246,7 @@
                 {
                     try
                     {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
                         {
                             allowedConstructors.Add(constructorItr);
                         }
@@ -265,7 +265,7 @@
             }
             if (allowedConstructors.Any()){
                 var constructorToUse = allowedConstructors[0];
-                ScaffoldedKeyObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+                ScaffoldedKeyObject = new Scaffold(constructorToUse);
             }
         }
 

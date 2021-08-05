@@ -91,7 +91,7 @@
             {
                 try
                 {
-                    if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                    if (Helpers.ConstructedOfLoadedTypes(constructorItr))
                     {
                         allowedConstructors.Add(constructorItr);
                     }
@@ -110,7 +110,7 @@
         }
         if (allowedConstructors.Any()){
             var constructorToUse = allowedConstructors[0];
-            ScaffoldedObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+            ScaffoldedObject = new Scaffold(constructorToUse);
         }
     }
 

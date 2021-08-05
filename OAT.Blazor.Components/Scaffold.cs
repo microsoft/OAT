@@ -8,38 +8,36 @@ namespace Microsoft.CST.OAT.Blazor.Components
 {
     public class Scaffold
     {
-        public Dictionary<string, (object? obj, Type type)> Parameters { get; } = new Dictionary<string, (object?, Type)>();
+        public List<(string name, object? obj, Type type)> Parameters { get; } = new List<(string, object?, Type)>();
         public ConstructorInfo Constructor { get; }
 
-        public Scaffold(ConstructorInfo constructorToUse, IEnumerable<Assembly>? assemblies = null)
+        public Scaffold(ConstructorInfo constructorToUse)
         {
             Constructor = constructorToUse;
 
             foreach (var parameter in Constructor.GetParameters() ?? Array.Empty<ParameterInfo>())
             {
-                if (parameter.Name is null)
+                var name = parameter.Name ?? string.Empty;
+                // Array index parameters have a default - but not valid - value of null
+                if (parameter.HasDefaultValue && (!Constructor.DeclaringType?.IsArray ?? true))
                 {
-                    continue;
-                }
-                if (parameter.HasDefaultValue)
-                {
-                    Parameters.Add(parameter.Name, (parameter.DefaultValue, parameter.ParameterType));
+                    Parameters.Add((name, parameter.DefaultValue, parameter.ParameterType));
                 }
                 else
                 {
                     if (Helpers.IsBasicType(parameter.ParameterType))
                     {
-                        Parameters.Add(parameter.Name, (Helpers.GetDefaultValueForType(parameter.ParameterType), parameter.ParameterType));
+                        Parameters.Add((name, Helpers.GetDefaultValueForType(parameter.ParameterType), parameter.ParameterType));
                     }
                     else
                     {
-                        if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, assemblies)).FirstOrDefault() is ConstructorInfo constructor)
+                        if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x)).FirstOrDefault() is ConstructorInfo constructor)
                         {
-                            Parameters.Add(parameter.Name, (new Scaffold(constructor, assemblies), parameter.ParameterType));
+                            Parameters.Add((name, new Scaffold(constructor), parameter.ParameterType));
                         }
                         else
                         {
-                            Parameters.Add(parameter.Name, (null, parameter.ParameterType));
+                            Parameters.Add((name, null, parameter.ParameterType));
                         }
                     }
                 }
@@ -48,22 +46,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
 
         public object? Construct()
         {
-            var inputs = new List<object?>();
-            foreach (var parameter in Constructor?.GetParameters() ?? Array.Empty<ParameterInfo>())
-            {
-                if (parameter.Name is null) 
-                { 
-                    continue; 
-                }
-                if (Parameters[parameter.Name].obj is Scaffold scaffoldedState)
-                {
-                    inputs.Add(scaffoldedState.Construct());
-                }
-                else
-                {
-                    inputs.Add(Parameters[parameter.Name].obj);
-                }
-            }
+            var inputs = Parameters.Select(x => x.obj is Scaffold s ? s.Construct() : x.obj);
             return Constructor?.Invoke(inputs.ToArray());
         }
     }
