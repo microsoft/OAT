@@ -29,10 +29,17 @@
             {
                 <label class="font-weight-bold" for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
                 <ScaffoldInput Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" onChangeAction="onChangeAction"/>
-            }
+        }
             else
             {
-                <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
+                @if ((Scaffold.Constructor.DeclaringType?.IsArray ?? false) && string.IsNullOrEmpty(Scaffold.Parameters[i].name))
+                {
+                    <label for="@PathFromKey(i)"><u>Length</u> : @Scaffold.Parameters[i].type.Name</label>
+                }
+                else
+                {
+                    <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
+                }
                 <PropertyInput id="@PathFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" type="@Scaffold.Parameters[i].type" onChangeAction="onChangeAction"/>
             }
         </div>
@@ -99,9 +106,6 @@
 
     [Parameter]
     public bool ShowSubConstructorSelect { get; set; } = true;
-
-    [Parameter]
-    public IEnumerable<Assembly>? Assemblies { get; set; } = null;
 
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
