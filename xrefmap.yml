@@ -1589,37 +1589,18 @@ references:
   commentId: T:Microsoft.CST.OAT.Utils.Helpers
   fullName: Microsoft.CST.OAT.Utils.Helpers
   nameWithType: Helpers
-- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes(System.Reflection.ConstructorInfo)
-  name: ConstructedOfBasicTypes(ConstructorInfo)
-  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfBasicTypes_System_Reflection_ConstructorInfo_
-  commentId: M:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes(System.Reflection.ConstructorInfo)
-  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes(System.Reflection.ConstructorInfo)
-  nameWithType: Helpers.ConstructedOfBasicTypes(ConstructorInfo)
-- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes*
-  name: ConstructedOfBasicTypes
-  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfBasicTypes_
-  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes
-  isSpec: "True"
-  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfBasicTypes
-  nameWithType: Helpers.ConstructedOfBasicTypes
-- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
-  name: ConstructedOfLoadedTypes(ConstructorInfo, IEnumerable<Assembly>)
-  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfLoadedTypes_System_Reflection_ConstructorInfo_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__
-  commentId: M:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
-  name.vb: ConstructedOfLoadedTypes(ConstructorInfo, IEnumerable(Of Assembly))
-  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo, System.Collections.Generic.IEnumerable<System.Reflection.Assembly>)
-  fullName.vb: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo, System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly))
-  nameWithType: Helpers.ConstructedOfLoadedTypes(ConstructorInfo, IEnumerable<Assembly>)
-  nameWithType.vb: Helpers.ConstructedOfLoadedTypes(ConstructorInfo, IEnumerable(Of Assembly))
-- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
-  name: ConstructedOfLoadedTypes(Type, IEnumerable<Assembly>)
-  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfLoadedTypes_System_Type_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__
-  commentId: M:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
-  name.vb: ConstructedOfLoadedTypes(Type, IEnumerable(Of Assembly))
-  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type, System.Collections.Generic.IEnumerable<System.Reflection.Assembly>)
-  fullName.vb: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type, System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly))
-  nameWithType: Helpers.ConstructedOfLoadedTypes(Type, IEnumerable<Assembly>)
-  nameWithType.vb: Helpers.ConstructedOfLoadedTypes(Type, IEnumerable(Of Assembly))
+- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo)
+  name: ConstructedOfLoadedTypes(ConstructorInfo)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfLoadedTypes_System_Reflection_ConstructorInfo_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Reflection.ConstructorInfo)
+  nameWithType: Helpers.ConstructedOfLoadedTypes(ConstructorInfo)
+- uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type)
+  name: ConstructedOfLoadedTypes(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfLoadedTypes_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes(System.Type)
+  nameWithType: Helpers.ConstructedOfLoadedTypes(Type)
 - uid: Microsoft.CST.OAT.Utils.Helpers.ConstructedOfLoadedTypes*
   name: ConstructedOfLoadedTypes
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_ConstructedOfLoadedTypes_
