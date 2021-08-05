@@ -18,7 +18,8 @@ namespace Microsoft.CST.OAT.Blazor.Components
             foreach (var parameter in Constructor.GetParameters() ?? Array.Empty<ParameterInfo>())
             {
                 var name = parameter.Name ?? string.Empty;
-                if (parameter.HasDefaultValue)
+                // Array index parameters have a default - but not valid - value of null
+                if (parameter.HasDefaultValue && (!Constructor.DeclaringType?.IsArray ?? true))
                 {
                     Parameters.Add((name, parameter.DefaultValue, parameter.ParameterType));
                 }
