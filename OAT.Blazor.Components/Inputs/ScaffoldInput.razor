@@ -20,21 +20,25 @@
     </div>
 }
 
-@foreach (var parameter in Scaffold?.Parameters ?? new Dictionary<string, (object?, Type)>())
+@if (Scaffold is {})
 {
-    <div class="form-group">
-        @if (parameter.Value.obj is Scaffold)
-        {
-            <label class="font-weight-bold" for="@PathFromKey(parameter.Key)"><u>@parameter.Key</u> : @parameter.Value.type.Name</label>
-            <ScaffoldInput Object="@Object" SubPath="@PathFromKey(parameter.Key)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" onChangeAction="onChangeAction"/>
-        }
-        else
-        {
-            <label for="@PathFromKey(parameter.Key)"><u>@parameter.Key</u> : @parameter.Value.type.Name</label>
-            <PropertyInput id="@PathFromKey(parameter.Key)" Object="@Object" SubPath="@PathFromKey(parameter.Key)" type="@parameter.Value.type" onChangeAction="onChangeAction"/>
-        }
-    </div>
+    @for (int i = 0; i < Scaffold.Parameters.Count; i ++)
+    {
+        <div class="form-group">
+            @if (Scaffold.Parameters[i].obj is Scaffold)
+            {
+                <label class="font-weight-bold" for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
+                <ScaffoldInput Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" onChangeAction="onChangeAction"/>
+            }
+            else
+            {
+                <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
+                <PropertyInput id="@PathFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" type="@Scaffold.Parameters[i].type" onChangeAction="onChangeAction"/>
+            }
+        </div>
+    }
 }
+
 </div>
 
 @code {
@@ -79,9 +83,9 @@
         }
     }
 
-    string PathFromKey(string key)
+    string PathFromKey(int key)
     {
-        return $"{SubPath}.Parameters.{key}";
+        return $"{SubPath}.Parameters.{key}.Item2";
     }
 
     [Parameter]
