@@ -67,7 +67,7 @@
             _constructorToInvoke = value;
             if (constructors.Any())
             {
-                Scaffold = new Scaffold(constructors[value], Assemblies);
+                Scaffold = new Scaffold(constructors[value]);
             }
             onChangeAction.Invoke();
         }
@@ -79,7 +79,7 @@
     {
         get
         {
-            return Scaffold?.Constructor.DeclaringType?.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, Assemblies)).ToList() ?? new List<ConstructorInfo>();
+            return Scaffold?.Constructor.DeclaringType?.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x)).ToList() ?? new List<ConstructorInfo>();
         }
     }
 

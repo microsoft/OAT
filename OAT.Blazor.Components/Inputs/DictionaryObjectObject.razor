@@ -207,7 +207,7 @@
                 {
                     try
                     {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
                         {
                             allowedConstructors.Add(constructorItr);
                         }
@@ -226,7 +226,7 @@
             }
             if (allowedConstructors.Any()){
                 var constructorToUse = allowedConstructors[0];
-                ScaffoldedValueObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+                ScaffoldedValueObject = new Scaffold(constructorToUse);
             }
         }
         
@@ -246,7 +246,7 @@
                 {
                     try
                     {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr, AppDomain.CurrentDomain.GetAssemblies()))
+                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
                         {
                             allowedConstructors.Add(constructorItr);
                         }
@@ -265,7 +265,7 @@
             }
             if (allowedConstructors.Any()){
                 var constructorToUse = allowedConstructors[0];
-                ScaffoldedKeyObject = new Scaffold(constructorToUse, AppDomain.CurrentDomain.GetAssemblies());
+                ScaffoldedKeyObject = new Scaffold(constructorToUse);
             }
         }
 

@@ -195,47 +195,32 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Recursively checks if the object Type given can be constructed of types which are currently loaded, or are included in the optional additional assemblies provided (which will not be automatically loaded).
+        /// Recursively checks if the object Type given can be constructed given what is loaded into the AppDomain.
         /// </summary>
         /// <param name="type">The Type to Check</param>
-        /// <param name="extraAssemblies">Any asesemblies to use other than basic types.</param>
         /// <returns></returns>
-        public static bool ConstructedOfLoadedTypes(Type type, IEnumerable<Assembly>? extraAssemblies = null)
-        {            
-            foreach(var ctor in type.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
-            {
-                if (ConstructedOfLoadedTypes(ctor, extraAssemblies))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+        public static bool ConstructedOfLoadedTypes(Type type)
+        {
+            return type?.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Any(x => ConstructedOfLoadedTypes(x)) ?? false;
         }
 
         /// <summary>
-        /// Determines if the ConstructorInfo given is constructable
+        /// Determines if the ConstructorInfo given is constructable given what is loaded into the AppDomain.
         /// </summary>
         /// <param name="constructorInfo"></param>
-        /// <param name="extraAssemblies">A list of assemblies that will be available to construct with.</param>
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
-        public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo, IEnumerable<Assembly>? extraAssemblies = null)
+        public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo)
         {
-            var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
-            if (extraAssemblies is { })
+            var parameters = constructorInfo.GetParameters();
+            if (parameters.Length > 0)
             {
-                loadedTypes = loadedTypes.Union(extraAssemblies.SelectMany(x => x.GetTypes()));
+                var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
+                return constructorInfo?.GetParameters().Any(x => loadedTypes.Contains(x.ParameterType)) ?? false;
             }
-            foreach (var parameter in constructorInfo.GetParameters())
+            else
             {
-                if (loadedTypes.Contains(parameter.ParameterType))
-                {
-                    continue;
-                }
-                return false;
+                return true;
             }
-
-            return true;
         }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)

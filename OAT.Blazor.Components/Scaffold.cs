@@ -11,7 +11,7 @@ namespace Microsoft.CST.OAT.Blazor.Components
         public List<(string name, object? obj, Type type)> Parameters { get; } = new List<(string, object?, Type)>();
         public ConstructorInfo Constructor { get; }
 
-        public Scaffold(ConstructorInfo constructorToUse, IEnumerable<Assembly>? assemblies = null)
+        public Scaffold(ConstructorInfo constructorToUse)
         {
             Constructor = constructorToUse;
 
@@ -30,9 +30,9 @@ namespace Microsoft.CST.OAT.Blazor.Components
                     }
                     else
                     {
-                        if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x, assemblies)).FirstOrDefault() is ConstructorInfo constructor)
+                        if (parameter.ParameterType.GetConstructors().Where(x => Helpers.ConstructedOfLoadedTypes(x)).FirstOrDefault() is ConstructorInfo constructor)
                         {
-                            Parameters.Add((name, new Scaffold(constructor, assemblies), parameter.ParameterType));
+                            Parameters.Add((name, new Scaffold(constructor), parameter.ParameterType));
                         }
                         else
                         {
