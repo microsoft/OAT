@@ -95,11 +95,15 @@
         }
         else if (unwrappedType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
         {
-            <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="type" onChangeAction="@onChangeAction" />
+            <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="unwrappedType" onChangeAction="@onChangeAction" />
         }
         else if (unwrappedType.Equals(typeof(byte[])))
         {
             <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction" />
+}
+        else if (unwrappedType.IsArray)
+        {
+            <ObjectArrayInput id="@id" Object="Object" SubPath="@SubPath" arrayType="unwrappedType.GetElementType()" onChangeAction="@onChangeAction" />
         }
         else
         {

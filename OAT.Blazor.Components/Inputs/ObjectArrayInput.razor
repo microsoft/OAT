@@ -1,0 +1,59 @@
+﻿@using Microsoft.CST.OAT.Utils;
+
+@if (SubProperty is { })
+{
+    var i = 0;
+    @foreach(object? _ in SubProperty)
+    {
+        var propId = $"{id}.{i}";
+        <div class ="row">
+            <div class="col-2">@i</div>
+            <div class="col">
+                <PropertyInput id="@propId" Object="@Object" SubPath="@PathForElement(i)" type="@arrayType" onChangeAction="onChangeAction"/>
+            </div>
+        </div>
+        i = i + 1;
+    }
+}
+
+
+@code {
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+    
+    [Parameter]
+    public bool isDisabled { get; set; }
+
+    [Parameter]
+    public Type? arrayType { get; set; }
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+
+    public string PathForElement(int index) => $"{SubPath}.{index}";
+
+    public System.Collections.IEnumerable? SubProperty
+    {
+        get
+        {
+            var val = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+            var arType = val?.GetType();
+            if (arType is not null && arType.IsArray && (arType.GetElementType()?.Equals(arrayType) ?? false) && val is System.Collections.IEnumerable ienum)
+            {
+                return ienum;
+            }
+            return null;
+        }
+        set
+        {
+            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, value);
+            onChangeAction.Invoke();
+        }
+    }
+}
