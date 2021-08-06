@@ -91,7 +91,7 @@
             var listType = unwrappedType.GetElementType() is Type eleType ? eleType : unwrappedType.GetGenericArguments()[0];
             if (listType.Equals(typeof(byte)))
             {
-                <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction" />
+                <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" placeholder="Base64Encoded Bytes" onChangeAction="@onChangeAction" />
             }
             else
             {
