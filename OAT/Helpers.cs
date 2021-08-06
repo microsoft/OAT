@@ -95,7 +95,7 @@ namespace Microsoft.CST.OAT.Utils
             else if (type == typeof(string) || type == typeof(int) || type == typeof(char) || type == typeof(long) ||
                 type == typeof(float) || type == typeof(double) || type == typeof(decimal) || type == typeof(bool) ||
                 type == typeof(uint) || type == typeof(ulong) || type == typeof(short) || type == typeof(ushort) ||
-                type == typeof(DateTime) || type.IsEnum ||
+                type == typeof(DateTime) || type.IsEnum || type.IsArray ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) ||
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
 #if NET5_0_OR_GREATER
