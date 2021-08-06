@@ -98,10 +98,6 @@
                 <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
             }
         }
-        else if (unwrappedType is System.Collections.IList objectList)
-        {
-            var listType = objectList.GetType().
-        }
         else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
             var dkt = unwrappedType.GetGenericArguments()[0];
