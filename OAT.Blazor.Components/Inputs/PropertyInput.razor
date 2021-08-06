@@ -83,12 +83,24 @@
             else
             {
                 <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
+}
+        }
+        // The underlying components only support 1 dimensional arrays
+        else if ((unwrappedType.IsArray && unwrappedType.GetConstructors()[0].GetParameters().Length == 1) || unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            var listType = unwrappedType.GetElementType() is Type eleType ? eleType : unwrappedType.GetGenericArguments()[0];
+            if (listType.Equals(typeof(byte)))
+            {
+                <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction" />
+            }
+            else
+            {
+                <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
             }
         }
-        else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
+        else if (unwrappedType is System.Collections.IList objectList)
         {
-            var listType = unwrappedType.GetGenericArguments()[0];            
-            <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="listType" buttonText="@listType.Name" />
+            var listType = objectList.GetType().
         }
         else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
@@ -96,18 +108,6 @@
             var dvt = unwrappedType.GetGenericArguments()[1];
             var buttonText = $"{dkt.Name} and {dvt.Name} pair.";
             <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryKeyType="@dkt" dictionaryValueType="@dvt" buttonText="@buttonText" onChangeAction="@onChangeAction"/>
-        }
-        // The underlying components only support 1 dimensional arrays
-        else if (unwrappedType.IsArray && unwrappedType.GetType().GetConstructors()[0].GetParameters().Length == 1)
-        {
-            if (unwrappedType.Equals(typeof(byte[])))
-            {
-                <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction" />
-            }
-            else
-            {
-                <ObjectArrayInput id="@id" Object="Object" SubPath="@SubPath" arrayType="unwrappedType.GetElementType()" onChangeAction="@onChangeAction" />
-            }
         }
         else
         {
