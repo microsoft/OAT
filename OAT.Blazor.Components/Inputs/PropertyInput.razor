@@ -97,7 +97,8 @@
             var buttonText = $"{dkt.Name} and {dvt.Name} pair.";
             <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryKeyType="@dkt" dictionaryValueType="@dvt" buttonText="@buttonText" onChangeAction="@onChangeAction"/>
         }
-        else if (unwrappedType.IsArray)
+        // The underlying components only support 1 dimensional arrays
+        else if (unwrappedType.IsArray && unwrappedType.GetType().GetConstructors()[0].GetParameters().Length == 1)
         {
             if (unwrappedType.Equals(typeof(byte[])))
             {
