@@ -368,8 +368,9 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns> The object at that Name or null </returns>
         public static void SetValueByPropertyOrFieldName(object? obj, string? propertyName, object? value)
         {
-            var obj2 = obj;
+            // We keep track of each object along the path to account for ValueTypes
             var objs = new List<(object? obj, string path)>();
+            var obj2 = obj;
 
             var splits = propertyName?.Split('.');
             if (splits != null)
@@ -379,15 +380,15 @@ namespace Microsoft.CST.OAT.Utils
                     objs.Add((obj2, splits[i]));
                     obj2 = GetValueByPropertyOrFieldNameInternal(obj2, splits[i]);
                 }
-                if (splits.Any(x => x.Contains("Item")))
-                {
-                    Console.WriteLine("");
-                }
                 SetValueByPropertyOrFieldNameInternal(obj2, splits[^1], value);
                 objs.Add((obj2, string.Empty));
                 for(int i = objs.Count - 2; i >= 0; i--)
                 {
-                    SetValueByPropertyOrFieldNameInternal(objs[i].obj, objs[i].path, objs[i + 1].obj);
+                    // We need to explicitly put value types back or we will have only changed a copy
+                    if (objs[i + 1].obj is ValueType)
+                    {
+                        SetValueByPropertyOrFieldNameInternal(objs[i].obj, objs[i].path, objs[i + 1].obj);
+                    }
                 }
             }
         }
@@ -408,17 +409,14 @@ namespace Microsoft.CST.OAT.Utils
             }
             else
             {
-                var prop = obj?.GetType().GetProperty(propertyName);
-
-                if (prop != null)
+                if (obj?.GetType().GetProperty(propertyName) is PropertyInfo prop)
                 {
                     if (prop.CanWrite)
                     {
                         prop.SetValue(obj, value);
                     }
                 }
-                var field = obj?.GetType().GetField(propertyName);
-                if (field != null)
+                if (obj?.GetType().GetField(propertyName) is FieldInfo field)
                 {
                     field.SetValue(obj, value);
                 }
