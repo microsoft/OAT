@@ -3,30 +3,40 @@
 @using Serilog
 @using System.Collections
 
-<div class="row">
-    <div class="col">
-        <ScaffoldInput Object="this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
-    </div>
-    <div class="col-4">
-        <button @onclick="AddData">Add @listType</button>
-    </div>
-</div>
-@if (SubProperty?.Count > 0)
+@if (SubProperty is IList ObjectList)
 {
-    <div class="row">
-        <div class="col">
-            <select class="form-control" @bind="SelectedIndex">
-                @for (int i = 0; i < SubProperty.Count; i++)
-                {
-                    <option value="@i">@SubProperty[i]</option>
-                }
-            </select>
-            <PropertyInput Object="@SubProperty" SubPath="@SelectedIndex.ToString()" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" />
+    @if (!ObjectList.IsFixedSize)
+    {
+        <div class="row">
+            <div class="col">
+                <ScaffoldInput Object="this" SubPath="ScaffoldedObject" onChangeAction="onChangeAction" />
+            </div>
+            <div class="col-4">
+                <button @onclick="AddData">Add @listType</button>
+            </div>
         </div>
-        <div class="col-4">
-            <button @onclick="RemoveData">Remove @buttonText</button>
+    }
+
+    @if (ObjectList?.Count > 0)
+    {
+        <div class="row">
+            <div class="col">
+                <select class="form-control" @bind="SelectedIndex">
+                    @for (int i = 0; i < ObjectList.Count; i++)
+                    {
+                        <option value="@i">@ObjectList[i]</option>
+                    }
+                </select>
+                <PropertyInput Object="@ObjectList" SubPath="@SelectedIndex.ToString()" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" />
+            </div>
+            @if (!ObjectList.IsFixedSize)
+            {
+                <div class="col-4">
+                    <button @onclick="RemoveData">Remove @buttonText</button>
+                </div>
+            }
         </div>
-    </div>
+    }
 }
 
 @code {

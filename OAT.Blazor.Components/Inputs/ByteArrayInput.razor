@@ -25,15 +25,40 @@
     {
         get
         {
-            if (Helpers.GetValueByPropertyOrFieldName(Object, SubPath) is byte[] val)
+            var val = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+            if (val is byte[] bytes)
             {
-                return Convert.ToBase64String(val);
+                return Convert.ToBase64String(bytes);
+            }
+            else if (val is IList<byte> bytesList)
+            {
+                return Convert.ToBase64String(bytesList.ToArray());
             }
             return string.Empty;
         }
         set
         {
-            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Convert.FromBase64String(value));
+            try
+            {
+                var bytes = Convert.FromBase64String(value);
+                var val = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+                if (val is IList<byte> bytesList)
+                {
+                    if (bytesList.GetType().IsArray)
+                    {
+                        Helpers.SetValueByPropertyOrFieldName(Object, SubPath, bytes);
+                    }
+                    else
+                    {
+                        Helpers.SetValueByPropertyOrFieldName(Object, SubPath, bytes.ToList());
+                    }
+                }
+            }
+            catch(System.FormatException)
+            {
+                // Invalid Base64
+            }
+            
             onChangeAction.Invoke();
         }
     }
