@@ -351,27 +351,11 @@ namespace Microsoft.CST.OAT.Utils
             {
                 return Enum.ToObject(type, GetDefaultValueForType(type.GetEnumUnderlyingType())!);
             }
-            else if (type == typeof(List<string>))
-            {
-                return new List<string>();
-            }
-            else if (type == typeof(List<KeyValuePair<string, string>>))
-            {
-                return new List<KeyValuePair<string, string>>();
-            }
-            else if (type == typeof(Dictionary<string, List<string>>))
-            {
-                return new Dictionary<string, List<string>>();
-            }
-            else if (type == typeof(Dictionary<string, string>))
-            {
-                return new Dictionary<string, string>();
-            }
             else
             {
                 try
                 {
-                    return System.Activator.CreateInstance(type);
+                    return Activator.CreateInstance(type);
                 }
                 catch (Exception)
                 {
