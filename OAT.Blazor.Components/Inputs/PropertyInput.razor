@@ -1,4 +1,5 @@
-﻿@if (type != null && unwrappedType != null)
+﻿@using System.Collections
+@if (type != null && unwrappedType != null)
 {
     @if (Helpers.IsNullable(type) || IsNull)
     {
@@ -86,7 +87,7 @@
 }
         }
         // The underlying components only support 1 dimensional arrays
-        else if ((unwrappedType.IsArray && unwrappedType.GetConstructors()[0].GetParameters().Length == 1) || unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(List<>))
+        else if ((unwrappedType.IsArray && unwrappedType.GetConstructors()[0].GetParameters().Length == 1) || (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IList))))
         {
             var listType = unwrappedType.GetElementType() is Type eleType ? eleType : unwrappedType.GetGenericArguments()[0];
             if (listType.Equals(typeof(byte)))
@@ -98,7 +99,7 @@
                 <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" />
             }
         }
-        else if (unwrappedType.IsGenericType && unwrappedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        else if (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IDictionary)))
         {
             var dkt = unwrappedType.GetGenericArguments()[0];
             var dvt = unwrappedType.GetGenericArguments()[1];
