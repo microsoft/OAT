@@ -184,7 +184,7 @@ namespace Microsoft.CST.OAT
 
                 // Does the name of this class match the Target in the rule? Or has no target been specified
                 // (match all)
-                if (rule.Target is null || (sample?.GetType().Name.Equals(rule.Target, StringComparison.InvariantCultureIgnoreCase) ?? true))
+                if (rule.Target is null || (sample?.GetType().GetFriendlyName().Equals(rule.Target, StringComparison.InvariantCultureIgnoreCase) ?? true))
                 {
                     // If the expression is null the default is that all clauses must be true If we have no
                     // clauses .All will still match

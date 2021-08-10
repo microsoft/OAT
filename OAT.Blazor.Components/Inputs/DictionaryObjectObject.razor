@@ -3,8 +3,8 @@
 @using System.Reflection
 
 <div class="row">
-    <div class="col underline">Key : @dictionaryKeyType.Name</div>
-    <div class="col underline">Value : @dictionaryValueType.Name</div>
+    <div class="col underline">Key : @dictionaryKeyType?.GetFriendlyName()</div>
+    <div class="col underline">Value : @dictionaryValueType?.GetFriendlyName()</div>
     <div class="col"></div>
 </div>
 <div class="row">
@@ -36,7 +36,7 @@
 {
     <div class="row">
         <div class="col-2 underline">
-            <span>Key : @dictionaryKeyType.Name</span>
+            <span>Key : @dictionaryKeyType?.GetFriendlyName()</span>
         </div>
         <div class="col">
             <select class="form-control" @bind="SelectedKey">
@@ -52,7 +52,7 @@
     </div>
     <div class="row">
         <div class="col-2 underline">
-            <span>Value : @dictionaryValueType.Name</span>
+            <span>Value : @dictionaryValueType?.GetFriendlyName()</span>
         </div>
         <div class="col">
         @if (Keys.Count > 0)

@@ -14,6 +14,28 @@ namespace Microsoft.CST.OAT.Utils
     public static class Helpers
     {
         /// <summary>
+        /// Get the friendly name for a type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetFriendlyName(this Type type)
+        {
+            if (type.IsArray)
+            {
+                var rank = type.GetArrayRank();
+                var commas = rank > 1
+                    ? new string(',', rank - 1)
+                    : "";
+                return GetFriendlyName(type.GetElementType()) + $"[{commas}]";
+            }
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return type.GetGenericArguments()[0].GetFriendlyName() + "?";
+            else if (type.IsGenericType)
+                return type.Name.Split('`')[0] + "<" + string.Join(", ", type.GetGenericArguments().Select(x => GetFriendlyName(x)).ToArray()) + ">";
+            else
+                return type.Name;
+        }
+        /// <summary>
         /// Determines if a Regex is valid or not by checking if a Regex object can be created with it.
         /// </summary>
         /// <param name="pattern"></param>

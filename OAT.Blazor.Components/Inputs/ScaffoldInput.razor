@@ -27,18 +27,18 @@
         <div class="form-group">
             @if (Scaffold.Parameters[i].obj is Scaffold)
             {
-                <label class="font-weight-bold" for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
-                <ScaffoldInput Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" Assemblies="Assemblies" onChangeAction="onChangeAction"/>
+                <label class="font-weight-bold" for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.GetFriendlyName()</label>
+                <ScaffoldInput Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" onChangeAction="onChangeAction"/>
         }
             else
             {
                 @if ((Scaffold.Constructor.DeclaringType?.IsArray ?? false) && string.IsNullOrEmpty(Scaffold.Parameters[i].name))
                 {
-                    <label for="@PathFromKey(i)"><u>Length</u> : @Scaffold.Parameters[i].type.Name</label>
+                    <label for="@PathFromKey(i)"><u>Length</u> : @Scaffold.Parameters[i].type.GetFriendlyName()</label>
                 }
                 else
                 {
-                    <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.Name</label>
+                    <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.GetFriendlyName()</label>
                 }
                 <PropertyInput id="@PathFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" type="@Scaffold.Parameters[i].type" onChangeAction="onChangeAction"/>
             }
