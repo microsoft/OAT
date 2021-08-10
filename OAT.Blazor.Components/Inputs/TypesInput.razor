@@ -45,7 +45,7 @@
 
     protected override void OnInitialized()
     {
-        var newIndex = Array.IndexOf(Types,Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
+        var newIndex = Array.IndexOf(Types, Types.FirstOrDefault(type => type.Name.Equals(Helpers.GetValueByPropertyOrFieldName(Object, SubPath))));
         SelectedType = newIndex < 0 ? 0 : newIndex;
         base.OnInitialized();
     }

@@ -6,7 +6,7 @@
     case ItemState.Expanded:
         <button class="btn btn-primary" type="button" @onclick="Collapse">
             <span class="oi oi-chevron-top mx-3"></span>
-            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().Name</span>
+            <span>@SubProperty?.GetType().GetFriendlyName()</span>
         </button>
         <div class="object-properties">
             @for (int i = 0; i < Properties.Length; i++)
@@ -17,7 +17,7 @@
                     var appendedName = AppendNameToPath(Properties[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name"><b>@Properties[i].Name</b> : @Properties[i].PropertyType.Name</label>
+                        <label for="@name"><b>@Properties[i].Name</b> : @Properties[i].PropertyType.GetFriendlyName()</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
@@ -32,7 +32,7 @@
                     var appendedName = AppendNameToPath(Fields[i].Name);
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name"><b>@Fields[i].Name</b> : @Fields[i].FieldType.Name</label>
+                        <label for="@name"><b>@Fields[i].Name</b> : @Fields[i].FieldType.GetFriendlyName()</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="false" onChangeAction="@onChangeAction"/>
                     </div>
                 }
@@ -42,7 +42,7 @@
     case ItemState.Collapsed:
         <button class="btn btn-primary" type="button" @onclick="Expand">
             <span class="oi oi-chevron-bottom mx-3"></span>
-            <span>@Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().Name</span>
+            <span>@SubProperty?.GetType().GetFriendlyName()</span>
         </button>
         break;
 }
@@ -90,6 +90,8 @@
     {
         itemState = ItemState.Collapsed;
     }
+
+    object? SubProperty => Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
 
     public string AppendNameToPath(string Name)
     {

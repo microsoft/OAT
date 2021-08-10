@@ -7,7 +7,7 @@
         var path = !string.IsNullOrEmpty(SubPath) ? $"{SubPath}.{field.Name}" : field.Name;
         var propId = $"{id}.{field.Name}";
         <div class="form-group">
-            <label for="@propId"><b>@field.Name</b> : @field.FieldType.Name</label>
+            <label for="@propId"><b>@field.Name</b> : @field.FieldType.GetFriendlyName()</label>
             <PropertyInput id="@propId" Object="Object" SubPath="@path" type="field.FieldType" onChangeAction="onChangeAction" />
         </div>
     }
