@@ -96,7 +96,7 @@
             }
             else
             {
-                <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" />
+                <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" onChangeAction="@onChangeAction" />
             }
         }
         else if (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IDictionary)))
