@@ -157,8 +157,9 @@
                 Helpers.SetValueByPropertyOrFieldName(Object, SubPath, nonNull);
             } 
         }
-        catch(Exception e)
+        catch(Exception)
         {
+            // We failed to construct the item.
         }
         useScaffold = false;
     }

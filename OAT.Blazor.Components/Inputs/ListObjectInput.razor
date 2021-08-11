@@ -79,7 +79,24 @@
     [Parameter]
     public bool isDisabled { get; set; }
     
-    public Type? itemType => listType?.GetGenericArguments()[0];
+    public Type? itemType
+    {
+        get
+        {
+            if (listType is not null)
+            {
+                if (listType.IsArray)
+                {
+                    return listType.GetElementType();
+                }
+                if (listType.IsGenericType)
+                {
+                    return listType?.GetGenericArguments()[0];
+                }
+            }
+            return null;
+        }
+    }
 
     public string PathFromIndex => $"{SubPath}.{SelectedIndex}";
 
@@ -157,7 +174,7 @@
     void RemoveData(EventArgs eventArgs)
     {
         SubProperty?.RemoveAt(SelectedIndex);
-        SelectedIndex = SubProperty.Count - 1;
+        SelectedIndex = SubProperty?.Count - 1 ?? 0;
         onChangeAction.Invoke();
     }
 
