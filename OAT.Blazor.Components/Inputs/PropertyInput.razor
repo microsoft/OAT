@@ -199,18 +199,21 @@
                 {
                     if (type is not null)
                     {
-                        var denulled = Nullable.GetUnderlyingType(type);
-                        if (denulled is not null)
+                        var denulled = Nullable.GetUnderlyingType(type) ?? type;
+                        object? newValue = Helpers.GetDefaultValueForType(denulled);
+
+                        if (newValue is null)
                         {
-                            var newValue = Helpers.GetDefaultValueForType(denulled);
-                            if (newValue is null)
+                            var ctrs = Helpers.GetConstructors(denulled);
+                            if (ctrs.Any())
                             {
                                 useScaffold = true;
+                                denullingScaffold = new Scaffold(ctrs[0]);
                             }
-                            else
-                            {
-                                Helpers.SetValueByPropertyOrFieldName(Object, SubPath, newValue);
-                            }
+                        }
+                        else
+                        {
+                            Helpers.SetValueByPropertyOrFieldName(Object, SubPath, newValue);
                         }
                     }
                 }
