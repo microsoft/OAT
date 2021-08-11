@@ -117,36 +117,13 @@
         }
         else
         {
-            var allowedConstructors = new List<ConstructorInfo>();
             if (itemType is null)
             {
                 return;
             }
-            try
-            {
-                var constructors = itemType.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+            var allowedConstructors = Helpers.GetConstructors(itemType);
 
-                foreach (var constructorItr in constructors)
-                {
-                    try
-                    {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
-                        {
-                            allowedConstructors.Add(constructorItr);
-                        }
-                    }
-
-                    catch (Exception e)
-                    {
-                        // Skip this constructor, we can't make it work.
-                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Debug($"Failed to parse type:{e.Message}. ({itemType.ToString()}");
-            }
+            
             if (allowedConstructors.Any())
             {
                 var constructorToUse = allowedConstructors[0];
