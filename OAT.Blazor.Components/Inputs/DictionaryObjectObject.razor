@@ -55,19 +55,19 @@
             <span>Value : @dictionaryValueType?.GetFriendlyName()</span>
         </div>
         <div class="col">
-        @if (Keys.Count > 0)
-        {
-            SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
-            if (Keys[SelectedKey] is { } key)
+            @if (Keys.Count > 0)
             {
-                SelectedValueObject = SubProperty[key];
-                <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+                SelectedKey = Math.Min(Keys.Count - 1, SelectedKey);
+                if (Keys[SelectedKey] is { } key)
+                {
+                    SelectedValueObject = SubProperty[key];
+                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+                }
+                else
+                {
+                    SelectedValueObject = null;
+                }
             }
-            else
-            {
-                SelectedValueObject = null;
-            }
-        }
         </div>
     </div>        
 }
