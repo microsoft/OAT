@@ -1673,6 +1673,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.GetDefaultValueForType
   nameWithType: Helpers.GetDefaultValueForType
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName(System.Type)
+  name: GetFriendlyName(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetFriendlyName_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName(System.Type)
+  nameWithType: Helpers.GetFriendlyName(Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName*
+  name: GetFriendlyName
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetFriendlyName_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetFriendlyName
+  nameWithType: Helpers.GetFriendlyName
 - uid: Microsoft.CST.OAT.Utils.Helpers.GetListType(System.Type)
   name: GetListType(Type)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetListType_System_Type_
