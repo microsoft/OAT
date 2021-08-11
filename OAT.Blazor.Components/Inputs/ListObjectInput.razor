@@ -5,7 +5,7 @@
 
 @if (SubProperty is not null)
 {
-    @if (!SubProperty.IsFixedSize)
+    @if (!SubProperty.IsFixedSize && !isDisabled)
     {
         <div class="row">
             <div class="col">
@@ -35,7 +35,7 @@
                     }
                 </select>
             </div>
-            @if (!SubProperty.IsFixedSize)
+            @if (!SubProperty.IsFixedSize && !isDisabled)
             {
                 <div class="col-4">
                     <button @onclick="RemoveData">Remove @buttonText</button>
@@ -47,7 +47,7 @@
                 Item @SelectedIndex:
             </div>
             <div class="col">
-                <PropertyInput id="@id" Object="@Object" SubPath="@PathFromIndex" type="itemType" onChangeAction="onChangeAction" />
+                <PropertyInput id="@id" Object="@Object" SubPath="@PathFromIndex" type="itemType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
             </div>
         </div>
     }
@@ -75,7 +75,10 @@
 
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
-
+    
+    [Parameter]
+    public bool isDisabled { get; set; }
+    
     public Type? itemType => listType?.GetGenericArguments()[0];
 
     public string PathFromIndex => $"{SubPath}.{SelectedIndex}";

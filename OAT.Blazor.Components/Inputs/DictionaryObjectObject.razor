@@ -2,36 +2,40 @@
 @using Serilog;
 @using System.Reflection
 
-<div class="row">
-    <div class="col underline">Key : @dictionaryKeyType?.GetFriendlyName()</div>
-    <div class="col underline">Value : @dictionaryValueType?.GetFriendlyName()</div>
-    <div class="col"></div>
-</div>
-<div class="row">
-    <div class="col">
-        @if (!Helpers.IsBasicType(dictionaryKeyType))
-        {
-            <ScaffoldInput id="@IdForKey" Object="@this" SubPath="ScaffoldedKeyObject" onChangeAction="onChangeAction" />
-        }
-        else
-        {
-            <PropertyInput id="@IdForKey" Object="@this" SubPath="KeyObject" type="dictionaryKeyType" onChangeAction="onChangeAction" />
-        }
+@if (!isDisabled)
+{
+    <div class="row">
+        <div class="col underline">Key : @dictionaryKeyType?.GetFriendlyName()</div>
+        <div class="col underline">Value : @dictionaryValueType?.GetFriendlyName()</div>
+        <div class="col"></div>
     </div>
-    <div class="col">
-        @if (!Helpers.IsBasicType(dictionaryValueType))
-        {
-            <ScaffoldInput id="@IdForValue" Object="@this" SubPath="ScaffoldedValueObject" onChangeAction="onChangeAction" />
-        }
-        else
-        {
-            <PropertyInput id="@IdForValue" Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
-        }
+    <div class="row">
+        <div class="col">
+            @if (!Helpers.IsBasicType(dictionaryKeyType))
+            {
+                <ScaffoldInput id="@IdForKey" Object="@this" SubPath="ScaffoldedKeyObject" onChangeAction="onChangeAction" />
+            }
+            else
+            {
+                <PropertyInput id="@IdForKey" Object="@this" SubPath="KeyObject" type="dictionaryKeyType" onChangeAction="onChangeAction" />
+            }
+        </div>
+        <div class="col">
+            @if (!Helpers.IsBasicType(dictionaryValueType))
+            {
+                <ScaffoldInput id="@IdForValue" Object="@this" SubPath="ScaffoldedValueObject" onChangeAction="onChangeAction" />
+            }
+            else
+            {
+                <PropertyInput id="@IdForValue" Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+            }
+        </div>
+        <div class="col">
+            <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
+        </div>
     </div>
-    <div class="col">
-        <button class="btn-block" @onclick="AddEntry">Add @buttonText</button>
-    </div>
-</div>
+}
+
 @if (SubProperty?.Count > 0)
 {
     <div class="row">
@@ -61,7 +65,7 @@
                 if (Keys[SelectedKey] is { } key)
                 {
                     SelectedValueObject = SubProperty[key];
-                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
                 }
                 else
                 {
@@ -119,6 +123,9 @@
     
     [Parameter]
     public Type? dictionaryType { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     public Type? dictionaryValueType => dictionaryType?.GetGenericArguments()[1];
 

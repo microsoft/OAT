@@ -80,7 +80,7 @@
             }
             else if (unwrappedType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
             {
-                <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="unwrappedType" onChangeAction="@onChangeAction" />
+                <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="unwrappedType" onChangeAction="@onChangeAction" isDisabled="@isDisabled" />
             }
             else if (unwrappedType.IsEnum)
             {
@@ -99,11 +99,11 @@
                 var listType = unwrappedType.GetElementType() is Type eleType ? eleType : unwrappedType.GetGenericArguments()[0];
                 if (listType.Equals(typeof(byte)))
                 {
-                    <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" placeholder="Base64Encoded Bytes" onChangeAction="@onChangeAction" />
+                    <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" placeholder="Base64Encoded Bytes" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
                 }
                 else
                 {
-                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" onChangeAction="@onChangeAction" />
+                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
                 }
             }
             else if (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IDictionary)))
@@ -111,11 +111,11 @@
                 var dkt = unwrappedType.GetGenericArguments()[0];
                 var dvt = unwrappedType.GetGenericArguments()[1];
                 var buttonText = $"{dkt.GetFriendlyName()} and {dvt.GetFriendlyName()} pair.";
-                <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryType="@unwrappedType" buttonText="@buttonText" onChangeAction="@onChangeAction"/>
+                <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryType="@unwrappedType" buttonText="@buttonText" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
             else
             {
-                <ObjectInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
+                <ObjectInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
         }
     }
