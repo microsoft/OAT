@@ -1660,6 +1660,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Utils.Helpers.GetAllNestedFieldsAndPropertiesMemberInfo
   nameWithType: Helpers.GetAllNestedFieldsAndPropertiesMemberInfo
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetConstructors(System.Type)
+  name: GetConstructors(Type)
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetConstructors_System_Type_
+  commentId: M:Microsoft.CST.OAT.Utils.Helpers.GetConstructors(System.Type)
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetConstructors(System.Type)
+  nameWithType: Helpers.GetConstructors(Type)
+- uid: Microsoft.CST.OAT.Utils.Helpers.GetConstructors*
+  name: GetConstructors
+  href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetConstructors_
+  commentId: Overload:Microsoft.CST.OAT.Utils.Helpers.GetConstructors
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Utils.Helpers.GetConstructors
+  nameWithType: Helpers.GetConstructors
 - uid: Microsoft.CST.OAT.Utils.Helpers.GetDefaultValueForType(System.Type)
   name: GetDefaultValueForType(Type)
   href: api/Microsoft.CST.OAT.Utils.Helpers.html#Microsoft_CST_OAT_Utils_Helpers_GetDefaultValueForType_System_Type_
