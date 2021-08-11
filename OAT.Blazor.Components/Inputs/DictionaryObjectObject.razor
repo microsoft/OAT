@@ -50,9 +50,13 @@
                 }
             </select>
         </div>
-        <div class="col-4">
-            <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
-        </div>
+        @if (!isDisabled)
+        {
+            <div class="col-4">
+                <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
+            </div>
+        }
+
     </div>
     <div class="row">
         <div class="col-2 underline">
