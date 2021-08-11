@@ -50,9 +50,13 @@
                 }
             </select>
         </div>
-        <div class="col-4">
-            <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
-        </div>
+        @if (!isDisabled)
+        {
+            <div class="col-4">
+                <button @onclick="RemoveEntry" disabled="@NoKeys">Remove @buttonText</button>
+            </div>
+        }
+
     </div>
     <div class="row">
         <div class="col-2 underline">
@@ -65,7 +69,7 @@
                 if (Keys[SelectedKey] is { } key)
                 {
                     SelectedValueObject = SubProperty[key];
-                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="dictionaryValueType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
+                    <PropertyInput id="@SelectedObjectId" Object="@this" SubPath="SelectedValueObject" type="@GetTypeForSelectedValueObject()" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
                 }
                 else
                 {
@@ -126,6 +130,11 @@
 
     [Parameter]
     public bool isDisabled { get; set; }
+
+    public Type? GetTypeForSelectedValueObject()
+    {
+        return SelectedValueObject?.GetType() ?? dictionaryValueType;
+    }
 
     public Type? dictionaryValueType
     {

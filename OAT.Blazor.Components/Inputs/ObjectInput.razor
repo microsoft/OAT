@@ -15,9 +15,14 @@
                 {
                     var type = Properties[i].PropertyType;
                     var appendedName = AppendNameToPath(Properties[i].Name);
+                    var state = Helpers.GetValueByPropertyOrFieldName(Object, appendedName);
+                    if (state is not null)
+                    {
+                        type = state.GetType();
+                    }
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name"><b>@Properties[i].Name</b> : @Properties[i].PropertyType.GetFriendlyName()</label>
+                        <label for="@name"><b>@Properties[i].Name</b> : @type.GetFriendlyName()</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(isDisabled || !Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
@@ -30,9 +35,14 @@
                 {
                     var type = Fields[i].FieldType;
                     var appendedName = AppendNameToPath(Fields[i].Name);
+                    var state = Helpers.GetValueByPropertyOrFieldName(Object, appendedName);
+                    if (state is not null)
+                    {
+                        type = state.GetType();
+                    }
                     var name = ToName(appendedName, i);
                     <div class="form-group">
-                        <label for="@name"><b>@Fields[i].Name</b> : @Fields[i].FieldType.GetFriendlyName()</label>
+                        <label for="@name"><b>@Fields[i].Name</b> : @type.GetFriendlyName()</label>
                         <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
                     </div>
                 }
@@ -114,8 +124,9 @@
         {
             itemState = ItemState.Collapsed;
         }
-        Properties = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetProperties() ?? Array.Empty<System.Reflection.PropertyInfo>();
-        Fields = Helpers.GetValueByPropertyOrFieldName(Object, SubPath)?.GetType().GetFields() ?? Array.Empty<System.Reflection.FieldInfo>();
+        var value = Helpers.GetValueByPropertyOrFieldName(Object, SubPath);
+        Properties = value?.GetType().GetProperties() ?? Array.Empty<System.Reflection.PropertyInfo>();
+        Fields = value?.GetType().GetFields() ?? Array.Empty<System.Reflection.FieldInfo>();
         base.OnInitialized();
     }
 }
