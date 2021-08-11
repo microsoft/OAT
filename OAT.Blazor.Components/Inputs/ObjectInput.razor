@@ -18,7 +18,7 @@
                     var name = ToName(appendedName, i);
                     <div class="form-group">
                         <label for="@name"><b>@Properties[i].Name</b> : @Properties[i].PropertyType.GetFriendlyName()</label>
-                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(!Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@(isDisabled || !Properties[i].CanWrite)" onChangeAction="@onChangeAction"/>
                     </div>
                 }
             }
@@ -33,7 +33,7 @@
                     var name = ToName(appendedName, i);
                     <div class="form-group">
                         <label for="@name"><b>@Fields[i].Name</b> : @Fields[i].FieldType.GetFriendlyName()</label>
-                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="false" onChangeAction="@onChangeAction"/>
+                        <PropertyInput Object="@Object" SubPath="@appendedName" id="@name" type="@type" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
                     </div>
                 }
             }
@@ -64,6 +64,9 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
     
+    [Parameter]
+    public bool isDisabled { get; set; }
+
     enum ItemState
     {
         Expanded,

@@ -8,7 +8,7 @@
         var propId = $"{id}.{field.Name}";
         <div class="form-group">
             <label for="@propId"><b>@field.Name</b> : @field.FieldType.GetFriendlyName()</label>
-            <PropertyInput id="@propId" Object="Object" SubPath="@path" type="field.FieldType" onChangeAction="onChangeAction" />
+            <PropertyInput id="@propId" Object="Object" SubPath="@path" type="field.FieldType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
         </div>
     }
 </div>
@@ -28,6 +28,9 @@
 
     [Parameter]
     public Type? tupleType { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; }
 
     FieldInfo[] tupleFields = Array.Empty<FieldInfo>();
     Type[] tupleTypes = Array.Empty<Type>();

@@ -3,9 +3,9 @@
 @using Serilog
 @using System.Collections
 
-@if (SubProperty is IList ObjectList)
+@if (SubProperty is not null)
 {
-    @if (!ObjectList.IsFixedSize)
+    @if (!SubProperty.IsFixedSize && !isDisabled)
     {
         <div class="row">
             <div class="col">
@@ -24,24 +24,31 @@
         </div>
     }
 
-    @if (ObjectList?.Count > 0)
+    @if (SubProperty?.Count > 0)
     {
         <div class="row">
             <div class="col">
                 <select class="form-control" @bind="SelectedIndex">
-                    @for (int i = 0; i < ObjectList.Count; i++)
+                    @for (int i = 0; i < SubProperty.Count; i++)
                     {
-                        <option value="@i">@ObjectList[i]</option>
+                        <option value="@i">@SubProperty[i]</option>
                     }
                 </select>
-                <PropertyInput id="@id" Object="@ObjectList" SubPath="@SelectedIndex.ToString()" type="ScaffoldedObject?.Constructor.DeclaringType" onChangeAction="onChangeAction" />
             </div>
-            @if (!ObjectList.IsFixedSize)
+            @if (!SubProperty.IsFixedSize && !isDisabled)
             {
                 <div class="col-4">
                     <button @onclick="RemoveData">Remove @buttonText</button>
                 </div>
             }
+        </div>
+        <div class="row">
+            <div class="col-1 underline">
+                Item @SelectedIndex:
+            </div>
+            <div class="col">
+                <PropertyInput id="@id" Object="@Object" SubPath="@PathFromIndex" type="itemType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
+            </div>
         </div>
     }
 }
@@ -68,8 +75,13 @@
 
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
-
+    
+    [Parameter]
+    public bool isDisabled { get; set; }
+    
     public Type? itemType => listType?.GetGenericArguments()[0];
+
+    public string PathFromIndex => $"{SubPath}.{SelectedIndex}";
 
     int _selectedIndex = 0;
 
@@ -88,23 +100,26 @@
 
     void AddData(EventArgs eventArgs)
     {
-        if (SubProperty == null)
+        if (SubProperty is null)
         {
             Helpers.SetValueByPropertyOrFieldName(Object, SubPath, Helpers.GetDefaultValueForType(listType));
         }
-        if (NonScaffoldObject is not null)
+        if (SubProperty is not null)
         {
-            SubProperty?.Add(NonScaffoldObject);
-        }
-        else
-        {
-            var constructed = ScaffoldedObject?.Construct();
-            if (constructed is not null)
+            if (NonScaffoldObject is not null)
             {
-                SubProperty?.Add(constructed);
+                SubProperty.Add(NonScaffoldObject);
             }
+            else
+            {
+                var constructed = ScaffoldedObject?.Construct();
+                if (constructed is not null)
+                {
+                    SubProperty.Add(constructed);
+                }
+            }
+            SelectedIndex = SubProperty.Count - 1;
         }
-
         Reset();
     }
 
@@ -130,6 +145,7 @@
                 ScaffoldedObject = new Scaffold(constructorToUse);
             }
         }
+        onChangeAction.Invoke();
     }
 
     protected override void OnInitialized()
@@ -141,6 +157,8 @@
     void RemoveData(EventArgs eventArgs)
     {
         SubProperty?.RemoveAt(SelectedIndex);
+        SelectedIndex = SubProperty.Count - 1;
+        onChangeAction.Invoke();
     }
 
     public System.Collections.IList? SubProperty
