@@ -139,7 +139,7 @@
     {
         get
         {
-            return (dictionaryType?.GetGenericArguments() is { } argsList && argsList.Any()) ? argsList[] : null;
+            return (dictionaryType?.GetGenericArguments() is { } argsList && argsList.Any()) ? argsList[0] : null;
         }
     }
 

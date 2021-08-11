@@ -174,7 +174,7 @@
     void RemoveData(EventArgs eventArgs)
     {
         SubProperty?.RemoveAt(SelectedIndex);
-        SelectedIndex = SubProperty.Count - 1;
+        SelectedIndex = SubProperty?.Count - 1 ?? 0;
         onChangeAction.Invoke();
     }
 

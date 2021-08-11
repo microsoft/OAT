@@ -26,12 +26,12 @@ namespace Microsoft.CST.OAT.Utils
                 var commas = rank > 1
                     ? new string(',', rank - 1)
                     : "";
-                return GetFriendlyName(type.GetElementType()) + $"[{commas}]";
+                return type.GetElementType()?.GetFriendlyName() + $"[{commas}]" ?? string.Empty;
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return type.GetGenericArguments()[0].GetFriendlyName() + "?";
             else if (type.IsGenericType)
-                return type.Name.Split('`')[0] + "<" + string.Join(", ", type.GetGenericArguments().Select(x => GetFriendlyName(x)).ToArray()) + ">";
+                return type.Name.Split('`')[0] + "<" + string.Join(", ", type.GetGenericArguments().Select(x => x.GetFriendlyName()).ToArray()) + ">";
             else
                 return type.Name;
         }
