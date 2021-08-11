@@ -54,7 +54,7 @@
     <br />
     @if (ScaffoldedObject != null) {
         <ScaffoldInput id="SandboxScaffold" Object="this" SubPath="ScaffoldedObject"/>
-    <br />
+        <br />
     }
 
 
@@ -361,33 +361,7 @@ else
         var results = new Dictionary<Type, List<ConstructorInfo>>();
         foreach (var type in types)
         {
-            var allowedConstructors = new List<ConstructorInfo>();
-            try
-            {
-                var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
-
-                foreach (var constructorItr in constructors)
-                {
-                    try
-                    {
-                        if (Helpers.ConstructedOfLoadedTypes(constructorItr))
-                        {
-                            allowedConstructors.Add(constructorItr);
-                        }
-                    }
-
-                    catch (Exception e)
-                    {
-                        // Skip this constructor, we can't make it work.
-                        Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr.ToString()}");
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                Log.Debug($"Failed to parse type:{e.Message}. ({type.ToString()}");
-            }
-
+            var allowedConstructors = Helpers.GetConstructors(type);
 
             if (allowedConstructors.Any())
             {

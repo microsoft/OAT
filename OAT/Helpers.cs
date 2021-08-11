@@ -236,13 +236,52 @@ namespace Microsoft.CST.OAT.Utils
             var parameters = constructorInfo.GetParameters();
             if (parameters.Length > 0)
             {
-                var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
+                var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Select(x => Nullable.GetUnderlyingType(x) is null ? x : Nullable.GetUnderlyingType(x));
                 return constructorInfo?.GetParameters().Any(x => loadedTypes.Contains(x.ParameterType)) ?? false;
             }
             else
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Get the constructors which exclusively use loaded/basic types (are constructable)
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<ConstructorInfo> GetConstructors(Type? type)
+        {
+            var allowedConstructors = new List<ConstructorInfo>();
+            if (type != null)
+            {
+                try
+                {
+                    var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+
+                    foreach (var constructorItr in constructors)
+                    {
+                        try
+                        {
+                            if (ConstructedOfLoadedTypes(constructorItr))
+                            {
+                                allowedConstructors.Add(constructorItr);
+                            }
+                        }
+
+                        catch (Exception e)
+                        {
+                            // Skip this constructor, we can't make it work.
+                            Log.Debug($"Failed to parse constructor:{e.Message}. ({constructorItr}");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Debug($"Failed to parse type:{e.Message}. ({type.Name}");
+                }
+            }
+            return allowedConstructors;
         }
 
         internal static object? GetValueByPropertyOrFieldNameInternal(object? obj, string? propertyName)
