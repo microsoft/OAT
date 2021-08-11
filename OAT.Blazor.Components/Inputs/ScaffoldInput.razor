@@ -28,8 +28,8 @@
             @if (Scaffold.Parameters[i].obj is Scaffold)
             {
                 <label class="font-weight-bold" for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.GetFriendlyName()</label>
-                <ScaffoldInput Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" onChangeAction="onChangeAction"/>
-        }
+                <ScaffoldInput id="@IdFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" ShowConstructorSelect="ShowSubConstructorSelect" ShowSubConstructorSelect="ShowSubConstructorSelect" onChangeAction="onChangeAction"/>
+            }
             else
             {
                 @if ((Scaffold.Constructor.DeclaringType?.IsArray ?? false) && string.IsNullOrEmpty(Scaffold.Parameters[i].name))
@@ -40,7 +40,7 @@
                 {
                     <label for="@PathFromKey(i)"><u>@Scaffold.Parameters[i].name</u> : @Scaffold.Parameters[i].type.GetFriendlyName()</label>
                 }
-                <PropertyInput id="@PathFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" type="@Scaffold.Parameters[i].type" onChangeAction="onChangeAction"/>
+                <PropertyInput id="@IdFromKey(i)" Object="@Object" SubPath="@PathFromKey(i)" type="@Scaffold.Parameters[i].type" onChangeAction="onChangeAction"/>
             }
         </div>
     }
@@ -94,6 +94,14 @@
     {
         return $"{SubPath}.Parameters.{key}.Item2";
     }
+
+    string IdFromKey(int key)
+    {
+        return $"{id}.Parameters.{key}";
+    }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
 
     [Parameter]
     public object? Object { get; set; }

@@ -11,21 +11,21 @@
     <div class="col">
         @if (!Helpers.IsBasicType(dictionaryKeyType))
         {
-            <ScaffoldInput Object="@this" SubPath="ScaffoldedKeyObject" onChangeAction="onChangeAction" />
+            <ScaffoldInput id="@IdForKey" Object="@this" SubPath="ScaffoldedKeyObject" onChangeAction="onChangeAction" />
         }
         else
         {
-            <PropertyInput Object="@this" SubPath="KeyObject" type="dictionaryKeyType" onChangeAction="onChangeAction" />
+            <PropertyInput id="@IdForKey" Object="@this" SubPath="KeyObject" type="dictionaryKeyType" onChangeAction="onChangeAction" />
         }
     </div>
     <div class="col">
         @if (!Helpers.IsBasicType(dictionaryValueType))
         {
-            <ScaffoldInput Object="@this" SubPath="ScaffoldedValueObject" onChangeAction="onChangeAction" />
+            <ScaffoldInput id="@IdForValue" Object="@this" SubPath="ScaffoldedValueObject" onChangeAction="onChangeAction" />
         }
         else
         {
-            <PropertyInput Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
+            <PropertyInput id="@IdForValue" Object="@this" SubPath="ValueObject" type="dictionaryValueType" onChangeAction="onChangeAction" />
         }
     </div>
     <div class="col">
@@ -90,6 +90,9 @@
             }
         } 
     }
+
+    string IdForKey => $"{id}.KeyInput";
+    string IdForValue => $"{id}.ValueInput";
 
     public Scaffold? ScaffoldedValueObject { get; set; }
 
