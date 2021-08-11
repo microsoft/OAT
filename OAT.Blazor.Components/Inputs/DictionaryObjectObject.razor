@@ -127,9 +127,9 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
-    public Type? dictionaryValueType => dictionaryType?.GetGenericArguments()[1];
+    public Type? dictionaryValueType => (dictionaryType?.GetGenericArguments() is argsList && argsList.Any()) ? argsList[1] : null;
 
-    public Type? dictionaryKeyType => dictionaryType?.GetGenericArguments()[0];
+    public Type? dictionaryKeyType => (dictionaryType?.GetGenericArguments() is argsList && argsList.Any()) ? argsList[] : null;
 
     string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryObjectObject"; } }
 
