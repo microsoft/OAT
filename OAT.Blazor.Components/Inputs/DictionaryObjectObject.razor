@@ -127,9 +127,21 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
-    public Type? dictionaryValueType => (dictionaryType?.GetGenericArguments() is argsList && argsList.Any()) ? argsList[1] : null;
+    public Type? dictionaryValueType
+    {
+        get
+        {
+            return (dictionaryType?.GetGenericArguments() is { } argsList && argsList.Any()) ? argsList[1] : null;
+        }
+    }
 
-    public Type? dictionaryKeyType => (dictionaryType?.GetGenericArguments() is argsList && argsList.Any()) ? argsList[] : null;
+    public Type? dictionaryKeyType
+    {
+        get
+        {
+            return (dictionaryType?.GetGenericArguments() is { } argsList && argsList.Any()) ? argsList[] : null;
+        }
+    }
 
     string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryObjectObject"; } }
 
