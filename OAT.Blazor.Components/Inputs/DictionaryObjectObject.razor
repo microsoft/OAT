@@ -113,14 +113,15 @@
 
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
-
+    
     [Parameter]
-    public Type? dictionaryValueType { get; set; }
+    public Type? dictionaryType { get; set; }
 
-    [Parameter]
-    public Type? dictionaryKeyType { get; set; }
+    public Type? dictionaryValueType => dictionaryType?.GetGenericArguments()[1];
 
-    string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryStringObject"; } }
+    public Type? dictionaryKeyType => dictionaryType?.GetGenericArguments()[0];
+
+    string SelectedObjectId { get { return SubPath is null ? string.Empty : $"{SubPath}.SelectedKeyDictionaryObjectObject"; } }
 
     bool NoKeys => Keys.Count == 0;
 
