@@ -47,7 +47,7 @@
                 Item @SelectedIndex:
             </div>
             <div class="col">
-                <PropertyInput id="@id" Object="@Object" SubPath="@PathFromIndex" type="itemType" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
+                <PropertyInput id="@id" Object="@Object" SubPath="@PathFromIndex" type="@GetTypeFor(PathFromIndex)" isDisabled="@isDisabled" onChangeAction="onChangeAction" />
             </div>
         </div>
     }
@@ -79,6 +79,11 @@
     [Parameter]
     public bool isDisabled { get; set; }
     
+    Type? GetTypeFor(string Path)
+    {
+        return Helpers.GetValueByPropertyOrFieldName(Object, Path)?.GetType() ?? listType;
+    }
+
     public Type? itemType
     {
         get
