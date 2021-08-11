@@ -11,11 +11,11 @@
             <div class="col">
                 @if (NonScaffoldObject is not null)
                 {
-                    <PropertyInput id="@IdForInput" Object="@this" SubPath="NonScaffoldObject" type="@itemType" id="@NonScaffoldId" onChangeAction="onChangeAction"/>
+                    <PropertyInput Object="@this" SubPath="NonScaffoldObject" type="@itemType" id="@NonScaffoldId" onChangeAction="onChangeAction"/>
                 }
                 else
                 {
-                    <ScaffoldInput id="@IdForInput" Object="@this" SubPath="ScaffoldedObject" id="@ScaffoldId" onChangeAction="onChangeAction" />
+                    <ScaffoldInput Object="@this" SubPath="ScaffoldedObject" id="@ScaffoldId" onChangeAction="onChangeAction" />
                 }
             </div>
             <div class="col-4">
@@ -70,8 +70,6 @@
     public Action onChangeAction { get; set; } = () => { };
 
     public Type? itemType => listType?.GetGenericArguments()[0];
-
-    string IdForInput => $"{id}.NewValueInput";
 
     int _selectedIndex = 0;
 
