@@ -1,25 +1,11 @@
-﻿@using Microsoft.CST.OAT.Utils;
+﻿@inherits BaseInput;
+@using Microsoft.CST.OAT.Utils;
 
 <div class="form-check form-check-inline ml-1">
     <input class="form-check-input" type="checkbox" id="@id" @bind="SubProperty" data-input-type="bool-input" disabled="@isDisabled"/>
 </div>
 
 @code {
-    [Parameter]
-    public object? Object { get; set; }
-
-    [Parameter]
-    public string? SubPath { get; set; }
-
-    [Parameter]
-    public string id { get; set; } = string.Empty;
-
-    [Parameter]
-    public bool isDisabled { get; set; }
-
-    [Parameter]
-    public Action onChangeAction { get; set; } = () => { };
-
     public bool SubProperty
     {
         get

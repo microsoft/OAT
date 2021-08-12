@@ -1,4 +1,5 @@
-﻿@using Microsoft.CST.OAT.Utils;
+﻿@inherits BaseInput;
+@using Microsoft.CST.OAT.Utils;
 @using System.Reflection
 @using Serilog
 @using System.Collections
@@ -59,25 +60,10 @@
     public object? NonScaffoldObject { get; set; }
 
     [Parameter]
-    public object? Object { get; set; }
-
-    [Parameter]
-    public string? SubPath { get; set; }
-
-    [Parameter]
     public string buttonText { get; set; } = "Object";
 
     [Parameter]
     public Type? listType { get; set; }
-
-    [Parameter]
-    public string id { get; set; } = string.Empty;
-
-    [Parameter]
-    public Action onChangeAction { get; set; } = () => { };
-    
-    [Parameter]
-    public bool isDisabled { get; set; }
     
     Type? GetTypeFor(string Path)
     {
@@ -147,23 +133,25 @@
 
     private void Reset()
     {
-        var getDefault = Helpers.GetDefaultValueForType(itemType);
-        if (getDefault is not null)
+        if (itemType is null)
         {
-            NonScaffoldObject = getDefault;
+            return;
+        }
+        if (Helpers.IsBasicType(itemType))
+        {
+            NonScaffoldObject = Helpers.GetDefaultValueForType(itemType);
         }
         else
         {
-            if (itemType is null)
-            {
-                return;
-            }
             var allowedConstructors = Helpers.GetConstructors(itemType);
-
             
             if (allowedConstructors.Any())
             {
                 var constructorToUse = allowedConstructors[0];
+                if (itemType.IsGenericType && itemType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                {
+                    constructorToUse = allowedConstructors.First(x => x.GetParameters().Length == 2);
+                }
                 ScaffoldedObject = new Scaffold(constructorToUse);
             }
         }

@@ -1,0 +1,16 @@
+﻿@code {
+    [Parameter]
+    public object? Object { get; set; }
+
+    [Parameter]
+    public string? SubPath { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool isDisabled { get; set; }
+
+    [Parameter]
+    public Action onChangeAction { get; set; } = () => { };
+}

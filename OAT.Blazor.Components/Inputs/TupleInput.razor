@@ -1,4 +1,5 @@
-﻿@using Microsoft.CST.OAT.Utils;
+﻿@inherits BaseInput;
+@using Microsoft.CST.OAT.Utils;
 @using System.Reflection
 
 <div class="object-fields">
@@ -15,22 +16,7 @@
 
 @code {
     [Parameter]
-    public object? Object { get; set; }
-
-    [Parameter]
-    public string? SubPath { get; set; }
-
-    [Parameter]
-    public string id { get; set; } = string.Empty;
-
-    [Parameter]
-    public Action onChangeAction { get; set; } = () => { };
-
-    [Parameter]
     public Type? tupleType { get; set; }
-
-    [Parameter]
-    public bool isDisabled { get; set; }
 
     FieldInfo[] tupleFields
     {
