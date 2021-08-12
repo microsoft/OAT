@@ -1,4 +1,6 @@
-﻿@using Microsoft.CST.OAT.Utils;
+﻿@inherits BaseInput;
+
+@using Microsoft.CST.OAT.Utils;
 
 <select class="form-control" id="@id" @bind="SelectedType" data-input-type="types-input">
     @for (int i = 0; i < Types.Length; i++)
@@ -9,22 +11,10 @@
 
 @code {
     [Parameter]
-    public object? Object { get; set; }
-
-    [Parameter]
-    public string? SubPath { get; set; }
-
-    [Parameter]
     public Type[] Types { get; set; } = Array.Empty<Type>();
 
     [Parameter]
-    public string id { get; set; } = string.Empty;
-
-    [Parameter]
     public IntHolder? BindIndex { get; set; }
-
-    [Parameter]
-    public Action onChangeAction { get; set; } = () => { };
 
     int SelectedType
     {

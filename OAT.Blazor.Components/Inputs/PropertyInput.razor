@@ -1,4 +1,6 @@
-﻿@using System.Collections
+﻿@inherits BaseInput;
+@using System.Collections
+
 @if (type is Type NotNullType && unwrappedType is Type NotNullUnwrappedType)
 {
     @if (useScaffold)
@@ -91,7 +93,18 @@
                 else
                 {
                     <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@NotNullUnwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
-                }
+}
+            }
+            else if (NotNullUnwrappedType.IsGenericType && NotNullUnwrappedType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            {
+                var types = NotNullUnwrappedType.GetGenericArguments();
+                var keyId = $"{id}.Key";
+                var valueId = $"{id}.Value";
+                var keyPath = $"{SubPath}.Key";
+                var valuePath = $"{SubPath}.Value";
+
+                <PropertyInput id="@keyId" Object="Object" SubPath="@keyPath" type="@types[0]" isDisabled="true" onChangeAction="@onChangeAction" />
+                <PropertyInput id="@valueId" Object="Object" SubPath="@valuePath" type="@types[1]" isDisabled="true" onChangeAction="@onChangeAction" />
             }
             // The underlying components only support 1 dimensional arrays
             else if ((NotNullUnwrappedType.IsArray && NotNullUnwrappedType.GetConstructors()[0].GetParameters().Length == 1) || (NotNullUnwrappedType.IsGenericType && NotNullUnwrappedType.IsAssignableTo(typeof(IList))))
@@ -123,25 +136,10 @@
 
 
 @code {
-    [Parameter]
-    public object? Object { get; set; }
-
-    [Parameter]
-    public string? SubPath { get; set; }
-
-    [Parameter]
-    public string id { get; set; } = string.Empty;
-
     Type? _type;
 
     [Parameter]
     public Type? type { get; set; }
-
-    [Parameter]
-    public bool isDisabled { get; set; }
-
-    [Parameter]
-    public Action onChangeAction { get; set; } = () => { };
 
     public Type? unwrappedType
     {
