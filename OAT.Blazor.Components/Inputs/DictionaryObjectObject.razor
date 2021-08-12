@@ -173,7 +173,7 @@
                 SubProperty?.Remove(obj);
             }
         }
-        OnInitialized();    
+        Setup();    
         onChangeAction.Invoke();
     }
 
@@ -212,11 +212,11 @@
             }
         }
         
-        OnInitialized();
+        Setup();
         onChangeAction.Invoke();
     }
 
-    protected override void OnInitialized()
+    void Setup()
     {
         if (dictionaryValueType is null || dictionaryKeyType is null)
         {
@@ -250,11 +250,16 @@
         }
 
         Keys.Clear();
+
         foreach(var key in SubProperty?.Keys ?? Array.Empty<object>())
         {
             Keys.Add(key);
         }
-        
+    }
+
+    protected override void OnInitialized()
+    {
+        Setup();
         base.OnInitialized();
     }
 

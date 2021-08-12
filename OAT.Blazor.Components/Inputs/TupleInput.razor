@@ -32,18 +32,19 @@
     [Parameter]
     public bool isDisabled { get; set; }
 
-    FieldInfo[] tupleFields = Array.Empty<FieldInfo>();
+    FieldInfo[] tupleFields
+    {
+        get
+        {
+            if (tupleType is not null && tupleType.IsGenericType && tupleType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
+            {
+                return tupleType.GetFields();
+            }
+            return Array.Empty<FieldInfo>();
+        }
+    }
     Type[] tupleTypes = Array.Empty<Type>();
     int tupleLength { get; set; }
-
-    protected override void OnInitialized()
-    {
-        if (tupleType is not null && tupleType.IsGenericType && tupleType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
-        {
-            tupleFields = tupleType.GetFields();
-        }
-        base.OnInitialized();
-    }
 
     public System.Runtime.CompilerServices.ITuple? SubProperty
     {
