@@ -1,14 +1,14 @@
 ﻿@using System.Collections
-@if (type != null && unwrappedType != null)
+@if (type is Type NotNullType && unwrappedType is Type NotNullUnwrappedType)
 {
     @if (useScaffold)
     {
         <ScaffoldInput id="@id" Object="this" SubPath="denullingScaffold" onChangeAction="@onChangeAction"/>
-        <button @onclick="SetObject">Generate @type.FullName</button>
+        <button @onclick="SetObject">Generate @NotNullType.FullName</button>
     }
     else
     {
-        @if (Helpers.IsNullable(type) || IsNull)
+        @if (Helpers.IsNullable(NotNullType) || IsNull)
         {
             <div class="form-check ml-2">
                 <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" disabled="@isDisabled" />
@@ -16,102 +16,102 @@
             </div>
         }
 
-        @if (!IsNull && unwrappedType != null)
+        @if (!IsNull && NotNullUnwrappedType != null)
         {
-            @if (unwrappedType.Equals(typeof(string)))
+            @if (NotNullUnwrappedType.Equals(typeof(string)))
             {
                 <StringInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(bool)))
+            else if (NotNullUnwrappedType.Equals(typeof(bool)))
             {
                 <BoolInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
             }
-            else if (unwrappedType.Equals(typeof(int)))
+            else if (NotNullUnwrappedType.Equals(typeof(int)))
             {
                 <IntInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(DateTime)))
+            else if (NotNullUnwrappedType.Equals(typeof(DateTime)))
             {
                 <DateTimeInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(uint)))
+            else if (NotNullUnwrappedType.Equals(typeof(uint)))
             {
                 <UintInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(long)))
+            else if (NotNullUnwrappedType.Equals(typeof(long)))
             {
                 <LongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(ulong)))
+            else if (NotNullUnwrappedType.Equals(typeof(ulong)))
             {
                 <UlongInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(short)))
+            else if (NotNullUnwrappedType.Equals(typeof(short)))
             {
                 <ShortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(ushort)))
+            else if (NotNullUnwrappedType.Equals(typeof(ushort)))
             {
                 <UshortInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(byte)))
+            else if (NotNullUnwrappedType.Equals(typeof(byte)))
             {
                 <ByteInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(char)))
+            else if (NotNullUnwrappedType.Equals(typeof(char)))
             {
                 <CharInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(float)))
+            else if (NotNullUnwrappedType.Equals(typeof(float)))
             {
                 <FloatInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(double)))
+            else if (NotNullUnwrappedType.Equals(typeof(double)))
             {
                 <DoubleInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(decimal)))
+            else if (NotNullUnwrappedType.Equals(typeof(decimal)))
             {
                 <DecimalInput id="@id" Object="Object" SubPath="@SubPath" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.Equals(typeof(Scaffold)))
+            else if (NotNullUnwrappedType.Equals(typeof(Scaffold)))
             {
                 <ScaffoldInput id="@id" Object="Object" SubPath="@SubPath" onChangeAction="@onChangeAction"/>
             }
-            else if (unwrappedType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
+            else if (NotNullUnwrappedType.IsAssignableTo(typeof(System.Runtime.CompilerServices.ITuple)))
             {
-                <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="unwrappedType" onChangeAction="@onChangeAction" isDisabled="@isDisabled" />
+                <TupleInput id="@id" Object="Object" SubPath="@SubPath" tupleType="NotNullUnwrappedType" onChangeAction="@onChangeAction" isDisabled="@isDisabled" />
             }
-            else if (unwrappedType.IsEnum)
+            else if (NotNullUnwrappedType.IsEnum)
             {
-                if (unwrappedType.IsDefined(typeof(FlagsAttribute), false))
+                if (NotNullUnwrappedType.IsDefined(typeof(FlagsAttribute), false))
                 {
-                    <FlagsInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
+                    <FlagsInput id="@id" Object="Object" SubPath="@SubPath" type="@NotNullUnwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
                 }
                 else
                 {
-                    <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@unwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
+                    <EnumInput id="@id" Object="Object" SubPath="@SubPath" type="@NotNullUnwrappedType" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
                 }
             }
             // The underlying components only support 1 dimensional arrays
-            else if ((unwrappedType.IsArray && unwrappedType.GetConstructors()[0].GetParameters().Length == 1) || (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IList))))
+            else if ((NotNullUnwrappedType.IsArray && NotNullUnwrappedType.GetConstructors()[0].GetParameters().Length == 1) || (NotNullUnwrappedType.IsGenericType && NotNullUnwrappedType.IsAssignableTo(typeof(IList))))
             {
-                var listType = unwrappedType.GetElementType() is Type eleType ? eleType : unwrappedType.GetGenericArguments()[0];
+                var listType = NotNullUnwrappedType.GetElementType() is Type eleType ? eleType : NotNullUnwrappedType.GetGenericArguments()[0];
                 if (listType.Equals(typeof(byte)))
                 {
                     <ByteArrayInput id="@id" Object="Object" SubPath="@SubPath" placeholder="Base64Encoded Bytes" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
                 }
                 else
                 {
-                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@unwrappedType" buttonText="@listType.GetFriendlyName()" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
+                    <ListObjectInput id="@id" Object="Object" SubPath="@SubPath" listType="@NotNullUnwrappedType" buttonText="@listType.GetFriendlyName()" isDisabled="@isDisabled" onChangeAction="@onChangeAction" />
                 }
             }
-            else if (unwrappedType.IsGenericType && unwrappedType.IsAssignableTo(typeof(IDictionary)))
+            else if (NotNullUnwrappedType.IsGenericType && NotNullUnwrappedType.IsAssignableTo(typeof(IDictionary)))
             {
-                var dkt = unwrappedType.GetGenericArguments()[0];
-                var dvt = unwrappedType.GetGenericArguments()[1];
+                var dkt = NotNullUnwrappedType.GetGenericArguments()[0];
+                var dvt = NotNullUnwrappedType.GetGenericArguments()[1];
                 var buttonText = $"{dkt.GetFriendlyName()} and {dvt.GetFriendlyName()} pair.";
-                <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryType="@unwrappedType" buttonText="@buttonText" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
+                <DictionaryObjectObject id="@id" Object="Object" SubPath="@SubPath" dictionaryType="@NotNullUnwrappedType" buttonText="@buttonText" isDisabled="@isDisabled" onChangeAction="@onChangeAction"/>
             }
             else
             {
@@ -120,6 +120,7 @@
         }
     }
 }
+
 
 @code {
     [Parameter]
@@ -131,6 +132,8 @@
     [Parameter]
     public string id { get; set; } = string.Empty;
 
+    Type? _type;
+
     [Parameter]
     public Type? type { get; set; }
 
@@ -140,7 +143,20 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
 
-    public Type? unwrappedType { get; set; }
+    public Type? unwrappedType
+    {
+        get
+        {
+            if (Helpers.IsNullable(type))
+            {
+                return type is not null ? Nullable.GetUnderlyingType(type) : null;
+            }
+            else
+            {
+                return type;
+            }
+        }
+    }
 
     object? oldValue = null;
 
@@ -162,19 +178,6 @@
             // We failed to construct the item.
         }
         useScaffold = false;
-    }
-
-    protected override void OnInitialized()
-    {
-        if (Helpers.IsNullable(type))
-        {
-            unwrappedType = type is not null ? Nullable.GetUnderlyingType(type) : null;
-        }
-        else
-        {
-            unwrappedType = type;
-        }
-        base.OnInitialized();
     }
 
     public bool IsNull

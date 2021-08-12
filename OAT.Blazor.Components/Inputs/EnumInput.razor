@@ -26,18 +26,22 @@
     [Parameter]
     public Action onChangeAction { get; set; } = () => { };
 
-    List<Enum> values = new List<Enum>();
-
-    protected override void OnInitialized()
+    List<Enum> values
     {
-        if (type is not null)
+        get
         {
-            foreach (var value in Enum.GetValues(type))
+            var vals = new List<Enum>();
+            if (type is null)
             {
-                values.Add((Enum)value);
+                return vals;
             }
+
+            foreach(var value in Enum.GetValues(type))
+            {
+                vals.Add((Enum)value);
+            }
+            return vals;
         }
-        base.OnInitialized();
     }
 
     public int SubProperty

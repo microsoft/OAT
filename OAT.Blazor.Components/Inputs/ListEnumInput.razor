@@ -55,18 +55,22 @@
 
     string CurrentInput { get; set; } = string.Empty;
 
-    List<Enum> values = new List<Enum>();
-
-    protected override void OnInitialized()
+    List<Enum> values
     {
-        if (enumType is not null)
+        get
         {
-            foreach (var value in Enum.GetValues(enumType))
+            var vals = new List<Enum>();
+            if (enumType is null)
             {
-                values.Add((Enum)value);
+                return vals;
             }
+
+            foreach(var value in Enum.GetValues(enumType))
+            {
+                vals.Add((Enum)value);
+            }
+            return vals;
         }
-        base.OnInitialized();
     }
 
     void AddData(EventArgs eventArgs)
