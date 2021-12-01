@@ -233,7 +233,7 @@ namespace Microsoft.CST.OAT.Utils
         /// <returns>true if only basic types and types derived from basic types can be used to construct.</returns>
         public static bool ConstructedOfLoadedTypes(ConstructorInfo constructorInfo)
         {
-            var parameters = constructorInfo.GetParameters();
+            var parameters = constructorInfo?.GetParameters() ?? Array.Empty<ParameterInfo>();
             if (parameters.Length > 0)
             {
                 var loadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Select(x => Nullable.GetUnderlyingType(x) is null ? x : Nullable.GetUnderlyingType(x));
@@ -500,10 +500,13 @@ namespace Microsoft.CST.OAT.Utils
                 types.AddRange(e.Types.Where(x => x is Type)!);
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    Console.WriteLine($"Failed to load Type: {e.Message}");
+                    Console.WriteLine($"Failed to load Type: {ex.Message}");
                 }
             }
-            catch (Exception) { }
+            catch (Exception e) 
+            {
+                Console.WriteLine($"Failed to get the types in the provided namespace '{nameSpace}'. ({e.GetType()}:{e.Message})");
+            }
             return types.Where(t => string.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();
         }
 

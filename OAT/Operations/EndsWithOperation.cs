@@ -33,8 +33,8 @@ namespace Microsoft.CST.OAT.Operations
         }
         internal OperationResult EndsWithOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
-            (var stateOneList, var stateOneDict) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
-            (var stateTwoList, var stateTwoDict) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateOneList, _) = Analyzer?.ObjectToValues(state1) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
+            (var stateTwoList, _) = Analyzer?.ObjectToValues(state2) ?? (new List<string>(), new List<KeyValuePair<string, string>>());
             if (clause.Data is List<string> EndsWithData)
             {
                 var results = new List<string>();

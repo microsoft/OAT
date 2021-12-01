@@ -106,7 +106,6 @@ namespace Microsoft.CST.OAT.Operations
                 }
                 try
                 {
-                    var res = lambdas[scriptData]?.RunAsync(new OperationArguments(clause, state1, state2, captures));
                     return lambdas[scriptData]?.RunAsync(new OperationArguments(clause, state1, state2, captures)).Result.ReturnValue ?? new OperationResult(false, null);
                 }
                 catch (Exception e)
