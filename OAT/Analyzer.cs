@@ -85,7 +85,7 @@ namespace Microsoft.CST.OAT
         public AnalyzerOptions Options { get; } = new AnalyzerOptions();
 
         /// <summary>
-        ///     Try to shortcut a boolean operation
+        ///     Check if a boolean operation can be shortcut and provide the shorcut if so.
         /// </summary>
         /// <param name="current"> The current boolean state </param>
         /// <param name="operation"> The Operation </param>
@@ -267,12 +267,12 @@ namespace Microsoft.CST.OAT
                 }
             }
 
-            var foundLabels = new List<string>();
-
             if (rule.Expression is string expression)
             {
-                // Are parenthesis balanced Are spaces correct Are all variables defined by clauses? Are
-                // variables and operators alternating?
+                // Are parenthesis balanced?
+                // Are spaces correct?
+                // Are all variables defined by clauses?
+                // Are variables and operators alternating?
                 var splits = expression.Split(' ');
                 var foundStarts = 0;
                 var foundEnds = 0;
@@ -344,7 +344,6 @@ namespace Microsoft.CST.OAT
                         }
                         else
                         {
-                            foundLabels.Add(variable);
                             if (string.IsNullOrWhiteSpace(variable) || (!rule.Clauses.Any(x => x.Label == variable) && !(int.TryParse(variable, out var result) && result < rule.Clauses.Count)))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseUndefinedLabel"), expression, rule.Name, splits[i].Replace("(", "").Replace(")", "")), rule);
@@ -761,22 +760,6 @@ namespace Microsoft.CST.OAT
                     splits[i] = splits[i][1..];
                     splits[matchingParen] = splits[matchingParen][0..^1];
 
-                    bool EvaluateLambda()
-                    {
-                        // Recursively evaluate the contents of the parentheses
-                        var capturesUnion = captures is null ? captureOut : captureOut.Union(captures);
-                        var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
-
-                        if (evaluation.Success)
-                        {
-                            captureOut.AddRange(evaluation.Capture ?? new List<ClauseCapture>());
-                        }
-
-                        var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
-
-                        return Operate(Operator, current, next);
-                    }
-
                     // One of the labels ahead has a capture, so we can't shortcut
                     if (Clauses.Any(x => x.Capture && splits[i..(matchingParen + 1)].Contains(x.Label)))
                     {
@@ -794,6 +777,22 @@ namespace Microsoft.CST.OAT
                     updated_i = matchingParen + 1;
                     invertNextStatement = false;
                     operatorExpected = true;
+
+                    bool EvaluateLambda()
+                    {
+                        // Recursively evaluate the contents of the parentheses
+                        var capturesUnion = captures is null ? captureOut : captureOut.Union(captures);
+                        var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
+
+                        if (evaluation.Success)
+                        {
+                            captureOut.AddRange(evaluation.Capture ?? new List<ClauseCapture>());
+                        }
+
+                        var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
+
+                        return Operate(Operator, current, next);
+                    }
                 }
                 else
                 {
@@ -820,8 +819,7 @@ namespace Microsoft.CST.OAT
                             res = new Clause[] { Clauses[result] };
                         }
 
-                        var clause = res.First();
-
+                        // To handle the first element the defaults here are `false`, `OR`, which cannot be shortcut.
                         var shortcut = TryShortcut(current, Operator);
 
                         if (shortcut.CanShortcut && !Clauses.Any(x => x.Capture))

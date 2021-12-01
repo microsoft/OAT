@@ -127,11 +127,6 @@
             }
             catch (Exception e)
             {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
                 Console.WriteLine(e.Message);
             }
             RefreshPage();
@@ -154,11 +149,6 @@
             }
             catch (Exception e)
             {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
                 Console.WriteLine(e.Message);
             }
             ValidateRules();
@@ -215,9 +205,9 @@
                 catch (ReflectionTypeLoadException e)
                 {
                     types.AddRange(e.Types.Where(x => x is Type)!);
-                    foreach (var ex in e.LoaderExceptions)
+                    foreach (Exception? ex in e.LoaderExceptions)
                     {
-                        Console.WriteLine(e.Message);
+                        Console.WriteLine(ex?.Message);
                     }
                 }
             }
@@ -233,9 +223,9 @@
             catch (ReflectionTypeLoadException e)
             {
                 types.AddRange(e.Types.Where(x => x is Type)!);
-                foreach (var ex in e.LoaderExceptions)
+                foreach (Exception? ex in e.LoaderExceptions)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(ex?.Message);
                 }
             }
             return types.Select(x => x.Namespace).Where(x => x is string).Distinct()!;

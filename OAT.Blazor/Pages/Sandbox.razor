@@ -245,7 +245,6 @@ else
                             }
                             else
                             {
-                                failed = true;
                                 SandBoxErrors.Add($"Type {objectType} isn't loaded and won't be loaded.");
                             }
                         }
@@ -294,11 +293,6 @@ else
             }
             catch (Exception e)
             {
-                var message = e.Message;
-                var stackTrace = e.StackTrace;
-                var type = e.GetType();
-                var name = type.Name;
-                type = e.GetType();
                 Console.WriteLine(e.Message);
             }
             RefreshPage();
@@ -309,8 +303,6 @@ else
     Analyzer analyzer = new Analyzer(new AnalyzerOptions(true));
 
     List<string> SandBoxErrors = new List<string>();
-
-    Dictionary<string, object> values = new Dictionary<string, object>();
 
     List<ConstructorInfo> constructors
     {
@@ -379,7 +371,6 @@ else
         SetLoadAssembly();
         SetLoadSandbox();
         analyzer.SetOperation(new Microsoft.CST.OAT.VehicleDemo.OverweightOperation(analyzer));
-        var results = analyzer.Analyze(AppState.Rules);
         UpdateTypes();
         await base.OnInitializedAsync();
     }
@@ -396,8 +387,6 @@ else
             AppState.TestObjects.RemoveAt(AppState.TestObjects.Count - 1);
         }
     }
-
-    Dictionary<string,object> Parameters = new Dictionary<string, object>();
 
     void AddObject()
     {
