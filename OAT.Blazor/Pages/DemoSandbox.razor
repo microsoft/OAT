@@ -41,14 +41,14 @@
         results.Clear();
         for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
         {
-            results[i] = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]);
+            results.Add(analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]));
         }
         this.StateHasChanged();
     }
 
     async Task RunRules()
     {
-        results.Clear();
+        results = Enumerable.Repeat(Enumerable.Empty<Rule>(), AppState.DemoTestObjects.Count).ToList();
         for (int i = 0; i < AppState.DemoTestObjects.Count; i++)
         {
             await Task.Run(() => results[i] = analyzer.Analyze(AppState.DemoRules, AppState.DemoTestObjects[i]));
