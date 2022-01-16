@@ -15,13 +15,13 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.x'
+        dotnet-version: '6.0.x'
     - name: Build
       run: dotnet publish OAT.Blazor -c Release
     - name: Mkdir toPublish
       run: mkdir toPublish
     - name: Move Blazor Output into Place
-      run: mv OAT.Blazor/bin/Release/net5.0/publish/wwwroot toPublish/Blazor
+      run: mv OAT.Blazor/bin/Release/net6.0/publish/wwwroot toPublish/Blazor
     - name: Update gitattributes
       run: mv toPublish/Blazor/gitattributes toPublish/Blazor/.gitattributes
 
