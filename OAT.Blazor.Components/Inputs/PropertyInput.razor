@@ -1,5 +1,6 @@
 ﻿@inherits BaseInput;
 @using System.Collections
+@using Microsoft.CST.OAT.Extensions
 
 @if (type is Type NotNullType && unwrappedType is Type NotNullUnwrappedType)
 {
@@ -10,7 +11,7 @@
     }
     else
     {
-        @if (Helpers.IsNullable(NotNullType) || IsNull)
+        @if (ShouldShowSetToNull())
         {
             <div class="form-check ml-2">
                 <input class="form-check-input" type="checkbox" id="@id" @bind="IsNull" disabled="@isDisabled" />
@@ -176,6 +177,32 @@
             // We failed to construct the item.
         }
         useScaffold = false;
+    }
+
+    bool ShouldShowSetToNull()
+    {
+        // If it is null we allow it to be unset
+        if (IsNull)
+        {
+            return true;
+        }
+        // If it is not currently null we need to use reflection to check the parent object of the property this is targeting
+        // i.e. the next to last item in the path
+        if (SubPath?.Split('.') is string[] pathPortions && pathPortions.Length > 0)
+        {
+            var nextToLastPath = string.Join('.', pathPortions[..^1]);
+            var parentObject = string.IsNullOrEmpty(nextToLastPath) ? Object : Helpers.GetValueByPropertyOrFieldName(Object, nextToLastPath);
+            var parentObjectType = parentObject?.GetType();
+            if (parentObjectType?.GetProperty(pathPortions.Last()) is System.Reflection.PropertyInfo propInfo)
+            {
+                return propInfo.IsNullable();
+            }
+            else if (parentObjectType?.GetField(pathPortions.Last()) is System.Reflection.FieldInfo fieldInfo)
+            {
+                return fieldInfo.IsNullable();
+            }
+        }
+        return false;
     }
 
     public bool IsNull
