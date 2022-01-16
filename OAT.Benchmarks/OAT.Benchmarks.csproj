@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,9 +13,4 @@
     <ProjectReference Include="..\OAT.Tests\OAT.Tests.csproj" />
     <ProjectReference Include="..\OAT\OAT.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Nerdbank.GitVersioning" Version="3.4.231" />
-  </ItemGroup>
-
 </Project>

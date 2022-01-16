@@ -13,7 +13,7 @@ namespace Microsoft.CST.OAT.VehicleDemo
         {
             // This gets the maximum severity rule that is applied and gets the cost of that rule, if no rules
             // 0 cost
-            return ((VehicleRule)analyzer.Analyze(rules, vehicle).MaxBy(x => x.Severity).FirstOrDefault())?.Cost ?? 0;
+            return ((VehicleRule)MoreLinq.Extensions.MaxByExtension.MaxBy(analyzer.Analyze(rules, vehicle),x => x.Severity).FirstOrDefault())?.Cost ?? 0;
         }
     }
 

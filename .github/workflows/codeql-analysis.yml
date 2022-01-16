@@ -24,7 +24,7 @@ jobs:
 
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.x'
+        dotnet-version: '6.0.x'
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
@@ -58,7 +58,7 @@ jobs:
     - name: Build OAT Tests
       run: |
           dotnet restore
-          dotnet build OAT.Tests.csproj -f net5.0
+          dotnet build OAT.Tests.csproj -f net6.0
       working-directory: ./OAT.Tests
 
     - name: Perform CodeQL Analysis
