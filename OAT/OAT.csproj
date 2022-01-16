@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
-	  <LangVersion>8.0</LangVersion>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+	  <LangVersion>10.0</LangVersion>
 	  <Nullable>Enable</Nullable>
 	  <RootNamespace>Microsoft.CST.OAT</RootNamespace>
 	  <Version>0.0.0-placeholder</Version>
@@ -27,10 +27,10 @@
     <DocumentationFile>bin\Debug\netstandard2.1\OAT.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CompareNETObjects" Version="4.73.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.11.0" />
+    <PackageReference Include="CompareNETObjects" Version="4.74.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.0.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
@@ -53,9 +53,4 @@
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\icon-128.png" Pack="true" PackagePath="" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Nerdbank.GitVersioning" Version="3.4.231" />
-  </ItemGroup>
-
 </Project>
