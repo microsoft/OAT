@@ -1,5 +1,5 @@
 # Object Analysis Toolkit
-![CodeQL](https://github.com/microsoft/OAT/workflows/CodeQL/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Microsoft.CST.OAT?link=https://www.nuget.org/packages/Microsoft.CST.OAT/&link=https://www.nuget.org/packages/Microsoft.CST.OAT/) ![Nuget](https://img.shields.io/nuget/dt/Microsoft.CST.OAT?link=https://www.nuget.org/packages/Microsoft.CST.OAT/&link=https://www.nuget.org/packages/Microsoft.CST.OAT/)
+[![CodeQL](https://github.com/microsoft/OAT/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/microsoft/OAT/actions/workflows/codeql-analysis.yml) [![Nuget](https://img.shields.io/nuget/dt/Microsoft.CST.AttackSurfaceAnalyzer.CLI)](https://www.nuget.org/packages/Microsoft.CST.OAT) ![Nuget](https://img.shields.io/nuget/v/Microsoft.CST.OAT)
 
 Object Analysis Toolkit (OAT) is a rules driven metaprogramming engine for arbitrary C# objects.
 
