@@ -27,7 +27,7 @@
     <DocumentationFile>bin\Debug\netstandard2.1\OAT.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CompareNETObjects" Version="4.74.0" />
+    <PackageReference Include="CompareNETObjects" Version="4.75.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.0.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
