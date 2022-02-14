@@ -12,7 +12,7 @@
 		<RepositoryType>GitHub</RepositoryType>
 		<RepositoryUrl>https://github.com/Microsoft/OAT</RepositoryUrl>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Description>Adding this package enables the ScriptOperation to run scripts embedded in rules.</Description>
+		<Description>Object Analysis Toolkit is a Data-as-Code analyzer for C# objects. This package adds the ScriptOperation. When used with an Analyzer with RunScripts enabled this will allow C# Scripts as the logic embedded in rules.</Description>
 		<PackageId>Microsoft.CST.OAT.Scripting</PackageId>
 		<PackageTags>Object Analysis Toolkit</PackageTags>
 		<PackageVersion>0.0.0-placeholder</PackageVersion>
