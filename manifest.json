@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Analyzer.ObjectToValuesDelegate.html",
-          "hash": "xt1qZ6Ipf10W7imPVgxlrBPs62VBHDo/0GF/yegcWsg="
+          "hash": "HwNf/GIpv7r861E7L5N2udVX/UYb/GMvM/12rVj1FXs="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Analyzer.PropertyExtractionDelegate.html",
-          "hash": "bto5ZCOPAoPCxbAJ9Hn2TzkOYxCq5nUm5RHkb7r8V7w="
+          "hash": "eq9syHfb2EA4bFSsjJqKfNktb2QSPQpuUX39yKVEv7w="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Analyzer.html",
-          "hash": "sUXDOWi/Ni5YjXqoD+iJs8bX8wwEbiLjFqCWmFAlymY="
+          "hash": "2vbK0WhauhQyWSf1Ed7rL/z2MiyWm0xvAkJVa/zI5/A="
         }
       },
       "is_incremental": false,
@@ -285,7 +285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Operations.OatOperation.html",
-          "hash": "cGNzy/oT80TFF+gmpEU5IxB0iec6+sDJQdLsiX4bgmg="
+          "hash": "NA5qacbjxgNGetai2i4ljOyqz/FZQCLvsmEbltNx4p4="
         }
       },
       "is_incremental": false,
@@ -310,18 +310,6 @@
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Operations.RegexOperation.html",
           "hash": "Iyl0yU1K9j1Bp4Y+kb1ZcjV6z0gZc3rml80PrgRhWC8="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Microsoft.CST.OAT.Operations.ScriptOperation.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Microsoft.CST.OAT.Operations.ScriptOperation.html",
-          "hash": "kcZDif59jlPiJmAhOum1BRiAPjAguKUmNvJNaIrYIMY="
         }
       },
       "is_incremental": false,
@@ -381,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Operations.html",
-          "hash": "S6w8Jiz5iKu7iWiFTBh78+wz5l2D08OZTPArJXAo+wg="
+          "hash": "wupmIgV4MTt+6oboR1qleFn5y/0dzU/Yx3ZAIgaP4dg="
         }
       },
       "is_incremental": false,
@@ -525,7 +513,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "oB9R8o/F6NhFtJY23Gf4dMpZkHG26mxzPACKKJqC244="
+          "hash": "/Kprfc2hRNi3Zv6XiRTEaLpcbr1jS5goPkNY5/gbqH0="
         }
       },
       "is_incremental": false,
@@ -576,7 +564,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 42,
+          "total_file_count": 41,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

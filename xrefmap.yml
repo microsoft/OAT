@@ -1207,25 +1207,6 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Operations.RegexOperation.StringToRegex
   nameWithType: RegexOperation.StringToRegex
-- uid: Microsoft.CST.OAT.Operations.ScriptOperation
-  name: ScriptOperation
-  href: api/Microsoft.CST.OAT.Operations.ScriptOperation.html
-  commentId: T:Microsoft.CST.OAT.Operations.ScriptOperation
-  fullName: Microsoft.CST.OAT.Operations.ScriptOperation
-  nameWithType: ScriptOperation
-- uid: Microsoft.CST.OAT.Operations.ScriptOperation.#ctor(Microsoft.CST.OAT.Analyzer)
-  name: ScriptOperation(Analyzer)
-  href: api/Microsoft.CST.OAT.Operations.ScriptOperation.html#Microsoft_CST_OAT_Operations_ScriptOperation__ctor_Microsoft_CST_OAT_Analyzer_
-  commentId: M:Microsoft.CST.OAT.Operations.ScriptOperation.#ctor(Microsoft.CST.OAT.Analyzer)
-  fullName: Microsoft.CST.OAT.Operations.ScriptOperation.ScriptOperation(Microsoft.CST.OAT.Analyzer)
-  nameWithType: ScriptOperation.ScriptOperation(Analyzer)
-- uid: Microsoft.CST.OAT.Operations.ScriptOperation.#ctor*
-  name: ScriptOperation
-  href: api/Microsoft.CST.OAT.Operations.ScriptOperation.html#Microsoft_CST_OAT_Operations_ScriptOperation__ctor_
-  commentId: Overload:Microsoft.CST.OAT.Operations.ScriptOperation.#ctor
-  isSpec: "True"
-  fullName: Microsoft.CST.OAT.Operations.ScriptOperation.ScriptOperation
-  nameWithType: ScriptOperation.ScriptOperation
 - uid: Microsoft.CST.OAT.Operations.ScriptsDisabledOperation
   name: ScriptsDisabledOperation
   href: api/Microsoft.CST.OAT.Operations.ScriptsDisabledOperation.html
