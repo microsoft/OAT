@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Microsoft.CST.OAT
@@ -40,7 +41,29 @@ namespace Microsoft.CST.OAT
             SetOperation(new NoOperation(this));
             if (Options.RunScripts)
             {
-                SetOperation(new ScriptOperation(this));
+                try
+                {
+                    Type scriptOpType = Assembly.Load("OAT.Scripting").GetTypes().Where(t => t.FullName == "Microsoft.CST.OAT.Operations.ScriptOperation").FirstOrDefault();
+                    if (scriptOpType != null)
+                    {
+                        if (scriptOpType.GetConstructor(new Type[] { typeof(Analyzer) }).Invoke(new Analyzer[] { this }) is OatOperation reflectedScriptOperation)
+                        {
+                            SetOperation(reflectedScriptOperation);
+                        }
+                        else
+                        {
+                            Log.Error(Strings.Get("Err_ErrorLoadingScriptingAssembly"));
+                        }
+                    }
+                    else
+                    {
+                        Log.Error(Strings.Get("Err_ErrorLoadingScriptingAssembly"));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(Strings.Get("Err_ExceptionLoadingScriptingAssembly_{0}"),ex.Message);
+                }
             }
             else
             {

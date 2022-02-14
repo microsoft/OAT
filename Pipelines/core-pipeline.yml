@@ -12,6 +12,7 @@ trigger:
     - OAT
     - OAT.Blazor
     - OAT.Blazor.Components
+    - OAT.Scripting
     
 pr:
   branches:
@@ -22,9 +23,10 @@ pr:
     - Pipelines
     - OAT
     - OAT.Blazor
+    - OAT.Blazor.Components
+    - OAT.Scripting
     - OAT.Tests
     - OAT.sln
-    - OAT.Blazor.Components
 
 stages:
 - stage: Test
@@ -48,6 +50,11 @@ stages:
       jobName: 'pack_lib'
       projectPath: 'OAT/OAT.csproj'
       projectName: 'OAT'
+  - template: templates/nuget-build-job.yml
+    parameters:
+      jobName: 'pack_scripting'
+      projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
+      projectName: 'OAT_Scripting'
   - template: templates/nuget-build-job.yml
     parameters:
       jobName: 'pack_blazor'

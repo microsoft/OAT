@@ -6,6 +6,8 @@ Object Analysis Toolkit (OAT) is a rules driven metaprogramming engine for arbit
 ## Getting OAT
 OAT is available as a library on NuGet as [Microsoft.CST.OAT](https://www.nuget.org/packages/Microsoft.CST.OAT/).
 
+To enable using C# scripts in rules you also need [Microsoft.CST.OAT.Scripting](https://www.nuget.org/packages/Microsoft.CST.OAT.Scripting/).
+
 [OAT Blazor](https://microsoft.github.io/OAT/Blazor/) is an experimental WebAssembly app that runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly.
 
 ## Documentation
