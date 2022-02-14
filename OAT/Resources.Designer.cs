@@ -367,7 +367,7 @@ namespace Microsoft.CST.OAT {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exception hit while attempting to load OAT.Scripting assembly: {0}..
+        ///   Looks up a localized string similar to Exception hit while attempting to load OAT.Scripting assembly. The OAT.Scripting NuGet package is required to run scripts starting with 1.2. Exception message: {0}..
         /// </summary>
         internal static string Err_ExceptionLoadingScriptingAssembly__0_ {
             get {

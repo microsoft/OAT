@@ -229,6 +229,6 @@
     <value>Failed to load the OAT.Scripting assembly to enable scripting.</value>
   </data>
   <data name="Err_ExceptionLoadingScriptingAssembly_{0}" xml:space="preserve">
-    <value>Exception hit while attempting to load OAT.Scripting assembly: {0}.</value>
+    <value>Exception hit while attempting to load OAT.Scripting assembly. The OAT.Scripting NuGet package is required to run scripts starting with 1.2. Exception message: {0}.</value>
   </data>
 </root>
