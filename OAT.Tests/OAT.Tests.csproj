@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OAT.Scripting\OAT.Scripting.csproj" />
     <ProjectReference Include="..\OAT\OAT.csproj" />
     <ProjectReference Include="..\VehicleDemo\VehicleDemo.csproj" />
   </ItemGroup>

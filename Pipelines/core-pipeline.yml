@@ -50,6 +50,11 @@ stages:
       projectName: 'OAT'
   - template: templates/nuget-build-job.yml
     parameters:
+      jobName: 'pack_scripting'
+      projectPath: 'OAT/OAT.Scripting.csproj'
+      projectName: 'OAT_Scripting'
+  - template: templates/nuget-build-job.yml
+    parameters:
       jobName: 'pack_blazor'
       projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
       projectName: 'OAT_Blazor_Components'
