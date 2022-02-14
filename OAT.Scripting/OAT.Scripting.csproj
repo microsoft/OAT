@@ -30,5 +30,8 @@
   <ItemGroup>
     <ProjectReference Include="..\OAT\OAT.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\icon-128.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>
