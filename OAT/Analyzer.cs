@@ -837,7 +837,7 @@ namespace Microsoft.CST.OAT
 
                         // If we couldn't find a label match fall back to trying to parse this as an index
                         // into clauses
-                        if (res.Any() && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
+                        if (!res.Any() && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
                         {
                             res = new Clause[] { Clauses[result] };
                         }
