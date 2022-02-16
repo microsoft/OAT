@@ -43,10 +43,10 @@ namespace Microsoft.CST.OAT
             {
                 try
                 {
-                    Type scriptOpType = Assembly.Load("OAT.Scripting").GetTypes().Where(t => t.FullName == "Microsoft.CST.OAT.Operations.ScriptOperation").FirstOrDefault();
-                    if (scriptOpType != null)
+                    Type? scriptOpType = Assembly.Load("OAT.Scripting").GetTypes().Where(t => t.FullName == "Microsoft.CST.OAT.Operations.ScriptOperation").FirstOrDefault();
+                    if (scriptOpType is not null)
                     {
-                        if (scriptOpType.GetConstructor(new Type[] { typeof(Analyzer) }).Invoke(new Analyzer[] { this }) is OatOperation reflectedScriptOperation)
+                        if (scriptOpType.GetConstructor(new Type[] { typeof(Analyzer) })?.Invoke(new Analyzer[] { this }) is OatOperation reflectedScriptOperation)
                         {
                             SetOperation(reflectedScriptOperation);
                         }
@@ -221,8 +221,8 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        var result = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
-                        if (result.Success)
+                        var (Success, Capture) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        if (Success)
                         {
                             return true;
                         }
@@ -242,7 +242,7 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public void ClearDelegates()
         {
-            delegates.Clear();
+            Delegates.Clear();
         }
 
         /// <summary>
@@ -265,14 +265,14 @@ namespace Microsoft.CST.OAT
             {
                 if (clause.Label is string label)
                 {
-                    if (label.Contains(" ") || label.Contains("(") || label.Contains(")"))
+                    if (label.Contains(' ') || label.Contains('(') || label.Contains(')'))
                     {
                         yield return new Violation(string.Format(Strings.Get("Err_ClauseInvalidLabel"), rule.Name, label), rule, clause);
                     }
                 }
-                if (delegates.ContainsKey(clause.Key))
+                if (Delegates.ContainsKey(clause.Key))
                 {
-                    foreach (var violation in delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
+                    foreach (var violation in Delegates[clause.Key].ValidationDelegate.Invoke(rule, clause))
                     {
                         yield return violation;
                     }
@@ -360,7 +360,7 @@ namespace Microsoft.CST.OAT
 
                         if (variable == "NOT")
                         {
-                            if (splits[i].Contains(")"))
+                            if (splits[i].Contains(')'))
                             {
                                 yield return new Violation(string.Format(Strings.Get("Err_ClauseCloseParenthesesInNot"), expression, rule.Name, splits[i]), rule);
                             }
@@ -692,7 +692,7 @@ namespace Microsoft.CST.OAT
                         if (!found)
                         {
                             var val = obj?.ToString();
-                            if (val is string)
+                            if (val is not null)
                             {
                                 valsToCheck.Add(val);
                             }
@@ -715,11 +715,11 @@ namespace Microsoft.CST.OAT
         /// <returns> </returns>
         public bool SetOperation(OatOperation oatOperation)
         {
-            delegates[oatOperation.Key] = oatOperation;
+            Delegates[oatOperation.Key] = oatOperation;
             return true;
         }
 
-        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
+        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
@@ -805,14 +805,14 @@ namespace Microsoft.CST.OAT
                     {
                         // Recursively evaluate the contents of the parentheses
                         var capturesUnion = captures is null ? captureOut : captureOut.Union(captures);
-                        var evaluation = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
+                        var (Success, Capture) = Evaluate(splits[i..(matchingParen + 1)], Clauses, state1, state2, capturesUnion);
 
-                        if (evaluation.Success)
+                        if (Success)
                         {
-                            captureOut.AddRange(evaluation.Capture ?? new List<ClauseCapture>());
+                            captureOut.AddRange(Capture ?? new List<ClauseCapture>());
                         }
 
-                        var next = invertNextStatement ? !evaluation.Success : evaluation.Success;
+                        var next = invertNextStatement ? !Success : Success;
 
                         return Operate(Operator, current, next);
                     }
@@ -837,17 +837,17 @@ namespace Microsoft.CST.OAT
 
                         // If we couldn't find a label match fall back to trying to parse this as an index
                         // into clauses
-                        if (res.Count() == 0 && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
+                        if (!res.Any() && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
                         {
                             res = new Clause[] { Clauses[result] };
                         }
 
                         // To handle the first element the defaults here are `false`, `OR`, which cannot be shortcut.
-                        var shortcut = TryShortcut(current, Operator);
+                        var (CanShortcut, Value) = TryShortcut(current, Operator);
 
-                        if (shortcut.CanShortcut && !Clauses.Any(x => x.Capture))
+                        if (CanShortcut && !Clauses.Any(x => x.Capture))
                         {
-                            current = shortcut.Value;
+                            current = Value;
                         }
                         else
                         {
@@ -875,19 +875,19 @@ namespace Microsoft.CST.OAT
 
         private OperationResult GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null, IEnumerable<ClauseCapture>? captures = null)
         {
-            if (clause.Field is string)
+            if (clause.Field is not null)
             {
                 state2 = GetValueByPropertyString(state2, clause.Field);
                 state1 = GetValueByPropertyString(state1, clause.Field);
             }
 
-            if (delegates.ContainsKey(clause.Key))
+            if (Delegates.ContainsKey(clause.Key))
             {
-                return delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
+                return Delegates[clause.Key].OperationDelegate.Invoke(clause, state1, state2, captures);
             }
             else
             {
-                return delegates[(Operation.NoOperation, "")].OperationDelegate.Invoke(clause, state1, state2, captures);
+                return Delegates[(Operation.NoOperation, "")].OperationDelegate.Invoke(clause, state1, state2, captures);
             }
         }
     }
