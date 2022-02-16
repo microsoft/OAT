@@ -13,6 +13,7 @@ trigger:
     - OAT.Blazor
     - OAT.Blazor.Components
     - OAT.Scripting
+    - Pipelines
     
 pr:
   branches:
@@ -98,6 +99,7 @@ stages:
         archiveFilePatterns: '$(Build.BinariesDirectory)\Unsigned_Binaries\*.zip'
         destinationFolder: '$(Build.BinariesDirectory)'
         cleanDestinationFolder: false
+        overwriteExistingFiles: true
     - task: AntiMalware@3
       displayName: Anti-Malware Scan
       inputs:
