@@ -13,6 +13,10 @@
       "url": "css\/bootstrap\/bootstrap.min.css.map"
     },
     {
+      "hash": "sha256-jA4J4h\/k76zVxbFKEaWwFKJccmO0voOQ1DbUW+5YNlI=",
+      "url": "css\/open-iconic\/FONT-LICENSE"
+    },
+    {
       "hash": "sha256-BJ\/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=",
       "url": "css\/open-iconic\/font\/css\/open-iconic-bootstrap.min.css"
     },
@@ -37,10 +41,6 @@
       "url": "css\/open-iconic\/font\/fonts\/open-iconic.woff"
     },
     {
-      "hash": "sha256-jA4J4h\/k76zVxbFKEaWwFKJccmO0voOQ1DbUW+5YNlI=",
-      "url": "css\/open-iconic\/FONT-LICENSE"
-    },
-    {
       "hash": "sha256-aF5g\/izareSj02F3MPSoTGNbcMBl9nmZKDe04zjU\/ss=",
       "url": "css\/open-iconic\/ICON-LICENSE"
     },
@@ -61,20 +61,20 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-pzbdxEPkS1Fg+ED3pewYNvLkxFCwz8M9EuAx57uGbvE=",
-      "url": "images\/box-seam.png"
-    },
-    {
       "hash": "sha256-M0eyvu9ZAq8uzL78YO+GTJGaVnuM6Vqc29Xp7G82El8=",
       "url": "images\/box-seam-wh.png"
     },
     {
-      "hash": "sha256-g3B9RU4Gtvki2yAuDJAnbFW\/yYYRCO6EdhtDYQnHW3Q=",
-      "url": "images\/card-checklist.png"
+      "hash": "sha256-pzbdxEPkS1Fg+ED3pewYNvLkxFCwz8M9EuAx57uGbvE=",
+      "url": "images\/box-seam.png"
     },
     {
       "hash": "sha256-HV3PAADuCPKXq0G1Y7QxLNw6u1oZl1X\/rk08ghG7pFc=",
       "url": "images\/card-checklist-wh.png"
+    },
+    {
+      "hash": "sha256-g3B9RU4Gtvki2yAuDJAnbFW\/yYYRCO6EdhtDYQnHW3Q=",
+      "url": "images\/card-checklist.png"
     },
     {
       "hash": "sha256-JJUSG2hXeL0lHiuc7qQSTPmEeeyG59FZZY5H+nkPLA4=",
@@ -93,12 +93,12 @@
       "url": "images\/microsoft-logo.png"
     },
     {
-      "hash": "sha256-QtYoQRGxLnpyiIjHlTeY4Hdhq7ufRXhcrgHqI5oe+X0=",
-      "url": "images\/pencil-square.png"
-    },
-    {
       "hash": "sha256-joNddkNA7J9u2Nh8N0f0yKskUmxTCeA1KejXvJ0QXig=",
       "url": "images\/pencil-square-wh.png"
+    },
+    {
+      "hash": "sha256-QtYoQRGxLnpyiIjHlTeY4Hdhq7ufRXhcrgHqI5oe+X0=",
+      "url": "images\/pencil-square.png"
     },
     {
       "hash": "sha256-2IGFL0sJV+S2BXluSAjpMLiSnorB+x1HuSS3nrP96Qw=",
@@ -129,10 +129,6 @@
       "url": "_framework\/dotnet.wasm"
     },
     {
-      "hash": "sha256-Zuq0dWAsBm6\/2lSOsz7+H9PvFaRn61KIXHMMwXDfvyE=",
-      "url": "_framework\/icudt.dat"
-    },
-    {
       "hash": "sha256-WPyI4hWDPnOw62Nr27FkzGjdbucZnQD+Ph+GOPhAedw=",
       "url": "_framework\/icudt_CJK.dat"
     },
@@ -145,11 +141,15 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-8FE6i6UXh7CezM3N7FafJq9kLxZqA8cibusZzcwk2Es=",
+      "hash": "sha256-Zuq0dWAsBm6\/2lSOsz7+H9PvFaRn61KIXHMMwXDfvyE=",
+      "url": "_framework\/icudt.dat"
+    },
+    {
+      "hash": "sha256-XrFNTLol8h6\/4qF7121FSqO92PJGzxjtmfTlpG1kMic=",
       "url": "_framework\/blazor.boot.json"
     },
     {
-      "hash": "sha256-h7xBQJGs88UdbMLNS01gEenl8zGInl\/dwurD5\/sk590=",
+      "hash": "sha256-Rc4CCrd5jVfXG4tUogQ1vL2eCVVdwLvS5oUceKQWn\/g=",
       "url": "_framework\/KellermanSoftware.Compare-NET-Objects.dll"
     },
     {
@@ -225,15 +225,15 @@
       "url": "_framework\/Newtonsoft.Json.dll"
     },
     {
-      "hash": "sha256-foJIpEGJrmsjrSU2rEOV6+DptI21rMVK+fLgrb2fgDw=",
+      "hash": "sha256-UASvh0\/klU8c9i01gAuITTIZA9BZ017h8e3eFbvJ7v0=",
       "url": "_framework\/OAT.Blazor.Components.dll"
     },
     {
-      "hash": "sha256-ahVCA\/jAKkKOuu5j4PwWkemmgdkqbYm01OcjoDdpEig=",
+      "hash": "sha256-eMvLENIPobVFgjCVo5iUT4TsmkcMAHiuPghpNZvOTp8=",
       "url": "_framework\/OAT.Blazor.dll"
     },
     {
-      "hash": "sha256-E\/xKQ3PirChaU0\/4leNQjH+uJM1j\/+7yBcnZBO53QHE=",
+      "hash": "sha256-bxwB+F8ktmmsTWTKENMLA7bhRvWM7MfqqDPDsge7NiE=",
       "url": "_framework\/OAT.dll"
     },
     {
@@ -401,7 +401,7 @@
       "url": "_framework\/Tewr.Blazor.FileReader.dll"
     },
     {
-      "hash": "sha256-CCJZHFp7tIfboe1fx\/2gppWYoAAm67ypaGn2AbZIeEs=",
+      "hash": "sha256-IUSTnBwvPW7zeFNSZsF5xAid6ZhZ+KO0ma\/BLg2wS2k=",
       "url": "_framework\/VehicleDemo.dll"
     },
     {
@@ -417,5 +417,5 @@
       "url": "_content\/Tewr.Blazor.FileReader\/FileReaderComponent.js.map"
     }
   ],
-  "version": "wQ+mp+kW"
+  "version": "aIIrtYVR"
 };
