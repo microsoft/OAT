@@ -37,14 +37,14 @@ namespace Microsoft.CST.OAT
         {
             get
             {
-                return string.Join(",", Imports);
+                return string.Join(",", Imports.OrderBy(x => x));
             }
         }
         internal string ReferencesString
         {
             get
             {
-                return string.Join(",", References);
+                return string.Join(",", References.OrderBy(x => x));
             }
         }
 
@@ -52,7 +52,7 @@ namespace Microsoft.CST.OAT
         /// Overridden Equality constructor
         /// </summary>
         /// <param name="obj">The object to compare</param>
-        /// <returns>True if obj is a ScriptData and the Code, Imports and References match.  Imports and References are order sensitive.</returns>
+        /// <returns>True if obj is a ScriptData and the Code, Imports and References match.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is ScriptData scriptIn)
@@ -74,9 +74,6 @@ namespace Microsoft.CST.OAT
         /// Get the HashCode for this ScriptData
         /// </summary>
         /// <returns>The HashCode over the Code, Imports and References. Imports and References are order sensitive.</returns>
-        public override int GetHashCode()
-        {
-            return (Code, ImportString, ReferencesString).GetHashCode();
-        }
+        public override int GetHashCode() => (Code, ImportString, ReferencesString).GetHashCode();
     }
 }
