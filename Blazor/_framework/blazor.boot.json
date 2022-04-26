@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "KellermanSoftware.Compare-NET-Objects.dll": "sha256-Rc4CCrd5jVfXG4tUogQ1vL2eCVVdwLvS5oUceKQWn\/g=",
+      "KellermanSoftware.Compare-NET-Objects.dll": "sha256-XraEABLFKq\/LxSGgyuwsGHYUIbMvGd74FSjy6BdpVso=",
       "Microsoft.AspNetCore.Components.dll": "sha256-3x3zAEi9M8qmkNljI\/+a9rh\/7CYgTkcdDrUqRR7j\/gE=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-lLeAAdXYR99eecPiAQOdsoHhleI8Ws+b2Jh\/3KOESAE=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-8UNXrFSqeqv\/0wBgj4Q\/JEZuVeFvoN668TKN7bzTBqc=",
@@ -26,9 +26,9 @@
       "MoreLinq.dll": "sha256-CCcLoUROc5qeK\/1UNVb\/AC6\/au9JUZ6zZVNzyOnIa7I=",
       "netstandard.dll": "sha256-p1Ig4hVqdiWVLa5mpkIzQkBruNP8e\/N1gFcQHkCHIQ8=",
       "Newtonsoft.Json.dll": "sha256-cs8pHUurDt0IqbB8YXPh560au3q3J\/1wRL9jBddRVmE=",
-      "OAT.Blazor.Components.dll": "sha256-Dza7Etw2EV3gZVFdMY1p8kOnCwFY4UJ5k7pdwR0l6sU=",
-      "OAT.Blazor.dll": "sha256-X7CVBCtxl87kWTE6Blz5qN3zsYdXzRQdJe2ZAEX4U7U=",
-      "OAT.dll": "sha256-ubT3+Eh+meY2bZ0Od7y6m7MENVaJnNffjPInUriN6V8=",
+      "OAT.Blazor.Components.dll": "sha256-09tmOoaRGF9l1L+G5XxATl856mlx3UPu3ZFHdYwHW4c=",
+      "OAT.Blazor.dll": "sha256-SLkIAGe+EyP6iTbd45ZBcSWfIgbk7i9EoSaWkGO3qbk=",
+      "OAT.dll": "sha256-XoQlsmRKS\/NoqPq\/jymLMm3zrI7ToQTWJufd9GCm4N8=",
       "Serilog.dll": "sha256-MBng5O035e97DFd1GaZ+esrE\/U+92hqbiHhTOChsTh0=",
       "Serilog.Sinks.Console.dll": "sha256-SsWf3uTdXwg6VgrkaGKTu9lVDslOZE+P9xO67qXlo9I=",
       "System.Collections.Concurrent.dll": "sha256-JQ+z7r+Ll5XDMKE0cBqz7PSruIMqlbdKsC8l5NBMYzg=",
@@ -70,7 +70,7 @@
       "System.Threading.dll": "sha256-rwMSBHAZaMkJQmU5rDkixOSb2BAa+r+D0ov13zo9+w0=",
       "System.Threading.Tasks.Parallel.dll": "sha256-yLxUUfb8qaMInuUD3VbZrgvjyU+fXifVEKBC95L7Vxo=",
       "Tewr.Blazor.FileReader.dll": "sha256-kulaEA9RTnr8XkJopewahghf1+nbWLEp3Krv60wGNvY=",
-      "VehicleDemo.dll": "sha256-VKIHbcG3caVxwyjljipSbHb4Fi6KjMK3N+EUUZabfjk="
+      "VehicleDemo.dll": "sha256-p5LOpIJdJuKo3LQ16HUzQVA7ryjqwZTQuAz79fLcx6M="
     },
     "extensions": null,
     "lazyAssembly": null,
