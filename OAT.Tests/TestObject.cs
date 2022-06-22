@@ -9,6 +9,7 @@ namespace Microsoft.CST.OAT.Tests
         public string? StringField { get; set; }
         public bool BoolField { get; set; }
         public Dictionary<string, string>? StringDictField { get; set; }
+        public List<Enum>? EnumListField { get; set; }
         public List<string>? StringListField { get; set; }
         public TestObject? NestedObject { get; set; }
         public Dictionary<string, List<string>>? StringListDictField { get; set; }

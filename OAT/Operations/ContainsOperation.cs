@@ -131,17 +131,8 @@ namespace Microsoft.CST.OAT.Operations
             {
                 (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                 {
-                    // If we are dealing with an array on the object side
-                    if (typeHolder is List<string>)
-                    {
-                        var res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
-                        if (res.Any())
-                        {
-                            return (true, clause.Capture ? res.ToList() : null);
-                        }
-                    }
                     // If we are dealing with a single string we do a .Contains instead
-                    else if (typeHolder is string)
+                    if (typeHolder is string)
                     {
                         var results = new List<string>();
                         foreach (var datum in stateList)
@@ -153,6 +144,14 @@ namespace Microsoft.CST.OAT.Operations
                             }
                         }
                         return (results.Any(), clause.Capture ? results : null);
+                    }
+                    else
+                    {
+                        var res = stateList.Where(x => (!clause.Invert && clause.Data.Contains(x)) || (clause.Invert && !clause.Data.Contains(x)));
+                        if (res.Any())
+                        {
+                            return (true, clause.Capture ? res.ToList() : null);
+                        }
                     }
                     return (false, new List<string>());
                 }
