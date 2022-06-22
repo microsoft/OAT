@@ -147,28 +147,9 @@ namespace Microsoft.CST.OAT.Operations
             {
                 (bool Applies, List<string>? Matches) ClauseAppliesToList(List<string> stateList)
                 {
-                    // If we are dealing with an array on the object side
-                    if (typeHolder is List<string>)
+                    var results = new List<string>();
+                    if (typeHolder is string)
                     {
-                        var foundStates = new List<string>();
-                        foreach (var entry in stateList)
-                        {
-                            if ((!clause.Invert && ClauseData.Contains(entry)) || (clause.Invert && !ClauseData.Contains(entry)))
-                            {
-                                foundStates.Add(entry);
-                            }
-                        }
-                        if (foundStates.Count == 0)
-                        {
-                            return (false, null);
-                        }
-
-                        return (true, foundStates);
-                    }
-                    // If we are dealing with a single string we do a .Contains instead
-                    else if (typeHolder is string)
-                    {
-                        var results = new List<string>();
                         foreach (var datum in stateList)
                         {
                             if (clause.Data.Any(x => (clause.Invert && !datum.Contains(x)) || (!clause.Invert && datum.Contains(x))))
@@ -178,7 +159,17 @@ namespace Microsoft.CST.OAT.Operations
                         }
                         return (results.Any(), clause.Capture ? results : null);
                     }
-                    return (false, new List<string>());
+                    else
+                    {
+                        foreach (var datum in stateList)
+                        {
+                            if (clause.Data.Any(x => (clause.Invert && !datum.Equals(x)) || (!clause.Invert && datum.Equals(x))))
+                            {
+                                results.Add(datum);
+                            }
+                        }
+                        return (results.Any(), clause.Capture ? results : null);
+                    }
                 }
 
                 var result = ClauseAppliesToList(stateOneList);

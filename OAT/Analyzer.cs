@@ -3,6 +3,7 @@ using Microsoft.CST.OAT.Operations;
 using Microsoft.CST.OAT.Utils;
 using Serilog;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -691,17 +692,35 @@ namespace Microsoft.CST.OAT
                         }
                         if (!found)
                         {
-                            var val = obj?.ToString();
-                            if (val is not null)
+                            if (obj is string strObj)
                             {
-                                valsToCheck.Add(val);
+                                valsToCheck.Add(strObj);
+                            }
+                            else if (obj is IEnumerable enumerableObj && enumerableObj.GetType().IsGenericType)
+                            {
+                                foreach (var innerObj in enumerableObj)
+                                {
+                                    var innerObjString = innerObj?.ToString();
+                                    if (innerObjString is not null)
+                                    {
+                                        valsToCheck.Add(innerObjString);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var val = obj?.ToString();
+                                if (val is not null)
+                                {
+                                    valsToCheck.Add(val);
+                                }
                             }
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    Log.Debug("Failed to Turn Obect into Values");
+                    Log.Debug("Failed to Turn Object into Values");
                 }
             }
 

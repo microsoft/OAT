@@ -10,6 +10,12 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class OperationsTests
     {
+        enum ContainsTestEnum
+        {
+            Magic,
+            Nothing
+        }
+        
         [ClassInitialize]
         public static void ClassSetup(TestContext _)
         {
@@ -99,6 +105,46 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(listAnalyzer.Analyze(ruleList, null, trueListObject).Any());
             Assert.IsFalse(listAnalyzer.Analyze(ruleList, null, falseListObject).Any());
 
+            var trueEnumListObject = new TestObject()
+            {
+                EnumListField = new List<Enum>()
+                {
+                    ContainsTestEnum.Magic
+                }
+            };
+
+            var falseEnumListObject = new TestObject()
+            {
+                EnumListField = new List<Enum>()
+                {
+                    ContainsTestEnum.Nothing
+                }
+            };
+
+            var enumListContains = new Rule("Enum List Contains Any Rule")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.ContainsAny,"EnumListField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    }
+                }
+            };
+
+            var enumListAnalyzer = new Analyzer();
+            ruleList = new List<Rule>() { enumListContains };
+
+            Assert.IsTrue(enumListAnalyzer.Analyze(ruleList, trueEnumListObject).Any());
+            Assert.IsFalse(enumListAnalyzer.Analyze(ruleList, falseEnumListObject).Any());
+
+            Assert.IsTrue(enumListAnalyzer.Analyze(ruleList, null, trueEnumListObject).Any());
+            Assert.IsFalse(enumListAnalyzer.Analyze(ruleList, null, falseEnumListObject).Any());
+            
             var trueStringDictObject = new TestObject()
             {
                 StringDictField = new Dictionary<string, string>()
@@ -348,6 +394,46 @@ namespace Microsoft.CST.OAT.Tests
             Assert.IsTrue(listAnalyzer.Analyze(ruleList, null, trueListObject).Any());
             Assert.IsFalse(listAnalyzer.Analyze(ruleList, null, falseListObject).Any());
 
+            var trueEnumListObject = new TestObject()
+            {
+                EnumListField = new List<Enum>()
+                {
+                    ContainsTestEnum.Magic
+                }
+            };
+
+            var falseEnumListObject = new TestObject()
+            {
+                EnumListField = new List<Enum>()
+                {
+                    ContainsTestEnum.Nothing
+                }
+            };
+
+            var enumListContains = new Rule("Enum List Contains Rule")
+            {
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Contains,"EnumListField")
+                    {
+                        Data = new List<string>()
+                        {
+                            "Magic"
+                        }
+                    }
+                }
+            };
+
+            var enumListAnalyzer = new Analyzer();
+            ruleList = new List<Rule>() { enumListContains };
+
+            Assert.IsTrue(enumListAnalyzer.Analyze(ruleList, trueEnumListObject).Any());
+            Assert.IsFalse(enumListAnalyzer.Analyze(ruleList, falseEnumListObject).Any());
+
+            Assert.IsTrue(enumListAnalyzer.Analyze(ruleList, null, trueEnumListObject).Any());
+            Assert.IsFalse(enumListAnalyzer.Analyze(ruleList, null, falseEnumListObject).Any());
+            
             var trueStringDictObject = new TestObject()
             {
                 StringDictField = new Dictionary<string, string>()
