@@ -31,10 +31,10 @@
     </select>
 }
 <br />
-<button @onclick="AddRule">Add Rule</button>
-<button @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
-<button @onclick="ValidateRules">Validate Rules</button>
-<button @onclick="DownloadRules">Export Rules to JSON</button>
+<button class="btn btn-primary" @onclick="AddRule">Add Rule</button>
+<button class="btn btn-primary" @onclick="RemoveLastRule" disabled=@removeDisabled>Remove Last Rule</button>
+<button class="btn btn-primary" @onclick="ValidateRules">Validate Rules</button>
+<button class="btn btn-primary" @onclick="DownloadRules">Export Rules to JSON</button>
 <br />
 @foreach (var rule in AppState.Rules)
 {
