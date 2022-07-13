@@ -20,6 +20,7 @@
 <div class="">
     @foreach (var rule in AppState.DemoRules)
     {
+        <div class="pb-2">
         @if (issues.ContainsKey(rule))
         {
             @foreach (var problem in issues[rule])
@@ -31,6 +32,7 @@
             }
         }
         <RuleInput Rule="rule" CollapsedState="ComponentCollapsedState.Collapsed" Types="GetTypes()" />
+        </div>
     }
 </div>
 

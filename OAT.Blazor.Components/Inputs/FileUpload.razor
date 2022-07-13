@@ -6,9 +6,9 @@
 @inject Microsoft.JSInterop.IJSRuntime JSRuntime;
 
 <input type="file" @ref=inputElement />
-<button @onclick=ReadFile class="btn btn-primary">@ReadLabel</button>
-<button @onclick=ClearFile class="btn btn-primary">@ClearLabel</button>
-<button @onclick=CancelFile disabled=@IsCancelDisabled class="btn btn-primary">Cancel</button>
+<button class="btn btn-primary" @onclick=ReadFile>@ReadLabel</button>
+<button class="btn btn-primary" @onclick=ClearFile>@ClearLabel</button>
+<button class="btn btn-primary" @onclick=CancelFile disabled=@IsCancelDisabled>Cancel</button>
 <br />
 <progress max="@max" value="@value" />
 <br />
