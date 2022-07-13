@@ -38,6 +38,90 @@ a, .btn-link {
     color: red;
 }
 
+.sidebar {
+    background-color: #243a5e;
+}
+
+    .sidebar .top-row {
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .sidebar .bottom-row {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+    }
+
+        .sidebar .bottom-row .logo {
+            height: 90px;
+            width: 201px;
+            margin: auto;
+            display: block;
+        }
+
+        .sidebar .bottom-row .version {
+            color: white;
+            text-align: center;
+        }
+
+    .sidebar .navbar-brand {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin: auto;
+    }
+
+    .sidebar .oi {
+        width: 2.2rem;
+        font-size: 1.3rem;
+        vertical-align: text-top;
+        top: -2px;
+    }
+
+    .sidebar .nav-item {
+        font-size: 0.9rem;
+        padding-bottom: 0.5rem;
+    }
+
+        .sidebar .nav-item:first-of-type {
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-item:last-of-type {
+            padding-bottom: 1rem;
+        }
+
+        .sidebar .nav-item .nav-link {
+            font-family: "Segoe UI Semibold", Helvetica, sans-serif;
+        }
+
+            .sidebar .nav-item .nav-link.active {
+                font-family: inherit;
+                font-weight: bold;
+            }
+
+            .sidebar .nav-item .nav-link .nav-icon {
+                width: 32px;
+            }
+
+        .sidebar .nav-item a {
+            color: #d7d7d7;
+            border-radius: 7px;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            line-height: 3rem;
+        }
+
+            .sidebar .nav-item a.active {
+                background-color: rgba(255,255,255,0.25);
+                color: white;
+            }
+
+            .sidebar .nav-item a:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: white;
+            }
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
