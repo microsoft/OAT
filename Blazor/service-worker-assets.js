@@ -145,7 +145,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-OmHwS6JeUOhHoYHmiE7rv1Gau2y7IunPW8x3AolPvl4=",
+      "hash": "sha256-9udBQjDVUFTZWoWwa0L79B4q66iHtKoujDGR2VU4G\/I=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -225,15 +225,15 @@
       "url": "_framework\/Newtonsoft.Json.dll"
     },
     {
-      "hash": "sha256-JMLyPmLtE3xB8iCZZxwawN4ucbzngkgPQQlj+oq1APQ=",
+      "hash": "sha256-zWapUgX5W0B2tUUMYKfjfSnyH4gN8886QPM16lWj8oo=",
       "url": "_framework\/OAT.Blazor.Components.dll"
     },
     {
-      "hash": "sha256-\/\/zQsFDTUNmZdvSz\/hXuDkFKWAjkgdoszfYGBluceI4=",
+      "hash": "sha256-Y3eBYwtgXXfFO3dIw\/xyR7rwQme2H0UnUW7UGa\/7q3o=",
       "url": "_framework\/OAT.Blazor.dll"
     },
     {
-      "hash": "sha256-fbNGYXDbxdrs+FMU0PKj4vc8jk7YNbe+ZI0kBQciUmI=",
+      "hash": "sha256-lkT\/8BzgGnkWvKURm7y5MXX6hn2VCroXC6EjCJ6+ANY=",
       "url": "_framework\/OAT.dll"
     },
     {
@@ -401,7 +401,7 @@
       "url": "_framework\/Tewr.Blazor.FileReader.dll"
     },
     {
-      "hash": "sha256-ywAIMxcbUVW5vGzmn8PIokbAV3DIwqA8Cj9CSnG4Iuo=",
+      "hash": "sha256-U1teOR506RSgjBVR16bLtM5n92fJxpGFlGWrH8Za2nI=",
       "url": "_framework\/VehicleDemo.dll"
     },
     {
@@ -417,5 +417,5 @@
       "url": "_content\/Tewr.Blazor.FileReader\/FileReaderComponent.js.map"
     }
   ],
-  "version": "vm8ABzb3"
+  "version": "Y0Fy9NeB"
 };
