@@ -222,7 +222,7 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        var (Success, Capture) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2);
+                        var (Success, Capture) = Evaluate(rule.Expression.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries), rule.Clauses, state1, state2);
                         if (Success)
                         {
                             return true;
@@ -297,7 +297,7 @@ namespace Microsoft.CST.OAT
                 // Are spaces correct?
                 // Are all variables defined by clauses?
                 // Are variables and operators alternating?
-                var splits = expression.Split(' ');
+                var splits = expression.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries);
                 var foundStarts = 0;
                 var foundEnds = 0;
                 var expectingOperator = false;
@@ -465,7 +465,7 @@ namespace Microsoft.CST.OAT
                     // Otherwise we evaluate the expression
                     else
                     {
-                        (var ExpressionMatches, var Captures) = Evaluate(rule.Expression.Split(' '), rule.Clauses, state1, state2, ruleCapture.Captures);
+                        (var ExpressionMatches, var Captures) = Evaluate(rule.Expression.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries), rule.Clauses, state1, state2, ruleCapture.Captures);
                         if (ExpressionMatches)
                         {
                             ruleCapture.Captures.AddRange(Captures ?? new List<ClauseCapture>());
