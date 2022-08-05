@@ -847,20 +847,29 @@ namespace Microsoft.CST.OAT
                     {
                         // Ensure we have exactly 1 matching clause defined
                         var targetLabel = splits[i].Replace("(", "").Replace(")", "");
-                        var res = Clauses.Where(x => x.Label == targetLabel);
-                        if (res.Count() > 1)
+                        var res = Clauses.Where(x => x.Label == targetLabel).ToArray();
+                        if (res.Length > 1)
                         {
-                            Log.Debug($"Multiple Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
+                            Log.Debug(
+                                $"Multiple Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
                             return (false, null);
                         }
 
                         // If we couldn't find a label match fall back to trying to parse this as an index
                         // into clauses
-                        if (!res.Any() && int.TryParse(targetLabel, out var result) && Clauses.Count > result)
+                        if (!res.Any())
                         {
-                            res = new Clause[] { Clauses[result] };
+                            if (int.TryParse(targetLabel, out var result) && Clauses.Count > result)
+                            {
+                                res = new Clause[] { Clauses[result] };
+                            }
+                            else
+                            {
+                                Log.Debug($"No Clauses match the label {res.First().Label} so skipping evaluation of expression.  Run EnumerateRuleIssues to identify rule issues.");
+                                return (false, null);
+                            }
                         }
-
+                        
                         // To handle the first element the defaults here are `false`, `OR`, which cannot be shortcut.
                         var (CanShortcut, Value) = TryShortcut(current, Operator);
 
