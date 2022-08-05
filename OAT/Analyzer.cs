@@ -892,7 +892,7 @@ namespace Microsoft.CST.OAT
             return (current, captureOut);
         }
 
-        private OperationResult GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null, IEnumerable<ClauseCapture>? captures = null)
+        public OperationResult GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null, IEnumerable<ClauseCapture>? captures = null)
         {
             if (clause.Field is not null)
             {
