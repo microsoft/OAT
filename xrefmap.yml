@@ -158,6 +158,22 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Analyzer.GetCaptures
   nameWithType: Analyzer.GetCaptures
+- uid: Microsoft.CST.OAT.Analyzer.GetClauseCapture(Microsoft.CST.OAT.Clause,System.Object,System.Object,System.Collections.Generic.IEnumerable{Microsoft.CST.OAT.ClauseCapture})
+  name: GetClauseCapture(Clause, Object, Object, IEnumerable<ClauseCapture>)
+  href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetClauseCapture_Microsoft_CST_OAT_Clause_System_Object_System_Object_System_Collections_Generic_IEnumerable_Microsoft_CST_OAT_ClauseCapture__
+  commentId: M:Microsoft.CST.OAT.Analyzer.GetClauseCapture(Microsoft.CST.OAT.Clause,System.Object,System.Object,System.Collections.Generic.IEnumerable{Microsoft.CST.OAT.ClauseCapture})
+  name.vb: GetClauseCapture(Clause, Object, Object, IEnumerable(Of ClauseCapture))
+  fullName: Microsoft.CST.OAT.Analyzer.GetClauseCapture(Microsoft.CST.OAT.Clause, System.Object, System.Object, System.Collections.Generic.IEnumerable<Microsoft.CST.OAT.ClauseCapture>)
+  fullName.vb: Microsoft.CST.OAT.Analyzer.GetClauseCapture(Microsoft.CST.OAT.Clause, System.Object, System.Object, System.Collections.Generic.IEnumerable(Of Microsoft.CST.OAT.ClauseCapture))
+  nameWithType: Analyzer.GetClauseCapture(Clause, Object, Object, IEnumerable<ClauseCapture>)
+  nameWithType.vb: Analyzer.GetClauseCapture(Clause, Object, Object, IEnumerable(Of ClauseCapture))
+- uid: Microsoft.CST.OAT.Analyzer.GetClauseCapture*
+  name: GetClauseCapture
+  href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetClauseCapture_
+  commentId: Overload:Microsoft.CST.OAT.Analyzer.GetClauseCapture
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Analyzer.GetClauseCapture
+  nameWithType: Analyzer.GetClauseCapture
 - uid: Microsoft.CST.OAT.Analyzer.GetTags(System.Collections.Generic.IEnumerable{Microsoft.CST.OAT.Rule},System.Object,System.Object)
   name: GetTags(IEnumerable<Rule>, Object, Object)
   href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetTags_System_Collections_Generic_IEnumerable_Microsoft_CST_OAT_Rule__System_Object_System_Object_
