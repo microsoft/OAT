@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -728,7 +729,7 @@ namespace Microsoft.CST.OAT
         }
 
         /// <summary>
-        ///     Set the OatOperation which will be trigged by the provided Operation (and when Custom, CustomOperation)
+        ///     Set the OatOperation which will be triggered by the provided Operation (and when Custom, CustomOperation)
         /// </summary>
         /// <param name="oatOperation"> The OatOperation </param>
         /// <returns> </returns>
@@ -738,6 +739,12 @@ namespace Microsoft.CST.OAT
             return true;
         }
 
+        /// <summary>
+        ///     Returns a read only view of the current set of delegates
+        /// </summary>
+        /// <returns>Immutable dictionary which maps the Operation enum and custom string to the actual OatOperation object which performs actions.</returns>
+        public ImmutableDictionary<(Operation Operation, string CustomOperation), OatOperation> GetDelegates() => Delegates.ToImmutableDictionary();
+        
         private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
