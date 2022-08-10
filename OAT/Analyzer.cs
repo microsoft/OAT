@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -728,7 +729,7 @@ namespace Microsoft.CST.OAT
         }
 
         /// <summary>
-        ///     Set the OatOperation which will be trigged by the provided Operation (and when Custom, CustomOperation)
+        ///     Set the OatOperation which will be triggered by the provided Operation (and when Custom, CustomOperation)
         /// </summary>
         /// <param name="oatOperation"> The OatOperation </param>
         /// <returns> </returns>
@@ -738,7 +739,17 @@ namespace Microsoft.CST.OAT
             return true;
         }
 
-        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
+        /// <summary>
+        ///     Get the current operation is set for the <see cref="Operation"/> and <paramref name="customOperation"/> pair provided.
+        ///     For default operations, use null for <paramref name="customOperation"/>.
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="customOperation"></param>
+        /// <returns>If the <see cref="OatOperation"/> delegate is set for the given pair, will return the value, otherwise null.</returns>
+        public OatOperation? GetOperation(Operation operation, string? customOperation = null) =>
+            Delegates.TryGetValue((operation, customOperation), out OatOperation value) ? value : null;
+
+        private Dictionary<(Operation Operation, string? CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string? CustomOperation), OatOperation>();
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
@@ -901,6 +912,14 @@ namespace Microsoft.CST.OAT
             return (current, captureOut);
         }
 
+        /// <summary>
+        /// Execute the operation for a provided clause.
+        /// </summary>
+        /// <param name="clause"> The Clause to test </param>
+        /// <param name="state1"> object state1 </param>
+        /// <param name="state2"> object state2 </param>
+        /// <param name="captures">Existing captures to be passed to the clause.</param>
+        /// <returns>The <see cref="OperationResult"/> of the operation.</returns>
         public OperationResult GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null, IEnumerable<ClauseCapture>? captures = null)
         {
             if (clause.Field is not null)
