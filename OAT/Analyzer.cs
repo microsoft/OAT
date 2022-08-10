@@ -908,6 +908,14 @@ namespace Microsoft.CST.OAT
             return (current, captureOut);
         }
 
+        /// <summary>
+        /// Execute the operation for a provided clause.
+        /// </summary>
+        /// <param name="clause"> The Clause to test </param>
+        /// <param name="state1"> object state1 </param>
+        /// <param name="state2"> object state2 </param>
+        /// <param name="captures">Existing captures to be passed to the clause.</param>
+        /// <returns>The <see cref="OperationResult"/> of the operation.</returns>
         public OperationResult GetClauseCapture(Clause clause, object? state1 = null, object? state2 = null, IEnumerable<ClauseCapture>? captures = null)
         {
             if (clause.Field is not null)
