@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -749,7 +750,7 @@ namespace Microsoft.CST.OAT
             Delegates.TryGetValue((operation, customOperation ?? ""), out OatOperation? value) ? value : null;
 
         private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
-
+        
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
             var foundStarts = 0;
