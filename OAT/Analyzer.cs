@@ -741,16 +741,16 @@ namespace Microsoft.CST.OAT
 
         /// <summary>
         ///     Get the current operation is set for the <see cref="Operation"/> and <paramref name="customOperation"/> pair provided.
-        ///     For default operations, use null for <paramref name="customOperation"/>.
+        ///     For default operations, use null or string.Empty for <paramref name="customOperation"/>.
         /// </summary>
         /// <param name="operation"></param>
         /// <param name="customOperation"></param>
         /// <returns>If the <see cref="OatOperation"/> delegate is set for the given pair, will return the value, otherwise null.</returns>
         public OatOperation? GetOperation(Operation operation, string? customOperation = null) =>
-            Delegates.TryGetValue((operation, customOperation), out OatOperation value) ? value : null;
+            Delegates.TryGetValue((operation, customOperation ?? ""), out OatOperation? value) ? value : null;
 
-        private Dictionary<(Operation Operation, string? CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string? CustomOperation), OatOperation>();
-
+        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
+        
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
             var foundStarts = 0;

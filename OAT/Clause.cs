@@ -68,7 +68,10 @@ namespace Microsoft.CST.OAT
         /// </summary>
         public List<string> Arguments { get; set; } = new List<string>();
 
-        internal (Operation Operation, string CustomOperation) Key
+        /// <summary>
+        /// The Key used for lookups in <see cref="Analyzer"/>
+        /// </summary>
+        public (Operation Operation, string CustomOperation) Key
         {
             get
             {
