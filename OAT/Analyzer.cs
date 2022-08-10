@@ -740,12 +740,16 @@ namespace Microsoft.CST.OAT
         }
 
         /// <summary>
-        ///     Returns a read only view of the current set of delegates
+        ///     Get the current operation is set for the <see cref="Operation"/> and <paramref name="customOperation"/> pair provided.
+        ///     For default operations, use null for <paramref name="customOperation"/>.
         /// </summary>
-        /// <returns>Immutable dictionary which maps the Operation enum and custom string to the actual OatOperation object which performs actions.</returns>
-        public ImmutableDictionary<(Operation Operation, string CustomOperation), OatOperation> GetDelegates() => Delegates.ToImmutableDictionary();
-        
-        private Dictionary<(Operation Operation, string CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string CustomOperation), OatOperation>();
+        /// <param name="operation"></param>
+        /// <param name="customOperation"></param>
+        /// <returns>If the <see cref="OatOperation"/> delegate is set for the given pair, will return the value, otherwise null.</returns>
+        public OatOperation? GetOperation(Operation operation, string? customOperation = null) =>
+            Delegates.TryGetValue((operation, customOperation), out OatOperation value) ? value : null;
+
+        private Dictionary<(Operation Operation, string? CustomOperation), OatOperation> Delegates { get; } = new Dictionary<(Operation Operation, string? CustomOperation), OatOperation>();
 
         private static int FindMatchingParen(string[] splits, int startingIndex)
         {
