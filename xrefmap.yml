@@ -490,6 +490,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Clause.Invert
   nameWithType: Clause.Invert
+- uid: Microsoft.CST.OAT.Clause.Key
+  name: Key
+  href: api/Microsoft.CST.OAT.Clause.html#Microsoft_CST_OAT_Clause_Key
+  commentId: P:Microsoft.CST.OAT.Clause.Key
+  fullName: Microsoft.CST.OAT.Clause.Key
+  nameWithType: Clause.Key
+- uid: Microsoft.CST.OAT.Clause.Key*
+  name: Key
+  href: api/Microsoft.CST.OAT.Clause.html#Microsoft_CST_OAT_Clause_Key_
+  commentId: Overload:Microsoft.CST.OAT.Clause.Key
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Clause.Key
+  nameWithType: Clause.Key
 - uid: Microsoft.CST.OAT.Clause.Label
   name: Label
   href: api/Microsoft.CST.OAT.Clause.html#Microsoft_CST_OAT_Clause_Label

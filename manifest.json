@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Analyzer.html",
-          "hash": "/yxoeNiZKUCfeKHkhnXB7F1kjBx0hEFfwvYs7ScAVdk="
+          "hash": "FTm1u8MnGYf9hhnJIxAjpVB8yeVTy7swH8LzlkueOr0="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.CST.OAT.Clause.html",
-          "hash": "22w2U1FbZVVGOyOfF3t212VUhQbP6YoANrIhijv2z9Y="
+          "hash": "VaOgqBYenUIxDwNv51LOeta1s0peZVVckPYwUkhW2UA="
         }
       },
       "is_incremental": false,
