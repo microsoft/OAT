@@ -174,6 +174,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.CST.OAT.Analyzer.GetClauseCapture
   nameWithType: Analyzer.GetClauseCapture
+- uid: Microsoft.CST.OAT.Analyzer.GetOperation(Microsoft.CST.OAT.Operation,System.String)
+  name: GetOperation(Operation, String)
+  href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetOperation_Microsoft_CST_OAT_Operation_System_String_
+  commentId: M:Microsoft.CST.OAT.Analyzer.GetOperation(Microsoft.CST.OAT.Operation,System.String)
+  fullName: Microsoft.CST.OAT.Analyzer.GetOperation(Microsoft.CST.OAT.Operation, System.String)
+  nameWithType: Analyzer.GetOperation(Operation, String)
+- uid: Microsoft.CST.OAT.Analyzer.GetOperation*
+  name: GetOperation
+  href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetOperation_
+  commentId: Overload:Microsoft.CST.OAT.Analyzer.GetOperation
+  isSpec: "True"
+  fullName: Microsoft.CST.OAT.Analyzer.GetOperation
+  nameWithType: Analyzer.GetOperation
 - uid: Microsoft.CST.OAT.Analyzer.GetTags(System.Collections.Generic.IEnumerable{Microsoft.CST.OAT.Rule},System.Object,System.Object)
   name: GetTags(IEnumerable<Rule>, Object, Object)
   href: api/Microsoft.CST.OAT.Analyzer.html#Microsoft_CST_OAT_Analyzer_GetTags_System_Collections_Generic_IEnumerable_Microsoft_CST_OAT_Rule__System_Object_System_Object_
