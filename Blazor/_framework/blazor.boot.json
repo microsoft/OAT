@@ -26,9 +26,9 @@
       "MoreLinq.dll": "sha256-CCcLoUROc5qeK\/1UNVb\/AC6\/au9JUZ6zZVNzyOnIa7I=",
       "netstandard.dll": "sha256-GwC111iXG2Vd\/9GloOUJViGA389X82Gs0iZ7RucFhqA=",
       "Newtonsoft.Json.dll": "sha256-cs8pHUurDt0IqbB8YXPh560au3q3J\/1wRL9jBddRVmE=",
-      "OAT.Blazor.Components.dll": "sha256-LUi83NvoE3k2Klp1oYBHLBEyvrf\/RqhiGTfb8cqHA+U=",
-      "OAT.Blazor.dll": "sha256-Yp3sQqx0727hNl9OAfdLtNLAcKyQk29vYNIp7oo8980=",
-      "OAT.dll": "sha256-NzjJpm5EliZupghHu5kr7k1Jfv60jY\/\/8781PHQuKXw=",
+      "OAT.Blazor.Components.dll": "sha256-aOwc\/WfVwEseqwAmfWzieZDfjzsO+2rICIGwmCtun00=",
+      "OAT.Blazor.dll": "sha256-hniQcs+zMZl2UUqLuJyWja7vL7fVqRqFJc5\/5aeD\/mY=",
+      "OAT.dll": "sha256-StNaI+q2Wg3Wvf5hY4mjV01eeI9TcIIL6zcV4zDfUU8=",
       "Serilog.dll": "sha256-+aqbNJmEXxMstn1znuXuoFNy0ZsR2YwEqsv4BfXT4NQ=",
       "Serilog.Sinks.Console.dll": "sha256-kNKHHBMkIXNNs7kyIefaw7IIVxefQCkuU1Xp0ywdu9k=",
       "System.Collections.Concurrent.dll": "sha256-JPaH7vEcPme1X404effc9eAXYDeOll0RqbJxTYoXZ\/s=",
@@ -70,7 +70,7 @@
       "System.Threading.dll": "sha256-ZF2IJxkvyIOK6GBdl1rP\/h8gKlnnSVq3DPiPho9PSMU=",
       "System.Threading.Tasks.Parallel.dll": "sha256-joDedKV\/fWlywh+iHFwy8kMOHgwQjvvmlZXVxYZJGss=",
       "Tewr.Blazor.FileReader.dll": "sha256-kulaEA9RTnr8XkJopewahghf1+nbWLEp3Krv60wGNvY=",
-      "VehicleDemo.dll": "sha256-LQVqQzI2UHoR6f5rg706wftng4xqzQQEna21EtWLtJg="
+      "VehicleDemo.dll": "sha256-6y9KlXY35duGmKN+W1NBGuxKwXhp39N++o5WQEtTDCU="
     },
     "extensions": null,
     "lazyAssembly": null,
