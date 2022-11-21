@@ -71,12 +71,6 @@ namespace Microsoft.CST.OAT
         /// <summary>
         /// The Key used for lookups in <see cref="Analyzer"/>
         /// </summary>
-        public (Operation Operation, string CustomOperation) Key
-        {
-            get
-            {
-                return (Operation, CustomOperation ?? "");
-            }
-        }
+        internal (Operation Operation, string CustomOperation) Key => (Operation, CustomOperation ?? "");
     }
 }
