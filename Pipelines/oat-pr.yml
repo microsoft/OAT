@@ -15,10 +15,6 @@ resources:
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
       ref: refs/tags/v1.0.6
 
-variables:
-  Codeql.Enabled: true
-  Codeql.Cadence: 24
-
 stages:
 - stage: Test
   dependsOn: []
