@@ -27,15 +27,15 @@ stages:
   - template: dotnet-test-job.yml@templates
     parameters:
       jobName: 'dotnet_test_windows'
-      dotnetVersion: {{ variables.DotnetVersion }}
-      dotnetVersionLTS: {{ variables.DotnetVersionLTS }}
+      dotnetVersion: ${{ variables.DotnetVersion }}
+      dotnetVersionLTS: ${{ variables.DotnetVersionLTS }}
       vmImage: 'oss-tools-win2022_1es-managed'
       projectPath: 'OAT.Tests/OAT.Tests.csproj'
   - template: dotnet-test-job.yml@templates
     parameters:
       jobName: 'dotnet_test_ubuntu'
-      dotnetVersion: {{ variables.DotnetVersion }}
-      dotnetVersionLTS: {{ variables.DotnetVersionLTS }}
+      dotnetVersion: ${{ variables.DotnetVersion }}
+      dotnetVersionLTS: ${{ variables.DotnetVersionLTS }}
       vmImage: 'ubuntu-22.04-image-base'
       projectPath: 'OAT.Tests/OAT.Tests.csproj'
 
@@ -51,8 +51,8 @@ stages:
   - template: nuget-build-job.yml@templates
     parameters:
       jobName: 'pack_lib'
-      buildConfiguration: {{ variables.BuildConfiguration }}
-      dotnetVersion: {{ variables.DotnetVersion }}
+      buildConfiguration: ${{ variables.BuildConfiguration }}
+      dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT/OAT.csproj'
       projectName: 'OAT'
       preBuild:
@@ -60,8 +60,8 @@ stages:
   - template: nuget-build-job.yml@templates
     parameters:
       jobName: 'pack_scripting'
-      buildConfiguration: {{ variables.BuildConfiguration }}
-      dotnetVersion: {{ variables.DotnetVersion }}
+      buildConfiguration: ${{ variables.BuildConfiguration }}
+      dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
       projectName: 'OAT_Scripting'
       preBuild:
@@ -69,8 +69,8 @@ stages:
   - template: nuget-build-job.yml@templates
     parameters:
       jobName: 'pack_blazor'
-      buildConfiguration: {{ variables.BuildConfiguration }}
-      dotnetVersion: {{ variables.DotnetVersion }}
+      buildConfiguration: ${{ variables.BuildConfiguration }}
+      dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
       projectName: 'OAT_Blazor_Components'
       preBuild:
