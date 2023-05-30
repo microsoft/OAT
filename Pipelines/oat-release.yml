@@ -13,7 +13,6 @@ trigger:
     - OAT.Blazor
     - OAT.Blazor.Components
     - OAT.Scripting
-    - Pipelines
 pr: none
 
 resources:
