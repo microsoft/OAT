@@ -20,7 +20,7 @@ resources:
     - repository: templates
       type: git
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/tags/v1.0.6
+      ref: refs/tags/v1.0.7
 
 variables:
   BuildConfiguration: 'Release'
@@ -62,6 +62,7 @@ stages:
       dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT/OAT.csproj'
       projectName: 'OAT'
+      customPackFlags: '/p:ContinuousIntegrationBuild=true'
       preBuild:
       - template: nbgv-set-version-steps.yml@templates
   - template: nuget-build-job.yml@templates
@@ -71,6 +72,7 @@ stages:
       dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
       projectName: 'OAT_Scripting'
+      customPackFlags: '/p:ContinuousIntegrationBuild=true'
       preBuild:
       - template: nbgv-set-version-steps.yml@templates
   - template: nuget-build-job.yml@templates
@@ -80,6 +82,7 @@ stages:
       dotnetVersion: ${{ variables.DotnetVersion }}
       projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
       projectName: 'OAT_Blazor_Components'
+      customPackFlags: '/p:ContinuousIntegrationBuild=true'
       preBuild:
       - template: nbgv-set-version-steps.yml@templates
 
