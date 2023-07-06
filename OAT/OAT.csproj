@@ -20,7 +20,7 @@
 	  <PackageIcon>icon-128.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	  <IncludeSymbols>true</IncludeSymbols>
-      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
