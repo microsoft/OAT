@@ -145,7 +145,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-3WCzTzsqcOA8l3TkM0R+4Ez2RrpHPGYA+R+XJvJS4z8=",
+      "hash": "sha256-I9gmbD\/IFsLo7OVvJKm8JnI9aAds6tC9F2PjJxa7Luw=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -225,15 +225,15 @@
       "url": "_framework\/Newtonsoft.Json.dll"
     },
     {
-      "hash": "sha256-QIj3trWBS\/NFdAUxjNe7v4AvcFo0yNMzfFuub9S9QhY=",
+      "hash": "sha256-7bIz4w7w9mEur\/DPkq671xooMzu5PCloYP24j73Luq4=",
       "url": "_framework\/OAT.Blazor.Components.dll"
     },
     {
-      "hash": "sha256-3YubZSm1\/oHVaEuHfgvvSieosIStUm2WWmV61eFSsLM=",
+      "hash": "sha256-sYYsjz9Oe7ol+cFoLfBoLhHcmt5jvIAnxRWd7E1DxaQ=",
       "url": "_framework\/OAT.Blazor.dll"
     },
     {
-      "hash": "sha256-SW8nlkcbbcl8ISimUlgVoVKgbGc5vnh2IuP2DX798mU=",
+      "hash": "sha256-nbUzx3\/pZBJ7\/wJRlnYnXq91fYoglWiUNRTgCkC\/3IA=",
       "url": "_framework\/OAT.dll"
     },
     {
@@ -421,11 +421,11 @@
       "url": "_framework\/System.Xml.XDocument.dll"
     },
     {
-      "hash": "sha256-kulaEA9RTnr8XkJopewahghf1+nbWLEp3Krv60wGNvY=",
+      "hash": "sha256-zJj3TkjVBwmNTh6rA2OEtAFwvqGO90+Hoe8eQzIHj0w=",
       "url": "_framework\/Tewr.Blazor.FileReader.dll"
     },
     {
-      "hash": "sha256-v7TPiBG+ktR1FaI9zafxt5DKHIKvB88ciih\/+LDtzaM=",
+      "hash": "sha256-nsYNLspJIPHYs8KntYjKIGeseWfdHnEHYf3YCn1mmes=",
       "url": "_framework\/VehicleDemo.dll"
     },
     {
@@ -433,13 +433,13 @@
       "url": "OAT.Blazor.styles.css"
     },
     {
-      "hash": "sha256-zzKSd8sgjwrHDd1g8JoHlzWUHKn2GzfgIhq7AUjIm8Q=",
+      "hash": "sha256-vWnwZfT46ecwui8uqPibW51XGzg63bsHyr+bnNgFK\/c=",
       "url": "_content\/Tewr.Blazor.FileReader\/FileReaderComponent.js"
     },
     {
-      "hash": "sha256-Eg1oAzG68dvtKEFv5D\/OrxS+eaxB96aB5DgyFboPFXg=",
+      "hash": "sha256-0sVXc0FvF9X6uEDY0saQhPogmbiT+Muhv9E9NVDDMPA=",
       "url": "_content\/Tewr.Blazor.FileReader\/FileReaderComponent.js.map"
     }
   ],
-  "version": "LU0l8let"
+  "version": "NQmexdxn"
 };
