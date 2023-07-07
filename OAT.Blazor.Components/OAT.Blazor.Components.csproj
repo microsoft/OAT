@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.8" Condition="'$(TargetFramework)' == 'net7.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.8" Condition="'$(TargetFramework)' == 'net7.0'" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.1.21360" />
+    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.2.23185" />
   </ItemGroup>
 
   <ItemGroup>
