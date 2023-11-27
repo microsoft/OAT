@@ -17,7 +17,7 @@ resources:
 
 variables:
   BuildConfiguration: 'Release'
-  DotnetVersion: '7.0.x'
+  DotnetVersion: '8.0.x'
   DotnetVersionLTS: '6.0.x'
 
 stages:
