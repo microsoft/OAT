@@ -13,7 +13,7 @@ resources:
     - repository: templates
       type: git
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/branches/gfs/Net8
+      ref: refs/heads/gfs/Net8
 
 variables:
   BuildConfiguration: 'Release'
