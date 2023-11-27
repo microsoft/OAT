@@ -17,7 +17,8 @@ resources:
 
 variables:
   BuildConfiguration: 'Release'
-  #DotnetVersions: ['6.0.x','7.0.x','8.0.x']
+  # For build validation stage
+  dotnetVersion: '8.0.x'
 
 stages:
 - stage: Test
