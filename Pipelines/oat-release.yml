@@ -20,12 +20,11 @@ resources:
     - repository: templates
       type: git
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/tags/v1.0.7
+      ref: refs/tags/v1.1.0
 
 variables:
   BuildConfiguration: 'Release'
   DotnetVersion: '8.0.x'
-  DotnetVersionLTS: '6.0.x'
 
 stages:
 - stage: Test
@@ -34,15 +33,13 @@ stages:
   - template: dotnet-test-job.yml@templates
     parameters:
       jobName: 'dotnet_test_windows'
-      dotnetVersion: ${{ variables.DotnetVersion }}
-      dotnetVersionLTS: ${{ variables.DotnetVersionLTS }}
+      dotnetVersions: ['6.0.x','7.0.x','8.0.x']
       vmImage: 'oss-tools-win2022_1es-managed'
       projectPath: 'OAT.Tests/OAT.Tests.csproj'
   - template: dotnet-test-job.yml@templates
     parameters:
       jobName: 'dotnet_test_ubuntu'
-      dotnetVersion: ${{ variables.DotnetVersion }}
-      dotnetVersionLTS: ${{ variables.DotnetVersionLTS }}
+      dotnetVersions: ['6.0.x','7.0.x','8.0.x']
       vmImage: 'ubuntu-22.04-image-base'
       projectPath: 'OAT.Tests/OAT.Tests.csproj'
 
@@ -98,10 +95,10 @@ stages:
       name: 'OSS-Tools-1ESPool'
       vmImage: 'oss-tools-win2022_1es-managed'
     steps:
-    - task: UseDotNet@2 # For ESRP. Do not use variable.
+    - task: UseDotNet@2 
       inputs:
         packageType: 'sdk'
-        version: '6.0.x'
+        version: '6.0.x' # ESRP requires a specific version. Do not re-use variable.
     - template: nbgv-set-version-steps.yml@templates
     - task: DownloadBuildArtifacts@0
       displayName: Download Unsigned Archives
