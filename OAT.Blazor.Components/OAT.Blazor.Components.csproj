@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
     <RootNamespace>Microsoft.CST.OAT.Blazor.Components</RootNamespace>
@@ -25,11 +25,13 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.24" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.24" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.13" Condition="'$(TargetFramework)' == 'net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.13" Condition="'$(TargetFramework)' == 'net7.0'" />
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.25" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.14" Condition="'$(TargetFramework)' == 'net7.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.14" Condition="'$(TargetFramework)' == 'net7.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+	<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.2.23201" />
   </ItemGroup>
 
