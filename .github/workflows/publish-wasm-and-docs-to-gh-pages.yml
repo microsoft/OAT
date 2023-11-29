@@ -16,6 +16,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.0.x'
+    # Include recommended wasm-tools workload to optimize build
+    - name: wasm-tools
+      run: dotnet workload install wasm-tools
     - name: Build
       run: dotnet publish OAT.Blazor -c Release -f net8.0 -o blazorOut
     - name: Mkdir toPublish
