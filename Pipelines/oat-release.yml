@@ -93,7 +93,7 @@ stages:
     displayName: Code Sign, Generate Hashes, Publish Public Releases
     pool:
       name: 'CSPA'
-      vmImage: 'win2022-image-base'
+      demands: ImageOverride -equals win2022-image-base
     steps:
     - task: UseDotNet@2 
       inputs:
