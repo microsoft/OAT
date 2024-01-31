@@ -92,7 +92,6 @@ stages:
   - job: sign_hash_release
     displayName: Code Sign, Generate Hashes, Publish Public Releases
     pool:
-      name: 'OSS-Tools-1ESPool'
       vmImage: 'oss-tools-win2022_1es-managed'
     steps:
     - task: UseDotNet@2 
