@@ -137,7 +137,7 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-lj40s9aEXQplpgyhOqSMo24WHvKIOVzc3p+A4nekg6A=",
+      "hash": "sha256-IEf9\/lOKdXdw\/m5ajHvhyFbOOYxLi96CKAtMMYb3JRg=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -233,15 +233,15 @@
       "url": "_framework\/Newtonsoft.Json.wasm"
     },
     {
-      "hash": "sha256-HoWZ+S8FzwYmg1Wn\/1ko8lZ\/UjkzvRx+vhu9RhRvqH4=",
+      "hash": "sha256-xUZGNk8OVJ9VS944vydiBmWsBZNM0cbXopC9nsrrIoc=",
       "url": "_framework\/OAT.Blazor.Components.wasm"
     },
     {
-      "hash": "sha256-QFy5KJjN3lCJZhb+E27n9BYqKq7R7zhuTfWFAqVsd\/g=",
+      "hash": "sha256-SZ5D4fV3rg8IjH6lB+EpvtbW085474IWcvsYPeje1zI=",
       "url": "_framework\/OAT.Blazor.wasm"
     },
     {
-      "hash": "sha256-XfgPx6dWFXYvz\/tfMdguiXdevQBd1UHWtK\/B2c8qSgU=",
+      "hash": "sha256-k1JhQ2Q0JhRcsw7EygQRxY9qzvZrZroOeDnG7iZw1ak=",
       "url": "_framework\/OAT.wasm"
     },
     {
@@ -485,7 +485,7 @@
       "url": "_framework\/Tewr.Blazor.FileReader.wasm"
     },
     {
-      "hash": "sha256-2PILmGpGwYOL8tQZtxnTAc\/VrCp4Mkv04o1mHJTqDqQ=",
+      "hash": "sha256-nYwbHc8RNe\/76jMJ3ZTgnIcCGP00Qly9sev8Z4JjqdU=",
       "url": "_framework\/VehicleDemo.wasm"
     },
     {
@@ -501,5 +501,5 @@
       "url": "_content\/Tewr.Blazor.FileReader\/FileReaderComponent.js.map"
     }
   ],
-  "version": "xlV3ZnA4"
+  "version": "Z9SClhV+"
 };
