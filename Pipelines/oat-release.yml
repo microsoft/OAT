@@ -3,7 +3,6 @@
 
 name: OAT_Release_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
-  batch: true
   branches:
     include:
     - main
@@ -92,7 +91,8 @@ stages:
   - job: sign_hash_release
     displayName: Code Sign, Generate Hashes, Publish Public Releases
     pool:
-      vmImage: 'win2022-image-base'
+      name: 'CSPA'
+      demands: ImageOverride -equals win2022-image-base
     steps:
     - task: UseDotNet@2 
       inputs:
