@@ -1,19 +1,4 @@
-# Azure Pipelines
-# https://aka.ms/yaml
-
 name: OAT_Release_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-# trigger:
-#   branches:
-#     include:
-#     - main
-#   paths:
-#     include:
-#     - OAT
-#     - OAT.Blazor
-#     - OAT.Blazor.Components
-#     - OAT.Scripting
-# pr: none
-
 trigger: none
 pr: none
 
@@ -21,7 +6,7 @@ resources:
   repositories:
     - repository: templates
       type: git
-      name: SecurityEngineering/OSS-Tools-Pipeline-Templates
+      name: Data/OSS-Tools-Pipeline-Templates
       ref: refs/tags/v2.0.0
     - repository: 1esPipelines
       type: git
@@ -35,6 +20,11 @@ variables:
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
   parameters:
+    sdl:
+      sourceRepositoriesToScan:
+        exclude:
+          - repository: 1esPipelines
+          - repository: templates
     pool:
       name: MSSecurity-1ES-Build-Agents-Pool
       image: MSSecurity-1ES-Windows-2022
@@ -94,3 +84,99 @@ extends:
           artifactName: 'blazor-archive'
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
+
+    - stage: Release
+      dependsOn:
+      - Build
+      condition: succeeded()
+      jobs:
+      - job: sign_hash_release
+        displayName: Code Sign, Generate Hashes, Publish Public Releases
+        templateContext:
+          outputs:
+          - output: pipelineArtifact
+            path: '$(Build.StagingDirectory)'
+            artifact: 'Signed_Binaries_$(System.JobId)_$(System.JobAttempt)'
+        steps:
+        - task: UseDotNet@2 
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x' # ESRP requires a specific version.
+        - template: nbgv-set-version-steps.yml@templates
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            displayName: 'Download lib-archive'  
+            buildType: 'current'
+            artifactName: 'lib-archive'
+            targetPath: $(Build.BinariesDirectory)\Unsigned_Binaries\
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            displayName: 'Download script-archive'  
+            buildType: 'current'
+            artifactName: 'script-archive'
+            targetPath: $(Build.BinariesDirectory)\Unsigned_Binaries\
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            displayName: 'Download blazor-archive'  
+            buildType: 'current'
+            artifactName: 'blazor-archive'
+            targetPath: $(Build.BinariesDirectory)\Unsigned_Binaries\
+        - task: ExtractFiles@1
+          displayName: Extract Artifacts for Signing
+          inputs:
+            archiveFilePatterns: '$(Build.BinariesDirectory)\Unsigned_Binaries\*.zip'
+            destinationFolder: '$(Build.BinariesDirectory)'
+            cleanDestinationFolder: false
+            overwriteExistingFiles: true
+        - task: AntiMalware@4
+          displayName: Anti-Malware Scan
+          inputs:
+            InputType: 'Basic'
+            ScanType: 'CustomScan'
+            FileDirPath: '$(Build.BinariesDirectory)'
+            EnableServices: true
+            SupportLogOnError: true
+            TreatSignatureUpdateFailureAs: 'Warning'
+            SignatureFreshness: 'UpToDate'
+            TreatStaleSignatureAs: 'Warning'
+        - task: EsrpCodeSigning@5
+          displayName: Code Sign Nuget Packages
+          inputs:
+            ConnectedServiceName: 'oss-esrp-signing-oat-v5-connection'
+            AppRegistrationClientId: '5d2c8a94-3bca-47a0-a708-85799c4df301'
+            AppRegistrationTenantId: '33e01921-4d64-4f8c-a055-5bdaffd5e33d'
+            AuthAKVName: 'oss-signing-vault'
+            AuthSignCertName: 'oss-oat-esrp-signing-cert'            
+            AuthCertName: 'oss-oat-auth-cert'
+            FolderPath: '$(Build.BinariesDirectory)'
+            Pattern: '*.nupkg, *.snupkg'
+            signConfigType: 'inlineSignParams'
+            inlineOperation: |
+              [
+                      {
+                          "KeyCode" : "CP-401405",
+                          "OperationCode" : "NuGetSign",
+                          "Parameters" : {},
+                          "ToolName" : "sign",
+                          "ToolVersion" : "1.0"
+                      },
+                      {
+                          "KeyCode" : "CP-401405",
+                          "OperationCode" : "NuGetVerify",
+                          "Parameters" : {},
+                          "ToolName" : "sign",
+                          "ToolVersion" : "1.0"
+                      }
+                  ]
+            SessionTimeout: '60'
+            MaxConcurrency: '50'
+            MaxRetryAttempts: '5'
+        - powershell: 'Get-ChildItem -Path ''$(Build.BinariesDirectory)'' -Recurse CodeSign* | foreach { Remove-Item -Path $_.FullName }'
+          displayName: 'Delete Code Sign Summaries'
+        - task: PowerShell@2
+          displayName: Move NuGet Packages
+          inputs:
+            targetType: 'inline'
+            script: |
+              mv $env:BUILD_BINARIESDIRECTORY/*.nupkg $env:BUILD_STAGINGDIRECTORY/
+              mv $env:BUILD_BINARIESDIRECTORY/*.snupkg $env:BUILD_STAGINGDIRECTORY/
