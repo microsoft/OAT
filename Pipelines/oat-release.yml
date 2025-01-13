@@ -110,7 +110,7 @@ extends:
         - task: UseDotNet@2 
           inputs:
             packageType: 'sdk'
-            version: '6.0.x' # ESRP requires a specific version.
+            version: '8.0.x' # ESRP requires a specific version.
         - task: DownloadPipelineArtifact@2
           inputs:
             displayName: 'Download lib-archive'  
