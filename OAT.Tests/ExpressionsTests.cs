@@ -11,13 +11,6 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class AnalyzerTests
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
-
         private readonly TestObject testObjectTrueFalse = new TestObject()
         {
             StringField = "MagicWord",

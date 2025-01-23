@@ -13,13 +13,6 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class VehicleDemo
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
-
         [TestMethod]
         public void TollBoothDemo()
         {

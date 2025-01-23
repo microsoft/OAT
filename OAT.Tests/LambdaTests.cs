@@ -10,13 +10,6 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class LambdaTests
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
-
         [TestMethod]
         public void TestScriptingDisabled()
         {
