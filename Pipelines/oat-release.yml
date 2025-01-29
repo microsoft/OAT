@@ -49,7 +49,6 @@ extends:
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
-          dotnetTestArgs: '--coverage --report-trx'
 
     - stage: Build
       dependsOn:
