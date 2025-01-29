@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48;net9.0</TargetFrameworks>
-
+	<OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
 
     <RootNamespace>Microsoft.CST.OAT.Tests</RootNamespace>
@@ -11,9 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.7.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.7.1" />
+    <PackageReference Include="MSTest" Version="3.7.2" />
     <PackageReference Include="morelinq" Version="4.4.0" />
   </ItemGroup>
 

@@ -11,13 +11,6 @@ namespace Microsoft.CST.OAT.Tests
     [TestClass]
     public class CaptureTests
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
-
         private const string CorrectString = "MagicWord";
 
         private readonly TestObject testObjectTrueFalse = new TestObject()

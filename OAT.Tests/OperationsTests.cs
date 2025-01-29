@@ -15,13 +15,6 @@ namespace Microsoft.CST.OAT.Tests
             Magic,
             Nothing
         }
-        
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
 
         [TestMethod]
         public void VerifyContainsAnyOperator()
