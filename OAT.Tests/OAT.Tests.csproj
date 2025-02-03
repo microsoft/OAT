@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net48;net9.0</TargetFrameworks>
-	<OutputType>Exe</OutputType>
+    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
 
     <RootNamespace>Microsoft.CST.OAT.Tests</RootNamespace>
@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MSTest" Version="3.7.2" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.13.1" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.5.3" />
+    <PackageReference Include="MSTest" Version="3.7.3" />
     <PackageReference Include="morelinq" Version="4.4.0" />
   </ItemGroup>
 
