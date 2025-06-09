@@ -1,19 +1,22 @@
-﻿using Microsoft.CST.OAT.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.CST.OAT.Tests;
+using Microsoft.CST.OAT.Utils;
+using System;
+using Xunit;
 
-[assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]
-[assembly: ClassCleanupExecution(ClassCleanupBehavior.EndOfClass)]
+[assembly: AssemblyFixture(typeof(GlobalContext))]
 
 namespace Microsoft.CST.OAT.Tests
 {
-    [TestClass]
-    public static class GlobalSetup
+    public class GlobalContext : IDisposable
     {
-        [AssemblyInitialize]
-        public static void AssemblySetup(TestContext _)
+        public GlobalContext()
         {
             Logger.SetupVerbose();
             Strings.Setup();
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

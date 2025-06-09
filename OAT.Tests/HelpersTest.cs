@@ -1,12 +1,10 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Reflection;
 using Microsoft.CST.OAT.VehicleDemo;
-using System;
+using Xunit;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    [TestClass]
+    
     public class HelpersTest
     {
         public class TestClass
@@ -49,14 +47,14 @@ namespace Microsoft.CST.OAT.Tests
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestConstructedOfLoadedTypes()
         {
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass2)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass3)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass4)));
-            Assert.IsTrue(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5)));
+            Assert.True(Helpers.ConstructedOfLoadedTypes(typeof(TestClass)));
+            Assert.True(Helpers.ConstructedOfLoadedTypes(typeof(TestClass2)));
+            Assert.True(Helpers.ConstructedOfLoadedTypes(typeof(TestClass3)));
+            Assert.True(Helpers.ConstructedOfLoadedTypes(typeof(TestClass4)));
+            Assert.True(Helpers.ConstructedOfLoadedTypes(typeof(TestClass5)));
         }
     }
 }

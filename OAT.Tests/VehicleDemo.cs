@@ -1,19 +1,17 @@
-﻿using Microsoft.CST.OAT.Utils;
-using Microsoft.CST.OAT.VehicleDemo;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MoreLinq;
+﻿using Microsoft.CST.OAT.VehicleDemo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace Microsoft.CST.OAT.Tests
 {
 
 
-    [TestClass]
+    
     public class VehicleDemo
     {
-        [TestMethod]
+        [Fact]
         public void TollBoothDemo()
         {
             var truck = new Vehicle()
@@ -185,16 +183,16 @@ namespace Microsoft.CST.OAT.Tests
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
-            Assert.IsFalse(issues.Any());
+            Assert.False(issues.Any());
 
-            Assert.IsTrue(VehicleDemoHelpers.GetCost(overweightTruck, analyzer, rules) == 50);
-            Assert.IsTrue(VehicleDemoHelpers.GetCost(truck, analyzer, rules) == 10);// 10
-            Assert.IsTrue(VehicleDemoHelpers.GetCost(car, analyzer, rules) == 3); // 3
-            Assert.IsTrue(VehicleDemoHelpers.GetCost(carpool, analyzer, rules) == 2); // 2
-            Assert.IsTrue(VehicleDemoHelpers.GetCost(motorcycle, analyzer, rules) == 1); // 1
+            Assert.True(VehicleDemoHelpers.GetCost(overweightTruck, analyzer, rules) == 50);
+            Assert.True(VehicleDemoHelpers.GetCost(truck, analyzer, rules) == 10);// 10
+            Assert.True(VehicleDemoHelpers.GetCost(car, analyzer, rules) == 3); // 3
+            Assert.True(VehicleDemoHelpers.GetCost(carpool, analyzer, rules) == 2); // 2
+            Assert.True(VehicleDemoHelpers.GetCost(motorcycle, analyzer, rules) == 1); // 1
         }
 
-        [TestMethod]
+        [Fact]
         public void WeighStationDemo()
         {
             var truck = new Vehicle()
@@ -320,17 +318,17 @@ return new OperationResult(false, null);",
 
             var issues = analyzer.EnumerateRuleIssues(rules).ToList();
 
-            Assert.IsFalse(issues.Any());
+            Assert.False(issues.Any());
 
-            Assert.IsTrue(!analyzer.Analyze(rules, truck).Any()); // Compliant
-            Assert.IsTrue(analyzer.Analyze(rules, overweightTruck).Any(x => x.Name == "Overweight Script")); // Overweight
-            Assert.IsTrue(analyzer.Analyze(rules, noCdl).Any(x => x.Name == "No CDL")); // Overweight
-            Assert.IsTrue(analyzer.Analyze(rules, expiredLicense).Any(x => x.Name == "Expired License")); // Overweight
+            Assert.True(!analyzer.Analyze(rules, truck).Any()); // Compliant
+            Assert.Contains(analyzer.Analyze(rules, overweightTruck), x => x.Name == "Overweight Script"); // Overweight
+            Assert.Contains(analyzer.Analyze(rules, noCdl), x => x.Name == "No CDL"); // Overweight
+            Assert.Contains(analyzer.Analyze(rules, expiredLicense), x => x.Name == "Expired License"); // Overweight
 
             var res = analyzer.GetCaptures(rules, overweightTruck);
             var weight = ((TypedClauseCapture<int>)res.First().Captures[0]).Result;
 
-            Assert.IsTrue(weight == 30000);
+            Assert.True(weight == 30000);
         }
     }
 }
