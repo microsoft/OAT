@@ -86,7 +86,6 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
-          dotnetTestArgs: '--logger trx'
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_ubuntu'
@@ -95,7 +94,6 @@ extends:
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
-          dotnetTestArgs: '--logger trx'
 
     - stage: Build
       dependsOn:
