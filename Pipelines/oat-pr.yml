@@ -40,6 +40,21 @@ extends:
           image: MSSecurity-1ES-Windows-2022
           os: windows
         steps:
+        - task: UseDotNet@2
+          displayName: Install Dotnet SDK
+          inputs:
+            packageType: 'sdk'
+            version: '9.0.x'
+        - task: UseDotNet@2
+          displayName: Install Dotnet SDK
+          inputs:
+            packageType: 'sdk'
+            version: '8.0.x'
+        - task: DotNetCoreCLI@2
+          displayName: Dotnet Build .NET Core App
+          inputs:
+            command: 'build'
+            arguments: 'OAT.Tests/OAT.Tests.csproj'
         - task: VSTest@3
       # - template: dotnet-test-job.yml@templates
       #   parameters:
