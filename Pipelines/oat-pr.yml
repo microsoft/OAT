@@ -34,7 +34,7 @@ extends:
     - stage: Test
       dependsOn: []
       jobs:
-      - job: 'Run OAT Tests (Windows)'
+      - job: 'vs_test_windows'
         pool:
           name: MSSecurity-1ES-Build-Agents-Pool
           image: MSSecurity-1ES-Windows-2022
