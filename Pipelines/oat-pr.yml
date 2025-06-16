@@ -56,22 +56,28 @@ extends:
             command: 'build'
             arguments: 'OAT.Tests/OAT.Tests.csproj'
         - task: VSTest@3
-      # - template: dotnet-test-job.yml@templates
-      #   parameters:
-      #     jobName: 'dotnet_test_windows'
-      #     dotnetVersions: ['8.0.x','9.0.x']
-      #     poolName: MSSecurity-1ES-Build-Agents-Pool
-      #     poolImage: MSSecurity-1ES-Windows-2022
-      #     poolOs: windows
-      #     projectPath: 'OAT.Tests/OAT.Tests.csproj'
-      # - template: dotnet-test-job.yml@templates
-      #   parameters:
-      #     jobName: 'dotnet_test_ubuntu'
-      #     dotnetVersions: ['8.0.x','9.0.x']
-      #     poolName: MSSecurity-1ES-Build-Agents-Pool
-      #     poolImage: MSSecurity-1ES-Ubuntu-2204
-      #     poolOs: linux
-      #     projectPath: 'OAT.Tests/OAT.Tests.csproj'
+      - job: 'vs_test_linux'
+        pool:
+          name: MSSecurity-1ES-Build-Agents-Pool
+          image: MSSecurity-1ES-Ubuntu-2204
+          os: linux
+        steps:
+        - task: UseDotNet@2
+          displayName: Install Dotnet SDK
+          inputs:
+            packageType: 'sdk'
+            version: '9.0.x'
+        - task: UseDotNet@2
+          displayName: Install Dotnet SDK
+          inputs:
+            packageType: 'sdk'
+            version: '8.0.x'
+        - task: DotNetCoreCLI@2
+          displayName: Dotnet Build .NET Core App
+          inputs:
+            command: 'build'
+            arguments: 'OAT.Tests/OAT.Tests.csproj'
+        - task: VSTest@3
 
     - stage: Build
       dependsOn:
