@@ -1,22 +1,20 @@
 ﻿using Microsoft.CST.OAT.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
+using Xunit;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    [TestClass]
-    public class ReflectionHelpersTests
+    
+    public class ReflectionHelpersTestsFixture : IDisposable
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
+        public ReflectionHelpersTestsFixture()
         {
             SetupObjects();
         }
-
-        private const string MagicWord = "Taco";
-        private const string Key = "Key";
-
-        private static void SetupObjects()
+        public const string MagicWord = "Taco";
+        public const string Key = "Key";
+        private void SetupObjects()
         {
             NestedChild = new TestObject()
             {
@@ -41,38 +39,56 @@ namespace Microsoft.CST.OAT.Tests
             };
         }
 
-        private static TestObject NestedParent = new TestObject() { };
+        internal TestObject NestedParent = new TestObject() { };
 
-        private static TestObject NestedChild = new TestObject() { };
+        internal TestObject NestedChild = new TestObject() { };
+        public void ClassSetup()
+        {
+            SetupObjects();
+        }
 
-        [TestMethod]
+        public void Dispose()
+        {
+        }
+    }
+    
+    public class ReflectionHelpersTests : IClassFixture<ReflectionHelpersTestsFixture>
+    {
+        private readonly ReflectionHelpersTestsFixture fixture;
+
+        public ReflectionHelpersTests(ReflectionHelpersTestsFixture fixture)
+        {
+            this.fixture = fixture;
+        }
+        
+        [Fact]
         public void TestObjDict()
         {
-            Assert.AreEqual(MagicWord, Helpers.GetValueByPropertyOrFieldName(NestedParent, $"ObjDictField.{Key}.StringField"));
+            Assert.Equal(ReflectionHelpersTestsFixture.MagicWord, Helpers.GetValueByPropertyOrFieldName(fixture.NestedParent, $"ObjDictField.{ReflectionHelpersTestsFixture.Key}.StringField"));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestStringDict()
         {
-            Assert.AreEqual(MagicWord, Helpers.GetValueByPropertyOrFieldName(NestedParent, $"StringDictField.{Key}"));
+            Assert.Equal(ReflectionHelpersTestsFixture.MagicWord, Helpers.GetValueByPropertyOrFieldName(fixture.NestedParent, $"StringDictField.{ReflectionHelpersTestsFixture.Key}"));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestObjList()
         {
-            Assert.AreEqual(MagicWord, Helpers.GetValueByPropertyOrFieldName(NestedParent, $"ObjListField.0.StringField"));
+            Assert.Equal(ReflectionHelpersTestsFixture.MagicWord, Helpers.GetValueByPropertyOrFieldName(fixture.NestedParent, $"ObjListField.0.StringField"));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestStringList()
         {
-            Assert.AreEqual(MagicWord, Helpers.GetValueByPropertyOrFieldName(NestedParent, $"StringListField.0"));
+            Assert.Equal(ReflectionHelpersTestsFixture.MagicWord, Helpers.GetValueByPropertyOrFieldName(fixture.NestedParent, $"StringListField.0"));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestDirectLookup()
         {
-            Assert.AreEqual(MagicWord, Helpers.GetValueByPropertyOrFieldName(NestedParent, $"StringField"));
+            Assert.Equal(ReflectionHelpersTestsFixture.MagicWord, Helpers.GetValueByPropertyOrFieldName(fixture.NestedParent, $"StringField"));
         }
     }
 }

@@ -1,14 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License.
 using Microsoft.CST.OAT.Operations;
-using Microsoft.CST.OAT.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Xunit;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    [TestClass]
+    
     public class AnalyzerTests
     {
         private readonly TestObject testObjectTrueFalse = new TestObject()
@@ -35,7 +34,7 @@ namespace Microsoft.CST.OAT.Tests
             BoolField = false
         };
 
-        [TestMethod]
+        [Fact]
         public void TestShortcutWithCapture()
         {
             var rule = new Rule("TestShortcutWithCapture")
@@ -68,10 +67,10 @@ namespace Microsoft.CST.OAT.Tests
                 BoolField = true
             };
             var cap = analyzer.GetCapture(rule, target);
-            Assert.IsTrue(cap.Result?.Captures.First() is TypedClauseCapture<string> t && t.Result == "Magic");
+            Assert.True(cap.Result?.Captures.First() is TypedClauseCapture<string> t && t.Result == "Magic");
         }
 
-        [TestMethod]
+        [Fact]
         public void TestShortcut()
         {
             var rule = new Rule("TestShortcut")
@@ -129,7 +128,7 @@ namespace Microsoft.CST.OAT.Tests
             cap = analyzer.GetCapture(rule2, target);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestNotNot()
         {
             var RuleName = "Not Not True";
@@ -153,13 +152,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { notNotRule };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
         }
 
-        [TestMethod]
+        [Fact]
         public void TestXorFromNand()
         {
             var RuleName = "XOR from NAND";
@@ -187,13 +186,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { xorRule };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
+            Assert.True(analyzer.Analyze(ruleList, testObjectTrueTrue).All(x => x.Name != RuleName));
+            Assert.True(analyzer.Analyze(ruleList, testObjectFalseFalse).All(x => x.Name != RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyAccessSubproperties()
         {
             var regObj = new TestObject()
@@ -223,10 +222,10 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { containsRule };
-            Assert.IsTrue(analyzer.Analyze(ruleList, regObj).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, regObj), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyImplicitAndWithInvert()
         {
             var RuleName = "ImplicitAndWithInvert";
@@ -251,13 +250,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { implicitAndWithInvert };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName)); // The first clause is inverted
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(analyzer.Analyze(ruleList, testObjectFalseFalse).All(x => x.Name != RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName); // The first clause is inverted
+            Assert.True(analyzer.Analyze(ruleList, testObjectTrueTrue).All(x => x.Name != RuleName));
+            Assert.True(analyzer.Analyze(ruleList, testObjectTrueFalse).All(x => x.Name != RuleName));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyImplicitAnd()
         {
             var RuleName = "ImplicitAnd";
@@ -281,13 +280,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { implicitAnd };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyImplicitClauseLabels()
         {
             var RuleName = "ImplicitClauseLabels";
@@ -312,10 +311,10 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { implicitClauseLabels };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
 
             var mixedClauseLabels = new Rule(RuleName)
             {
@@ -339,13 +338,13 @@ namespace Microsoft.CST.OAT.Tests
 
             ruleList = new List<Rule>() { mixedClauseLabels };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyAnd()
         {
             var RuleName = "AndRule";
@@ -373,13 +372,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { andRule };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyInvalidRuleDetection()
         {
             var invalidRule = new Rule("Unbalanced Parentheses")
@@ -407,7 +406,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
             var analyzer = new Analyzer();
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("ClauseInParenthesesLabel")
             {
@@ -422,7 +421,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("CharactersBetweenParentheses")
             {
@@ -437,7 +436,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("CharactersBeforeOpenParentheses")
             {
@@ -452,7 +451,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("CharactersBetweenClosedParentheses")
             {
@@ -471,7 +470,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("CharactersAfterClosedParentheses")
             {
@@ -490,7 +489,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("CloseParenthesesWithNot")
             {
@@ -509,7 +508,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("WhiteSpaceLabel")
             {
@@ -524,7 +523,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("InvalidOperator")
             {
@@ -543,7 +542,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("InvalidNotOperator")
             {
@@ -562,7 +561,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("EndsWithOperator")
             {
@@ -577,7 +576,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("OutOfOrder")
             {
@@ -600,7 +599,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("StartWithOperator")
             {
@@ -627,7 +626,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("Case Sensitivity")
             {
@@ -642,7 +641,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("OPERATION.Custom without CustomOperation")
             {
@@ -656,7 +655,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("OPERATION.Custom without validation Delegate")
             {
@@ -671,7 +670,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
 
             invalidRule = new Rule("Missing Clause Labels")
             {
@@ -683,10 +682,10 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsFalse(analyzer.IsRuleValid(invalidRule));
+            Assert.False(analyzer.IsRuleValid(invalidRule));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyNand()
         {
             var RuleName = "NandRule";
@@ -714,13 +713,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { nandRule };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseFalse), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyNor()
         {
             var RuleName = "NorRule";
@@ -748,13 +747,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { norRule };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseFalse), x => x.Name == RuleName);
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyCustom()
         {
             var RuleName = "CustomRule";
@@ -784,10 +783,10 @@ namespace Microsoft.CST.OAT.Tests
 
             var ruleList = new List<Rule>() { customRule };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyCustomImplicitAndWithCaptures()
         {
             var RuleName = "CustomRule";
@@ -840,10 +839,10 @@ namespace Microsoft.CST.OAT.Tests
 
             var ruleList = new List<Rule>() { customRule };
 
-            Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
+            Assert.True(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyCustomExpressionWithCaptures()
         {
             var RuleName = "CustomRule";
@@ -897,10 +896,10 @@ namespace Microsoft.CST.OAT.Tests
 
             var ruleList = new List<Rule>() { customRule };
 
-            Assert.IsTrue(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
+            Assert.True(analyzer.GetCaptures(ruleList, testObjectTrueTrue).Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyNot()
         {
             var RuleName = "NotRule";
@@ -924,11 +923,11 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { notRule };
 
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseFalse), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyOr()
         {
             var RuleName = "OrRule";
@@ -956,13 +955,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { orRule };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
-            Assert.IsFalse(analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueTrue), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
+            Assert.DoesNotContain(analyzer.Analyze(ruleList, testObjectFalseFalse), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyValidRuleDetection()
         {
             var validRule = new Rule("Regular Rule")
@@ -991,7 +990,7 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
-            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+            Assert.True(analyzer.IsRuleValid(validRule));
 
             validRule = new Rule("Extraneous Parenthesis")
             {
@@ -1018,7 +1017,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+            Assert.True(analyzer.IsRuleValid(validRule));
 
             validRule = new Rule("Deeply Nested Expression")
             {
@@ -1065,7 +1064,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+            Assert.True(analyzer.IsRuleValid(validRule));
 
             validRule = new Rule("StringsForClauseLabels")
             {
@@ -1088,7 +1087,7 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+            Assert.True(analyzer.IsRuleValid(validRule));
 
             validRule = new Rule("MultipleConsecutiveNots")
             {
@@ -1107,10 +1106,10 @@ namespace Microsoft.CST.OAT.Tests
                 }
             };
 
-            Assert.IsTrue(analyzer.IsRuleValid(validRule));
+            Assert.True(analyzer.IsRuleValid(validRule));
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyBareObjectQuery()
         {
             var RuleName = "BareObjectRule";
@@ -1146,10 +1145,10 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { bareObjectRule, bareObjectRuleNoTarget };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, "MagicWord").Count() == 2);
+            Assert.True(analyzer.Analyze(ruleList, "MagicWord").Count() == 2);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyXor()
         {
             var RuleName = "XorRule";
@@ -1177,13 +1176,13 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             var ruleList = new List<Rule>() { xorRule };
 
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectTrueFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
-            Assert.IsTrue(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
-            Assert.IsTrue(analyzer.Analyze(ruleList, testObjectFalseTrue).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectTrueFalse), x => x.Name == RuleName);
+            Assert.True(!analyzer.Analyze(ruleList, testObjectTrueTrue).Any(x => x.Name == RuleName));
+            Assert.True(!analyzer.Analyze(ruleList, testObjectFalseFalse).Any(x => x.Name == RuleName));
+            Assert.Contains(analyzer.Analyze(ruleList, testObjectFalseTrue), x => x.Name == RuleName);
         }
 
-        [TestMethod]
+        [Fact]
         public void VerifyCustomRuleValidation()
         {
             var RuleName = "CustomRuleValidation";
@@ -1222,7 +1221,7 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
 
             // Rules aren't valid without a validation delegate
-            Assert.IsFalse(analyzer.IsRuleValid(supportedCustomOperation));
+            Assert.False(analyzer.IsRuleValid(supportedCustomOperation));
 
             IEnumerable<Violation> validationDelegate(Rule r, Clause c)
             {
@@ -1240,8 +1239,8 @@ namespace Microsoft.CST.OAT.Tests
 
             analyzer.SetOperation(fooOperation);
 
-            Assert.IsTrue(analyzer.IsRuleValid(supportedCustomOperation));
-            Assert.IsFalse(analyzer.IsRuleValid(unsupportedCustomOperation));
+            Assert.True(analyzer.IsRuleValid(supportedCustomOperation));
+            Assert.False(analyzer.IsRuleValid(unsupportedCustomOperation));
         }
     }
 }
