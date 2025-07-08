@@ -83,6 +83,9 @@ extends:
           projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
           projectName: 'OAT_Scripting'
           artifactName: 'script-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'NuGet.Config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
@@ -95,6 +98,9 @@ extends:
           projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
           projectName: 'OAT_Blazor_Components'
           artifactName: 'blazor-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'NuGet.Config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
