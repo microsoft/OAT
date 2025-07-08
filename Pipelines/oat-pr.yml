@@ -68,6 +68,9 @@ extends:
           projectPath: 'OAT/OAT.csproj'
           projectName: 'OAT'
           artifactName: 'lib-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'NuGet.Config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
