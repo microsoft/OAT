@@ -80,6 +80,8 @@ extends:
           projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
           projectName: 'OAT_Scripting'
           artifactName: 'script-archive'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
