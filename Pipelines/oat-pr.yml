@@ -34,7 +34,6 @@ extends:
     - stage: Test
       dependsOn: []
       jobs:
-      - task: NuGetAuthenticate@1
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_windows'
@@ -43,6 +42,9 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          onInit:       
+            - task: NuGetAuthenticate@1
+
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_ubuntu'
@@ -51,12 +53,13 @@ extends:
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          onInit:       
+            - task: NuGetAuthenticate@1
 
     - stage: Build
       dependsOn:
       - Test
       jobs:
-      - task: NuGetAuthenticate@1
       - template: nuget-build-job.yml@templates
         parameters:
           jobName: 'pack_lib'
@@ -65,6 +68,8 @@ extends:
           projectPath: 'OAT/OAT.csproj'
           projectName: 'OAT'
           artifactName: 'lib-archive'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
@@ -85,5 +90,7 @@ extends:
           projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
           projectName: 'OAT_Blazor_Components'
           artifactName: 'blazor-archive'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
