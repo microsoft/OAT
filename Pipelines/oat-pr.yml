@@ -13,7 +13,7 @@ resources:
     - repository: templates
       type: git
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/tags/v2.0.1
+      ref: refs/tags/v2.0.2
     - repository: 1esPipelines
       type: git
       name: 1ESPipelineTemplates/1ESPipelineTemplates
@@ -42,14 +42,8 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          nugetConfigPath: 'nuget.config.azure'
           onInit:
-            - task: PowerShell@2
-              displayName: 'Rename nuget.config'
-              inputs:
-                targetType: 'inline'
-                script: |
-                  Rename-Item -Path "$(System.DefaultWorkingDirectory)\nuget.config.rename" -NewName "nuget.config" -Force
-                  Write-Host "File 'nuget.config.rename' renamed to 'nuget.config' successfully."       
             - task: NuGetAuthenticate@1
 
       - template: dotnet-test-job.yml@templates
@@ -60,6 +54,7 @@ extends:
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          nugetConfigPath: 'nuget.config.azure'
           onInit:       
             - task: NuGetAuthenticate@1
 
@@ -77,7 +72,7 @@ extends:
           artifactName: 'lib-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'NuGet.Config'
+          nugetConfigPath: 'nuget.config.azure'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
@@ -92,7 +87,7 @@ extends:
           artifactName: 'script-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'NuGet.Config'
+          nugetConfigPath: 'nuget.config.azure'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
@@ -107,7 +102,7 @@ extends:
           artifactName: 'blazor-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'NuGet.Config'
+          nugetConfigPath: 'nuget.config.azure'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
