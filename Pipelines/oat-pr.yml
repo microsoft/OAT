@@ -42,7 +42,14 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
-          onInit:       
+          onInit:
+            - task: PowerShell@2
+              displayName: 'Rename nuget.config'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  Rename-Item -Path "$(System.DefaultWorkingDirectory)\nuget.config.rename" -NewName "nuget.config" -Force
+                  Write-Host "File 'nuget.config.rename' renamed to 'nuget.config' successfully."       
             - task: NuGetAuthenticate@1
 
       - template: dotnet-test-job.yml@templates
