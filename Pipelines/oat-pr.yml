@@ -42,8 +42,16 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:
+            - task: PowerShell@2
+              displayName: 'Copy nuget.config.azure to nuget.config'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $source = "$(Build.SourcesDirectory)\nuget.config.azure"
+                  $destination = "$(Build.SourcesDirectory)\nuget.config"
+                  Copy-Item -Path $source -Destination $destination -Force
             - task: NuGetAuthenticate@1
 
       - template: dotnet-test-job.yml@templates
