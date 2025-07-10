@@ -13,7 +13,7 @@ resources:
     - repository: templates
       type: git
       name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/tags/v2.0.1
+      ref: refs/tags/v2.0.4
     - repository: 1esPipelines
       type: git
       name: 1ESPipelineTemplates/1ESPipelineTemplates
@@ -34,50 +34,6 @@ extends:
     - stage: Test
       dependsOn: []
       jobs:
-      # - job: 'vs_test_windows'
-      #   pool:
-      #     name: MSSecurity-1ES-Build-Agents-Pool
-      #     image: MSSecurity-1ES-Windows-2022
-      #     os: windows
-      #   steps:
-      #   - task: UseDotNet@2
-      #     displayName: Install Dotnet SDK
-      #     inputs:
-      #       packageType: 'sdk'
-      #       version: '9.0.x'
-      #   - task: UseDotNet@2
-      #     displayName: Install Dotnet SDK
-      #     inputs:
-      #       packageType: 'sdk'
-      #       version: '8.0.x'
-      #   - task: DotNetCoreCLI@2
-      #     displayName: Dotnet Build .NET Core App
-      #     inputs:
-      #       command: 'build'
-      #       arguments: 'OAT.Tests/OAT.Tests.csproj'
-      #   - task: VSTest@3
-      # - job: 'vs_test_linux'
-      #   pool:
-      #     name: MSSecurity-1ES-Build-Agents-Pool
-      #     image: MSSecurity-1ES-Ubuntu-2204
-      #     os: linux
-      #   steps:
-      #   - task: UseDotNet@2
-      #     displayName: Install Dotnet SDK
-      #     inputs:
-      #       packageType: 'sdk'
-      #       version: '9.0.x'
-      #   - task: UseDotNet@2
-      #     displayName: Install Dotnet SDK
-      #     inputs:
-      #       packageType: 'sdk'
-      #       version: '8.0.x'
-      #   - task: DotNetCoreCLI@2
-      #     displayName: Dotnet Build .NET Core App
-      #     inputs:
-      #       command: 'build'
-      #       arguments: 'OAT.Tests/OAT.Tests.csproj'
-      #   - task: VSTest@3
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_windows'
@@ -86,6 +42,12 @@ extends:
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config.azure'
+          onInit:
+            - task: NuGetAuthenticate@1
+
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_ubuntu'
@@ -94,6 +56,11 @@ extends:
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config.azure'
+          onInit:       
+            - task: NuGetAuthenticate@1
 
     - stage: Build
       dependsOn:
@@ -107,6 +74,11 @@ extends:
           projectPath: 'OAT/OAT.csproj'
           projectName: 'OAT'
           artifactName: 'lib-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config.azure'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
@@ -117,6 +89,11 @@ extends:
           projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
           projectName: 'OAT_Scripting'
           artifactName: 'script-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config.azure'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
@@ -127,5 +104,10 @@ extends:
           projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
           projectName: 'OAT_Blazor_Components'
           artifactName: 'blazor-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config.azure'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
