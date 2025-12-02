@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net48;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net48;net9.0;net10.0</TargetFrameworks>
       <IsPackable>false</IsPackable>
       <RootNamespace>Microsoft.CST.OAT.Tests</RootNamespace>
       <LangVersion>8.0</LangVersion>
