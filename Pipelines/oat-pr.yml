@@ -21,7 +21,7 @@ resources:
 
 variables:
   BuildConfiguration: 'Release'
-  dotnetVersion: '9.0.x'
+  dotnetVersion: '10.0.x'
 
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
