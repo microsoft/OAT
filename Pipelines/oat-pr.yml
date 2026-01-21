@@ -12,7 +12,7 @@ resources:
   repositories:
     - repository: templates
       type: git
-      name: SecurityEngineering/OSS-Tools-Pipeline-Templates
+      name: General/OSS-Tools-Pipeline-Templates
       ref: refs/tags/v2.0.4
     - repository: 1esPipelines
       type: git
@@ -44,7 +44,7 @@ extends:
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:
             - task: NuGetAuthenticate@1
 
@@ -58,7 +58,7 @@ extends:
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:       
             - task: NuGetAuthenticate@1
 
@@ -76,7 +76,7 @@ extends:
           artifactName: 'lib-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
@@ -91,7 +91,7 @@ extends:
           artifactName: 'script-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
@@ -106,7 +106,7 @@ extends:
           artifactName: 'blazor-archive'
           includeNuGetOrg: false
           nugetFeedsToUse: 'config'
-          nugetConfigPath: 'nuget.config.azure'
+          nugetConfigPath: 'nuget.config'
           onInit:       
             - task: NuGetAuthenticate@1
           preBuild:
