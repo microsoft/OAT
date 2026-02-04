@@ -1,6 +1,3 @@
-# Azure Pipelines
-# https://aka.ms/yaml
-
 name: OAT_PR_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger: none
 pr:
