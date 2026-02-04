@@ -17,12 +17,6 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [Fact]
-        public void TriggerBuild()
-        {
-            Assert.True(true);
-        }
-
-        [Fact]
         public void VerifyContainsAnyOperator()
         {
             var trueStringObject = new TestObject()
