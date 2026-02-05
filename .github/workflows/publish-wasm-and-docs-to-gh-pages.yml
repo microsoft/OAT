@@ -24,12 +24,12 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '10.0.x'
     # Include recommended wasm-tools workload to optimize build
     - name: wasm-tools
       run: dotnet workload install wasm-tools
     - name: Build
-      run: dotnet publish OAT.Blazor -c Release -f net8.0 -o blazorOut
+      run: dotnet publish OAT.Blazor -c Release -f net10.0 -o blazorOut
     - name: Mkdir toPublish
       run: mkdir toPublish
     - name: Move Blazor Output into Place
