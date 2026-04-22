@@ -6,6 +6,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -30,6 +31,12 @@ namespace Microsoft.CST.OAT.Operations
 
         internal IEnumerable<Violation> ScriptOperationValidationDelegate(Rule rule, Clause clause)
         {
+            if (Analyzer?.Options.RunScripts != true)
+            {
+                yield return new Violation(string.Format(Strings.Get("Err_ScriptingDisabled_{0}{1}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture)), rule, clause);
+                yield break;
+            }
+
             if (clause.Script is ScriptData clauseScript)
             {
                 var issues = new List<Violation>();
@@ -40,7 +47,21 @@ namespace Microsoft.CST.OAT.Operations
                     options = options.AddImports(clauseScript.Imports);
                     options = options.AddReferences(typeof(Analyzer).Assembly);
 
-                    options = options.AddReferences(clauseScript.References.Select(Assembly.Load));
+                    // Resolve assembly references without Assembly.Load to avoid triggering
+                    // module initializers during validation (which should be side-effect free).
+                    foreach (var reference in clauseScript.References)
+                    {
+                        var resolvedPath = ResolveAssemblyPath(reference);
+                        if (resolvedPath != null)
+                        {
+                            options = options.AddReferences(MetadataReference.CreateFromFile(resolvedPath));
+                        }
+                        else
+                        {
+                            issues.Add(new Violation(string.Format(Strings.Get("Err_ClauseInvalidLambda_{0}{1}{2}"), rule.Name, clause.Label ?? rule.Clauses.IndexOf(clause).ToString(CultureInfo.InvariantCulture), $"Could not resolve assembly reference '{reference}'"), rule, clause));
+                        }
+                    }
+
                     var script = CSharpScript.Create<OperationResult>(clauseScript.Code, globalsType: typeof(OperationArguments), options: options);
 
                     foreach (var issue in script.Compile())
@@ -67,10 +88,47 @@ namespace Microsoft.CST.OAT.Operations
             }
         }
 
+        /// <summary>
+        /// Resolves an assembly name to a file path without loading it into the runtime.
+        /// This avoids triggering module initializers that Assembly.Load would execute.
+        /// </summary>
+        private static string? ResolveAssemblyPath(string assemblyName)
+        {
+            // Check already-loaded assemblies (no new loading occurs)
+            var loaded = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => string.Equals(a.GetName().Name, assemblyName, StringComparison.OrdinalIgnoreCase));
+            if (loaded != null && !string.IsNullOrEmpty(loaded.Location))
+            {
+                return loaded.Location;
+            }
+
+            // Try the application base directory
+            var basePath = Path.Combine(AppContext.BaseDirectory, assemblyName + ".dll");
+            if (File.Exists(basePath))
+            {
+                return basePath;
+            }
+
+            // Try the runtime directory
+            var runtimeDir = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+            var runtimePath = Path.Combine(runtimeDir, assemblyName + ".dll");
+            if (File.Exists(runtimePath))
+            {
+                return runtimePath;
+            }
+
+            return null;
+        }
+
         private Dictionary<ScriptData, Script<OperationResult>?> lambdas { get; } = new Dictionary<ScriptData, Script<OperationResult>?>();
 
         internal OperationResult ScriptOperationDelegate(Clause clause, object? state1, object? state2, IEnumerable<ClauseCapture>? captures)
         {
+            if (Analyzer?.Options.RunScripts != true)
+            {
+                return new OperationResult(false, null);
+            }
+
             if (clause.Script is ScriptData scriptData)
             {
                 if (!lambdas.ContainsKey(clause.Script))
