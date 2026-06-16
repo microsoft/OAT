@@ -989,6 +989,58 @@ namespace Microsoft.CST.OAT.Tests
         }
 
         [Fact]
+        public void VerifyRegexTimeoutTreatedAsNonMatch()
+        {
+            // A catastrophic-backtracking pattern: (a+)+$ on a string of a's ending with
+            // a non-matching character forces exponential backtracking and triggers the
+            // 5-second regex timeout, which should be treated as a non-match.
+            var catastrophicInput = new string('a', 25) + "!";
+
+            var regexRule = new Rule("Regex Timeout Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Regex)
+                    {
+                        Data = new List<string>() { "(a+)+$" }
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { regexRule };
+
+            // Timeout is treated as a non-match, so the rule should not fire.
+            Assert.False(analyzer.Analyze(ruleList, catastrophicInput).Any());
+        }
+
+        [Fact]
+        public void VerifyRegexTimeoutWithInvert()
+        {
+            // When a regex times out and Invert is true, the timeout (non-match) should
+            // be inverted to a match, so the rule fires.
+            var catastrophicInput = new string('a', 25) + "!";
+
+            var regexInvertRule = new Rule("Regex Timeout Invert Rule")
+            {
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Regex)
+                    {
+                        Data = new List<string>() { "(a+)+$" },
+                        Invert = true
+                    }
+                }
+            };
+
+            var analyzer = new Analyzer();
+            var ruleList = new List<Rule>() { regexInvertRule };
+
+            // Timeout treated as non-match; inverted non-match is a match.
+            Assert.True(analyzer.Analyze(ruleList, catastrophicInput).Any());
+        }
+
+        [Fact]
         public void VerifyStartsWithOperator()
         {
             var trueEndsWithObject = "MagicStartsThisStringOff";

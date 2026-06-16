@@ -111,6 +111,7 @@ namespace Microsoft.CST.OAT.Operations
                     catch (RegexMatchTimeoutException)
                     {
                         Log.Warning("Regex match timed out for pattern {0}. Treating as non-match.", built);
+                        return new OperationResult(clause.Invert, null);
                     }
                 }
             }
