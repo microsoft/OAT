@@ -396,6 +396,11 @@ namespace Microsoft.CST.OAT
                     }
                 }
 
+                if (foundStarts != foundEnds)
+                {
+                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
+                }
+
                 // We should always end on expecting an operator (having gotten a variable)
                 if (!expectingOperator)
                 {
