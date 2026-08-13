@@ -71,39 +71,47 @@ namespace Microsoft.CST.OAT.Operations
 
                 if (regex != null)
                 {
-                    foreach (var state in stateOneList)
+                    try
                     {
-                        var matches = regex.Matches(state);
-
-                        if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
+                        foreach (var state in stateOneList)
                         {
-                            var outmatches = new List<Match>();
-                            foreach (var match in matches)
+                            var matches = regex.Matches(state);
+
+                            if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
                             {
-                                if (match is Match m)
+                                var outmatches = new List<Match>();
+                                foreach (var match in matches)
                                 {
-                                    outmatches.Add(m);
+                                    if (match is Match m)
+                                    {
+                                        outmatches.Add(m);
+                                    }
                                 }
+                                return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state1));
                             }
-                            return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state1));
+                        }
+                        foreach (var state in stateTwoList)
+                        {
+                            var matches = regex.Matches(state);
+
+                            if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
+                            {
+                                var outmatches = new List<Match>();
+                                foreach (var match in matches)
+                                {
+                                    if (match is Match m)
+                                    {
+                                        outmatches.Add(m);
+                                    }
+                                }
+                                return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state2: state2));
+                            }
                         }
                     }
-                    foreach (var state in stateTwoList)
+                    catch (RegexMatchTimeoutException)
                     {
-                        var matches = regex.Matches(state);
-
-                        if (matches.Count > 0 || (matches.Count == 0 && clause.Invert))
-                        {
-                            var outmatches = new List<Match>();
-                            foreach (var match in matches)
-                            {
-                                if (match is Match m)
-                                {
-                                    outmatches.Add(m);
-                                }
-                            }
-                            return new OperationResult(true, !clause.Capture ? null : new TypedClauseCapture<List<Match>>(clause, outmatches, state2: state2));
-                        }
+                        Log.Warning("Regex match timed out for pattern {0}. Treating as non-match.", built);
+                        return new OperationResult(clause.Invert, !clause.Capture || !clause.Invert ? null : new TypedClauseCapture<List<Match>>(clause, new List<Match>(), state1, state2));
                     }
                 }
             }
@@ -122,7 +130,7 @@ namespace Microsoft.CST.OAT.Operations
             {
                 try
                 {
-                    RegexCache.TryAdd((built, regexOptions), new Regex(built, regexOptions));
+                    RegexCache.TryAdd((built, regexOptions), new Regex(built, regexOptions, TimeSpan.FromSeconds(5)));
                 }
                 catch (ArgumentException)
                 {
