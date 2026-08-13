@@ -306,10 +306,6 @@ namespace Microsoft.CST.OAT
                 {
                     foundStarts += splits[i].Count(x => x.Equals('('));
                     foundEnds += splits[i].Count(x => x.Equals(')'));
-                    if (foundEnds > foundStarts)
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
-                    }
                     // Variable
                     if (!expectingOperator)
                     {

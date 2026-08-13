@@ -408,6 +408,33 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer();
             Assert.False(analyzer.IsRuleValid(invalidRule));
 
+            invalidRule = new Rule("UnbalancedCloseParentheses")
+            {
+                Expression = "0 AND 1)",
+                Target = "TestObject",
+                Clauses = new List<Clause>()
+                {
+                    new Clause(Operation.Equals, "Path")
+                    {
+                        Label = "0",
+                        Data = new List<string>()
+                        {
+                            "TestPath2"
+                        }
+                    },
+                    new Clause(Operation.Equals, "IsExecutable")
+                    {
+                        Label = "1",
+                        Data = new List<string>()
+                        {
+                            "True"
+                        }
+                    }
+                }
+            };
+
+            Assert.False(analyzer.IsRuleValid(invalidRule));
+
             invalidRule = new Rule("UnbalancedOpenParentheses")
             {
                 Expression = "(0 AND 1",
