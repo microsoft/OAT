@@ -306,10 +306,6 @@ namespace Microsoft.CST.OAT
                 {
                     foundStarts += splits[i].Count(x => x.Equals('('));
                     foundEnds += splits[i].Count(x => x.Equals(')'));
-                    if (foundEnds > foundStarts)
-                    {
-                        yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
-                    }
                     // Variable
                     if (!expectingOperator)
                     {
@@ -394,6 +390,11 @@ namespace Microsoft.CST.OAT
                         }
                         expectingOperator = false;
                     }
+                }
+
+                if (foundStarts != foundEnds)
+                {
+                    yield return new Violation(string.Format(Strings.Get("Err_ClauseUnbalancedParentheses"), expression, rule.Name), rule);
                 }
 
                 // We should always end on expecting an operator (having gotten a variable)
