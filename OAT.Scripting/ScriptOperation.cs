@@ -94,6 +94,20 @@ namespace Microsoft.CST.OAT.Operations
         /// </summary>
         private static string? ResolveAssemblyPath(string assemblyName)
         {
+            // Normalize to a simple assembly name (handles full assembly names and "Foo.dll")
+            if (assemblyName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+                assemblyName = assemblyName.Substring(0, assemblyName.Length - ".dll".Length);
+            }
+            try
+            {
+                assemblyName = new AssemblyName(assemblyName).Name ?? assemblyName;
+            }
+            catch (Exception)
+            {
+                // Fall back to the provided string if it isn't a valid assembly name.
+            }
+
             // Check already-loaded assemblies (no new loading occurs)
             var loaded = AppDomain.CurrentDomain.GetAssemblies()
                 .FirstOrDefault(a => string.Equals(a.GetName().Name, assemblyName, StringComparison.OrdinalIgnoreCase));
