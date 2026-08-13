@@ -1,0 +1,72 @@
+{
+  "properties": {
+    "helpUri": "https://eng.ms/docs/microsoft-security/security/azure-security/cloudai-security-fundamentals-engineering/security-integration/guardian-wiki/microsoft-guardian/general/baselines"
+  },
+  "version": "1.0.0",
+  "baselines": {
+    "default": {
+      "name": "default",
+      "createdDate": "2026-08-13 01:51:07Z",
+      "lastUpdatedDate": "2026-08-13 01:51:07Z"
+    }
+  },
+  "results": {
+    "7ec636f605e87b93d0253dbc7249271bb854fd0dd7e3366a9536fd96051e2653": {
+      "signature": "7ec636f605e87b93d0253dbc7249271bb854fd0dd7e3366a9536fd96051e2653",
+      "alternativeSignatures": [
+        "72542ebe1b88a11a836cf4ef832ac15c30984b0ee8a2adb5c22f65bec4783137",
+        "58f04f5baf22037cc578eb6096cb8cc5c8a3aeaa2a6c77f78d56ba2f43472f98",
+        "e56d2ff07493112a18f3e70401bd2e385d5a7bd0f9c35903b340c29cb20ba706"
+      ],
+      "target": "OAT/Analyzer.cs",
+      "line": 812,
+      "uriBaseId": "file:///D:/a/_work/1/s/",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "roslynanalyzers",
+      "ruleId": "CA1310",
+      "createdDate": "2026-08-13 01:51:07Z",
+      "expirationDate": "2027-01-30 01:52:29Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2026-08-13 01:52:29Z"
+    },
+    "5707435ceadd8c52ce9bc2d6efc5ac0b06d82718f372e4c6dcbc318e26717a47": {
+      "signature": "5707435ceadd8c52ce9bc2d6efc5ac0b06d82718f372e4c6dcbc318e26717a47",
+      "alternativeSignatures": [
+        "a4a13470ff2ba2a30b700a687a4383c68d561c92105d53c6572f2ca77e388455",
+        "05ff97df76a58662ca0c4132e0fe59246604c1930046eed7014f2a492afb1bdd",
+        "b4bf537ff2f26938a8c323ca71c654dc62fa2ec8f63534549a9761f779424975"
+      ],
+      "target": "OAT/Operations/EndsWithOperation.cs",
+      "line": 63,
+      "uriBaseId": "file:///D:/a/_work/1/s/",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "roslynanalyzers",
+      "ruleId": "CA1310",
+      "createdDate": "2026-08-13 01:51:07Z",
+      "expirationDate": "2027-01-30 01:52:29Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2026-08-13 01:52:29Z"
+    },
+    "e8548a9141c0a6891b4ff9ef4d5ca269264cdf02eb4512ba6d219b4960e5717a": {
+      "signature": "e8548a9141c0a6891b4ff9ef4d5ca269264cdf02eb4512ba6d219b4960e5717a",
+      "alternativeSignatures": [
+        "769c6ed159b176649fae0d5ba10aaa2eb76cd3f57c08f22000b28a6b96741363",
+        "04ed1676a69a4413011735eeda8033fa5af31eafbcfe4b2ba87485a2705f25c1",
+        "73beecf561a73edbd0f8296b28eb1d8de55945a80c074590d18e90d45f656f06"
+      ],
+      "target": "OAT/Operations/StartsWithOperation.cs",
+      "line": 63,
+      "uriBaseId": "file:///D:/a/_work/1/s/",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "roslynanalyzers",
+      "ruleId": "CA1310",
+      "createdDate": "2026-08-13 01:51:07Z",
+      "expirationDate": "2027-01-30 01:52:29Z",
+      "justification": "This error is baselined with an expiration date of 180 days from 2026-08-13 01:52:29Z"
+    }
+  }
+}
