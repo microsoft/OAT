@@ -3,24 +3,33 @@ name: Publish GH - Pages
 on:
   push:
     branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '10.0.x'
     # Include recommended wasm-tools workload to optimize build
     - name: wasm-tools
       run: dotnet workload install wasm-tools
     - name: Build
-      run: dotnet publish OAT.Blazor -c Release -f net8.0 -o blazorOut
+      run: dotnet publish OAT.Blazor -c Release -f net10.0 -o blazorOut
     - name: Mkdir toPublish
       run: mkdir toPublish
     - name: Move Blazor Output into Place
@@ -37,9 +46,18 @@ jobs:
     - name: Move DocFx Output Into Place
       run: mv docfx/_site/* toPublish/
 
-    - name: GitHub Pages action
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: toPublish
+        path: toPublish
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

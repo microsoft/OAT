@@ -1,23 +1,14 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CST.OAT.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace Microsoft.CST.OAT.Tests
 {
-    [TestClass]
+    
     public class LambdaTests
     {
-        [ClassInitialize]
-        public static void ClassSetup(TestContext _)
-        {
-            Logger.SetupVerbose();
-            Strings.Setup();
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestScriptingDisabled()
         {
             var okayLambda = @"return new OperationResult(state1 is true, null);";
@@ -34,12 +25,12 @@ namespace Microsoft.CST.OAT.Tests
 
             var analyzer = new Analyzer();
             // We should receive an issue that scripting is disabled
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(invalidImportRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestInvalidImports()
         {
             var okayLambda = @"return new OperationResult(state1 is true, null);";
@@ -55,12 +46,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(invalidImportRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestInvalidLambda()
         {
             var badLambda = @"This isn't valid code.";
@@ -77,12 +68,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(badLambdaRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestInvalidReferences()
         {
             var okayLambda = @"return new OperationResult(state1 is true, null);";
@@ -98,12 +89,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(invalidReferenceRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMissingImport()
         {
             var missingReference = @"return new NotReferencedClass();";
@@ -119,12 +110,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer();
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(missingReferenceRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMissingReference()
         {
             var missingReference = @"return new NotReferencedClass();";
@@ -140,12 +131,12 @@ namespace Microsoft.CST.OAT.Tests
             };
 
             var analyzer = new Analyzer(new AnalyzerOptions(true));
-            Assert.IsTrue(analyzer
+            Assert.True(analyzer
                 .EnumerateRuleIssues(missingReferenceRule)
                 .Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void TestValidLambda()
         {
             var lambda = @"return new OperationResult(State1 is true, null);";
@@ -164,10 +155,10 @@ namespace Microsoft.CST.OAT.Tests
             var analyzer = new Analyzer(new AnalyzerOptions(true));
 
             var ruleIssues = analyzer.EnumerateRuleIssues(rule).ToArray();
-            Assert.IsFalse(ruleIssues.Any());
+            Assert.False(ruleIssues.Any());
 
             var results = analyzer.Analyze(new Rule[] { rule }, true, true);
-            Assert.IsTrue(results.Any());
+            Assert.True(results.Any());
         }
     }
 }

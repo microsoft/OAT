@@ -12,8 +12,8 @@ resources:
   repositories:
     - repository: templates
       type: git
-      name: SecurityEngineering/OSS-Tools-Pipeline-Templates
-      ref: refs/tags/v2.0.0
+      name: General/OSS-Tools-Pipeline-Templates
+      ref: refs/tags/v2.0.4
     - repository: 1esPipelines
       type: git
       name: 1ESPipelineTemplates/1ESPipelineTemplates
@@ -21,7 +21,7 @@ resources:
 
 variables:
   BuildConfiguration: 'Release'
-  dotnetVersion: '8.0.x'
+  dotnetVersion: '10.0.x'
 
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
@@ -37,19 +37,30 @@ extends:
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_windows'
-          dotnetVersions: ['6.0.x','7.0.x','8.0.x']
+          dotnetVersions: ['8.0.x','9.0.x','10.0.x']
           poolName: MSSecurity-1ES-Build-Agents-Pool
           poolImage: MSSecurity-1ES-Windows-2022
           poolOs: windows
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+          onInit:
+            - task: NuGetAuthenticate@1
+
       - template: dotnet-test-job.yml@templates
         parameters:
           jobName: 'dotnet_test_ubuntu'
-          dotnetVersions: ['6.0.x','7.0.x','8.0.x']
+          dotnetVersions: ['8.0.x','9.0.x','10.0.x']
           poolName: MSSecurity-1ES-Build-Agents-Pool
           poolImage: MSSecurity-1ES-Ubuntu-2204
           poolOs: linux
           projectPath: 'OAT.Tests/OAT.Tests.csproj'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+          onInit:       
+            - task: NuGetAuthenticate@1
 
     - stage: Build
       dependsOn:
@@ -63,6 +74,11 @@ extends:
           projectPath: 'OAT/OAT.csproj'
           projectName: 'OAT'
           artifactName: 'lib-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
@@ -73,6 +89,11 @@ extends:
           projectPath: 'OAT.Scripting/OAT.Scripting.csproj'
           projectName: 'OAT_Scripting'
           artifactName: 'script-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
       - template: nuget-build-job.yml@templates
@@ -83,5 +104,10 @@ extends:
           projectPath: 'OAT.Blazor.Components/OAT.Blazor.Components.csproj'
           projectName: 'OAT_Blazor_Components'
           artifactName: 'blazor-archive'
+          includeNuGetOrg: false
+          nugetFeedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+          onInit:       
+            - task: NuGetAuthenticate@1
           preBuild:
           - template: nbgv-set-version-steps.yml@templates
