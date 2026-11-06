@@ -8,16 +8,16 @@ OAT is available as a library on NuGet as [Microsoft.CST.OAT](https://www.nuget.
 
 To enable using C# scripts in rules you also need [Microsoft.CST.OAT.Scripting](https://www.nuget.org/packages/Microsoft.CST.OAT.Scripting/).
 
-[OAT Blazor](https://microsoft.github.io/OAT/Blazor/) is an experimental WebAssembly app that runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly.
+[OAT Blazor](OAT.Blazor) is an experimental WebAssembly app that runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly. The app can be built locally; it is no longer automatically published to GitHub Pages.
 
 ## Documentation
 Documentation for usage is on the [Wiki](https://github.com/microsoft/OAT/wiki).
 
-Documentation for the API is available on [GitHub Pages](https://microsoft.github.io/OAT/api)
+API documentation can be generated locally from the repository root using `docfx docfx/docfx.json`; it is no longer automatically published to GitHub Pages.
 
 ## Overview
-* [Rules](https://microsoft.github.io/OAT/api/Microsoft.CST.OAT.Rule.html) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](https://microsoft.github.io/OAT/api/Microsoft.CST.OAT.Clause.html) which are applied to the targeted object.
-* [Clauses](https://microsoft.github.io/OAT/api/Microsoft.CST.OAT.Clause.html) perform a specified [Operation](https://microsoft.github.io/OAT/api/Microsoft.CST.OAT.Operation.html) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
+* [Rules](OAT/Rule.cs) contain a object Target, an int Severity, a string boolean Expression and a List of [Clauses](OAT/Clause.cs) which are applied to the targeted object.
+* [Clauses](OAT/Clause.cs) perform a specified [Operation](OAT/Operation.cs) on a specified Field of the Target.  The Field can be any property or subproperty or field of the object. For example, `SomeFieldOfTarget.SomeObject.SomeProperty`.
 * Clauses can also Capture the result of their operation, to be returned with the applied Rule.
 * The Operation set can be expanded with delegates.
 * The object types supported by existing operations can also be expanded with delegates.
