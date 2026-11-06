@@ -104,7 +104,7 @@ namespace Microsoft.CST.OAT.Utils
         }
 
         /// <summary>
-        /// Checks if this is a type that OAT Blazor has a component for
+        /// Checks whether the type is supported as a basic input type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
