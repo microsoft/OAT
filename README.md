@@ -8,8 +8,6 @@ OAT is available as a library on NuGet as [Microsoft.CST.OAT](https://www.nuget.
 
 To enable using C# scripts in rules you also need [Microsoft.CST.OAT.Scripting](https://www.nuget.org/packages/Microsoft.CST.OAT.Scripting/).
 
-[OAT Blazor](OAT.Blazor) is an experimental WebAssembly app that runs in your browser and allows you to Author Rules and test them in a Sandbox using Objects instantiated from your provided Assembly. The app can be built locally; it is no longer automatically published to GitHub Pages.
-
 ## Documentation
 Documentation for usage is on the [Wiki](https://github.com/microsoft/OAT/wiki).
 
