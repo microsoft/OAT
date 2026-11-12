@@ -173,15 +173,17 @@ extends:
             TreatSignatureUpdateFailureAs: 'Warning'
             SignatureFreshness: 'UpToDate'
             TreatStaleSignatureAs: 'Warning'
-        - task: EsrpCodeSigning@5
+        - task: EsrpCodeSigning@6
           displayName: Code Sign Nuget Packages
           inputs:
-            ConnectedServiceName: 'oss-esrp-signing-oat-v5-connection'
-            AppRegistrationClientId: '5d2c8a94-3bca-47a0-a708-85799c4df301'
+            ConnectedServiceName: 'oss-signing-v6-oat'
+            AppRegistrationClientId: '7ff445d2-c840-43ea-aca9-bc6d57ab7899' 
             AppRegistrationTenantId: '33e01921-4d64-4f8c-a055-5bdaffd5e33d'
             AuthAKVName: 'oss-signing-vault'
             AuthSignCertName: 'oss-oat-esrp-signing-cert'            
             AuthCertName: 'oss-oat-auth-cert'
+            useMsiAuthentication: true
+            esrpClientId: '5d2c8a94-3bca-47a0-a708-85799c4df301'
             FolderPath: '$(Build.BinariesDirectory)'
             Pattern: '*.nupkg, *.snupkg'
             signConfigType: 'inlineSignParams'
