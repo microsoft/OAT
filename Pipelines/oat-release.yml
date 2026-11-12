@@ -176,7 +176,7 @@ extends:
         - task: EsrpCodeSigning@6
           displayName: Code Sign Nuget Packages
           inputs:
-            ConnectedServiceName: 'oss-signing-v6-oat'
+            ConnectedServiceName: 'oss-signing-v6-oat' 
             AppRegistrationClientId: '7ff445d2-c840-43ea-aca9-bc6d57ab7899' 
             AppRegistrationTenantId: '33e01921-4d64-4f8c-a055-5bdaffd5e33d'
             AuthAKVName: 'oss-signing-vault'
