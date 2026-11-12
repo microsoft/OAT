@@ -184,6 +184,7 @@ extends:
             AuthCertName: 'oss-oat-auth-cert'
             useMsiAuthentication: true
             esrpClientId: '5d2c8a94-3bca-47a0-a708-85799c4df301'
+            ServiceEndpointUrl: 'https://api.esrp.microsoft.com/api/v2'
             FolderPath: '$(Build.BinariesDirectory)'
             Pattern: '*.nupkg, *.snupkg'
             signConfigType: 'inlineSignParams'
